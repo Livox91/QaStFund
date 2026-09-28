@@ -6,6 +6,26 @@ export class InvalidCredentialsError extends ApplicationError {
   }
 }
 
+export class InvalidAuthenticationInputError extends ApplicationError {
+  constructor() {
+    super(
+      "INVALID_AUTHENTICATION_INPUT",
+      "The authentication request is invalid.",
+      400,
+    );
+  }
+}
+
+export class RegistrationConflictError extends ApplicationError {
+  constructor() {
+    super(
+      "REGISTRATION_CONFLICT",
+      "An account or organization with those details already exists.",
+      409,
+    );
+  }
+}
+
 export class AccountMembershipRequiredError extends ApplicationError {
   constructor() {
     super(

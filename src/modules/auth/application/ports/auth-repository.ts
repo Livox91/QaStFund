@@ -30,3 +30,19 @@ export interface AuthRepository {
   ): Promise<AuthenticatedActor | null>;
   deleteSessionByTokenHash(tokenHash: string): Promise<void>;
 }
+
+export type RegisterOrganizationAdminResult =
+  | Readonly<{ kind: "CREATED"; actor: AuthenticatedActor }>
+  | Readonly<{ kind: "CONFLICT" }>;
+
+export interface RegistrationRepository {
+  registerOrganizationAdmin(input: {
+    name: string;
+    email: string;
+    passwordHash: string;
+    organizationName: string;
+    organizationSlug: string;
+    sessionTokenHash: string;
+    sessionExpiresAt: Date;
+  }): Promise<RegisterOrganizationAdminResult>;
+}

@@ -27,6 +27,8 @@ export type LendingOfferStatus = (typeof LendingOfferStatus)[keyof typeof Lendin
 
 
 export const LoanStatus = {
+  REQUESTED: 'REQUESTED',
+  APPROVED: 'APPROVED',
   ACTIVE: 'ACTIVE',
   REPAID: 'REPAID',
   OVERDUE: 'OVERDUE',
@@ -38,11 +40,15 @@ export type LoanStatus = (typeof LoanStatus)[keyof typeof LoanStatus]
 
 
 export const AuditEventType = {
+  LOAN_REQUESTED: 'LOAN_REQUESTED',
+  LOAN_APPROVED: 'LOAN_APPROVED',
   LOAN_CREATED: 'LOAN_CREATED',
   LOAN_ACTIVATED: 'LOAN_ACTIVATED',
   REPAYMENT_RECORDED: 'REPAYMENT_RECORDED',
   LOAN_REPAID: 'LOAN_REPAID',
-  LOAN_OVERDUE: 'LOAN_OVERDUE'
+  LOAN_OVERDUE: 'LOAN_OVERDUE',
+  LOAN_DEFAULTED: 'LOAN_DEFAULTED',
+  LOAN_CANCELLED: 'LOAN_CANCELLED'
 } as const
 
 export type AuditEventType = (typeof AuditEventType)[keyof typeof AuditEventType]

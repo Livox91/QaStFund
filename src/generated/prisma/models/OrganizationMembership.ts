@@ -206,6 +206,7 @@ export type OrganizationMembershipWhereInput = {
   loansAsLender?: Prisma.LoanListRelationFilter
   loansAsBorrower?: Prisma.LoanListRelationFilter
   ledgerAccounts?: Prisma.LedgerAccountListRelationFilter
+  auditEventsActed?: Prisma.AuditEventListRelationFilter
 }
 
 export type OrganizationMembershipOrderByWithRelationInput = {
@@ -224,6 +225,7 @@ export type OrganizationMembershipOrderByWithRelationInput = {
   loansAsLender?: Prisma.LoanOrderByRelationAggregateInput
   loansAsBorrower?: Prisma.LoanOrderByRelationAggregateInput
   ledgerAccounts?: Prisma.LedgerAccountOrderByRelationAggregateInput
+  auditEventsActed?: Prisma.AuditEventOrderByRelationAggregateInput
 }
 
 export type OrganizationMembershipWhereUniqueInput = Prisma.AtLeast<{
@@ -247,6 +249,7 @@ export type OrganizationMembershipWhereUniqueInput = Prisma.AtLeast<{
   loansAsLender?: Prisma.LoanListRelationFilter
   loansAsBorrower?: Prisma.LoanListRelationFilter
   ledgerAccounts?: Prisma.LedgerAccountListRelationFilter
+  auditEventsActed?: Prisma.AuditEventListRelationFilter
 }, "id" | "organizationId_userId" | "organizationId_id">
 
 export type OrganizationMembershipOrderByWithAggregationInput = {
@@ -289,6 +292,7 @@ export type OrganizationMembershipCreateInput = {
   loansAsLender?: Prisma.LoanCreateNestedManyWithoutLenderMembershipInput
   loansAsBorrower?: Prisma.LoanCreateNestedManyWithoutBorrowerMembershipInput
   ledgerAccounts?: Prisma.LedgerAccountCreateNestedManyWithoutMembershipInput
+  auditEventsActed?: Prisma.AuditEventCreateNestedManyWithoutActorMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateInput = {
@@ -305,6 +309,7 @@ export type OrganizationMembershipUncheckedCreateInput = {
   loansAsLender?: Prisma.LoanUncheckedCreateNestedManyWithoutLenderMembershipInput
   loansAsBorrower?: Prisma.LoanUncheckedCreateNestedManyWithoutBorrowerMembershipInput
   ledgerAccounts?: Prisma.LedgerAccountUncheckedCreateNestedManyWithoutMembershipInput
+  auditEventsActed?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorMembershipInput
 }
 
 export type OrganizationMembershipUpdateInput = {
@@ -321,6 +326,7 @@ export type OrganizationMembershipUpdateInput = {
   loansAsLender?: Prisma.LoanUpdateManyWithoutLenderMembershipNestedInput
   loansAsBorrower?: Prisma.LoanUpdateManyWithoutBorrowerMembershipNestedInput
   ledgerAccounts?: Prisma.LedgerAccountUpdateManyWithoutMembershipNestedInput
+  auditEventsActed?: Prisma.AuditEventUpdateManyWithoutActorMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateInput = {
@@ -337,6 +343,7 @@ export type OrganizationMembershipUncheckedUpdateInput = {
   loansAsLender?: Prisma.LoanUncheckedUpdateManyWithoutLenderMembershipNestedInput
   loansAsBorrower?: Prisma.LoanUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
   ledgerAccounts?: Prisma.LedgerAccountUncheckedUpdateManyWithoutMembershipNestedInput
+  auditEventsActed?: Prisma.AuditEventUncheckedUpdateManyWithoutActorMembershipNestedInput
 }
 
 export type OrganizationMembershipCreateManyInput = {
@@ -420,6 +427,11 @@ export type OrganizationMembershipMinOrderByAggregateInput = {
 export type OrganizationMembershipScalarRelationFilter = {
   is?: Prisma.OrganizationMembershipWhereInput
   isNot?: Prisma.OrganizationMembershipWhereInput
+}
+
+export type OrganizationMembershipNullableScalarRelationFilter = {
+  is?: Prisma.OrganizationMembershipWhereInput | null
+  isNot?: Prisma.OrganizationMembershipWhereInput | null
 }
 
 export type OrganizationMembershipCreateNestedManyWithoutUserInput = {
@@ -584,6 +596,22 @@ export type OrganizationMembershipUpdateOneRequiredWithoutLedgerAccountsNestedIn
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationMembershipUpdateToOneWithWhereWithoutLedgerAccountsInput, Prisma.OrganizationMembershipUpdateWithoutLedgerAccountsInput>, Prisma.OrganizationMembershipUncheckedUpdateWithoutLedgerAccountsInput>
 }
 
+export type OrganizationMembershipCreateNestedOneWithoutAuditEventsActedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationMembershipCreateWithoutAuditEventsActedInput, Prisma.OrganizationMembershipUncheckedCreateWithoutAuditEventsActedInput>
+  connectOrCreate?: Prisma.OrganizationMembershipCreateOrConnectWithoutAuditEventsActedInput
+  connect?: Prisma.OrganizationMembershipWhereUniqueInput
+}
+
+export type OrganizationMembershipUpdateOneWithoutAuditEventsActedNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationMembershipCreateWithoutAuditEventsActedInput, Prisma.OrganizationMembershipUncheckedCreateWithoutAuditEventsActedInput>
+  connectOrCreate?: Prisma.OrganizationMembershipCreateOrConnectWithoutAuditEventsActedInput
+  upsert?: Prisma.OrganizationMembershipUpsertWithoutAuditEventsActedInput
+  disconnect?: Prisma.OrganizationMembershipWhereInput | boolean
+  delete?: Prisma.OrganizationMembershipWhereInput | boolean
+  connect?: Prisma.OrganizationMembershipWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationMembershipUpdateToOneWithWhereWithoutAuditEventsActedInput, Prisma.OrganizationMembershipUpdateWithoutAuditEventsActedInput>, Prisma.OrganizationMembershipUncheckedUpdateWithoutAuditEventsActedInput>
+}
+
 export type OrganizationMembershipCreateNestedOneWithoutSessionsInput = {
   create?: Prisma.XOR<Prisma.OrganizationMembershipCreateWithoutSessionsInput, Prisma.OrganizationMembershipUncheckedCreateWithoutSessionsInput>
   connectOrCreate?: Prisma.OrganizationMembershipCreateOrConnectWithoutSessionsInput
@@ -611,6 +639,7 @@ export type OrganizationMembershipCreateWithoutUserInput = {
   loansAsLender?: Prisma.LoanCreateNestedManyWithoutLenderMembershipInput
   loansAsBorrower?: Prisma.LoanCreateNestedManyWithoutBorrowerMembershipInput
   ledgerAccounts?: Prisma.LedgerAccountCreateNestedManyWithoutMembershipInput
+  auditEventsActed?: Prisma.AuditEventCreateNestedManyWithoutActorMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutUserInput = {
@@ -626,6 +655,7 @@ export type OrganizationMembershipUncheckedCreateWithoutUserInput = {
   loansAsLender?: Prisma.LoanUncheckedCreateNestedManyWithoutLenderMembershipInput
   loansAsBorrower?: Prisma.LoanUncheckedCreateNestedManyWithoutBorrowerMembershipInput
   ledgerAccounts?: Prisma.LedgerAccountUncheckedCreateNestedManyWithoutMembershipInput
+  auditEventsActed?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutUserInput = {
@@ -680,6 +710,7 @@ export type OrganizationMembershipCreateWithoutOrganizationInput = {
   loansAsLender?: Prisma.LoanCreateNestedManyWithoutLenderMembershipInput
   loansAsBorrower?: Prisma.LoanCreateNestedManyWithoutBorrowerMembershipInput
   ledgerAccounts?: Prisma.LedgerAccountCreateNestedManyWithoutMembershipInput
+  auditEventsActed?: Prisma.AuditEventCreateNestedManyWithoutActorMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutOrganizationInput = {
@@ -695,6 +726,7 @@ export type OrganizationMembershipUncheckedCreateWithoutOrganizationInput = {
   loansAsLender?: Prisma.LoanUncheckedCreateNestedManyWithoutLenderMembershipInput
   loansAsBorrower?: Prisma.LoanUncheckedCreateNestedManyWithoutBorrowerMembershipInput
   ledgerAccounts?: Prisma.LedgerAccountUncheckedCreateNestedManyWithoutMembershipInput
+  auditEventsActed?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutOrganizationInput = {
@@ -736,6 +768,7 @@ export type OrganizationMembershipCreateWithoutLendingOffersInput = {
   loansAsLender?: Prisma.LoanCreateNestedManyWithoutLenderMembershipInput
   loansAsBorrower?: Prisma.LoanCreateNestedManyWithoutBorrowerMembershipInput
   ledgerAccounts?: Prisma.LedgerAccountCreateNestedManyWithoutMembershipInput
+  auditEventsActed?: Prisma.AuditEventCreateNestedManyWithoutActorMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutLendingOffersInput = {
@@ -751,6 +784,7 @@ export type OrganizationMembershipUncheckedCreateWithoutLendingOffersInput = {
   loansAsLender?: Prisma.LoanUncheckedCreateNestedManyWithoutLenderMembershipInput
   loansAsBorrower?: Prisma.LoanUncheckedCreateNestedManyWithoutBorrowerMembershipInput
   ledgerAccounts?: Prisma.LedgerAccountUncheckedCreateNestedManyWithoutMembershipInput
+  auditEventsActed?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutLendingOffersInput = {
@@ -782,6 +816,7 @@ export type OrganizationMembershipUpdateWithoutLendingOffersInput = {
   loansAsLender?: Prisma.LoanUpdateManyWithoutLenderMembershipNestedInput
   loansAsBorrower?: Prisma.LoanUpdateManyWithoutBorrowerMembershipNestedInput
   ledgerAccounts?: Prisma.LedgerAccountUpdateManyWithoutMembershipNestedInput
+  auditEventsActed?: Prisma.AuditEventUpdateManyWithoutActorMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutLendingOffersInput = {
@@ -797,6 +832,7 @@ export type OrganizationMembershipUncheckedUpdateWithoutLendingOffersInput = {
   loansAsLender?: Prisma.LoanUncheckedUpdateManyWithoutLenderMembershipNestedInput
   loansAsBorrower?: Prisma.LoanUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
   ledgerAccounts?: Prisma.LedgerAccountUncheckedUpdateManyWithoutMembershipNestedInput
+  auditEventsActed?: Prisma.AuditEventUncheckedUpdateManyWithoutActorMembershipNestedInput
 }
 
 export type OrganizationMembershipCreateWithoutBalanceInput = {
@@ -812,6 +848,7 @@ export type OrganizationMembershipCreateWithoutBalanceInput = {
   loansAsLender?: Prisma.LoanCreateNestedManyWithoutLenderMembershipInput
   loansAsBorrower?: Prisma.LoanCreateNestedManyWithoutBorrowerMembershipInput
   ledgerAccounts?: Prisma.LedgerAccountCreateNestedManyWithoutMembershipInput
+  auditEventsActed?: Prisma.AuditEventCreateNestedManyWithoutActorMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutBalanceInput = {
@@ -827,6 +864,7 @@ export type OrganizationMembershipUncheckedCreateWithoutBalanceInput = {
   loansAsLender?: Prisma.LoanUncheckedCreateNestedManyWithoutLenderMembershipInput
   loansAsBorrower?: Prisma.LoanUncheckedCreateNestedManyWithoutBorrowerMembershipInput
   ledgerAccounts?: Prisma.LedgerAccountUncheckedCreateNestedManyWithoutMembershipInput
+  auditEventsActed?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutBalanceInput = {
@@ -858,6 +896,7 @@ export type OrganizationMembershipUpdateWithoutBalanceInput = {
   loansAsLender?: Prisma.LoanUpdateManyWithoutLenderMembershipNestedInput
   loansAsBorrower?: Prisma.LoanUpdateManyWithoutBorrowerMembershipNestedInput
   ledgerAccounts?: Prisma.LedgerAccountUpdateManyWithoutMembershipNestedInput
+  auditEventsActed?: Prisma.AuditEventUpdateManyWithoutActorMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutBalanceInput = {
@@ -873,6 +912,7 @@ export type OrganizationMembershipUncheckedUpdateWithoutBalanceInput = {
   loansAsLender?: Prisma.LoanUncheckedUpdateManyWithoutLenderMembershipNestedInput
   loansAsBorrower?: Prisma.LoanUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
   ledgerAccounts?: Prisma.LedgerAccountUncheckedUpdateManyWithoutMembershipNestedInput
+  auditEventsActed?: Prisma.AuditEventUncheckedUpdateManyWithoutActorMembershipNestedInput
 }
 
 export type OrganizationMembershipCreateWithoutLoansAsLenderInput = {
@@ -888,6 +928,7 @@ export type OrganizationMembershipCreateWithoutLoansAsLenderInput = {
   balance?: Prisma.EmployeeBalanceCreateNestedOneWithoutMembershipInput
   loansAsBorrower?: Prisma.LoanCreateNestedManyWithoutBorrowerMembershipInput
   ledgerAccounts?: Prisma.LedgerAccountCreateNestedManyWithoutMembershipInput
+  auditEventsActed?: Prisma.AuditEventCreateNestedManyWithoutActorMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutLoansAsLenderInput = {
@@ -903,6 +944,7 @@ export type OrganizationMembershipUncheckedCreateWithoutLoansAsLenderInput = {
   balance?: Prisma.EmployeeBalanceUncheckedCreateNestedOneWithoutMembershipInput
   loansAsBorrower?: Prisma.LoanUncheckedCreateNestedManyWithoutBorrowerMembershipInput
   ledgerAccounts?: Prisma.LedgerAccountUncheckedCreateNestedManyWithoutMembershipInput
+  auditEventsActed?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutLoansAsLenderInput = {
@@ -923,6 +965,7 @@ export type OrganizationMembershipCreateWithoutLoansAsBorrowerInput = {
   balance?: Prisma.EmployeeBalanceCreateNestedOneWithoutMembershipInput
   loansAsLender?: Prisma.LoanCreateNestedManyWithoutLenderMembershipInput
   ledgerAccounts?: Prisma.LedgerAccountCreateNestedManyWithoutMembershipInput
+  auditEventsActed?: Prisma.AuditEventCreateNestedManyWithoutActorMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutLoansAsBorrowerInput = {
@@ -938,6 +981,7 @@ export type OrganizationMembershipUncheckedCreateWithoutLoansAsBorrowerInput = {
   balance?: Prisma.EmployeeBalanceUncheckedCreateNestedOneWithoutMembershipInput
   loansAsLender?: Prisma.LoanUncheckedCreateNestedManyWithoutLenderMembershipInput
   ledgerAccounts?: Prisma.LedgerAccountUncheckedCreateNestedManyWithoutMembershipInput
+  auditEventsActed?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutLoansAsBorrowerInput = {
@@ -969,6 +1013,7 @@ export type OrganizationMembershipUpdateWithoutLoansAsLenderInput = {
   balance?: Prisma.EmployeeBalanceUpdateOneWithoutMembershipNestedInput
   loansAsBorrower?: Prisma.LoanUpdateManyWithoutBorrowerMembershipNestedInput
   ledgerAccounts?: Prisma.LedgerAccountUpdateManyWithoutMembershipNestedInput
+  auditEventsActed?: Prisma.AuditEventUpdateManyWithoutActorMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutLoansAsLenderInput = {
@@ -984,6 +1029,7 @@ export type OrganizationMembershipUncheckedUpdateWithoutLoansAsLenderInput = {
   balance?: Prisma.EmployeeBalanceUncheckedUpdateOneWithoutMembershipNestedInput
   loansAsBorrower?: Prisma.LoanUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
   ledgerAccounts?: Prisma.LedgerAccountUncheckedUpdateManyWithoutMembershipNestedInput
+  auditEventsActed?: Prisma.AuditEventUncheckedUpdateManyWithoutActorMembershipNestedInput
 }
 
 export type OrganizationMembershipUpsertWithoutLoansAsBorrowerInput = {
@@ -1010,6 +1056,7 @@ export type OrganizationMembershipUpdateWithoutLoansAsBorrowerInput = {
   balance?: Prisma.EmployeeBalanceUpdateOneWithoutMembershipNestedInput
   loansAsLender?: Prisma.LoanUpdateManyWithoutLenderMembershipNestedInput
   ledgerAccounts?: Prisma.LedgerAccountUpdateManyWithoutMembershipNestedInput
+  auditEventsActed?: Prisma.AuditEventUpdateManyWithoutActorMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutLoansAsBorrowerInput = {
@@ -1025,6 +1072,7 @@ export type OrganizationMembershipUncheckedUpdateWithoutLoansAsBorrowerInput = {
   balance?: Prisma.EmployeeBalanceUncheckedUpdateOneWithoutMembershipNestedInput
   loansAsLender?: Prisma.LoanUncheckedUpdateManyWithoutLenderMembershipNestedInput
   ledgerAccounts?: Prisma.LedgerAccountUncheckedUpdateManyWithoutMembershipNestedInput
+  auditEventsActed?: Prisma.AuditEventUncheckedUpdateManyWithoutActorMembershipNestedInput
 }
 
 export type OrganizationMembershipCreateWithoutLedgerAccountsInput = {
@@ -1040,6 +1088,7 @@ export type OrganizationMembershipCreateWithoutLedgerAccountsInput = {
   balance?: Prisma.EmployeeBalanceCreateNestedOneWithoutMembershipInput
   loansAsLender?: Prisma.LoanCreateNestedManyWithoutLenderMembershipInput
   loansAsBorrower?: Prisma.LoanCreateNestedManyWithoutBorrowerMembershipInput
+  auditEventsActed?: Prisma.AuditEventCreateNestedManyWithoutActorMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutLedgerAccountsInput = {
@@ -1055,6 +1104,7 @@ export type OrganizationMembershipUncheckedCreateWithoutLedgerAccountsInput = {
   balance?: Prisma.EmployeeBalanceUncheckedCreateNestedOneWithoutMembershipInput
   loansAsLender?: Prisma.LoanUncheckedCreateNestedManyWithoutLenderMembershipInput
   loansAsBorrower?: Prisma.LoanUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  auditEventsActed?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutLedgerAccountsInput = {
@@ -1086,6 +1136,7 @@ export type OrganizationMembershipUpdateWithoutLedgerAccountsInput = {
   balance?: Prisma.EmployeeBalanceUpdateOneWithoutMembershipNestedInput
   loansAsLender?: Prisma.LoanUpdateManyWithoutLenderMembershipNestedInput
   loansAsBorrower?: Prisma.LoanUpdateManyWithoutBorrowerMembershipNestedInput
+  auditEventsActed?: Prisma.AuditEventUpdateManyWithoutActorMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutLedgerAccountsInput = {
@@ -1101,6 +1152,87 @@ export type OrganizationMembershipUncheckedUpdateWithoutLedgerAccountsInput = {
   balance?: Prisma.EmployeeBalanceUncheckedUpdateOneWithoutMembershipNestedInput
   loansAsLender?: Prisma.LoanUncheckedUpdateManyWithoutLenderMembershipNestedInput
   loansAsBorrower?: Prisma.LoanUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  auditEventsActed?: Prisma.AuditEventUncheckedUpdateManyWithoutActorMembershipNestedInput
+}
+
+export type OrganizationMembershipCreateWithoutAuditEventsActedInput = {
+  id?: string
+  role: $Enums.MembershipRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutMembershipsInput
+  user: Prisma.UserCreateNestedOneWithoutMembershipsInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutMembershipInput
+  lendingOffers?: Prisma.LendingOfferCreateNestedManyWithoutLenderMembershipInput
+  balance?: Prisma.EmployeeBalanceCreateNestedOneWithoutMembershipInput
+  loansAsLender?: Prisma.LoanCreateNestedManyWithoutLenderMembershipInput
+  loansAsBorrower?: Prisma.LoanCreateNestedManyWithoutBorrowerMembershipInput
+  ledgerAccounts?: Prisma.LedgerAccountCreateNestedManyWithoutMembershipInput
+}
+
+export type OrganizationMembershipUncheckedCreateWithoutAuditEventsActedInput = {
+  id?: string
+  organizationId: string
+  userId: string
+  role: $Enums.MembershipRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMembershipInput
+  lendingOffers?: Prisma.LendingOfferUncheckedCreateNestedManyWithoutLenderMembershipInput
+  balance?: Prisma.EmployeeBalanceUncheckedCreateNestedOneWithoutMembershipInput
+  loansAsLender?: Prisma.LoanUncheckedCreateNestedManyWithoutLenderMembershipInput
+  loansAsBorrower?: Prisma.LoanUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  ledgerAccounts?: Prisma.LedgerAccountUncheckedCreateNestedManyWithoutMembershipInput
+}
+
+export type OrganizationMembershipCreateOrConnectWithoutAuditEventsActedInput = {
+  where: Prisma.OrganizationMembershipWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationMembershipCreateWithoutAuditEventsActedInput, Prisma.OrganizationMembershipUncheckedCreateWithoutAuditEventsActedInput>
+}
+
+export type OrganizationMembershipUpsertWithoutAuditEventsActedInput = {
+  update: Prisma.XOR<Prisma.OrganizationMembershipUpdateWithoutAuditEventsActedInput, Prisma.OrganizationMembershipUncheckedUpdateWithoutAuditEventsActedInput>
+  create: Prisma.XOR<Prisma.OrganizationMembershipCreateWithoutAuditEventsActedInput, Prisma.OrganizationMembershipUncheckedCreateWithoutAuditEventsActedInput>
+  where?: Prisma.OrganizationMembershipWhereInput
+}
+
+export type OrganizationMembershipUpdateToOneWithWhereWithoutAuditEventsActedInput = {
+  where?: Prisma.OrganizationMembershipWhereInput
+  data: Prisma.XOR<Prisma.OrganizationMembershipUpdateWithoutAuditEventsActedInput, Prisma.OrganizationMembershipUncheckedUpdateWithoutAuditEventsActedInput>
+}
+
+export type OrganizationMembershipUpdateWithoutAuditEventsActedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutMembershipsNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutMembershipNestedInput
+  lendingOffers?: Prisma.LendingOfferUpdateManyWithoutLenderMembershipNestedInput
+  balance?: Prisma.EmployeeBalanceUpdateOneWithoutMembershipNestedInput
+  loansAsLender?: Prisma.LoanUpdateManyWithoutLenderMembershipNestedInput
+  loansAsBorrower?: Prisma.LoanUpdateManyWithoutBorrowerMembershipNestedInput
+  ledgerAccounts?: Prisma.LedgerAccountUpdateManyWithoutMembershipNestedInput
+}
+
+export type OrganizationMembershipUncheckedUpdateWithoutAuditEventsActedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutMembershipNestedInput
+  lendingOffers?: Prisma.LendingOfferUncheckedUpdateManyWithoutLenderMembershipNestedInput
+  balance?: Prisma.EmployeeBalanceUncheckedUpdateOneWithoutMembershipNestedInput
+  loansAsLender?: Prisma.LoanUncheckedUpdateManyWithoutLenderMembershipNestedInput
+  loansAsBorrower?: Prisma.LoanUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  ledgerAccounts?: Prisma.LedgerAccountUncheckedUpdateManyWithoutMembershipNestedInput
 }
 
 export type OrganizationMembershipCreateWithoutSessionsInput = {
@@ -1116,6 +1248,7 @@ export type OrganizationMembershipCreateWithoutSessionsInput = {
   loansAsLender?: Prisma.LoanCreateNestedManyWithoutLenderMembershipInput
   loansAsBorrower?: Prisma.LoanCreateNestedManyWithoutBorrowerMembershipInput
   ledgerAccounts?: Prisma.LedgerAccountCreateNestedManyWithoutMembershipInput
+  auditEventsActed?: Prisma.AuditEventCreateNestedManyWithoutActorMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutSessionsInput = {
@@ -1131,6 +1264,7 @@ export type OrganizationMembershipUncheckedCreateWithoutSessionsInput = {
   loansAsLender?: Prisma.LoanUncheckedCreateNestedManyWithoutLenderMembershipInput
   loansAsBorrower?: Prisma.LoanUncheckedCreateNestedManyWithoutBorrowerMembershipInput
   ledgerAccounts?: Prisma.LedgerAccountUncheckedCreateNestedManyWithoutMembershipInput
+  auditEventsActed?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutSessionsInput = {
@@ -1162,6 +1296,7 @@ export type OrganizationMembershipUpdateWithoutSessionsInput = {
   loansAsLender?: Prisma.LoanUpdateManyWithoutLenderMembershipNestedInput
   loansAsBorrower?: Prisma.LoanUpdateManyWithoutBorrowerMembershipNestedInput
   ledgerAccounts?: Prisma.LedgerAccountUpdateManyWithoutMembershipNestedInput
+  auditEventsActed?: Prisma.AuditEventUpdateManyWithoutActorMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutSessionsInput = {
@@ -1177,6 +1312,7 @@ export type OrganizationMembershipUncheckedUpdateWithoutSessionsInput = {
   loansAsLender?: Prisma.LoanUncheckedUpdateManyWithoutLenderMembershipNestedInput
   loansAsBorrower?: Prisma.LoanUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
   ledgerAccounts?: Prisma.LedgerAccountUncheckedUpdateManyWithoutMembershipNestedInput
+  auditEventsActed?: Prisma.AuditEventUncheckedUpdateManyWithoutActorMembershipNestedInput
 }
 
 export type OrganizationMembershipCreateManyUserInput = {
@@ -1201,6 +1337,7 @@ export type OrganizationMembershipUpdateWithoutUserInput = {
   loansAsLender?: Prisma.LoanUpdateManyWithoutLenderMembershipNestedInput
   loansAsBorrower?: Prisma.LoanUpdateManyWithoutBorrowerMembershipNestedInput
   ledgerAccounts?: Prisma.LedgerAccountUpdateManyWithoutMembershipNestedInput
+  auditEventsActed?: Prisma.AuditEventUpdateManyWithoutActorMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutUserInput = {
@@ -1216,6 +1353,7 @@ export type OrganizationMembershipUncheckedUpdateWithoutUserInput = {
   loansAsLender?: Prisma.LoanUncheckedUpdateManyWithoutLenderMembershipNestedInput
   loansAsBorrower?: Prisma.LoanUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
   ledgerAccounts?: Prisma.LedgerAccountUncheckedUpdateManyWithoutMembershipNestedInput
+  auditEventsActed?: Prisma.AuditEventUncheckedUpdateManyWithoutActorMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateManyWithoutUserInput = {
@@ -1249,6 +1387,7 @@ export type OrganizationMembershipUpdateWithoutOrganizationInput = {
   loansAsLender?: Prisma.LoanUpdateManyWithoutLenderMembershipNestedInput
   loansAsBorrower?: Prisma.LoanUpdateManyWithoutBorrowerMembershipNestedInput
   ledgerAccounts?: Prisma.LedgerAccountUpdateManyWithoutMembershipNestedInput
+  auditEventsActed?: Prisma.AuditEventUpdateManyWithoutActorMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutOrganizationInput = {
@@ -1264,6 +1403,7 @@ export type OrganizationMembershipUncheckedUpdateWithoutOrganizationInput = {
   loansAsLender?: Prisma.LoanUncheckedUpdateManyWithoutLenderMembershipNestedInput
   loansAsBorrower?: Prisma.LoanUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
   ledgerAccounts?: Prisma.LedgerAccountUncheckedUpdateManyWithoutMembershipNestedInput
+  auditEventsActed?: Prisma.AuditEventUncheckedUpdateManyWithoutActorMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateManyWithoutOrganizationInput = {
@@ -1286,6 +1426,7 @@ export type OrganizationMembershipCountOutputType = {
   loansAsLender: number
   loansAsBorrower: number
   ledgerAccounts: number
+  auditEventsActed: number
 }
 
 export type OrganizationMembershipCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1294,6 +1435,7 @@ export type OrganizationMembershipCountOutputTypeSelect<ExtArgs extends runtime.
   loansAsLender?: boolean | OrganizationMembershipCountOutputTypeCountLoansAsLenderArgs
   loansAsBorrower?: boolean | OrganizationMembershipCountOutputTypeCountLoansAsBorrowerArgs
   ledgerAccounts?: boolean | OrganizationMembershipCountOutputTypeCountLedgerAccountsArgs
+  auditEventsActed?: boolean | OrganizationMembershipCountOutputTypeCountAuditEventsActedArgs
 }
 
 /**
@@ -1341,6 +1483,13 @@ export type OrganizationMembershipCountOutputTypeCountLedgerAccountsArgs<ExtArgs
   where?: Prisma.LedgerAccountWhereInput
 }
 
+/**
+ * OrganizationMembershipCountOutputType without action
+ */
+export type OrganizationMembershipCountOutputTypeCountAuditEventsActedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AuditEventWhereInput
+}
+
 
 export type OrganizationMembershipSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1358,6 +1507,7 @@ export type OrganizationMembershipSelect<ExtArgs extends runtime.Types.Extension
   loansAsLender?: boolean | Prisma.OrganizationMembership$loansAsLenderArgs<ExtArgs>
   loansAsBorrower?: boolean | Prisma.OrganizationMembership$loansAsBorrowerArgs<ExtArgs>
   ledgerAccounts?: boolean | Prisma.OrganizationMembership$ledgerAccountsArgs<ExtArgs>
+  auditEventsActed?: boolean | Prisma.OrganizationMembership$auditEventsActedArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationMembershipCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["organizationMembership"]>
 
@@ -1405,6 +1555,7 @@ export type OrganizationMembershipInclude<ExtArgs extends runtime.Types.Extensio
   loansAsLender?: boolean | Prisma.OrganizationMembership$loansAsLenderArgs<ExtArgs>
   loansAsBorrower?: boolean | Prisma.OrganizationMembership$loansAsBorrowerArgs<ExtArgs>
   ledgerAccounts?: boolean | Prisma.OrganizationMembership$ledgerAccountsArgs<ExtArgs>
+  auditEventsActed?: boolean | Prisma.OrganizationMembership$auditEventsActedArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationMembershipCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type OrganizationMembershipIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1427,6 +1578,7 @@ export type $OrganizationMembershipPayload<ExtArgs extends runtime.Types.Extensi
     loansAsLender: Prisma.$LoanPayload<ExtArgs>[]
     loansAsBorrower: Prisma.$LoanPayload<ExtArgs>[]
     ledgerAccounts: Prisma.$LedgerAccountPayload<ExtArgs>[]
+    auditEventsActed: Prisma.$AuditEventPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1838,6 +1990,7 @@ export interface Prisma__OrganizationMembershipClient<T, Null = never, ExtArgs e
   loansAsLender<T extends Prisma.OrganizationMembership$loansAsLenderArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationMembership$loansAsLenderArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LoanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   loansAsBorrower<T extends Prisma.OrganizationMembership$loansAsBorrowerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationMembership$loansAsBorrowerArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LoanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   ledgerAccounts<T extends Prisma.OrganizationMembership$ledgerAccountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationMembership$ledgerAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LedgerAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  auditEventsActed<T extends Prisma.OrganizationMembership$auditEventsActedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationMembership$auditEventsActedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2411,6 +2564,30 @@ export type OrganizationMembership$ledgerAccountsArgs<ExtArgs extends runtime.Ty
   take?: number
   skip?: number
   distinct?: Prisma.LedgerAccountScalarFieldEnum | Prisma.LedgerAccountScalarFieldEnum[]
+}
+
+/**
+ * OrganizationMembership.auditEventsActed
+ */
+export type OrganizationMembership$auditEventsActedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AuditEvent
+   */
+  select?: Prisma.AuditEventSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AuditEvent
+   */
+  omit?: Prisma.AuditEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuditEventInclude<ExtArgs> | null
+  where?: Prisma.AuditEventWhereInput
+  orderBy?: Prisma.AuditEventOrderByWithRelationInput | Prisma.AuditEventOrderByWithRelationInput[]
+  cursor?: Prisma.AuditEventWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AuditEventScalarFieldEnum | Prisma.AuditEventScalarFieldEnum[]
 }
 
 /**

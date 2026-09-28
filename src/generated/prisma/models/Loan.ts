@@ -56,6 +56,10 @@ export type LoanMinAggregateOutputType = {
   durationDays: number | null
   feeRateBasisPoints: number | null
   status: $Enums.LoanStatus | null
+  requestedAt: Date | null
+  approvedAt: Date | null
+  activatedAt: Date | null
+  closedAt: Date | null
   startedAt: Date | null
   repaymentDueAt: Date | null
   createdAt: Date | null
@@ -76,6 +80,10 @@ export type LoanMaxAggregateOutputType = {
   durationDays: number | null
   feeRateBasisPoints: number | null
   status: $Enums.LoanStatus | null
+  requestedAt: Date | null
+  approvedAt: Date | null
+  activatedAt: Date | null
+  closedAt: Date | null
   startedAt: Date | null
   repaymentDueAt: Date | null
   createdAt: Date | null
@@ -96,6 +104,10 @@ export type LoanCountAggregateOutputType = {
   durationDays: number
   feeRateBasisPoints: number
   status: number
+  requestedAt: number
+  approvedAt: number
+  activatedAt: number
+  closedAt: number
   startedAt: number
   repaymentDueAt: number
   createdAt: number
@@ -134,6 +146,10 @@ export type LoanMinAggregateInputType = {
   durationDays?: true
   feeRateBasisPoints?: true
   status?: true
+  requestedAt?: true
+  approvedAt?: true
+  activatedAt?: true
+  closedAt?: true
   startedAt?: true
   repaymentDueAt?: true
   createdAt?: true
@@ -154,6 +170,10 @@ export type LoanMaxAggregateInputType = {
   durationDays?: true
   feeRateBasisPoints?: true
   status?: true
+  requestedAt?: true
+  approvedAt?: true
+  activatedAt?: true
+  closedAt?: true
   startedAt?: true
   repaymentDueAt?: true
   createdAt?: true
@@ -174,6 +194,10 @@ export type LoanCountAggregateInputType = {
   durationDays?: true
   feeRateBasisPoints?: true
   status?: true
+  requestedAt?: true
+  approvedAt?: true
+  activatedAt?: true
+  closedAt?: true
   startedAt?: true
   repaymentDueAt?: true
   createdAt?: true
@@ -281,6 +305,10 @@ export type LoanGroupByOutputType = {
   durationDays: number
   feeRateBasisPoints: number
   status: $Enums.LoanStatus
+  requestedAt: Date
+  approvedAt: Date | null
+  activatedAt: Date | null
+  closedAt: Date | null
   startedAt: Date
   repaymentDueAt: Date
   createdAt: Date
@@ -324,6 +352,10 @@ export type LoanWhereInput = {
   durationDays?: Prisma.IntFilter<"Loan"> | number
   feeRateBasisPoints?: Prisma.IntFilter<"Loan"> | number
   status?: Prisma.EnumLoanStatusFilter<"Loan"> | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFilter<"Loan"> | Date | string
+  approvedAt?: Prisma.DateTimeNullableFilter<"Loan"> | Date | string | null
+  activatedAt?: Prisma.DateTimeNullableFilter<"Loan"> | Date | string | null
+  closedAt?: Prisma.DateTimeNullableFilter<"Loan"> | Date | string | null
   startedAt?: Prisma.DateTimeFilter<"Loan"> | Date | string
   repaymentDueAt?: Prisma.DateTimeFilter<"Loan"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"Loan"> | Date | string
@@ -351,6 +383,10 @@ export type LoanOrderByWithRelationInput = {
   durationDays?: Prisma.SortOrder
   feeRateBasisPoints?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  requestedAt?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  activatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  closedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   repaymentDueAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -382,6 +418,10 @@ export type LoanWhereUniqueInput = Prisma.AtLeast<{
   durationDays?: Prisma.IntFilter<"Loan"> | number
   feeRateBasisPoints?: Prisma.IntFilter<"Loan"> | number
   status?: Prisma.EnumLoanStatusFilter<"Loan"> | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFilter<"Loan"> | Date | string
+  approvedAt?: Prisma.DateTimeNullableFilter<"Loan"> | Date | string | null
+  activatedAt?: Prisma.DateTimeNullableFilter<"Loan"> | Date | string | null
+  closedAt?: Prisma.DateTimeNullableFilter<"Loan"> | Date | string | null
   startedAt?: Prisma.DateTimeFilter<"Loan"> | Date | string
   repaymentDueAt?: Prisma.DateTimeFilter<"Loan"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"Loan"> | Date | string
@@ -409,6 +449,10 @@ export type LoanOrderByWithAggregationInput = {
   durationDays?: Prisma.SortOrder
   feeRateBasisPoints?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  requestedAt?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  activatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  closedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   repaymentDueAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -437,6 +481,10 @@ export type LoanScalarWhereWithAggregatesInput = {
   durationDays?: Prisma.IntWithAggregatesFilter<"Loan"> | number
   feeRateBasisPoints?: Prisma.IntWithAggregatesFilter<"Loan"> | number
   status?: Prisma.EnumLoanStatusWithAggregatesFilter<"Loan"> | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeWithAggregatesFilter<"Loan"> | Date | string
+  approvedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Loan"> | Date | string | null
+  activatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Loan"> | Date | string | null
+  closedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Loan"> | Date | string | null
   startedAt?: Prisma.DateTimeWithAggregatesFilter<"Loan"> | Date | string
   repaymentDueAt?: Prisma.DateTimeWithAggregatesFilter<"Loan"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Loan"> | Date | string
@@ -453,6 +501,10 @@ export type LoanCreateInput = {
   durationDays: number
   feeRateBasisPoints: number
   status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
   startedAt?: Date | string
   repaymentDueAt: Date | string
   createdAt?: Date | string
@@ -480,6 +532,10 @@ export type LoanUncheckedCreateInput = {
   durationDays: number
   feeRateBasisPoints: number
   status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
   startedAt?: Date | string
   repaymentDueAt: Date | string
   createdAt?: Date | string
@@ -499,6 +555,10 @@ export type LoanUpdateInput = {
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -526,6 +586,10 @@ export type LoanUncheckedUpdateInput = {
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -549,6 +613,10 @@ export type LoanCreateManyInput = {
   durationDays: number
   feeRateBasisPoints: number
   status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
   startedAt?: Date | string
   repaymentDueAt: Date | string
   createdAt?: Date | string
@@ -565,6 +633,10 @@ export type LoanUpdateManyMutationInput = {
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -585,6 +657,10 @@ export type LoanUncheckedUpdateManyInput = {
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -620,6 +696,10 @@ export type LoanCountOrderByAggregateInput = {
   durationDays?: Prisma.SortOrder
   feeRateBasisPoints?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  requestedAt?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrder
+  activatedAt?: Prisma.SortOrder
+  closedAt?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   repaymentDueAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -648,6 +728,10 @@ export type LoanMaxOrderByAggregateInput = {
   durationDays?: Prisma.SortOrder
   feeRateBasisPoints?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  requestedAt?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrder
+  activatedAt?: Prisma.SortOrder
+  closedAt?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   repaymentDueAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -668,6 +752,10 @@ export type LoanMinOrderByAggregateInput = {
   durationDays?: Prisma.SortOrder
   feeRateBasisPoints?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  requestedAt?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrder
+  activatedAt?: Prisma.SortOrder
+  closedAt?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   repaymentDueAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -863,6 +951,10 @@ export type EnumLoanStatusFieldUpdateOperationsInput = {
   set?: $Enums.LoanStatus
 }
 
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
 export type LoanCreateNestedOneWithoutLedgerTransactionsInput = {
   create?: Prisma.XOR<Prisma.LoanCreateWithoutLedgerTransactionsInput, Prisma.LoanUncheckedCreateWithoutLedgerTransactionsInput>
   connectOrCreate?: Prisma.LoanCreateOrConnectWithoutLedgerTransactionsInput
@@ -915,6 +1007,10 @@ export type LoanCreateWithoutOrganizationInput = {
   durationDays: number
   feeRateBasisPoints: number
   status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
   startedAt?: Date | string
   repaymentDueAt: Date | string
   createdAt?: Date | string
@@ -940,6 +1036,10 @@ export type LoanUncheckedCreateWithoutOrganizationInput = {
   durationDays: number
   feeRateBasisPoints: number
   status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
   startedAt?: Date | string
   repaymentDueAt: Date | string
   createdAt?: Date | string
@@ -992,6 +1092,10 @@ export type LoanScalarWhereInput = {
   durationDays?: Prisma.IntFilter<"Loan"> | number
   feeRateBasisPoints?: Prisma.IntFilter<"Loan"> | number
   status?: Prisma.EnumLoanStatusFilter<"Loan"> | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFilter<"Loan"> | Date | string
+  approvedAt?: Prisma.DateTimeNullableFilter<"Loan"> | Date | string | null
+  activatedAt?: Prisma.DateTimeNullableFilter<"Loan"> | Date | string | null
+  closedAt?: Prisma.DateTimeNullableFilter<"Loan"> | Date | string | null
   startedAt?: Prisma.DateTimeFilter<"Loan"> | Date | string
   repaymentDueAt?: Prisma.DateTimeFilter<"Loan"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"Loan"> | Date | string
@@ -1008,6 +1112,10 @@ export type LoanCreateWithoutLenderMembershipInput = {
   durationDays: number
   feeRateBasisPoints: number
   status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
   startedAt?: Date | string
   repaymentDueAt: Date | string
   createdAt?: Date | string
@@ -1032,6 +1140,10 @@ export type LoanUncheckedCreateWithoutLenderMembershipInput = {
   durationDays: number
   feeRateBasisPoints: number
   status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
   startedAt?: Date | string
   repaymentDueAt: Date | string
   createdAt?: Date | string
@@ -1061,6 +1173,10 @@ export type LoanCreateWithoutBorrowerMembershipInput = {
   durationDays: number
   feeRateBasisPoints: number
   status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
   startedAt?: Date | string
   repaymentDueAt: Date | string
   createdAt?: Date | string
@@ -1085,6 +1201,10 @@ export type LoanUncheckedCreateWithoutBorrowerMembershipInput = {
   durationDays: number
   feeRateBasisPoints: number
   status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
   startedAt?: Date | string
   repaymentDueAt: Date | string
   createdAt?: Date | string
@@ -1146,6 +1266,10 @@ export type LoanCreateWithoutLendingOfferInput = {
   durationDays: number
   feeRateBasisPoints: number
   status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
   startedAt?: Date | string
   repaymentDueAt: Date | string
   createdAt?: Date | string
@@ -1170,6 +1294,10 @@ export type LoanUncheckedCreateWithoutLendingOfferInput = {
   durationDays: number
   feeRateBasisPoints: number
   status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
   startedAt?: Date | string
   repaymentDueAt: Date | string
   createdAt?: Date | string
@@ -1215,6 +1343,10 @@ export type LoanCreateWithoutLedgerTransactionsInput = {
   durationDays: number
   feeRateBasisPoints: number
   status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
   startedAt?: Date | string
   repaymentDueAt: Date | string
   createdAt?: Date | string
@@ -1241,6 +1373,10 @@ export type LoanUncheckedCreateWithoutLedgerTransactionsInput = {
   durationDays: number
   feeRateBasisPoints: number
   status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
   startedAt?: Date | string
   repaymentDueAt: Date | string
   createdAt?: Date | string
@@ -1275,6 +1411,10 @@ export type LoanUpdateWithoutLedgerTransactionsInput = {
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1301,6 +1441,10 @@ export type LoanUncheckedUpdateWithoutLedgerTransactionsInput = {
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1319,6 +1463,10 @@ export type LoanCreateWithoutRepaymentsInput = {
   durationDays: number
   feeRateBasisPoints: number
   status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
   startedAt?: Date | string
   repaymentDueAt: Date | string
   createdAt?: Date | string
@@ -1345,6 +1493,10 @@ export type LoanUncheckedCreateWithoutRepaymentsInput = {
   durationDays: number
   feeRateBasisPoints: number
   status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
   startedAt?: Date | string
   repaymentDueAt: Date | string
   createdAt?: Date | string
@@ -1379,6 +1531,10 @@ export type LoanUpdateWithoutRepaymentsInput = {
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1405,6 +1561,10 @@ export type LoanUncheckedUpdateWithoutRepaymentsInput = {
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1423,6 +1583,10 @@ export type LoanCreateWithoutAuditEventsInput = {
   durationDays: number
   feeRateBasisPoints: number
   status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
   startedAt?: Date | string
   repaymentDueAt: Date | string
   createdAt?: Date | string
@@ -1449,6 +1613,10 @@ export type LoanUncheckedCreateWithoutAuditEventsInput = {
   durationDays: number
   feeRateBasisPoints: number
   status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
   startedAt?: Date | string
   repaymentDueAt: Date | string
   createdAt?: Date | string
@@ -1483,6 +1651,10 @@ export type LoanUpdateWithoutAuditEventsInput = {
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1509,6 +1681,10 @@ export type LoanUncheckedUpdateWithoutAuditEventsInput = {
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1530,6 +1706,10 @@ export type LoanCreateManyOrganizationInput = {
   durationDays: number
   feeRateBasisPoints: number
   status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
   startedAt?: Date | string
   repaymentDueAt: Date | string
   createdAt?: Date | string
@@ -1546,6 +1726,10 @@ export type LoanUpdateWithoutOrganizationInput = {
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1571,6 +1755,10 @@ export type LoanUncheckedUpdateWithoutOrganizationInput = {
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1593,6 +1781,10 @@ export type LoanUncheckedUpdateManyWithoutOrganizationInput = {
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1611,6 +1803,10 @@ export type LoanCreateManyLenderMembershipInput = {
   durationDays: number
   feeRateBasisPoints: number
   status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
   startedAt?: Date | string
   repaymentDueAt: Date | string
   createdAt?: Date | string
@@ -1629,6 +1825,10 @@ export type LoanCreateManyBorrowerMembershipInput = {
   durationDays: number
   feeRateBasisPoints: number
   status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
   startedAt?: Date | string
   repaymentDueAt: Date | string
   createdAt?: Date | string
@@ -1645,6 +1845,10 @@ export type LoanUpdateWithoutLenderMembershipInput = {
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1669,6 +1873,10 @@ export type LoanUncheckedUpdateWithoutLenderMembershipInput = {
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1690,6 +1898,10 @@ export type LoanUncheckedUpdateManyWithoutLenderMembershipInput = {
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1706,6 +1918,10 @@ export type LoanUpdateWithoutBorrowerMembershipInput = {
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1730,6 +1946,10 @@ export type LoanUncheckedUpdateWithoutBorrowerMembershipInput = {
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1751,6 +1971,10 @@ export type LoanUncheckedUpdateManyWithoutBorrowerMembershipInput = {
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1769,6 +1993,10 @@ export type LoanCreateManyLendingOfferInput = {
   durationDays: number
   feeRateBasisPoints: number
   status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
   startedAt?: Date | string
   repaymentDueAt: Date | string
   createdAt?: Date | string
@@ -1785,6 +2013,10 @@ export type LoanUpdateWithoutLendingOfferInput = {
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1809,6 +2041,10 @@ export type LoanUncheckedUpdateWithoutLendingOfferInput = {
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1830,6 +2066,10 @@ export type LoanUncheckedUpdateManyWithoutLendingOfferInput = {
   durationDays?: Prisma.IntFieldUpdateOperationsInput | number
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1899,6 +2139,10 @@ export type LoanSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   durationDays?: boolean
   feeRateBasisPoints?: boolean
   status?: boolean
+  requestedAt?: boolean
+  approvedAt?: boolean
+  activatedAt?: boolean
+  closedAt?: boolean
   startedAt?: boolean
   repaymentDueAt?: boolean
   createdAt?: boolean
@@ -1927,6 +2171,10 @@ export type LoanSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   durationDays?: boolean
   feeRateBasisPoints?: boolean
   status?: boolean
+  requestedAt?: boolean
+  approvedAt?: boolean
+  activatedAt?: boolean
+  closedAt?: boolean
   startedAt?: boolean
   repaymentDueAt?: boolean
   createdAt?: boolean
@@ -1951,6 +2199,10 @@ export type LoanSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   durationDays?: boolean
   feeRateBasisPoints?: boolean
   status?: boolean
+  requestedAt?: boolean
+  approvedAt?: boolean
+  activatedAt?: boolean
+  closedAt?: boolean
   startedAt?: boolean
   repaymentDueAt?: boolean
   createdAt?: boolean
@@ -1975,13 +2227,17 @@ export type LoanSelectScalar = {
   durationDays?: boolean
   feeRateBasisPoints?: boolean
   status?: boolean
+  requestedAt?: boolean
+  approvedAt?: boolean
+  activatedAt?: boolean
+  closedAt?: boolean
   startedAt?: boolean
   repaymentDueAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type LoanOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "lenderMembershipId" | "borrowerMembershipId" | "lendingOfferId" | "borrowRequestId" | "principalAmountMinorUnits" | "feeAmountMinorUnits" | "outstandingPrincipalMinorUnits" | "currency" | "durationDays" | "feeRateBasisPoints" | "status" | "startedAt" | "repaymentDueAt" | "createdAt" | "updatedAt", ExtArgs["result"]["loan"]>
+export type LoanOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "lenderMembershipId" | "borrowerMembershipId" | "lendingOfferId" | "borrowRequestId" | "principalAmountMinorUnits" | "feeAmountMinorUnits" | "outstandingPrincipalMinorUnits" | "currency" | "durationDays" | "feeRateBasisPoints" | "status" | "requestedAt" | "approvedAt" | "activatedAt" | "closedAt" | "startedAt" | "repaymentDueAt" | "createdAt" | "updatedAt", ExtArgs["result"]["loan"]>
 export type LoanInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   lenderMembership?: boolean | Prisma.OrganizationMembershipDefaultArgs<ExtArgs>
@@ -2030,6 +2286,10 @@ export type $LoanPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     durationDays: number
     feeRateBasisPoints: number
     status: $Enums.LoanStatus
+    requestedAt: Date
+    approvedAt: Date | null
+    activatedAt: Date | null
+    closedAt: Date | null
     startedAt: Date
     repaymentDueAt: Date
     createdAt: Date
@@ -2477,6 +2737,10 @@ export interface LoanFieldRefs {
   readonly durationDays: Prisma.FieldRef<"Loan", 'Int'>
   readonly feeRateBasisPoints: Prisma.FieldRef<"Loan", 'Int'>
   readonly status: Prisma.FieldRef<"Loan", 'LoanStatus'>
+  readonly requestedAt: Prisma.FieldRef<"Loan", 'DateTime'>
+  readonly approvedAt: Prisma.FieldRef<"Loan", 'DateTime'>
+  readonly activatedAt: Prisma.FieldRef<"Loan", 'DateTime'>
+  readonly closedAt: Prisma.FieldRef<"Loan", 'DateTime'>
   readonly startedAt: Prisma.FieldRef<"Loan", 'DateTime'>
   readonly repaymentDueAt: Prisma.FieldRef<"Loan", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Loan", 'DateTime'>

@@ -19,6 +19,8 @@ enum LendingOfferStatus {
 }
 
 enum LoanStatus {
+  REQUESTED
+  APPROVED
   ACTIVE
   REPAID
   OVERDUE
@@ -27,11 +29,15 @@ enum LoanStatus {
 }
 
 enum AuditEventType {
+  LOAN_REQUESTED
+  LOAN_APPROVED
   LOAN_CREATED
   LOAN_ACTIVATED
   REPAYMENT_RECORDED
   LOAN_REPAID
   LOAN_OVERDUE
+  LOAN_DEFAULTED
+  LOAN_CANCELLED
 }
 
 enum LedgerAccountType {
@@ -77,21 +83,22 @@ model Organization {
 }
 
 model OrganizationMembership {
-  id              String           @id @default(uuid()) @db.Uuid
-  organizationId  String           @db.Uuid
-  userId          String           @db.Uuid
-  role            MembershipRole
-  isActive        Boolean          @default(true)
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  organization    Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  sessions        Session[]
-  lendingOffers   LendingOffer[]   @relation("MembershipLendingOffers")
-  balance         EmployeeBalance?
-  loansAsLender   Loan[]           @relation("LoansAsLender")
-  loansAsBorrower Loan[]           @relation("LoansAsBorrower")
-  ledgerAccounts  LedgerAccount[]
+  id               String           @id @default(uuid()) @db.Uuid
+  organizationId   String           @db.Uuid
+  userId           String           @db.Uuid
+  role             MembershipRole
+  isActive         Boolean          @default(true)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  organization     Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessions         Session[]
+  lendingOffers    LendingOffer[]   @relation("MembershipLendingOffers")
+  balance          EmployeeBalance?
+  loansAsLender    Loan[]           @relation("LoansAsLender")
+  loansAsBorrower  Loan[]           @relation("LoansAsBorrower")
+  ledgerAccounts   LedgerAccount[]
+  auditEventsActed AuditEvent[]     @relation("AuditEventActor")
 
   @@unique([organizationId, userId])
   @@unique([organizationId, id])
@@ -152,6 +159,10 @@ model Loan {
   durationDays                   Int
   feeRateBasisPoints             Int
   status                         LoanStatus
+  requestedAt                    DateTime               @default(now())
+  approvedAt                     DateTime?
+  activatedAt                    DateTime?
+  closedAt                       DateTime?
   startedAt                      DateTime               @default(now())
   repaymentDueAt                 DateTime
   createdAt                      DateTime               @default(now())
@@ -169,6 +180,8 @@ model Loan {
   @@index([organizationId, repaymentDueAt])
   @@index([organizationId, lenderMembershipId])
   @@index([organizationId, borrowerMembershipId])
+  @@index([organizationId, lenderMembershipId, status])
+  @@index([organizationId, borrowerMembershipId, status])
 }
 
 model LedgerAccount {
@@ -242,18 +255,21 @@ model LoanRepayment {
 }
 
 model AuditEvent {
-  id             String         @id @default(uuid()) @db.Uuid
-  organizationId String         @db.Uuid
-  loanId         String         @db.Uuid
-  type           AuditEventType
-  title          String
-  actorLabel     String?
-  occurredAt     DateTime
-  createdAt      DateTime       @default(now())
-  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  loan           Loan           @relation(fields: [organizationId, loanId], references: [organizationId, id], onDelete: Restrict)
+  id                String                  @id @default(uuid()) @db.Uuid
+  organizationId    String                  @db.Uuid
+  loanId            String                  @db.Uuid
+  actorMembershipId String?                 @db.Uuid
+  type              AuditEventType
+  title             String
+  actorLabel        String?
+  occurredAt        DateTime
+  createdAt         DateTime                @default(now())
+  organization      Organization            @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  loan              Loan                    @relation(fields: [organizationId, loanId], references: [organizationId, id], onDelete: Restrict)
+  actorMembership   OrganizationMembership? @relation("AuditEventActor", fields: [organizationId, actorMembershipId], references: [organizationId, id], onDelete: Restrict)
 
   @@index([organizationId, loanId, occurredAt])
+  @@index([organizationId, actorMembershipId, occurredAt])
 }
 
 model Session {

@@ -1,4 +1,6 @@
 export const EmployerOverviewLoanStatus = {
+  REQUESTED: "REQUESTED",
+  APPROVED: "APPROVED",
   ACTIVE: "ACTIVE",
   REPAID: "REPAID",
   OVERDUE: "OVERDUE",

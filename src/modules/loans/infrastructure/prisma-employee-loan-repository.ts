@@ -289,7 +289,7 @@ export const prismaEmployeeLoanRepository: EmployeeLoanRepository = {
           outstandingPrincipalMinorUnits: {
             decrement: principalReduction,
           },
-          ...(isFullyRepaid ? { status: "REPAID" } : {}),
+          ...(isFullyRepaid ? { status: "REPAID", closedAt: now } : {}),
         },
         select: { status: true },
       });
@@ -372,6 +372,7 @@ export const prismaEmployeeLoanRepository: EmployeeLoanRepository = {
           title: isFullyRepaid
             ? "Final repayment recorded"
             : "Partial repayment recorded",
+          actorMembershipId: membership.id,
           actorLabel: membership.user.name,
           occurredAt: now,
         },
@@ -383,6 +384,7 @@ export const prismaEmployeeLoanRepository: EmployeeLoanRepository = {
             loanId: loan.id,
             type: "LOAN_REPAID",
             title: "Loan repaid in full",
+            actorMembershipId: membership.id,
             actorLabel: membership.user.name,
             occurredAt: now,
           },

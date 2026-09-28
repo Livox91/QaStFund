@@ -28,6 +28,7 @@ export type AuditEventMinAggregateOutputType = {
   id: string | null
   organizationId: string | null
   loanId: string | null
+  actorMembershipId: string | null
   type: $Enums.AuditEventType | null
   title: string | null
   actorLabel: string | null
@@ -39,6 +40,7 @@ export type AuditEventMaxAggregateOutputType = {
   id: string | null
   organizationId: string | null
   loanId: string | null
+  actorMembershipId: string | null
   type: $Enums.AuditEventType | null
   title: string | null
   actorLabel: string | null
@@ -50,6 +52,7 @@ export type AuditEventCountAggregateOutputType = {
   id: number
   organizationId: number
   loanId: number
+  actorMembershipId: number
   type: number
   title: number
   actorLabel: number
@@ -63,6 +66,7 @@ export type AuditEventMinAggregateInputType = {
   id?: true
   organizationId?: true
   loanId?: true
+  actorMembershipId?: true
   type?: true
   title?: true
   actorLabel?: true
@@ -74,6 +78,7 @@ export type AuditEventMaxAggregateInputType = {
   id?: true
   organizationId?: true
   loanId?: true
+  actorMembershipId?: true
   type?: true
   title?: true
   actorLabel?: true
@@ -85,6 +90,7 @@ export type AuditEventCountAggregateInputType = {
   id?: true
   organizationId?: true
   loanId?: true
+  actorMembershipId?: true
   type?: true
   title?: true
   actorLabel?: true
@@ -169,6 +175,7 @@ export type AuditEventGroupByOutputType = {
   id: string
   organizationId: string
   loanId: string
+  actorMembershipId: string | null
   type: $Enums.AuditEventType
   title: string
   actorLabel: string | null
@@ -201,6 +208,7 @@ export type AuditEventWhereInput = {
   id?: Prisma.UuidFilter<"AuditEvent"> | string
   organizationId?: Prisma.UuidFilter<"AuditEvent"> | string
   loanId?: Prisma.UuidFilter<"AuditEvent"> | string
+  actorMembershipId?: Prisma.UuidNullableFilter<"AuditEvent"> | string | null
   type?: Prisma.EnumAuditEventTypeFilter<"AuditEvent"> | $Enums.AuditEventType
   title?: Prisma.StringFilter<"AuditEvent"> | string
   actorLabel?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
@@ -208,12 +216,14 @@ export type AuditEventWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"AuditEvent"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   loan?: Prisma.XOR<Prisma.LoanScalarRelationFilter, Prisma.LoanWhereInput>
+  actorMembership?: Prisma.XOR<Prisma.OrganizationMembershipNullableScalarRelationFilter, Prisma.OrganizationMembershipWhereInput> | null
 }
 
 export type AuditEventOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   loanId?: Prisma.SortOrder
+  actorMembershipId?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
   title?: Prisma.SortOrder
   actorLabel?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -221,6 +231,7 @@ export type AuditEventOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
   loan?: Prisma.LoanOrderByWithRelationInput
+  actorMembership?: Prisma.OrganizationMembershipOrderByWithRelationInput
 }
 
 export type AuditEventWhereUniqueInput = Prisma.AtLeast<{
@@ -230,6 +241,7 @@ export type AuditEventWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.AuditEventWhereInput | Prisma.AuditEventWhereInput[]
   organizationId?: Prisma.UuidFilter<"AuditEvent"> | string
   loanId?: Prisma.UuidFilter<"AuditEvent"> | string
+  actorMembershipId?: Prisma.UuidNullableFilter<"AuditEvent"> | string | null
   type?: Prisma.EnumAuditEventTypeFilter<"AuditEvent"> | $Enums.AuditEventType
   title?: Prisma.StringFilter<"AuditEvent"> | string
   actorLabel?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
@@ -237,12 +249,14 @@ export type AuditEventWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"AuditEvent"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   loan?: Prisma.XOR<Prisma.LoanScalarRelationFilter, Prisma.LoanWhereInput>
+  actorMembership?: Prisma.XOR<Prisma.OrganizationMembershipNullableScalarRelationFilter, Prisma.OrganizationMembershipWhereInput> | null
 }, "id">
 
 export type AuditEventOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   loanId?: Prisma.SortOrder
+  actorMembershipId?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
   title?: Prisma.SortOrder
   actorLabel?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -260,6 +274,7 @@ export type AuditEventScalarWhereWithAggregatesInput = {
   id?: Prisma.UuidWithAggregatesFilter<"AuditEvent"> | string
   organizationId?: Prisma.UuidWithAggregatesFilter<"AuditEvent"> | string
   loanId?: Prisma.UuidWithAggregatesFilter<"AuditEvent"> | string
+  actorMembershipId?: Prisma.UuidNullableWithAggregatesFilter<"AuditEvent"> | string | null
   type?: Prisma.EnumAuditEventTypeWithAggregatesFilter<"AuditEvent"> | $Enums.AuditEventType
   title?: Prisma.StringWithAggregatesFilter<"AuditEvent"> | string
   actorLabel?: Prisma.StringNullableWithAggregatesFilter<"AuditEvent"> | string | null
@@ -276,12 +291,14 @@ export type AuditEventCreateInput = {
   createdAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutAuditEventsInput
   loan: Prisma.LoanCreateNestedOneWithoutAuditEventsInput
+  actorMembership?: Prisma.OrganizationMembershipCreateNestedOneWithoutAuditEventsActedInput
 }
 
 export type AuditEventUncheckedCreateInput = {
   id?: string
   organizationId: string
   loanId: string
+  actorMembershipId?: string | null
   type: $Enums.AuditEventType
   title: string
   actorLabel?: string | null
@@ -298,12 +315,14 @@ export type AuditEventUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutAuditEventsNestedInput
   loan?: Prisma.LoanUpdateOneRequiredWithoutAuditEventsNestedInput
+  actorMembership?: Prisma.OrganizationMembershipUpdateOneWithoutAuditEventsActedNestedInput
 }
 
 export type AuditEventUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   loanId?: Prisma.StringFieldUpdateOperationsInput | string
+  actorMembershipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumAuditEventTypeFieldUpdateOperationsInput | $Enums.AuditEventType
   title?: Prisma.StringFieldUpdateOperationsInput | string
   actorLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -315,6 +334,7 @@ export type AuditEventCreateManyInput = {
   id?: string
   organizationId: string
   loanId: string
+  actorMembershipId?: string | null
   type: $Enums.AuditEventType
   title: string
   actorLabel?: string | null
@@ -335,6 +355,7 @@ export type AuditEventUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   loanId?: Prisma.StringFieldUpdateOperationsInput | string
+  actorMembershipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumAuditEventTypeFieldUpdateOperationsInput | $Enums.AuditEventType
   title?: Prisma.StringFieldUpdateOperationsInput | string
   actorLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -356,6 +377,7 @@ export type AuditEventCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   loanId?: Prisma.SortOrder
+  actorMembershipId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   title?: Prisma.SortOrder
   actorLabel?: Prisma.SortOrder
@@ -367,6 +389,7 @@ export type AuditEventMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   loanId?: Prisma.SortOrder
+  actorMembershipId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   title?: Prisma.SortOrder
   actorLabel?: Prisma.SortOrder
@@ -378,6 +401,7 @@ export type AuditEventMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   loanId?: Prisma.SortOrder
+  actorMembershipId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   title?: Prisma.SortOrder
   actorLabel?: Prisma.SortOrder
@@ -424,6 +448,48 @@ export type AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput = {
   connect?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
   update?: Prisma.AuditEventUpdateWithWhereUniqueWithoutOrganizationInput | Prisma.AuditEventUpdateWithWhereUniqueWithoutOrganizationInput[]
   updateMany?: Prisma.AuditEventUpdateManyWithWhereWithoutOrganizationInput | Prisma.AuditEventUpdateManyWithWhereWithoutOrganizationInput[]
+  deleteMany?: Prisma.AuditEventScalarWhereInput | Prisma.AuditEventScalarWhereInput[]
+}
+
+export type AuditEventCreateNestedManyWithoutActorMembershipInput = {
+  create?: Prisma.XOR<Prisma.AuditEventCreateWithoutActorMembershipInput, Prisma.AuditEventUncheckedCreateWithoutActorMembershipInput> | Prisma.AuditEventCreateWithoutActorMembershipInput[] | Prisma.AuditEventUncheckedCreateWithoutActorMembershipInput[]
+  connectOrCreate?: Prisma.AuditEventCreateOrConnectWithoutActorMembershipInput | Prisma.AuditEventCreateOrConnectWithoutActorMembershipInput[]
+  createMany?: Prisma.AuditEventCreateManyActorMembershipInputEnvelope
+  connect?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+}
+
+export type AuditEventUncheckedCreateNestedManyWithoutActorMembershipInput = {
+  create?: Prisma.XOR<Prisma.AuditEventCreateWithoutActorMembershipInput, Prisma.AuditEventUncheckedCreateWithoutActorMembershipInput> | Prisma.AuditEventCreateWithoutActorMembershipInput[] | Prisma.AuditEventUncheckedCreateWithoutActorMembershipInput[]
+  connectOrCreate?: Prisma.AuditEventCreateOrConnectWithoutActorMembershipInput | Prisma.AuditEventCreateOrConnectWithoutActorMembershipInput[]
+  createMany?: Prisma.AuditEventCreateManyActorMembershipInputEnvelope
+  connect?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+}
+
+export type AuditEventUpdateManyWithoutActorMembershipNestedInput = {
+  create?: Prisma.XOR<Prisma.AuditEventCreateWithoutActorMembershipInput, Prisma.AuditEventUncheckedCreateWithoutActorMembershipInput> | Prisma.AuditEventCreateWithoutActorMembershipInput[] | Prisma.AuditEventUncheckedCreateWithoutActorMembershipInput[]
+  connectOrCreate?: Prisma.AuditEventCreateOrConnectWithoutActorMembershipInput | Prisma.AuditEventCreateOrConnectWithoutActorMembershipInput[]
+  upsert?: Prisma.AuditEventUpsertWithWhereUniqueWithoutActorMembershipInput | Prisma.AuditEventUpsertWithWhereUniqueWithoutActorMembershipInput[]
+  createMany?: Prisma.AuditEventCreateManyActorMembershipInputEnvelope
+  set?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  disconnect?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  delete?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  connect?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  update?: Prisma.AuditEventUpdateWithWhereUniqueWithoutActorMembershipInput | Prisma.AuditEventUpdateWithWhereUniqueWithoutActorMembershipInput[]
+  updateMany?: Prisma.AuditEventUpdateManyWithWhereWithoutActorMembershipInput | Prisma.AuditEventUpdateManyWithWhereWithoutActorMembershipInput[]
+  deleteMany?: Prisma.AuditEventScalarWhereInput | Prisma.AuditEventScalarWhereInput[]
+}
+
+export type AuditEventUncheckedUpdateManyWithoutActorMembershipNestedInput = {
+  create?: Prisma.XOR<Prisma.AuditEventCreateWithoutActorMembershipInput, Prisma.AuditEventUncheckedCreateWithoutActorMembershipInput> | Prisma.AuditEventCreateWithoutActorMembershipInput[] | Prisma.AuditEventUncheckedCreateWithoutActorMembershipInput[]
+  connectOrCreate?: Prisma.AuditEventCreateOrConnectWithoutActorMembershipInput | Prisma.AuditEventCreateOrConnectWithoutActorMembershipInput[]
+  upsert?: Prisma.AuditEventUpsertWithWhereUniqueWithoutActorMembershipInput | Prisma.AuditEventUpsertWithWhereUniqueWithoutActorMembershipInput[]
+  createMany?: Prisma.AuditEventCreateManyActorMembershipInputEnvelope
+  set?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  disconnect?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  delete?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  connect?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  update?: Prisma.AuditEventUpdateWithWhereUniqueWithoutActorMembershipInput | Prisma.AuditEventUpdateWithWhereUniqueWithoutActorMembershipInput[]
+  updateMany?: Prisma.AuditEventUpdateManyWithWhereWithoutActorMembershipInput | Prisma.AuditEventUpdateManyWithWhereWithoutActorMembershipInput[]
   deleteMany?: Prisma.AuditEventScalarWhereInput | Prisma.AuditEventScalarWhereInput[]
 }
 
@@ -481,11 +547,13 @@ export type AuditEventCreateWithoutOrganizationInput = {
   occurredAt: Date | string
   createdAt?: Date | string
   loan: Prisma.LoanCreateNestedOneWithoutAuditEventsInput
+  actorMembership?: Prisma.OrganizationMembershipCreateNestedOneWithoutAuditEventsActedInput
 }
 
 export type AuditEventUncheckedCreateWithoutOrganizationInput = {
   id?: string
   loanId: string
+  actorMembershipId?: string | null
   type: $Enums.AuditEventType
   title: string
   actorLabel?: string | null
@@ -526,11 +594,59 @@ export type AuditEventScalarWhereInput = {
   id?: Prisma.UuidFilter<"AuditEvent"> | string
   organizationId?: Prisma.UuidFilter<"AuditEvent"> | string
   loanId?: Prisma.UuidFilter<"AuditEvent"> | string
+  actorMembershipId?: Prisma.UuidNullableFilter<"AuditEvent"> | string | null
   type?: Prisma.EnumAuditEventTypeFilter<"AuditEvent"> | $Enums.AuditEventType
   title?: Prisma.StringFilter<"AuditEvent"> | string
   actorLabel?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   occurredAt?: Prisma.DateTimeFilter<"AuditEvent"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"AuditEvent"> | Date | string
+}
+
+export type AuditEventCreateWithoutActorMembershipInput = {
+  id?: string
+  type: $Enums.AuditEventType
+  title: string
+  actorLabel?: string | null
+  occurredAt: Date | string
+  createdAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutAuditEventsInput
+  loan: Prisma.LoanCreateNestedOneWithoutAuditEventsInput
+}
+
+export type AuditEventUncheckedCreateWithoutActorMembershipInput = {
+  id?: string
+  loanId: string
+  type: $Enums.AuditEventType
+  title: string
+  actorLabel?: string | null
+  occurredAt: Date | string
+  createdAt?: Date | string
+}
+
+export type AuditEventCreateOrConnectWithoutActorMembershipInput = {
+  where: Prisma.AuditEventWhereUniqueInput
+  create: Prisma.XOR<Prisma.AuditEventCreateWithoutActorMembershipInput, Prisma.AuditEventUncheckedCreateWithoutActorMembershipInput>
+}
+
+export type AuditEventCreateManyActorMembershipInputEnvelope = {
+  data: Prisma.AuditEventCreateManyActorMembershipInput | Prisma.AuditEventCreateManyActorMembershipInput[]
+  skipDuplicates?: boolean
+}
+
+export type AuditEventUpsertWithWhereUniqueWithoutActorMembershipInput = {
+  where: Prisma.AuditEventWhereUniqueInput
+  update: Prisma.XOR<Prisma.AuditEventUpdateWithoutActorMembershipInput, Prisma.AuditEventUncheckedUpdateWithoutActorMembershipInput>
+  create: Prisma.XOR<Prisma.AuditEventCreateWithoutActorMembershipInput, Prisma.AuditEventUncheckedCreateWithoutActorMembershipInput>
+}
+
+export type AuditEventUpdateWithWhereUniqueWithoutActorMembershipInput = {
+  where: Prisma.AuditEventWhereUniqueInput
+  data: Prisma.XOR<Prisma.AuditEventUpdateWithoutActorMembershipInput, Prisma.AuditEventUncheckedUpdateWithoutActorMembershipInput>
+}
+
+export type AuditEventUpdateManyWithWhereWithoutActorMembershipInput = {
+  where: Prisma.AuditEventScalarWhereInput
+  data: Prisma.XOR<Prisma.AuditEventUpdateManyMutationInput, Prisma.AuditEventUncheckedUpdateManyWithoutActorMembershipInput>
 }
 
 export type AuditEventCreateWithoutLoanInput = {
@@ -541,10 +657,12 @@ export type AuditEventCreateWithoutLoanInput = {
   occurredAt: Date | string
   createdAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutAuditEventsInput
+  actorMembership?: Prisma.OrganizationMembershipCreateNestedOneWithoutAuditEventsActedInput
 }
 
 export type AuditEventUncheckedCreateWithoutLoanInput = {
   id?: string
+  actorMembershipId?: string | null
   type: $Enums.AuditEventType
   title: string
   actorLabel?: string | null
@@ -581,6 +699,7 @@ export type AuditEventUpdateManyWithWhereWithoutLoanInput = {
 export type AuditEventCreateManyOrganizationInput = {
   id?: string
   loanId: string
+  actorMembershipId?: string | null
   type: $Enums.AuditEventType
   title: string
   actorLabel?: string | null
@@ -596,9 +715,53 @@ export type AuditEventUpdateWithoutOrganizationInput = {
   occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loan?: Prisma.LoanUpdateOneRequiredWithoutAuditEventsNestedInput
+  actorMembership?: Prisma.OrganizationMembershipUpdateOneWithoutAuditEventsActedNestedInput
 }
 
 export type AuditEventUncheckedUpdateWithoutOrganizationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  loanId?: Prisma.StringFieldUpdateOperationsInput | string
+  actorMembershipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumAuditEventTypeFieldUpdateOperationsInput | $Enums.AuditEventType
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  actorLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type AuditEventUncheckedUpdateManyWithoutOrganizationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  loanId?: Prisma.StringFieldUpdateOperationsInput | string
+  actorMembershipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumAuditEventTypeFieldUpdateOperationsInput | $Enums.AuditEventType
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  actorLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type AuditEventCreateManyActorMembershipInput = {
+  id?: string
+  loanId: string
+  type: $Enums.AuditEventType
+  title: string
+  actorLabel?: string | null
+  occurredAt: Date | string
+  createdAt?: Date | string
+}
+
+export type AuditEventUpdateWithoutActorMembershipInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumAuditEventTypeFieldUpdateOperationsInput | $Enums.AuditEventType
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  actorLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutAuditEventsNestedInput
+  loan?: Prisma.LoanUpdateOneRequiredWithoutAuditEventsNestedInput
+}
+
+export type AuditEventUncheckedUpdateWithoutActorMembershipInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   loanId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumAuditEventTypeFieldUpdateOperationsInput | $Enums.AuditEventType
@@ -608,7 +771,7 @@ export type AuditEventUncheckedUpdateWithoutOrganizationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type AuditEventUncheckedUpdateManyWithoutOrganizationInput = {
+export type AuditEventUncheckedUpdateManyWithoutActorMembershipInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   loanId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumAuditEventTypeFieldUpdateOperationsInput | $Enums.AuditEventType
@@ -620,6 +783,7 @@ export type AuditEventUncheckedUpdateManyWithoutOrganizationInput = {
 
 export type AuditEventCreateManyLoanInput = {
   id?: string
+  actorMembershipId?: string | null
   type: $Enums.AuditEventType
   title: string
   actorLabel?: string | null
@@ -635,10 +799,12 @@ export type AuditEventUpdateWithoutLoanInput = {
   occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutAuditEventsNestedInput
+  actorMembership?: Prisma.OrganizationMembershipUpdateOneWithoutAuditEventsActedNestedInput
 }
 
 export type AuditEventUncheckedUpdateWithoutLoanInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  actorMembershipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumAuditEventTypeFieldUpdateOperationsInput | $Enums.AuditEventType
   title?: Prisma.StringFieldUpdateOperationsInput | string
   actorLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -648,6 +814,7 @@ export type AuditEventUncheckedUpdateWithoutLoanInput = {
 
 export type AuditEventUncheckedUpdateManyWithoutLoanInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  actorMembershipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumAuditEventTypeFieldUpdateOperationsInput | $Enums.AuditEventType
   title?: Prisma.StringFieldUpdateOperationsInput | string
   actorLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -661,6 +828,7 @@ export type AuditEventSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   id?: boolean
   organizationId?: boolean
   loanId?: boolean
+  actorMembershipId?: boolean
   type?: boolean
   title?: boolean
   actorLabel?: boolean
@@ -668,12 +836,14 @@ export type AuditEventSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   createdAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   loan?: boolean | Prisma.LoanDefaultArgs<ExtArgs>
+  actorMembership?: boolean | Prisma.AuditEvent$actorMembershipArgs<ExtArgs>
 }, ExtArgs["result"]["auditEvent"]>
 
 export type AuditEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   organizationId?: boolean
   loanId?: boolean
+  actorMembershipId?: boolean
   type?: boolean
   title?: boolean
   actorLabel?: boolean
@@ -681,12 +851,14 @@ export type AuditEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   createdAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   loan?: boolean | Prisma.LoanDefaultArgs<ExtArgs>
+  actorMembership?: boolean | Prisma.AuditEvent$actorMembershipArgs<ExtArgs>
 }, ExtArgs["result"]["auditEvent"]>
 
 export type AuditEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   organizationId?: boolean
   loanId?: boolean
+  actorMembershipId?: boolean
   type?: boolean
   title?: boolean
   actorLabel?: boolean
@@ -694,12 +866,14 @@ export type AuditEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   createdAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   loan?: boolean | Prisma.LoanDefaultArgs<ExtArgs>
+  actorMembership?: boolean | Prisma.AuditEvent$actorMembershipArgs<ExtArgs>
 }, ExtArgs["result"]["auditEvent"]>
 
 export type AuditEventSelectScalar = {
   id?: boolean
   organizationId?: boolean
   loanId?: boolean
+  actorMembershipId?: boolean
   type?: boolean
   title?: boolean
   actorLabel?: boolean
@@ -707,18 +881,21 @@ export type AuditEventSelectScalar = {
   createdAt?: boolean
 }
 
-export type AuditEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "loanId" | "type" | "title" | "actorLabel" | "occurredAt" | "createdAt", ExtArgs["result"]["auditEvent"]>
+export type AuditEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "loanId" | "actorMembershipId" | "type" | "title" | "actorLabel" | "occurredAt" | "createdAt", ExtArgs["result"]["auditEvent"]>
 export type AuditEventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   loan?: boolean | Prisma.LoanDefaultArgs<ExtArgs>
+  actorMembership?: boolean | Prisma.AuditEvent$actorMembershipArgs<ExtArgs>
 }
 export type AuditEventIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   loan?: boolean | Prisma.LoanDefaultArgs<ExtArgs>
+  actorMembership?: boolean | Prisma.AuditEvent$actorMembershipArgs<ExtArgs>
 }
 export type AuditEventIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   loan?: boolean | Prisma.LoanDefaultArgs<ExtArgs>
+  actorMembership?: boolean | Prisma.AuditEvent$actorMembershipArgs<ExtArgs>
 }
 
 export type $AuditEventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -726,11 +903,13 @@ export type $AuditEventPayload<ExtArgs extends runtime.Types.Extensions.Internal
   objects: {
     organization: Prisma.$OrganizationPayload<ExtArgs>
     loan: Prisma.$LoanPayload<ExtArgs>
+    actorMembership: Prisma.$OrganizationMembershipPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     organizationId: string
     loanId: string
+    actorMembershipId: string | null
     type: $Enums.AuditEventType
     title: string
     actorLabel: string | null
@@ -1132,6 +1311,7 @@ export interface Prisma__AuditEventClient<T, Null = never, ExtArgs extends runti
   readonly [Symbol.toStringTag]: "PrismaPromise"
   organization<T extends Prisma.OrganizationDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationDefaultArgs<ExtArgs>>): Prisma.Prisma__OrganizationClient<runtime.Types.Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   loan<T extends Prisma.LoanDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LoanDefaultArgs<ExtArgs>>): Prisma.Prisma__LoanClient<runtime.Types.Result.GetResult<Prisma.$LoanPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  actorMembership<T extends Prisma.AuditEvent$actorMembershipArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuditEvent$actorMembershipArgs<ExtArgs>>): Prisma.Prisma__OrganizationMembershipClient<runtime.Types.Result.GetResult<Prisma.$OrganizationMembershipPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1164,6 +1344,7 @@ export interface AuditEventFieldRefs {
   readonly id: Prisma.FieldRef<"AuditEvent", 'String'>
   readonly organizationId: Prisma.FieldRef<"AuditEvent", 'String'>
   readonly loanId: Prisma.FieldRef<"AuditEvent", 'String'>
+  readonly actorMembershipId: Prisma.FieldRef<"AuditEvent", 'String'>
   readonly type: Prisma.FieldRef<"AuditEvent", 'AuditEventType'>
   readonly title: Prisma.FieldRef<"AuditEvent", 'String'>
   readonly actorLabel: Prisma.FieldRef<"AuditEvent", 'String'>
@@ -1567,6 +1748,25 @@ export type AuditEventDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * Limit how many AuditEvents to delete.
    */
   limit?: number
+}
+
+/**
+ * AuditEvent.actorMembership
+ */
+export type AuditEvent$actorMembershipArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OrganizationMembership
+   */
+  select?: Prisma.OrganizationMembershipSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OrganizationMembership
+   */
+  omit?: Prisma.OrganizationMembershipOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrganizationMembershipInclude<ExtArgs> | null
+  where?: Prisma.OrganizationMembershipWhereInput
 }
 
 /**

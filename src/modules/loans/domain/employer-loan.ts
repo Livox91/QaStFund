@@ -9,7 +9,13 @@ export type EmployerLoanFilter =
   (typeof EmployerLoanFilter)[keyof typeof EmployerLoanFilter];
 
 export type EmployerLoanStatus =
-  "ACTIVE" | "REPAID" | "OVERDUE" | "DEFAULTED" | "CANCELLED";
+  | "REQUESTED"
+  | "APPROVED"
+  | "ACTIVE"
+  | "REPAID"
+  | "OVERDUE"
+  | "DEFAULTED"
+  | "CANCELLED";
 
 export type EmployerLoanRepayment = Readonly<{
   id: string;
@@ -21,11 +27,15 @@ export type EmployerLoanRepayment = Readonly<{
 export type EmployerLoanAuditEvent = Readonly<{
   id: string;
   type:
+    | "LOAN_REQUESTED"
+    | "LOAN_APPROVED"
     | "LOAN_CREATED"
     | "LOAN_ACTIVATED"
     | "REPAYMENT_RECORDED"
     | "LOAN_REPAID"
-    | "LOAN_OVERDUE";
+    | "LOAN_OVERDUE"
+    | "LOAN_DEFAULTED"
+    | "LOAN_CANCELLED";
   title: string;
   actorLabel: string | null;
   occurredAt: Date;

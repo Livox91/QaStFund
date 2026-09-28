@@ -61,17 +61,23 @@ Expected response:
 
 Run `npm run prisma:seed` to create or refresh the idempotent development organization and accounts:
 
-| Role             | Email                | Password       | Redirect    |
-| ---------------- | -------------------- | -------------- | ----------- |
-| `EMPLOYER_ADMIN` | `admin@demo.test`    | `Employer123!` | `/employer` |
-| `EMPLOYEE`       | `employee@demo.test` | `Employee123!` | `/app`      |
+| Role             | Email               | Password           | Redirect    |
+| ---------------- | ------------------- | ------------------ | ----------- |
+| `EMPLOYER_ADMIN` | `admin@acme.test`   | `AcmeAdmin123!`    | `/employer` |
+| `EMPLOYEE`       | `alice@acme.test`   | `AcmeEmployee123!` | `/app`      |
+| `EMPLOYEE`       | `bob@acme.test`     | `AcmeEmployee123!` | `/app`      |
+| `EMPLOYEE`       | `charlie@acme.test` | `AcmeEmployee123!` | `/app`      |
 
 The seed also creates employee mock balances, offers, loans, repayments, and
 audit events so the employer reporting pages and employee experiences display
 representative database-backed data. All seeded employee accounts use the
-development-only password `Employee123!`.
+development-only password `AcmeEmployee123!`.
 
-Authenticated users can view `/profile` or `GET /api/auth/profile` and sign out from either dashboard.
+Authenticated users can view `/profile`, use the existing browser sign-in flow,
+or use the JSON authentication endpoints at `/auth/register`, `/auth/login`,
+`/auth/logout`, and `/auth/me`. Organization endpoints are available at
+`/organization/me` and `/organization/members`; member listing requires the
+`EMPLOYER_ADMIN` role.
 
 These credentials are development-only seed data. Do not run the demo seed against a production database.
 
