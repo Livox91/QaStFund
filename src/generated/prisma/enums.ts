@@ -56,7 +56,8 @@ export type LedgerAccountType = (typeof LedgerAccountType)[keyof typeof LedgerAc
 
 
 export const LedgerTransactionType = {
-  LOAN_DISBURSEMENT: 'LOAN_DISBURSEMENT'
+  LOAN_DISBURSEMENT: 'LOAN_DISBURSEMENT',
+  LOAN_REPAYMENT: 'LOAN_REPAYMENT'
 } as const
 
 export type LedgerTransactionType = (typeof LedgerTransactionType)[keyof typeof LedgerTransactionType]

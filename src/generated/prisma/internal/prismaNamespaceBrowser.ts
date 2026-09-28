@@ -191,6 +191,7 @@ export const LedgerTransactionScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
   loanId: 'loanId',
+  repaymentId: 'repaymentId',
   type: 'type',
   currency: 'currency',
   createdAt: 'createdAt'
@@ -217,6 +218,7 @@ export const LoanRepaymentScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
   loanId: 'loanId',
+  repaymentRequestId: 'repaymentRequestId',
   amountMinorUnits: 'amountMinorUnits',
   currency: 'currency',
   paidAt: 'paidAt',

@@ -1,6 +1,6 @@
 # Employee P2P Lending MVP
 
-A production-oriented foundation for an employee peer-to-peer lending application. Local authentication, organization membership, employer reporting, employee dashboards, lending offers, marketplace discovery, and transactional borrowing with internal mock balances are implemented. Payroll, external settlement, ERP, and blockchain behavior are intentionally not implemented.
+A production-oriented foundation for an employee peer-to-peer lending application. Local authentication, organization membership, employer reporting, employee dashboards, lending offers, marketplace discovery, transactional borrowing, and manual partial/full repayment with internal mock balances are implemented. Payroll, external settlement, ERP, and blockchain behavior are intentionally not implemented.
 
 ## Prerequisites
 
@@ -39,6 +39,7 @@ Open:
 - `http://localhost:3000/app/lending` — create and review personal offers
 - `http://localhost:3000/app/borrow` — organization lending marketplace
 - `http://localhost:3000/app/borrow/[offerId]` — review and confirm an eligible offer
+- `http://localhost:3000/app/loans/[loanId]` — borrower loan details, history, and manual repayment
 - `http://localhost:3000/employer` — database-backed employer overview
 - `http://localhost:3000/employer/loans` — organization-scoped loan reporting
 - `http://localhost:3000/profile` — authenticated profile
@@ -162,6 +163,7 @@ npm run lint
 npm run format:check
 npm test
 npm run verify:borrowing # database-backed transactional/idempotency check
+npm run verify:repayment # partial/full repayment and ledger integration check
 ```
 
 Use `npm run test:watch` during active development.
@@ -195,8 +197,8 @@ src/
     organizations/              # employer overview query and repository
     employees/                  # employee dashboard query and future workflows
     lending/                    # offer creation and marketplace queries
-    loans/                      # transactional creation and employer loan queries
-    ledger/                     # balanced mock disbursement records
+    loans/                      # transactional creation, repayment, and loan queries
+    ledger/                     # balanced mock disbursement/repayment records
     audit/                      # loan lifecycle event records
   server/
     application/                  # use cases and orchestration

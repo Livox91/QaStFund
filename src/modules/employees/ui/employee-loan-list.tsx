@@ -1,5 +1,6 @@
 import type { EmployeeDashboardLoan } from "@/modules/employees/domain/employee-dashboard";
 import { RepaymentProgress } from "@/modules/loans/ui/repayment-progress";
+import { buttonStyles } from "@/shared/ui/button";
 import { CurrencyDisplay } from "@/shared/ui/currency-display";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { StatusDisplay } from "@/shared/ui/status-display";
@@ -71,8 +72,21 @@ export function EmployeeLoanList({
             basisPoints={loan.progressBasisPoints}
             className="mt-5"
           />
+          {loan.participation === "BORROWING" ? (
+            <Link
+              className={buttonStyles({
+                className: "mt-5",
+                size: "sm",
+                variant: "outline",
+              })}
+              href={`/app/loans/${loan.id}`}
+            >
+              View and repay
+            </Link>
+          ) : null}
         </li>
       ))}
     </ul>
   );
 }
+import Link from "next/link";

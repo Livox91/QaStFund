@@ -28,6 +28,7 @@ export type LedgerTransactionMinAggregateOutputType = {
   id: string | null
   organizationId: string | null
   loanId: string | null
+  repaymentId: string | null
   type: $Enums.LedgerTransactionType | null
   currency: string | null
   createdAt: Date | null
@@ -37,6 +38,7 @@ export type LedgerTransactionMaxAggregateOutputType = {
   id: string | null
   organizationId: string | null
   loanId: string | null
+  repaymentId: string | null
   type: $Enums.LedgerTransactionType | null
   currency: string | null
   createdAt: Date | null
@@ -46,6 +48,7 @@ export type LedgerTransactionCountAggregateOutputType = {
   id: number
   organizationId: number
   loanId: number
+  repaymentId: number
   type: number
   currency: number
   createdAt: number
@@ -57,6 +60,7 @@ export type LedgerTransactionMinAggregateInputType = {
   id?: true
   organizationId?: true
   loanId?: true
+  repaymentId?: true
   type?: true
   currency?: true
   createdAt?: true
@@ -66,6 +70,7 @@ export type LedgerTransactionMaxAggregateInputType = {
   id?: true
   organizationId?: true
   loanId?: true
+  repaymentId?: true
   type?: true
   currency?: true
   createdAt?: true
@@ -75,6 +80,7 @@ export type LedgerTransactionCountAggregateInputType = {
   id?: true
   organizationId?: true
   loanId?: true
+  repaymentId?: true
   type?: true
   currency?: true
   createdAt?: true
@@ -157,6 +163,7 @@ export type LedgerTransactionGroupByOutputType = {
   id: string
   organizationId: string
   loanId: string
+  repaymentId: string | null
   type: $Enums.LedgerTransactionType
   currency: string
   createdAt: Date
@@ -187,11 +194,13 @@ export type LedgerTransactionWhereInput = {
   id?: Prisma.UuidFilter<"LedgerTransaction"> | string
   organizationId?: Prisma.UuidFilter<"LedgerTransaction"> | string
   loanId?: Prisma.UuidFilter<"LedgerTransaction"> | string
+  repaymentId?: Prisma.UuidNullableFilter<"LedgerTransaction"> | string | null
   type?: Prisma.EnumLedgerTransactionTypeFilter<"LedgerTransaction"> | $Enums.LedgerTransactionType
   currency?: Prisma.StringFilter<"LedgerTransaction"> | string
   createdAt?: Prisma.DateTimeFilter<"LedgerTransaction"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   loan?: Prisma.XOR<Prisma.LoanScalarRelationFilter, Prisma.LoanWhereInput>
+  repayment?: Prisma.XOR<Prisma.LoanRepaymentNullableScalarRelationFilter, Prisma.LoanRepaymentWhereInput> | null
   entries?: Prisma.LedgerEntryListRelationFilter
 }
 
@@ -199,35 +208,40 @@ export type LedgerTransactionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   loanId?: Prisma.SortOrder
+  repaymentId?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
   loan?: Prisma.LoanOrderByWithRelationInput
+  repayment?: Prisma.LoanRepaymentOrderByWithRelationInput
   entries?: Prisma.LedgerEntryOrderByRelationAggregateInput
 }
 
 export type LedgerTransactionWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  loanId?: string
+  repaymentId?: string
   organizationId_id?: Prisma.LedgerTransactionOrganizationIdIdCompoundUniqueInput
-  organizationId_loanId?: Prisma.LedgerTransactionOrganizationIdLoanIdCompoundUniqueInput
+  organizationId_repaymentId?: Prisma.LedgerTransactionOrganizationIdRepaymentIdCompoundUniqueInput
   AND?: Prisma.LedgerTransactionWhereInput | Prisma.LedgerTransactionWhereInput[]
   OR?: Prisma.LedgerTransactionWhereInput[]
   NOT?: Prisma.LedgerTransactionWhereInput | Prisma.LedgerTransactionWhereInput[]
   organizationId?: Prisma.UuidFilter<"LedgerTransaction"> | string
+  loanId?: Prisma.UuidFilter<"LedgerTransaction"> | string
   type?: Prisma.EnumLedgerTransactionTypeFilter<"LedgerTransaction"> | $Enums.LedgerTransactionType
   currency?: Prisma.StringFilter<"LedgerTransaction"> | string
   createdAt?: Prisma.DateTimeFilter<"LedgerTransaction"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   loan?: Prisma.XOR<Prisma.LoanScalarRelationFilter, Prisma.LoanWhereInput>
+  repayment?: Prisma.XOR<Prisma.LoanRepaymentNullableScalarRelationFilter, Prisma.LoanRepaymentWhereInput> | null
   entries?: Prisma.LedgerEntryListRelationFilter
-}, "id" | "loanId" | "organizationId_id" | "organizationId_loanId">
+}, "id" | "repaymentId" | "organizationId_id" | "organizationId_repaymentId">
 
 export type LedgerTransactionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   loanId?: Prisma.SortOrder
+  repaymentId?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -243,6 +257,7 @@ export type LedgerTransactionScalarWhereWithAggregatesInput = {
   id?: Prisma.UuidWithAggregatesFilter<"LedgerTransaction"> | string
   organizationId?: Prisma.UuidWithAggregatesFilter<"LedgerTransaction"> | string
   loanId?: Prisma.UuidWithAggregatesFilter<"LedgerTransaction"> | string
+  repaymentId?: Prisma.UuidNullableWithAggregatesFilter<"LedgerTransaction"> | string | null
   type?: Prisma.EnumLedgerTransactionTypeWithAggregatesFilter<"LedgerTransaction"> | $Enums.LedgerTransactionType
   currency?: Prisma.StringWithAggregatesFilter<"LedgerTransaction"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"LedgerTransaction"> | Date | string
@@ -254,7 +269,8 @@ export type LedgerTransactionCreateInput = {
   currency: string
   createdAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutLedgerTransactionsInput
-  loan: Prisma.LoanCreateNestedOneWithoutLedgerTransactionInput
+  loan: Prisma.LoanCreateNestedOneWithoutLedgerTransactionsInput
+  repayment?: Prisma.LoanRepaymentCreateNestedOneWithoutLedgerTransactionInput
   entries?: Prisma.LedgerEntryCreateNestedManyWithoutTransactionInput
 }
 
@@ -262,6 +278,7 @@ export type LedgerTransactionUncheckedCreateInput = {
   id?: string
   organizationId: string
   loanId: string
+  repaymentId?: string | null
   type: $Enums.LedgerTransactionType
   currency: string
   createdAt?: Date | string
@@ -274,7 +291,8 @@ export type LedgerTransactionUpdateInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutLedgerTransactionsNestedInput
-  loan?: Prisma.LoanUpdateOneRequiredWithoutLedgerTransactionNestedInput
+  loan?: Prisma.LoanUpdateOneRequiredWithoutLedgerTransactionsNestedInput
+  repayment?: Prisma.LoanRepaymentUpdateOneWithoutLedgerTransactionNestedInput
   entries?: Prisma.LedgerEntryUpdateManyWithoutTransactionNestedInput
 }
 
@@ -282,6 +300,7 @@ export type LedgerTransactionUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   loanId?: Prisma.StringFieldUpdateOperationsInput | string
+  repaymentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumLedgerTransactionTypeFieldUpdateOperationsInput | $Enums.LedgerTransactionType
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -292,6 +311,7 @@ export type LedgerTransactionCreateManyInput = {
   id?: string
   organizationId: string
   loanId: string
+  repaymentId?: string | null
   type: $Enums.LedgerTransactionType
   currency: string
   createdAt?: Date | string
@@ -308,6 +328,7 @@ export type LedgerTransactionUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   loanId?: Prisma.StringFieldUpdateOperationsInput | string
+  repaymentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumLedgerTransactionTypeFieldUpdateOperationsInput | $Enums.LedgerTransactionType
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -323,25 +344,21 @@ export type LedgerTransactionOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type LedgerTransactionNullableScalarRelationFilter = {
-  is?: Prisma.LedgerTransactionWhereInput | null
-  isNot?: Prisma.LedgerTransactionWhereInput | null
-}
-
 export type LedgerTransactionOrganizationIdIdCompoundUniqueInput = {
   organizationId: string
   id: string
 }
 
-export type LedgerTransactionOrganizationIdLoanIdCompoundUniqueInput = {
+export type LedgerTransactionOrganizationIdRepaymentIdCompoundUniqueInput = {
   organizationId: string
-  loanId: string
+  repaymentId: string
 }
 
 export type LedgerTransactionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   loanId?: Prisma.SortOrder
+  repaymentId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -351,6 +368,7 @@ export type LedgerTransactionMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   loanId?: Prisma.SortOrder
+  repaymentId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -360,6 +378,7 @@ export type LedgerTransactionMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   loanId?: Prisma.SortOrder
+  repaymentId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -368,6 +387,11 @@ export type LedgerTransactionMinOrderByAggregateInput = {
 export type LedgerTransactionScalarRelationFilter = {
   is?: Prisma.LedgerTransactionWhereInput
   isNot?: Prisma.LedgerTransactionWhereInput
+}
+
+export type LedgerTransactionNullableScalarRelationFilter = {
+  is?: Prisma.LedgerTransactionWhereInput | null
+  isNot?: Prisma.LedgerTransactionWhereInput | null
 }
 
 export type LedgerTransactionCreateNestedManyWithoutOrganizationInput = {
@@ -412,36 +436,46 @@ export type LedgerTransactionUncheckedUpdateManyWithoutOrganizationNestedInput =
   deleteMany?: Prisma.LedgerTransactionScalarWhereInput | Prisma.LedgerTransactionScalarWhereInput[]
 }
 
-export type LedgerTransactionCreateNestedOneWithoutLoanInput = {
-  create?: Prisma.XOR<Prisma.LedgerTransactionCreateWithoutLoanInput, Prisma.LedgerTransactionUncheckedCreateWithoutLoanInput>
-  connectOrCreate?: Prisma.LedgerTransactionCreateOrConnectWithoutLoanInput
-  connect?: Prisma.LedgerTransactionWhereUniqueInput
+export type LedgerTransactionCreateNestedManyWithoutLoanInput = {
+  create?: Prisma.XOR<Prisma.LedgerTransactionCreateWithoutLoanInput, Prisma.LedgerTransactionUncheckedCreateWithoutLoanInput> | Prisma.LedgerTransactionCreateWithoutLoanInput[] | Prisma.LedgerTransactionUncheckedCreateWithoutLoanInput[]
+  connectOrCreate?: Prisma.LedgerTransactionCreateOrConnectWithoutLoanInput | Prisma.LedgerTransactionCreateOrConnectWithoutLoanInput[]
+  createMany?: Prisma.LedgerTransactionCreateManyLoanInputEnvelope
+  connect?: Prisma.LedgerTransactionWhereUniqueInput | Prisma.LedgerTransactionWhereUniqueInput[]
 }
 
-export type LedgerTransactionUncheckedCreateNestedOneWithoutLoanInput = {
-  create?: Prisma.XOR<Prisma.LedgerTransactionCreateWithoutLoanInput, Prisma.LedgerTransactionUncheckedCreateWithoutLoanInput>
-  connectOrCreate?: Prisma.LedgerTransactionCreateOrConnectWithoutLoanInput
-  connect?: Prisma.LedgerTransactionWhereUniqueInput
+export type LedgerTransactionUncheckedCreateNestedManyWithoutLoanInput = {
+  create?: Prisma.XOR<Prisma.LedgerTransactionCreateWithoutLoanInput, Prisma.LedgerTransactionUncheckedCreateWithoutLoanInput> | Prisma.LedgerTransactionCreateWithoutLoanInput[] | Prisma.LedgerTransactionUncheckedCreateWithoutLoanInput[]
+  connectOrCreate?: Prisma.LedgerTransactionCreateOrConnectWithoutLoanInput | Prisma.LedgerTransactionCreateOrConnectWithoutLoanInput[]
+  createMany?: Prisma.LedgerTransactionCreateManyLoanInputEnvelope
+  connect?: Prisma.LedgerTransactionWhereUniqueInput | Prisma.LedgerTransactionWhereUniqueInput[]
 }
 
-export type LedgerTransactionUpdateOneWithoutLoanNestedInput = {
-  create?: Prisma.XOR<Prisma.LedgerTransactionCreateWithoutLoanInput, Prisma.LedgerTransactionUncheckedCreateWithoutLoanInput>
-  connectOrCreate?: Prisma.LedgerTransactionCreateOrConnectWithoutLoanInput
-  upsert?: Prisma.LedgerTransactionUpsertWithoutLoanInput
-  disconnect?: Prisma.LedgerTransactionWhereInput | boolean
-  delete?: Prisma.LedgerTransactionWhereInput | boolean
-  connect?: Prisma.LedgerTransactionWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.LedgerTransactionUpdateToOneWithWhereWithoutLoanInput, Prisma.LedgerTransactionUpdateWithoutLoanInput>, Prisma.LedgerTransactionUncheckedUpdateWithoutLoanInput>
+export type LedgerTransactionUpdateManyWithoutLoanNestedInput = {
+  create?: Prisma.XOR<Prisma.LedgerTransactionCreateWithoutLoanInput, Prisma.LedgerTransactionUncheckedCreateWithoutLoanInput> | Prisma.LedgerTransactionCreateWithoutLoanInput[] | Prisma.LedgerTransactionUncheckedCreateWithoutLoanInput[]
+  connectOrCreate?: Prisma.LedgerTransactionCreateOrConnectWithoutLoanInput | Prisma.LedgerTransactionCreateOrConnectWithoutLoanInput[]
+  upsert?: Prisma.LedgerTransactionUpsertWithWhereUniqueWithoutLoanInput | Prisma.LedgerTransactionUpsertWithWhereUniqueWithoutLoanInput[]
+  createMany?: Prisma.LedgerTransactionCreateManyLoanInputEnvelope
+  set?: Prisma.LedgerTransactionWhereUniqueInput | Prisma.LedgerTransactionWhereUniqueInput[]
+  disconnect?: Prisma.LedgerTransactionWhereUniqueInput | Prisma.LedgerTransactionWhereUniqueInput[]
+  delete?: Prisma.LedgerTransactionWhereUniqueInput | Prisma.LedgerTransactionWhereUniqueInput[]
+  connect?: Prisma.LedgerTransactionWhereUniqueInput | Prisma.LedgerTransactionWhereUniqueInput[]
+  update?: Prisma.LedgerTransactionUpdateWithWhereUniqueWithoutLoanInput | Prisma.LedgerTransactionUpdateWithWhereUniqueWithoutLoanInput[]
+  updateMany?: Prisma.LedgerTransactionUpdateManyWithWhereWithoutLoanInput | Prisma.LedgerTransactionUpdateManyWithWhereWithoutLoanInput[]
+  deleteMany?: Prisma.LedgerTransactionScalarWhereInput | Prisma.LedgerTransactionScalarWhereInput[]
 }
 
-export type LedgerTransactionUncheckedUpdateOneWithoutLoanNestedInput = {
-  create?: Prisma.XOR<Prisma.LedgerTransactionCreateWithoutLoanInput, Prisma.LedgerTransactionUncheckedCreateWithoutLoanInput>
-  connectOrCreate?: Prisma.LedgerTransactionCreateOrConnectWithoutLoanInput
-  upsert?: Prisma.LedgerTransactionUpsertWithoutLoanInput
-  disconnect?: Prisma.LedgerTransactionWhereInput | boolean
-  delete?: Prisma.LedgerTransactionWhereInput | boolean
-  connect?: Prisma.LedgerTransactionWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.LedgerTransactionUpdateToOneWithWhereWithoutLoanInput, Prisma.LedgerTransactionUpdateWithoutLoanInput>, Prisma.LedgerTransactionUncheckedUpdateWithoutLoanInput>
+export type LedgerTransactionUncheckedUpdateManyWithoutLoanNestedInput = {
+  create?: Prisma.XOR<Prisma.LedgerTransactionCreateWithoutLoanInput, Prisma.LedgerTransactionUncheckedCreateWithoutLoanInput> | Prisma.LedgerTransactionCreateWithoutLoanInput[] | Prisma.LedgerTransactionUncheckedCreateWithoutLoanInput[]
+  connectOrCreate?: Prisma.LedgerTransactionCreateOrConnectWithoutLoanInput | Prisma.LedgerTransactionCreateOrConnectWithoutLoanInput[]
+  upsert?: Prisma.LedgerTransactionUpsertWithWhereUniqueWithoutLoanInput | Prisma.LedgerTransactionUpsertWithWhereUniqueWithoutLoanInput[]
+  createMany?: Prisma.LedgerTransactionCreateManyLoanInputEnvelope
+  set?: Prisma.LedgerTransactionWhereUniqueInput | Prisma.LedgerTransactionWhereUniqueInput[]
+  disconnect?: Prisma.LedgerTransactionWhereUniqueInput | Prisma.LedgerTransactionWhereUniqueInput[]
+  delete?: Prisma.LedgerTransactionWhereUniqueInput | Prisma.LedgerTransactionWhereUniqueInput[]
+  connect?: Prisma.LedgerTransactionWhereUniqueInput | Prisma.LedgerTransactionWhereUniqueInput[]
+  update?: Prisma.LedgerTransactionUpdateWithWhereUniqueWithoutLoanInput | Prisma.LedgerTransactionUpdateWithWhereUniqueWithoutLoanInput[]
+  updateMany?: Prisma.LedgerTransactionUpdateManyWithWhereWithoutLoanInput | Prisma.LedgerTransactionUpdateManyWithWhereWithoutLoanInput[]
+  deleteMany?: Prisma.LedgerTransactionScalarWhereInput | Prisma.LedgerTransactionScalarWhereInput[]
 }
 
 export type EnumLedgerTransactionTypeFieldUpdateOperationsInput = {
@@ -462,18 +496,52 @@ export type LedgerTransactionUpdateOneRequiredWithoutEntriesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.LedgerTransactionUpdateToOneWithWhereWithoutEntriesInput, Prisma.LedgerTransactionUpdateWithoutEntriesInput>, Prisma.LedgerTransactionUncheckedUpdateWithoutEntriesInput>
 }
 
+export type LedgerTransactionCreateNestedOneWithoutRepaymentInput = {
+  create?: Prisma.XOR<Prisma.LedgerTransactionCreateWithoutRepaymentInput, Prisma.LedgerTransactionUncheckedCreateWithoutRepaymentInput>
+  connectOrCreate?: Prisma.LedgerTransactionCreateOrConnectWithoutRepaymentInput
+  connect?: Prisma.LedgerTransactionWhereUniqueInput
+}
+
+export type LedgerTransactionUncheckedCreateNestedOneWithoutRepaymentInput = {
+  create?: Prisma.XOR<Prisma.LedgerTransactionCreateWithoutRepaymentInput, Prisma.LedgerTransactionUncheckedCreateWithoutRepaymentInput>
+  connectOrCreate?: Prisma.LedgerTransactionCreateOrConnectWithoutRepaymentInput
+  connect?: Prisma.LedgerTransactionWhereUniqueInput
+}
+
+export type LedgerTransactionUpdateOneWithoutRepaymentNestedInput = {
+  create?: Prisma.XOR<Prisma.LedgerTransactionCreateWithoutRepaymentInput, Prisma.LedgerTransactionUncheckedCreateWithoutRepaymentInput>
+  connectOrCreate?: Prisma.LedgerTransactionCreateOrConnectWithoutRepaymentInput
+  upsert?: Prisma.LedgerTransactionUpsertWithoutRepaymentInput
+  disconnect?: Prisma.LedgerTransactionWhereInput | boolean
+  delete?: Prisma.LedgerTransactionWhereInput | boolean
+  connect?: Prisma.LedgerTransactionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LedgerTransactionUpdateToOneWithWhereWithoutRepaymentInput, Prisma.LedgerTransactionUpdateWithoutRepaymentInput>, Prisma.LedgerTransactionUncheckedUpdateWithoutRepaymentInput>
+}
+
+export type LedgerTransactionUncheckedUpdateOneWithoutRepaymentNestedInput = {
+  create?: Prisma.XOR<Prisma.LedgerTransactionCreateWithoutRepaymentInput, Prisma.LedgerTransactionUncheckedCreateWithoutRepaymentInput>
+  connectOrCreate?: Prisma.LedgerTransactionCreateOrConnectWithoutRepaymentInput
+  upsert?: Prisma.LedgerTransactionUpsertWithoutRepaymentInput
+  disconnect?: Prisma.LedgerTransactionWhereInput | boolean
+  delete?: Prisma.LedgerTransactionWhereInput | boolean
+  connect?: Prisma.LedgerTransactionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LedgerTransactionUpdateToOneWithWhereWithoutRepaymentInput, Prisma.LedgerTransactionUpdateWithoutRepaymentInput>, Prisma.LedgerTransactionUncheckedUpdateWithoutRepaymentInput>
+}
+
 export type LedgerTransactionCreateWithoutOrganizationInput = {
   id?: string
   type: $Enums.LedgerTransactionType
   currency: string
   createdAt?: Date | string
-  loan: Prisma.LoanCreateNestedOneWithoutLedgerTransactionInput
+  loan: Prisma.LoanCreateNestedOneWithoutLedgerTransactionsInput
+  repayment?: Prisma.LoanRepaymentCreateNestedOneWithoutLedgerTransactionInput
   entries?: Prisma.LedgerEntryCreateNestedManyWithoutTransactionInput
 }
 
 export type LedgerTransactionUncheckedCreateWithoutOrganizationInput = {
   id?: string
   loanId: string
+  repaymentId?: string | null
   type: $Enums.LedgerTransactionType
   currency: string
   createdAt?: Date | string
@@ -513,6 +581,7 @@ export type LedgerTransactionScalarWhereInput = {
   id?: Prisma.UuidFilter<"LedgerTransaction"> | string
   organizationId?: Prisma.UuidFilter<"LedgerTransaction"> | string
   loanId?: Prisma.UuidFilter<"LedgerTransaction"> | string
+  repaymentId?: Prisma.UuidNullableFilter<"LedgerTransaction"> | string | null
   type?: Prisma.EnumLedgerTransactionTypeFilter<"LedgerTransaction"> | $Enums.LedgerTransactionType
   currency?: Prisma.StringFilter<"LedgerTransaction"> | string
   createdAt?: Prisma.DateTimeFilter<"LedgerTransaction"> | Date | string
@@ -524,11 +593,13 @@ export type LedgerTransactionCreateWithoutLoanInput = {
   currency: string
   createdAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutLedgerTransactionsInput
+  repayment?: Prisma.LoanRepaymentCreateNestedOneWithoutLedgerTransactionInput
   entries?: Prisma.LedgerEntryCreateNestedManyWithoutTransactionInput
 }
 
 export type LedgerTransactionUncheckedCreateWithoutLoanInput = {
   id?: string
+  repaymentId?: string | null
   type: $Enums.LedgerTransactionType
   currency: string
   createdAt?: Date | string
@@ -540,32 +611,25 @@ export type LedgerTransactionCreateOrConnectWithoutLoanInput = {
   create: Prisma.XOR<Prisma.LedgerTransactionCreateWithoutLoanInput, Prisma.LedgerTransactionUncheckedCreateWithoutLoanInput>
 }
 
-export type LedgerTransactionUpsertWithoutLoanInput = {
-  update: Prisma.XOR<Prisma.LedgerTransactionUpdateWithoutLoanInput, Prisma.LedgerTransactionUncheckedUpdateWithoutLoanInput>
-  create: Prisma.XOR<Prisma.LedgerTransactionCreateWithoutLoanInput, Prisma.LedgerTransactionUncheckedCreateWithoutLoanInput>
-  where?: Prisma.LedgerTransactionWhereInput
+export type LedgerTransactionCreateManyLoanInputEnvelope = {
+  data: Prisma.LedgerTransactionCreateManyLoanInput | Prisma.LedgerTransactionCreateManyLoanInput[]
+  skipDuplicates?: boolean
 }
 
-export type LedgerTransactionUpdateToOneWithWhereWithoutLoanInput = {
-  where?: Prisma.LedgerTransactionWhereInput
+export type LedgerTransactionUpsertWithWhereUniqueWithoutLoanInput = {
+  where: Prisma.LedgerTransactionWhereUniqueInput
+  update: Prisma.XOR<Prisma.LedgerTransactionUpdateWithoutLoanInput, Prisma.LedgerTransactionUncheckedUpdateWithoutLoanInput>
+  create: Prisma.XOR<Prisma.LedgerTransactionCreateWithoutLoanInput, Prisma.LedgerTransactionUncheckedCreateWithoutLoanInput>
+}
+
+export type LedgerTransactionUpdateWithWhereUniqueWithoutLoanInput = {
+  where: Prisma.LedgerTransactionWhereUniqueInput
   data: Prisma.XOR<Prisma.LedgerTransactionUpdateWithoutLoanInput, Prisma.LedgerTransactionUncheckedUpdateWithoutLoanInput>
 }
 
-export type LedgerTransactionUpdateWithoutLoanInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumLedgerTransactionTypeFieldUpdateOperationsInput | $Enums.LedgerTransactionType
-  currency?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  organization?: Prisma.OrganizationUpdateOneRequiredWithoutLedgerTransactionsNestedInput
-  entries?: Prisma.LedgerEntryUpdateManyWithoutTransactionNestedInput
-}
-
-export type LedgerTransactionUncheckedUpdateWithoutLoanInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumLedgerTransactionTypeFieldUpdateOperationsInput | $Enums.LedgerTransactionType
-  currency?: Prisma.StringFieldUpdateOperationsInput | string
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  entries?: Prisma.LedgerEntryUncheckedUpdateManyWithoutTransactionNestedInput
+export type LedgerTransactionUpdateManyWithWhereWithoutLoanInput = {
+  where: Prisma.LedgerTransactionScalarWhereInput
+  data: Prisma.XOR<Prisma.LedgerTransactionUpdateManyMutationInput, Prisma.LedgerTransactionUncheckedUpdateManyWithoutLoanInput>
 }
 
 export type LedgerTransactionCreateWithoutEntriesInput = {
@@ -574,13 +638,15 @@ export type LedgerTransactionCreateWithoutEntriesInput = {
   currency: string
   createdAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutLedgerTransactionsInput
-  loan: Prisma.LoanCreateNestedOneWithoutLedgerTransactionInput
+  loan: Prisma.LoanCreateNestedOneWithoutLedgerTransactionsInput
+  repayment?: Prisma.LoanRepaymentCreateNestedOneWithoutLedgerTransactionInput
 }
 
 export type LedgerTransactionUncheckedCreateWithoutEntriesInput = {
   id?: string
   organizationId: string
   loanId: string
+  repaymentId?: string | null
   type: $Enums.LedgerTransactionType
   currency: string
   createdAt?: Date | string
@@ -608,21 +674,78 @@ export type LedgerTransactionUpdateWithoutEntriesInput = {
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutLedgerTransactionsNestedInput
-  loan?: Prisma.LoanUpdateOneRequiredWithoutLedgerTransactionNestedInput
+  loan?: Prisma.LoanUpdateOneRequiredWithoutLedgerTransactionsNestedInput
+  repayment?: Prisma.LoanRepaymentUpdateOneWithoutLedgerTransactionNestedInput
 }
 
 export type LedgerTransactionUncheckedUpdateWithoutEntriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   loanId?: Prisma.StringFieldUpdateOperationsInput | string
+  repaymentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumLedgerTransactionTypeFieldUpdateOperationsInput | $Enums.LedgerTransactionType
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type LedgerTransactionCreateWithoutRepaymentInput = {
+  id?: string
+  type: $Enums.LedgerTransactionType
+  currency: string
+  createdAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutLedgerTransactionsInput
+  loan: Prisma.LoanCreateNestedOneWithoutLedgerTransactionsInput
+  entries?: Prisma.LedgerEntryCreateNestedManyWithoutTransactionInput
+}
+
+export type LedgerTransactionUncheckedCreateWithoutRepaymentInput = {
+  id?: string
+  loanId: string
+  type: $Enums.LedgerTransactionType
+  currency: string
+  createdAt?: Date | string
+  entries?: Prisma.LedgerEntryUncheckedCreateNestedManyWithoutTransactionInput
+}
+
+export type LedgerTransactionCreateOrConnectWithoutRepaymentInput = {
+  where: Prisma.LedgerTransactionWhereUniqueInput
+  create: Prisma.XOR<Prisma.LedgerTransactionCreateWithoutRepaymentInput, Prisma.LedgerTransactionUncheckedCreateWithoutRepaymentInput>
+}
+
+export type LedgerTransactionUpsertWithoutRepaymentInput = {
+  update: Prisma.XOR<Prisma.LedgerTransactionUpdateWithoutRepaymentInput, Prisma.LedgerTransactionUncheckedUpdateWithoutRepaymentInput>
+  create: Prisma.XOR<Prisma.LedgerTransactionCreateWithoutRepaymentInput, Prisma.LedgerTransactionUncheckedCreateWithoutRepaymentInput>
+  where?: Prisma.LedgerTransactionWhereInput
+}
+
+export type LedgerTransactionUpdateToOneWithWhereWithoutRepaymentInput = {
+  where?: Prisma.LedgerTransactionWhereInput
+  data: Prisma.XOR<Prisma.LedgerTransactionUpdateWithoutRepaymentInput, Prisma.LedgerTransactionUncheckedUpdateWithoutRepaymentInput>
+}
+
+export type LedgerTransactionUpdateWithoutRepaymentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumLedgerTransactionTypeFieldUpdateOperationsInput | $Enums.LedgerTransactionType
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutLedgerTransactionsNestedInput
+  loan?: Prisma.LoanUpdateOneRequiredWithoutLedgerTransactionsNestedInput
+  entries?: Prisma.LedgerEntryUpdateManyWithoutTransactionNestedInput
+}
+
+export type LedgerTransactionUncheckedUpdateWithoutRepaymentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  loanId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumLedgerTransactionTypeFieldUpdateOperationsInput | $Enums.LedgerTransactionType
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  entries?: Prisma.LedgerEntryUncheckedUpdateManyWithoutTransactionNestedInput
+}
+
 export type LedgerTransactionCreateManyOrganizationInput = {
   id?: string
   loanId: string
+  repaymentId?: string | null
   type: $Enums.LedgerTransactionType
   currency: string
   createdAt?: Date | string
@@ -633,13 +756,15 @@ export type LedgerTransactionUpdateWithoutOrganizationInput = {
   type?: Prisma.EnumLedgerTransactionTypeFieldUpdateOperationsInput | $Enums.LedgerTransactionType
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  loan?: Prisma.LoanUpdateOneRequiredWithoutLedgerTransactionNestedInput
+  loan?: Prisma.LoanUpdateOneRequiredWithoutLedgerTransactionsNestedInput
+  repayment?: Prisma.LoanRepaymentUpdateOneWithoutLedgerTransactionNestedInput
   entries?: Prisma.LedgerEntryUpdateManyWithoutTransactionNestedInput
 }
 
 export type LedgerTransactionUncheckedUpdateWithoutOrganizationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   loanId?: Prisma.StringFieldUpdateOperationsInput | string
+  repaymentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumLedgerTransactionTypeFieldUpdateOperationsInput | $Enums.LedgerTransactionType
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -649,6 +774,42 @@ export type LedgerTransactionUncheckedUpdateWithoutOrganizationInput = {
 export type LedgerTransactionUncheckedUpdateManyWithoutOrganizationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   loanId?: Prisma.StringFieldUpdateOperationsInput | string
+  repaymentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumLedgerTransactionTypeFieldUpdateOperationsInput | $Enums.LedgerTransactionType
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type LedgerTransactionCreateManyLoanInput = {
+  id?: string
+  repaymentId?: string | null
+  type: $Enums.LedgerTransactionType
+  currency: string
+  createdAt?: Date | string
+}
+
+export type LedgerTransactionUpdateWithoutLoanInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumLedgerTransactionTypeFieldUpdateOperationsInput | $Enums.LedgerTransactionType
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutLedgerTransactionsNestedInput
+  repayment?: Prisma.LoanRepaymentUpdateOneWithoutLedgerTransactionNestedInput
+  entries?: Prisma.LedgerEntryUpdateManyWithoutTransactionNestedInput
+}
+
+export type LedgerTransactionUncheckedUpdateWithoutLoanInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  repaymentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumLedgerTransactionTypeFieldUpdateOperationsInput | $Enums.LedgerTransactionType
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  entries?: Prisma.LedgerEntryUncheckedUpdateManyWithoutTransactionNestedInput
+}
+
+export type LedgerTransactionUncheckedUpdateManyWithoutLoanInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  repaymentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumLedgerTransactionTypeFieldUpdateOperationsInput | $Enums.LedgerTransactionType
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -689,11 +850,13 @@ export type LedgerTransactionSelect<ExtArgs extends runtime.Types.Extensions.Int
   id?: boolean
   organizationId?: boolean
   loanId?: boolean
+  repaymentId?: boolean
   type?: boolean
   currency?: boolean
   createdAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   loan?: boolean | Prisma.LoanDefaultArgs<ExtArgs>
+  repayment?: boolean | Prisma.LedgerTransaction$repaymentArgs<ExtArgs>
   entries?: boolean | Prisma.LedgerTransaction$entriesArgs<ExtArgs>
   _count?: boolean | Prisma.LedgerTransactionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["ledgerTransaction"]>
@@ -702,47 +865,55 @@ export type LedgerTransactionSelectCreateManyAndReturn<ExtArgs extends runtime.T
   id?: boolean
   organizationId?: boolean
   loanId?: boolean
+  repaymentId?: boolean
   type?: boolean
   currency?: boolean
   createdAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   loan?: boolean | Prisma.LoanDefaultArgs<ExtArgs>
+  repayment?: boolean | Prisma.LedgerTransaction$repaymentArgs<ExtArgs>
 }, ExtArgs["result"]["ledgerTransaction"]>
 
 export type LedgerTransactionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   organizationId?: boolean
   loanId?: boolean
+  repaymentId?: boolean
   type?: boolean
   currency?: boolean
   createdAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   loan?: boolean | Prisma.LoanDefaultArgs<ExtArgs>
+  repayment?: boolean | Prisma.LedgerTransaction$repaymentArgs<ExtArgs>
 }, ExtArgs["result"]["ledgerTransaction"]>
 
 export type LedgerTransactionSelectScalar = {
   id?: boolean
   organizationId?: boolean
   loanId?: boolean
+  repaymentId?: boolean
   type?: boolean
   currency?: boolean
   createdAt?: boolean
 }
 
-export type LedgerTransactionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "loanId" | "type" | "currency" | "createdAt", ExtArgs["result"]["ledgerTransaction"]>
+export type LedgerTransactionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "loanId" | "repaymentId" | "type" | "currency" | "createdAt", ExtArgs["result"]["ledgerTransaction"]>
 export type LedgerTransactionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   loan?: boolean | Prisma.LoanDefaultArgs<ExtArgs>
+  repayment?: boolean | Prisma.LedgerTransaction$repaymentArgs<ExtArgs>
   entries?: boolean | Prisma.LedgerTransaction$entriesArgs<ExtArgs>
   _count?: boolean | Prisma.LedgerTransactionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type LedgerTransactionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   loan?: boolean | Prisma.LoanDefaultArgs<ExtArgs>
+  repayment?: boolean | Prisma.LedgerTransaction$repaymentArgs<ExtArgs>
 }
 export type LedgerTransactionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   loan?: boolean | Prisma.LoanDefaultArgs<ExtArgs>
+  repayment?: boolean | Prisma.LedgerTransaction$repaymentArgs<ExtArgs>
 }
 
 export type $LedgerTransactionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -750,12 +921,14 @@ export type $LedgerTransactionPayload<ExtArgs extends runtime.Types.Extensions.I
   objects: {
     organization: Prisma.$OrganizationPayload<ExtArgs>
     loan: Prisma.$LoanPayload<ExtArgs>
+    repayment: Prisma.$LoanRepaymentPayload<ExtArgs> | null
     entries: Prisma.$LedgerEntryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     organizationId: string
     loanId: string
+    repaymentId: string | null
     type: $Enums.LedgerTransactionType
     currency: string
     createdAt: Date
@@ -1155,6 +1328,7 @@ export interface Prisma__LedgerTransactionClient<T, Null = never, ExtArgs extend
   readonly [Symbol.toStringTag]: "PrismaPromise"
   organization<T extends Prisma.OrganizationDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationDefaultArgs<ExtArgs>>): Prisma.Prisma__OrganizationClient<runtime.Types.Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   loan<T extends Prisma.LoanDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LoanDefaultArgs<ExtArgs>>): Prisma.Prisma__LoanClient<runtime.Types.Result.GetResult<Prisma.$LoanPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  repayment<T extends Prisma.LedgerTransaction$repaymentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LedgerTransaction$repaymentArgs<ExtArgs>>): Prisma.Prisma__LoanRepaymentClient<runtime.Types.Result.GetResult<Prisma.$LoanRepaymentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   entries<T extends Prisma.LedgerTransaction$entriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LedgerTransaction$entriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LedgerEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1188,6 +1362,7 @@ export interface LedgerTransactionFieldRefs {
   readonly id: Prisma.FieldRef<"LedgerTransaction", 'String'>
   readonly organizationId: Prisma.FieldRef<"LedgerTransaction", 'String'>
   readonly loanId: Prisma.FieldRef<"LedgerTransaction", 'String'>
+  readonly repaymentId: Prisma.FieldRef<"LedgerTransaction", 'String'>
   readonly type: Prisma.FieldRef<"LedgerTransaction", 'LedgerTransactionType'>
   readonly currency: Prisma.FieldRef<"LedgerTransaction", 'String'>
   readonly createdAt: Prisma.FieldRef<"LedgerTransaction", 'DateTime'>
@@ -1589,6 +1764,25 @@ export type LedgerTransactionDeleteManyArgs<ExtArgs extends runtime.Types.Extens
    * Limit how many LedgerTransactions to delete.
    */
   limit?: number
+}
+
+/**
+ * LedgerTransaction.repayment
+ */
+export type LedgerTransaction$repaymentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LoanRepayment
+   */
+  select?: Prisma.LoanRepaymentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LoanRepayment
+   */
+  omit?: Prisma.LoanRepaymentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LoanRepaymentInclude<ExtArgs> | null
+  where?: Prisma.LoanRepaymentWhereInput
 }
 
 /**

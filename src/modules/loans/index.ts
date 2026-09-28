@@ -4,3 +4,7 @@ export {
   calculateBorrowLoanSummary,
   isAmountWithinOfferTerms,
 } from "@/modules/loans/domain/borrow-loan";
+export {
+  calculatePrincipalReduction,
+  toEmployeeBorrowedLoanDetails,
+} from "@/modules/loans/domain/employee-loan";
