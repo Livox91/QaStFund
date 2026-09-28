@@ -15,3 +15,34 @@ export const MembershipRole = {
 } as const
 
 export type MembershipRole = (typeof MembershipRole)[keyof typeof MembershipRole]
+
+
+export const LendingOfferStatus = {
+  ACTIVE: 'ACTIVE',
+  PAUSED: 'PAUSED',
+  CLOSED: 'CLOSED'
+} as const
+
+export type LendingOfferStatus = (typeof LendingOfferStatus)[keyof typeof LendingOfferStatus]
+
+
+export const LoanStatus = {
+  ACTIVE: 'ACTIVE',
+  REPAID: 'REPAID',
+  OVERDUE: 'OVERDUE',
+  DEFAULTED: 'DEFAULTED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type LoanStatus = (typeof LoanStatus)[keyof typeof LoanStatus]
+
+
+export const AuditEventType = {
+  LOAN_CREATED: 'LOAN_CREATED',
+  LOAN_ACTIVATED: 'LOAN_ACTIVATED',
+  REPAYMENT_RECORDED: 'REPAYMENT_RECORDED',
+  LOAN_REPAID: 'LOAN_REPAID',
+  LOAN_OVERDUE: 'LOAN_OVERDUE'
+} as const
+
+export type AuditEventType = (typeof AuditEventType)[keyof typeof AuditEventType]

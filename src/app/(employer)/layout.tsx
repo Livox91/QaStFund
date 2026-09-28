@@ -1,15 +1,10 @@
 import { requireEmployerAdminPage } from "@/modules/auth/infrastructure/auth-guard";
-import { AccountHeader } from "@/modules/auth/ui/account-header";
+import { EmployerLayout } from "@/shared/ui/layouts/employer-layout";
 
-export default async function EmployerLayout({
+export default async function EmployerRouteLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const actor = await requireEmployerAdminPage();
 
-  return (
-    <div className="min-h-screen bg-slate-100">
-      <AccountHeader actor={actor} />
-      {children}
-    </div>
-  );
+  return <EmployerLayout actor={actor}>{children}</EmployerLayout>;
 }

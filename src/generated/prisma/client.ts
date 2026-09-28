@@ -57,6 +57,31 @@ export type Organization = Prisma.OrganizationModel
  */
 export type OrganizationMembership = Prisma.OrganizationMembershipModel
 /**
+ * Model LendingOffer
+ * 
+ */
+export type LendingOffer = Prisma.LendingOfferModel
+/**
+ * Model EmployeeBalance
+ * 
+ */
+export type EmployeeBalance = Prisma.EmployeeBalanceModel
+/**
+ * Model Loan
+ * 
+ */
+export type Loan = Prisma.LoanModel
+/**
+ * Model LoanRepayment
+ * 
+ */
+export type LoanRepayment = Prisma.LoanRepaymentModel
+/**
+ * Model AuditEvent
+ * 
+ */
+export type AuditEvent = Prisma.AuditEventModel
+/**
  * Model Session
  * 
  */

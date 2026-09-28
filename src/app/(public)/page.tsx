@@ -1,22 +1,35 @@
-import Link from "next/link";
+import type { Metadata } from "next";
+
+import { AudienceSections } from "./_components/audience-sections";
+import { EmployerCallToAction } from "./_components/employer-cta";
+import { FrequentlyAskedQuestions } from "./_components/faq";
+import { Hero } from "./_components/hero";
+import { HowItWorks } from "./_components/how-it-works";
+import { LandingFooter } from "./_components/landing-footer";
+import { LandingHeader } from "./_components/landing-header";
+import { TrustSection } from "./_components/trust-section";
+
+export const metadata: Metadata = {
+  title: {
+    absolute: "Employee Lending Platform | Workplace lending, made clear",
+  },
+  description:
+    "An employer-enabled internal marketplace where verified employees can lend to and borrow from coworkers with transparent terms.",
+};
 
 export default function LandingPage() {
   return (
-    <main className="mx-auto flex min-h-screen max-w-5xl items-center px-6 py-16">
-      <div>
-        <p className="mb-3 text-sm font-semibold tracking-wide text-slate-500 uppercase">
-          Foundation MVP
-        </p>
-        <h1 className="text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
-          Employee Lending Platform
-        </h1>
-        <Link
-          className="mt-8 inline-flex rounded-md bg-slate-950 px-4 py-2.5 font-medium text-white hover:bg-slate-800"
-          href="/sign-in"
-        >
-          Sign in
-        </Link>
-      </div>
-    </main>
+    <div className="min-h-screen bg-white">
+      <LandingHeader />
+      <main>
+        <Hero />
+        <HowItWorks />
+        <AudienceSections />
+        <TrustSection />
+        <FrequentlyAskedQuestions />
+        <EmployerCallToAction />
+      </main>
+      <LandingFooter />
+    </div>
   );
 }

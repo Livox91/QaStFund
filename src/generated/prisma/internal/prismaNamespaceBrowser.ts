@@ -54,6 +54,11 @@ export const ModelName = {
   User: 'User',
   Organization: 'Organization',
   OrganizationMembership: 'OrganizationMembership',
+  LendingOffer: 'LendingOffer',
+  EmployeeBalance: 'EmployeeBalance',
+  Loan: 'Loan',
+  LoanRepayment: 'LoanRepayment',
+  AuditEvent: 'AuditEvent',
   Session: 'Session'
 } as const
 
@@ -89,6 +94,7 @@ export const OrganizationScalarFieldEnum = {
   id: 'id',
   name: 'name',
   slug: 'slug',
+  currency: 'currency',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -107,6 +113,85 @@ export const OrganizationMembershipScalarFieldEnum = {
 } as const
 
 export type OrganizationMembershipScalarFieldEnum = (typeof OrganizationMembershipScalarFieldEnum)[keyof typeof OrganizationMembershipScalarFieldEnum]
+
+
+export const LendingOfferScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  lenderMembershipId: 'lenderMembershipId',
+  amountMinorUnits: 'amountMinorUnits',
+  availableAmountMinorUnits: 'availableAmountMinorUnits',
+  minimumLoanAmountMinorUnits: 'minimumLoanAmountMinorUnits',
+  maximumLoanAmountMinorUnits: 'maximumLoanAmountMinorUnits',
+  currency: 'currency',
+  durationDays: 'durationDays',
+  feeRateBasisPoints: 'feeRateBasisPoints',
+  expiresAt: 'expiresAt',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LendingOfferScalarFieldEnum = (typeof LendingOfferScalarFieldEnum)[keyof typeof LendingOfferScalarFieldEnum]
+
+
+export const EmployeeBalanceScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  membershipId: 'membershipId',
+  amountMinorUnits: 'amountMinorUnits',
+  currency: 'currency',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeBalanceScalarFieldEnum = (typeof EmployeeBalanceScalarFieldEnum)[keyof typeof EmployeeBalanceScalarFieldEnum]
+
+
+export const LoanScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  lenderMembershipId: 'lenderMembershipId',
+  borrowerMembershipId: 'borrowerMembershipId',
+  principalAmountMinorUnits: 'principalAmountMinorUnits',
+  feeAmountMinorUnits: 'feeAmountMinorUnits',
+  outstandingPrincipalMinorUnits: 'outstandingPrincipalMinorUnits',
+  currency: 'currency',
+  status: 'status',
+  startedAt: 'startedAt',
+  repaymentDueAt: 'repaymentDueAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LoanScalarFieldEnum = (typeof LoanScalarFieldEnum)[keyof typeof LoanScalarFieldEnum]
+
+
+export const LoanRepaymentScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  loanId: 'loanId',
+  amountMinorUnits: 'amountMinorUnits',
+  currency: 'currency',
+  paidAt: 'paidAt',
+  createdAt: 'createdAt'
+} as const
+
+export type LoanRepaymentScalarFieldEnum = (typeof LoanRepaymentScalarFieldEnum)[keyof typeof LoanRepaymentScalarFieldEnum]
+
+
+export const AuditEventScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  loanId: 'loanId',
+  type: 'type',
+  title: 'title',
+  actorLabel: 'actorLabel',
+  occurredAt: 'occurredAt',
+  createdAt: 'createdAt'
+} as const
+
+export type AuditEventScalarFieldEnum = (typeof AuditEventScalarFieldEnum)[keyof typeof AuditEventScalarFieldEnum]
 
 
 export const SessionScalarFieldEnum = {
@@ -135,4 +220,12 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

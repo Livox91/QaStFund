@@ -1,15 +1,21 @@
 import type { Metadata } from "next";
 
+import { requireEmployerAdminPage } from "@/modules/auth/infrastructure/auth-guard";
+import { getEmployerOverviewForActor } from "@/modules/organizations/index.server";
+import { EmployerOverviewDashboard } from "@/modules/organizations/ui/employer-overview-dashboard";
+
 export const metadata: Metadata = {
-  title: "Employer Dashboard",
+  title: "Employer Overview",
 };
 
-export default function EmployerDashboardPage() {
+export default async function EmployerOverviewPage() {
+  const actor = await requireEmployerAdminPage();
+  const overview = await getEmployerOverviewForActor(actor);
+
   return (
-    <main className="mx-auto max-w-7xl px-6 py-12">
-      <h1 className="text-3xl font-semibold tracking-tight text-slate-950">
-        Employer Dashboard
-      </h1>
-    </main>
+    <EmployerOverviewDashboard
+      organizationName={actor.organizationName}
+      overview={overview}
+    />
   );
 }

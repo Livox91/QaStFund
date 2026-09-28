@@ -3,6 +3,9 @@ import { redirect } from "next/navigation";
 
 import { getRoleHome } from "@/modules/auth/domain/application-role";
 import { getCurrentActor } from "@/modules/auth/infrastructure/auth-guard";
+import { Button } from "@/shared/ui/button";
+import { Card, CardContent } from "@/shared/ui/card";
+import { Field, Input } from "@/shared/ui/input";
 
 export const metadata: Metadata = {
   title: "Sign in",
@@ -27,73 +30,65 @@ export default async function SignInPage({
   const errorCode = typeof error === "string" ? error : undefined;
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-md items-center px-6 py-16">
-      <div className="w-full rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
-        <p className="mb-2 text-sm font-semibold tracking-wide text-slate-500 uppercase">
-          Employee Lending Platform
-        </p>
-        <h1 className="text-3xl font-semibold tracking-tight text-slate-950">
-          Sign in
-        </h1>
-        <p className="mt-2 text-sm text-slate-600">
-          Use your organization account to continue.
-        </p>
-
-        {errorCode && ERROR_MESSAGES[errorCode] ? (
-          <p
-            className="mt-6 rounded-md bg-red-50 px-4 py-3 text-sm text-red-700"
-            role="alert"
-          >
-            {ERROR_MESSAGES[errorCode]}
-          </p>
-        ) : null}
-
-        <form
-          className="mt-6 space-y-5"
-          action="/api/auth/sign-in"
-          method="post"
-        >
-          <div>
-            <label
-              className="block text-sm font-medium text-slate-700"
-              htmlFor="email"
-            >
-              Email
-            </label>
-            <input
-              autoComplete="email"
-              className="mt-2 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none focus:border-slate-500"
-              id="email"
-              name="email"
-              required
-              type="email"
-            />
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-50 px-4 py-16 sm:px-6">
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-teal-50 to-transparent"
+      />
+      <Card className="relative w-full max-w-md shadow-xl shadow-slate-200/60">
+        <CardContent className="p-7 sm:p-9">
+          <div className="mb-8">
+            <div className="mb-6 flex size-11 items-center justify-center rounded-xl bg-slate-950 text-sm font-bold text-white shadow-sm">
+              EL
+            </div>
+            <p className="text-sm font-semibold text-teal-700">
+              Employee Lending Platform
+            </p>
+            <h1 className="mt-1 text-3xl font-semibold tracking-tight text-slate-950">
+              Welcome back
+            </h1>
+            <p className="mt-2 text-sm leading-6 text-slate-500">
+              Sign in with your organization account to continue.
+            </p>
           </div>
-          <div>
-            <label
-              className="block text-sm font-medium text-slate-700"
-              htmlFor="password"
+
+          {errorCode && ERROR_MESSAGES[errorCode] ? (
+            <p
+              className="mb-6 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700"
+              role="alert"
             >
-              Password
-            </label>
-            <input
-              autoComplete="current-password"
-              className="mt-2 w-full rounded-md border border-slate-300 px-3 py-2 text-slate-950 outline-none focus:border-slate-500"
-              id="password"
-              maxLength={128}
-              name="password"
-              required
-              type="password"
-            />
-          </div>
-          <button
-            className="w-full cursor-pointer rounded-md bg-slate-950 px-4 py-2.5 font-medium text-white hover:bg-slate-800"
-            type="submit"
-          >
-            Sign in
-          </button>
-        </form>
-      </div>
+              {ERROR_MESSAGES[errorCode]}
+            </p>
+          ) : null}
+
+          <form action="/api/auth/sign-in" className="space-y-5" method="post">
+            <Field htmlFor="email" label="Email address">
+              <Input
+                autoComplete="email"
+                id="email"
+                name="email"
+                placeholder="you@company.com"
+                required
+                type="email"
+              />
+            </Field>
+            <Field htmlFor="password" label="Password">
+              <Input
+                autoComplete="current-password"
+                id="password"
+                maxLength={128}
+                name="password"
+                placeholder="Enter your password"
+                required
+                type="password"
+              />
+            </Field>
+            <Button className="w-full" size="lg" type="submit">
+              Sign in
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </main>
   );
 }

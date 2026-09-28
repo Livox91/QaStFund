@@ -12,6 +12,28 @@ enum MembershipRole {
   EMPLOYEE
 }
 
+enum LendingOfferStatus {
+  ACTIVE
+  PAUSED
+  CLOSED
+}
+
+enum LoanStatus {
+  ACTIVE
+  REPAID
+  OVERDUE
+  DEFAULTED
+  CANCELLED
+}
+
+enum AuditEventType {
+  LOAN_CREATED
+  LOAN_ACTIVATED
+  REPAYMENT_RECORDED
+  LOAN_REPAID
+  LOAN_OVERDUE
+}
+
 model User {
   id           String                   @id @default(uuid()) @db.Uuid
   email        String                   @unique
@@ -23,28 +45,133 @@ model User {
 }
 
 model Organization {
-  id          String                   @id @default(uuid()) @db.Uuid
-  name        String
-  slug        String                   @unique
-  createdAt   DateTime                 @default(now())
-  updatedAt   DateTime                 @updatedAt
-  memberships OrganizationMembership[]
+  id            String                   @id @default(uuid()) @db.Uuid
+  name          String
+  slug          String                   @unique
+  currency      String                   @default("USD") @db.VarChar(3)
+  createdAt     DateTime                 @default(now())
+  updatedAt     DateTime                 @updatedAt
+  memberships   OrganizationMembership[]
+  lendingOffers LendingOffer[]
+  loans         Loan[]
+  repayments    LoanRepayment[]
+  auditEvents   AuditEvent[]
+  balances      EmployeeBalance[]
 }
 
 model OrganizationMembership {
-  id             String         @id @default(uuid()) @db.Uuid
-  organizationId String         @db.Uuid
-  userId         String         @db.Uuid
-  role           MembershipRole
-  isActive       Boolean        @default(true)
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  sessions       Session[]
+  id              String           @id @default(uuid()) @db.Uuid
+  organizationId  String           @db.Uuid
+  userId          String           @db.Uuid
+  role            MembershipRole
+  isActive        Boolean          @default(true)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  organization    Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessions        Session[]
+  lendingOffers   LendingOffer[]   @relation("MembershipLendingOffers")
+  balance         EmployeeBalance?
+  loansAsLender   Loan[]           @relation("LoansAsLender")
+  loansAsBorrower Loan[]           @relation("LoansAsBorrower")
 
   @@unique([organizationId, userId])
+  @@unique([organizationId, id])
   @@index([organizationId, role])
+}
+
+model LendingOffer {
+  id                          String                 @id @default(uuid()) @db.Uuid
+  organizationId              String                 @db.Uuid
+  lenderMembershipId          String                 @db.Uuid
+  amountMinorUnits            BigInt
+  availableAmountMinorUnits   BigInt
+  minimumLoanAmountMinorUnits BigInt
+  maximumLoanAmountMinorUnits BigInt
+  currency                    String                 @db.VarChar(3)
+  durationDays                Int
+  feeRateBasisPoints          Int
+  expiresAt                   DateTime
+  status                      LendingOfferStatus
+  createdAt                   DateTime               @default(now())
+  updatedAt                   DateTime               @updatedAt
+  organization                Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  lenderMembership            OrganizationMembership @relation("MembershipLendingOffers", fields: [organizationId, lenderMembershipId], references: [organizationId, id], onDelete: Restrict)
+
+  @@index([organizationId, status])
+  @@index([organizationId, status, expiresAt])
+  @@index([organizationId, lenderMembershipId])
+}
+
+model EmployeeBalance {
+  id               String                 @id @default(uuid()) @db.Uuid
+  organizationId   String                 @db.Uuid
+  membershipId     String                 @db.Uuid
+  amountMinorUnits BigInt
+  currency         String                 @db.VarChar(3)
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+  organization     Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  membership       OrganizationMembership @relation(fields: [organizationId, membershipId], references: [organizationId, id], onDelete: Cascade)
+
+  @@unique([organizationId, membershipId])
+  @@index([organizationId])
+}
+
+model Loan {
+  id                             String                 @id @default(uuid()) @db.Uuid
+  organizationId                 String                 @db.Uuid
+  lenderMembershipId             String                 @db.Uuid
+  borrowerMembershipId           String                 @db.Uuid
+  principalAmountMinorUnits      BigInt
+  feeAmountMinorUnits            BigInt                 @default(0)
+  outstandingPrincipalMinorUnits BigInt
+  currency                       String                 @db.VarChar(3)
+  status                         LoanStatus
+  startedAt                      DateTime               @default(now())
+  repaymentDueAt                 DateTime
+  createdAt                      DateTime               @default(now())
+  updatedAt                      DateTime               @updatedAt
+  organization                   Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  lenderMembership               OrganizationMembership @relation("LoansAsLender", fields: [organizationId, lenderMembershipId], references: [organizationId, id], onDelete: Restrict)
+  borrowerMembership             OrganizationMembership @relation("LoansAsBorrower", fields: [organizationId, borrowerMembershipId], references: [organizationId, id], onDelete: Restrict)
+  repayments                     LoanRepayment[]
+  auditEvents                    AuditEvent[]
+
+  @@unique([organizationId, id])
+  @@index([organizationId, status])
+  @@index([organizationId, repaymentDueAt])
+  @@index([organizationId, lenderMembershipId])
+  @@index([organizationId, borrowerMembershipId])
+}
+
+model LoanRepayment {
+  id               String       @id @default(uuid()) @db.Uuid
+  organizationId   String       @db.Uuid
+  loanId           String       @db.Uuid
+  amountMinorUnits BigInt
+  currency         String       @db.VarChar(3)
+  paidAt           DateTime
+  createdAt        DateTime     @default(now())
+  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  loan             Loan         @relation(fields: [organizationId, loanId], references: [organizationId, id], onDelete: Restrict)
+
+  @@index([organizationId, loanId, paidAt])
+}
+
+model AuditEvent {
+  id             String         @id @default(uuid()) @db.Uuid
+  organizationId String         @db.Uuid
+  loanId         String         @db.Uuid
+  type           AuditEventType
+  title          String
+  actorLabel     String?
+  occurredAt     DateTime
+  createdAt      DateTime       @default(now())
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  loan           Loan           @relation(fields: [organizationId, loanId], references: [organizationId, id], onDelete: Restrict)
+
+  @@index([organizationId, loanId, occurredAt])
 }
 
 model Session {
