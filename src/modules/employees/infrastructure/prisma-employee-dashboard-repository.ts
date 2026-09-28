@@ -120,7 +120,7 @@ export const prismaEmployeeDashboardRepository: EmployeeDashboardRepository = {
           status: "ACTIVE",
           expiresAt: { gt: now },
         },
-        _sum: { amountMinorUnits: true },
+        _sum: { availableAmountMinorUnits: true },
       });
       const earnings = await transaction.loan.aggregate({
         where: {
@@ -180,9 +180,9 @@ export const prismaEmployeeDashboardRepository: EmployeeDashboardRepository = {
         currency: organization.currency,
         availableBalanceMinorUnits:
           (balance?.amountMinorUnits ?? 0n) >
-          (committedBalance._sum.amountMinorUnits ?? 0n)
+          (committedBalance._sum.availableAmountMinorUnits ?? 0n)
             ? (balance?.amountMinorUnits ?? 0n) -
-              (committedBalance._sum.amountMinorUnits ?? 0n)
+              (committedBalance._sum.availableAmountMinorUnits ?? 0n)
             : 0n,
         totalEarningsMinorUnits: earnings._sum.feeAmountMinorUnits ?? 0n,
         currentLoans: (currentLoans as CurrentLoanRow[]).map((loan) =>

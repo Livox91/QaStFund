@@ -57,6 +57,9 @@ export const ModelName = {
   LendingOffer: 'LendingOffer',
   EmployeeBalance: 'EmployeeBalance',
   Loan: 'Loan',
+  LedgerAccount: 'LedgerAccount',
+  LedgerTransaction: 'LedgerTransaction',
+  LedgerEntry: 'LedgerEntry',
   LoanRepayment: 'LoanRepayment',
   AuditEvent: 'AuditEvent',
   Session: 'Session'
@@ -153,10 +156,14 @@ export const LoanScalarFieldEnum = {
   organizationId: 'organizationId',
   lenderMembershipId: 'lenderMembershipId',
   borrowerMembershipId: 'borrowerMembershipId',
+  lendingOfferId: 'lendingOfferId',
+  borrowRequestId: 'borrowRequestId',
   principalAmountMinorUnits: 'principalAmountMinorUnits',
   feeAmountMinorUnits: 'feeAmountMinorUnits',
   outstandingPrincipalMinorUnits: 'outstandingPrincipalMinorUnits',
   currency: 'currency',
+  durationDays: 'durationDays',
+  feeRateBasisPoints: 'feeRateBasisPoints',
   status: 'status',
   startedAt: 'startedAt',
   repaymentDueAt: 'repaymentDueAt',
@@ -165,6 +172,45 @@ export const LoanScalarFieldEnum = {
 } as const
 
 export type LoanScalarFieldEnum = (typeof LoanScalarFieldEnum)[keyof typeof LoanScalarFieldEnum]
+
+
+export const LedgerAccountScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  membershipId: 'membershipId',
+  currency: 'currency',
+  type: 'type',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LedgerAccountScalarFieldEnum = (typeof LedgerAccountScalarFieldEnum)[keyof typeof LedgerAccountScalarFieldEnum]
+
+
+export const LedgerTransactionScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  loanId: 'loanId',
+  type: 'type',
+  currency: 'currency',
+  createdAt: 'createdAt'
+} as const
+
+export type LedgerTransactionScalarFieldEnum = (typeof LedgerTransactionScalarFieldEnum)[keyof typeof LedgerTransactionScalarFieldEnum]
+
+
+export const LedgerEntryScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  transactionId: 'transactionId',
+  accountId: 'accountId',
+  direction: 'direction',
+  amountMinorUnits: 'amountMinorUnits',
+  currency: 'currency',
+  createdAt: 'createdAt'
+} as const
+
+export type LedgerEntryScalarFieldEnum = (typeof LedgerEntryScalarFieldEnum)[keyof typeof LedgerEntryScalarFieldEnum]
 
 
 export const LoanRepaymentScalarFieldEnum = {

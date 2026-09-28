@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import type { EmployeeDashboard as EmployeeDashboardView } from "@/modules/employees/domain/employee-dashboard";
 import {
   EmployeeActivityList,
@@ -25,10 +27,12 @@ const dateFormatter = new Intl.DateTimeFormat("en-US", {
 export function EmployeeDashboard({
   dashboard,
   employeeName,
+  loanCreated = false,
   organizationName,
 }: {
   dashboard: EmployeeDashboardView;
   employeeName: string;
+  loanCreated?: boolean;
   organizationName: string;
 }) {
   const { metrics } = dashboard;
@@ -61,12 +65,19 @@ export function EmployeeDashboard({
         eyebrow="Employee portal"
         title={`Welcome, ${employeeName}`}
       />
+      {loanCreated ? (
+        <p
+          className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800"
+          role="status"
+        >
+          Loan created. The mock funds and dashboard totals are now updated.
+        </p>
+      ) : null}
       <p
         id="actions-help"
         className="mt-3 text-xs text-slate-400 sm:text-right"
       >
-        Browse offers or create one of your own. Accepting an offer is coming in
-        a future release.
+        Browse offers or create one of your own.
       </p>
 
       <section aria-label="Financial summary" className="mt-8">
@@ -195,4 +206,3 @@ export function EmployeeDashboard({
     </main>
   );
 }
-import Link from "next/link";

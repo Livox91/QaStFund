@@ -46,3 +46,25 @@ export const AuditEventType = {
 } as const
 
 export type AuditEventType = (typeof AuditEventType)[keyof typeof AuditEventType]
+
+
+export const LedgerAccountType = {
+  MOCK_CASH: 'MOCK_CASH'
+} as const
+
+export type LedgerAccountType = (typeof LedgerAccountType)[keyof typeof LedgerAccountType]
+
+
+export const LedgerTransactionType = {
+  LOAN_DISBURSEMENT: 'LOAN_DISBURSEMENT'
+} as const
+
+export type LedgerTransactionType = (typeof LedgerTransactionType)[keyof typeof LedgerTransactionType]
+
+
+export const LedgerEntryDirection = {
+  DEBIT: 'DEBIT',
+  CREDIT: 'CREDIT'
+} as const
+
+export type LedgerEntryDirection = (typeof LedgerEntryDirection)[keyof typeof LedgerEntryDirection]

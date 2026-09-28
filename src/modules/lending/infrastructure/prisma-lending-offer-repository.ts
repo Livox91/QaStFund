@@ -92,11 +92,11 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
           status: "ACTIVE",
           expiresAt: { gt: now },
         },
-        _sum: { amountMinorUnits: true },
+        _sum: { availableAmountMinorUnits: true },
       });
       const availableBalanceMinorUnits = calculateAvailableMockBalance(
         balance.amountMinorUnits,
-        committed._sum.amountMinorUnits ?? 0n,
+        committed._sum.availableAmountMinorUnits ?? 0n,
       );
 
       if (command.amountMinorUnits > availableBalanceMinorUnits) {
@@ -170,13 +170,14 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
           status: "ACTIVE",
           expiresAt: { gt: now },
         },
-        _sum: { amountMinorUnits: true },
+        _sum: { availableAmountMinorUnits: true },
       });
 
       return {
         currency,
         mockBalanceMinorUnits: balance?.amountMinorUnits ?? 0n,
-        committedBalanceMinorUnits: committed._sum.amountMinorUnits ?? 0n,
+        committedBalanceMinorUnits:
+          committed._sum.availableAmountMinorUnits ?? 0n,
         offers: (offers as OfferRow[]).map((offer) => toOfferView(offer, now)),
       };
     });

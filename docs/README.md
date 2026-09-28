@@ -1,6 +1,6 @@
 # Employee P2P Lending MVP
 
-A production-oriented foundation for an employee peer-to-peer lending application. Local authentication, organization membership, employer reporting, the employee dashboard, and internal mock-balance lending-offer creation are implemented. Borrowing, payroll, settlement, ERP, and blockchain behavior are intentionally not implemented.
+A production-oriented foundation for an employee peer-to-peer lending application. Local authentication, organization membership, employer reporting, employee dashboards, lending offers, marketplace discovery, and transactional borrowing with internal mock balances are implemented. Payroll, external settlement, ERP, and blockchain behavior are intentionally not implemented.
 
 ## Prerequisites
 
@@ -38,6 +38,7 @@ Open:
 - `http://localhost:3000/app` — authenticated employee dashboard
 - `http://localhost:3000/app/lending` — create and review personal offers
 - `http://localhost:3000/app/borrow` — organization lending marketplace
+- `http://localhost:3000/app/borrow/[offerId]` — review and confirm an eligible offer
 - `http://localhost:3000/employer` — database-backed employer overview
 - `http://localhost:3000/employer/loans` — organization-scoped loan reporting
 - `http://localhost:3000/profile` — authenticated profile
@@ -120,7 +121,7 @@ Alternatively, from `psql`:
 CREATE DATABASE employee_lending;
 ```
 
-Update `DATABASE_URL` in `.env` to match the PostgreSQL user, password, host, port, and database in your environment. Skip `docker compose up` when using this option. The schema includes authentication plus the minimal lending-offer and loan records required for employer reporting; product actions are not implemented yet.
+Update `DATABASE_URL` in `.env` to match the PostgreSQL user, password, host, port, and database in your environment. Skip `docker compose up` when using this option. The schema includes authentication, lending offers, loans, internal mock balances, disbursement ledger records, and audit events.
 
 ## Prisma commands
 
@@ -160,6 +161,7 @@ npm run typecheck
 npm run lint
 npm run format:check
 npm test
+npm run verify:borrowing # database-backed transactional/idempotency check
 ```
 
 Use `npm run test:watch` during active development.
@@ -193,9 +195,9 @@ src/
     organizations/              # employer overview query and repository
     employees/                  # employee dashboard query and future workflows
     lending/                    # offer creation and marketplace queries
-    loans/                      # employer loan queries; lifecycle writes deferred
-    ledger/
-    audit/
+    loans/                      # transactional creation and employer loan queries
+    ledger/                     # balanced mock disbursement records
+    audit/                      # loan lifecycle event records
   server/
     application/                  # use cases and orchestration
     domain/                       # business concepts and rules

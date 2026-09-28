@@ -13,6 +13,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/shared/ui/card";
@@ -233,10 +234,17 @@ export function LendingMarketplaceView({
                     {filters.amountMinorUnits
                       ? "your desired amount"
                       : "the current maximum amount"}
-                    . Accepting an offer and creating a loan are not available
-                    yet.
+                    . Final terms are shown before confirmation.
                   </p>
                 </CardContent>
+                <CardFooter>
+                  <Link
+                    className={buttonStyles({ className: "w-full" })}
+                    href={`/app/borrow/${offer.id}${filters.amountMinorUnits ? `?amount=${minorUnitsToInputValue(filters.amountMinorUnits)}` : ""}`}
+                  >
+                    Review offer
+                  </Link>
+                </CardFooter>
               </Card>
             );
           })}

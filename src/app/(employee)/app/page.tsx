@@ -8,14 +8,18 @@ export const metadata: Metadata = {
   title: "Employee Dashboard",
 };
 
-export default async function EmployeeDashboardPage() {
+export default async function EmployeeDashboardPage({
+  searchParams,
+}: PageProps<"/app">) {
   const actor = await requireEmployeePage();
+  const query = await searchParams;
   const dashboard = await getEmployeeDashboardForActor(actor);
 
   return (
     <EmployeeDashboard
       dashboard={dashboard}
       employeeName={actor.name}
+      loanCreated={query.loanCreated === "1"}
       organizationName={actor.organizationName}
     />
   );

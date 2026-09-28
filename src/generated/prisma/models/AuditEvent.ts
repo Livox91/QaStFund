@@ -473,10 +473,6 @@ export type EnumAuditEventTypeFieldUpdateOperationsInput = {
   set?: $Enums.AuditEventType
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type AuditEventCreateWithoutOrganizationInput = {
   id?: string
   type: $Enums.AuditEventType

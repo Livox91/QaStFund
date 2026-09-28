@@ -48,6 +48,21 @@ export type EmployeeBalance = Prisma.EmployeeBalanceModel
  */
 export type Loan = Prisma.LoanModel
 /**
+ * Model LedgerAccount
+ * 
+ */
+export type LedgerAccount = Prisma.LedgerAccountModel
+/**
+ * Model LedgerTransaction
+ * 
+ */
+export type LedgerTransaction = Prisma.LedgerTransactionModel
+/**
+ * Model LedgerEntry
+ * 
+ */
+export type LedgerEntry = Prisma.LedgerEntryModel
+/**
  * Model LoanRepayment
  * 
  */

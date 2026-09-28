@@ -34,6 +34,19 @@ enum AuditEventType {
   LOAN_OVERDUE
 }
 
+enum LedgerAccountType {
+  MOCK_CASH
+}
+
+enum LedgerTransactionType {
+  LOAN_DISBURSEMENT
+}
+
+enum LedgerEntryDirection {
+  DEBIT
+  CREDIT
+}
+
 model User {
   id           String                   @id @default(uuid()) @db.Uuid
   email        String                   @unique
@@ -45,18 +58,21 @@ model User {
 }
 
 model Organization {
-  id            String                   @id @default(uuid()) @db.Uuid
-  name          String
-  slug          String                   @unique
-  currency      String                   @default("USD") @db.VarChar(3)
-  createdAt     DateTime                 @default(now())
-  updatedAt     DateTime                 @updatedAt
-  memberships   OrganizationMembership[]
-  lendingOffers LendingOffer[]
-  loans         Loan[]
-  repayments    LoanRepayment[]
-  auditEvents   AuditEvent[]
-  balances      EmployeeBalance[]
+  id                 String                   @id @default(uuid()) @db.Uuid
+  name               String
+  slug               String                   @unique
+  currency           String                   @default("USD") @db.VarChar(3)
+  createdAt          DateTime                 @default(now())
+  updatedAt          DateTime                 @updatedAt
+  memberships        OrganizationMembership[]
+  lendingOffers      LendingOffer[]
+  loans              Loan[]
+  repayments         LoanRepayment[]
+  auditEvents        AuditEvent[]
+  balances           EmployeeBalance[]
+  ledgerAccounts     LedgerAccount[]
+  ledgerTransactions LedgerTransaction[]
+  ledgerEntries      LedgerEntry[]
 }
 
 model OrganizationMembership {
@@ -74,6 +90,7 @@ model OrganizationMembership {
   balance         EmployeeBalance?
   loansAsLender   Loan[]           @relation("LoansAsLender")
   loansAsBorrower Loan[]           @relation("LoansAsBorrower")
+  ledgerAccounts  LedgerAccount[]
 
   @@unique([organizationId, userId])
   @@unique([organizationId, id])
@@ -97,7 +114,9 @@ model LendingOffer {
   updatedAt                   DateTime               @updatedAt
   organization                Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   lenderMembership            OrganizationMembership @relation("MembershipLendingOffers", fields: [organizationId, lenderMembershipId], references: [organizationId, id], onDelete: Restrict)
+  loans                       Loan[]
 
+  @@unique([organizationId, id])
   @@index([organizationId, status])
   @@index([organizationId, status, expiresAt])
   @@index([organizationId, lenderMembershipId])
@@ -123,10 +142,14 @@ model Loan {
   organizationId                 String                 @db.Uuid
   lenderMembershipId             String                 @db.Uuid
   borrowerMembershipId           String                 @db.Uuid
+  lendingOfferId                 String?                @db.Uuid
+  borrowRequestId                String?                @unique @db.Uuid
   principalAmountMinorUnits      BigInt
   feeAmountMinorUnits            BigInt                 @default(0)
   outstandingPrincipalMinorUnits BigInt
   currency                       String                 @db.VarChar(3)
+  durationDays                   Int
+  feeRateBasisPoints             Int
   status                         LoanStatus
   startedAt                      DateTime               @default(now())
   repaymentDueAt                 DateTime
@@ -135,14 +158,66 @@ model Loan {
   organization                   Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   lenderMembership               OrganizationMembership @relation("LoansAsLender", fields: [organizationId, lenderMembershipId], references: [organizationId, id], onDelete: Restrict)
   borrowerMembership             OrganizationMembership @relation("LoansAsBorrower", fields: [organizationId, borrowerMembershipId], references: [organizationId, id], onDelete: Restrict)
+  lendingOffer                   LendingOffer?          @relation(fields: [organizationId, lendingOfferId], references: [organizationId, id], onDelete: Restrict)
   repayments                     LoanRepayment[]
   auditEvents                    AuditEvent[]
+  ledgerTransaction              LedgerTransaction?
 
   @@unique([organizationId, id])
   @@index([organizationId, status])
   @@index([organizationId, repaymentDueAt])
   @@index([organizationId, lenderMembershipId])
   @@index([organizationId, borrowerMembershipId])
+}
+
+model LedgerAccount {
+  id             String                 @id @default(uuid()) @db.Uuid
+  organizationId String                 @db.Uuid
+  membershipId   String                 @db.Uuid
+  currency       String                 @db.VarChar(3)
+  type           LedgerAccountType
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+  organization   Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  membership     OrganizationMembership @relation(fields: [organizationId, membershipId], references: [organizationId, id], onDelete: Restrict)
+  entries        LedgerEntry[]
+
+  @@unique([organizationId, membershipId, currency, type])
+  @@unique([organizationId, id])
+  @@index([organizationId, membershipId])
+}
+
+model LedgerTransaction {
+  id             String                @id @default(uuid()) @db.Uuid
+  organizationId String                @db.Uuid
+  loanId         String                @unique @db.Uuid
+  type           LedgerTransactionType
+  currency       String                @db.VarChar(3)
+  createdAt      DateTime              @default(now())
+  organization   Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  loan           Loan                  @relation(fields: [organizationId, loanId], references: [organizationId, id], onDelete: Restrict)
+  entries        LedgerEntry[]
+
+  @@unique([organizationId, id])
+  @@unique([organizationId, loanId])
+  @@index([organizationId, createdAt])
+}
+
+model LedgerEntry {
+  id               String               @id @default(uuid()) @db.Uuid
+  organizationId   String               @db.Uuid
+  transactionId    String               @db.Uuid
+  accountId        String               @db.Uuid
+  direction        LedgerEntryDirection
+  amountMinorUnits BigInt
+  currency         String               @db.VarChar(3)
+  createdAt        DateTime             @default(now())
+  organization     Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  transaction      LedgerTransaction    @relation(fields: [organizationId, transactionId], references: [organizationId, id], onDelete: Restrict)
+  account          LedgerAccount        @relation(fields: [organizationId, accountId], references: [organizationId, id], onDelete: Restrict)
+
+  @@index([organizationId, transactionId])
+  @@index([organizationId, accountId])
 }
 
 model LoanRepayment {
