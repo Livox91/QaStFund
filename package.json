@@ -15,6 +15,8 @@
     "test:watch": "vitest",
     "verify:borrowing": "tsx scripts/verify-borrowing.ts",
     "verify:repayment": "tsx scripts/verify-repayment.ts",
+    "verify:ledger": "tsx scripts/verify-ledger.ts",
+    "verify:policy": "tsx scripts/verify-policy.ts",
     "prisma:generate": "prisma generate",
     "prisma:validate": "prisma validate",
     "prisma:migrate": "prisma migrate dev",

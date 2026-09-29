@@ -1,8 +1,9 @@
 export type LendingOfferDisplayStatus =
-  "ACTIVE" | "PAUSED" | "CLOSED" | "EXPIRED";
+  "ACTIVE" | "PAUSED" | "CLOSED" | "EXHAUSTED" | "EXPIRED";
 
 export type LendingOfferView = Readonly<{
   id: string;
+  lender: Readonly<{ id: string; name: string }>;
   amountMinorUnits: bigint;
   availableAmountMinorUnits: bigint;
   minimumLoanAmountMinorUnits: bigint;
@@ -24,6 +25,10 @@ export type EmployeeLendingOverview = Readonly<{
 }>;
 
 export type MarketplaceLendingOffer = LendingOfferView;
+
+export type LendingOfferStatus = "ACTIVE" | "PAUSED" | "CLOSED" | "EXHAUSTED";
+export type LendingOfferManagementStatus = "ACTIVE" | "PAUSED" | "CLOSED";
+export type ManageableLendingOfferStatus = LendingOfferStatus | "EXPIRED";
 
 export const LendingMarketplaceSort = {
   LOWEST_FEE: "lowest-fee",
@@ -56,8 +61,35 @@ export type CreateLendingOfferCommand = Readonly<{
   expiresAt: Date;
 }>;
 
+export function canChangeLendingOfferStatus(
+  currentStatus: ManageableLendingOfferStatus,
+  targetStatus: LendingOfferManagementStatus,
+  expiresAt: Date,
+  now: Date,
+): boolean {
+  if (targetStatus === "ACTIVE" && expiresAt.getTime() <= now.getTime()) {
+    return false;
+  }
+
+  if (currentStatus === "ACTIVE") {
+    return targetStatus === "PAUSED" || targetStatus === "CLOSED";
+  }
+
+  if (currentStatus === "PAUSED") {
+    return targetStatus === "ACTIVE" || targetStatus === "CLOSED";
+  }
+
+  return currentStatus === "EXPIRED" && targetStatus === "CLOSED";
+}
+
+export function toPersistedLendingOfferStatus(
+  status: ManageableLendingOfferStatus,
+): LendingOfferStatus {
+  return status === "EXPIRED" ? "ACTIVE" : status;
+}
+
 export function getLendingOfferDisplayStatus(
-  status: "ACTIVE" | "PAUSED" | "CLOSED",
+  status: LendingOfferStatus,
   expiresAt: Date,
   now: Date,
 ): LendingOfferDisplayStatus {
@@ -72,9 +104,9 @@ export function calculateAvailableMockBalance(
   balanceMinorUnits: bigint,
   committedMinorUnits: bigint,
 ): bigint {
-  return committedMinorUnits >= balanceMinorUnits
-    ? 0n
-    : balanceMinorUnits - committedMinorUnits;
+  // Offers are intent only. Funds leave the wallet at disbursement time.
+  void committedMinorUnits;
+  return balanceMinorUnits;
 }
 
 export function formatBasisPointsAsPercent(basisPoints: number): string {

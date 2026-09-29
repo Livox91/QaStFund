@@ -7,10 +7,12 @@ import { borrowFromOffer } from "@/modules/loans/application/borrow-from-offer";
 import {
   BorrowAmountOutOfRangeError,
   InsufficientOfferLiquidityError,
+  InsufficientLenderBalanceError,
   LendingOfferNotAvailableError,
 } from "@/modules/loans/application/errors/borrow-loan-errors";
 import { getBorrowableOffer } from "@/modules/loans/application/get-borrowable-offer";
 import type { BorrowLoanRepository } from "@/modules/loans/application/ports/borrow-loan-repository";
+import { quoteBorrowFromOffer } from "@/modules/loans/application/quote-borrow-from-offer";
 import {
   calculateBorrowLoanSummary,
   isAmountWithinOfferTerms,
@@ -51,6 +53,7 @@ const loan: CreatedBorrowingLoan = {
   currency: "USD",
   durationDays: 30,
   feeRateBasisPoints: 475,
+  activatedAt: now,
   repaymentDueAt: new Date("2026-10-29T12:00:00.000Z"),
 };
 const command = {
@@ -103,6 +106,48 @@ describe("borrowing validation and calculations", () => {
 });
 
 describe("borrowing application boundary", () => {
+  it("returns an authoritative quote without reserving capital", async () => {
+    const repository = createRepository();
+
+    await expect(
+      quoteBorrowFromOffer(employee, offer.id, 10_001n, repository, now),
+    ).resolves.toEqual({
+      principalAmountMinorUnits: 10_001n,
+      feeAmountMinorUnits: 476n,
+      totalRepaymentMinorUnits: 10_477n,
+      repaymentDueAt: new Date("2026-10-29T12:00:00.000Z"),
+      currency: "USD",
+      durationDays: 30,
+      feeRateBasisPoints: 475,
+    });
+    expect(repository.findBorrowableOffer).toHaveBeenCalledOnce();
+    expect(repository.createFromOffer).not.toHaveBeenCalled();
+  });
+
+  it("rejects quotes above the per-borrower maximum or current availability", async () => {
+    const repository = createRepository();
+    await expect(
+      quoteBorrowFromOffer(employee, offer.id, 25_001n, repository, now),
+    ).rejects.toBeInstanceOf(BorrowAmountOutOfRangeError);
+
+    vi.mocked(repository.findBorrowableOffer).mockResolvedValue({
+      ...offer,
+      availableAmountMinorUnits: 8_000n,
+    });
+    await expect(
+      quoteBorrowFromOffer(employee, offer.id, 10_000n, repository, now),
+    ).rejects.toBeInstanceOf(InsufficientOfferLiquidityError);
+  });
+
+  it("does not quote own, cross-organization, paused, closed, or exhausted offers", async () => {
+    const repository = createRepository();
+    vi.mocked(repository.findBorrowableOffer).mockResolvedValue(null);
+
+    await expect(
+      quoteBorrowFromOffer(employee, offer.id, 10_000n, repository, now),
+    ).rejects.toBeInstanceOf(LendingOfferNotAvailableError);
+  });
+
   it("derives tenant and borrower scope only from the authenticated actor", async () => {
     const repository = createRepository();
 
@@ -143,6 +188,7 @@ describe("borrowing application boundary", () => {
     ["OFFER_NOT_AVAILABLE", LendingOfferNotAvailableError],
     ["AMOUNT_OUT_OF_RANGE", BorrowAmountOutOfRangeError],
     ["INSUFFICIENT_LIQUIDITY", InsufficientOfferLiquidityError],
+    ["INSUFFICIENT_LENDER_BALANCE", InsufficientLenderBalanceError],
   ] as const)(
     "maps %s to a safe application error",
     async (kind, ErrorType) => {

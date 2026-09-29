@@ -7,11 +7,11 @@ import { logger } from "@/infrastructure/logging/logger";
 import { requireEmployeePage } from "@/modules/auth/infrastructure/auth-guard";
 import {
   EmployeeLoanNotFoundError,
-  InsufficientRepaymentBalanceError,
+  InvalidRepaymentError,
   LoanNotRepayableError,
-  RepaymentBalanceUnavailableError,
   RepaymentExceedsRemainingError,
   RepaymentRequestConflictError,
+  InsufficientRepaymentBalanceError,
 } from "@/modules/loans/application/errors/repay-loan-errors";
 import { repayLoanForActor } from "@/modules/loans/index.server";
 import { repayLoanSchema } from "@/modules/loans/schemas/repay-loan.schema";
@@ -23,11 +23,11 @@ export type RepayLoanActionState = Readonly<{
 
 const expectedErrors = [
   EmployeeLoanNotFoundError,
-  InsufficientRepaymentBalanceError,
+  InvalidRepaymentError,
   LoanNotRepayableError,
-  RepaymentBalanceUnavailableError,
   RepaymentExceedsRemainingError,
   RepaymentRequestConflictError,
+  InsufficientRepaymentBalanceError,
 ] as const;
 
 export async function repayLoanAction(

@@ -2,13 +2,15 @@ import { requireEmployee } from "@/modules/auth/application/authorization";
 import type { AuthenticatedActor } from "@/modules/auth/domain/actor";
 import {
   BorrowAmountOutOfRangeError,
-  BorrowingBalanceUnavailableError,
   BorrowRequestConflictError,
   InsufficientOfferLiquidityError,
+  InsufficientLenderBalanceError,
+  InvalidBorrowRequestError,
   LendingOfferNotAvailableError,
 } from "@/modules/loans/application/errors/borrow-loan-errors";
 import type { BorrowLoanRepository } from "@/modules/loans/application/ports/borrow-loan-repository";
 import type { BorrowLoanCommand } from "@/modules/loans/domain/borrow-loan";
+import { LendingPolicyViolationError } from "@/modules/policies/application/errors";
 
 export async function borrowFromOffer(
   actor: AuthenticatedActor | null,
@@ -17,6 +19,7 @@ export async function borrowFromOffer(
   now = new Date(),
 ) {
   const employee = requireEmployee(actor);
+  if (command.amountMinorUnits <= 0n) throw new InvalidBorrowRequestError();
   const result = await repository.createFromOffer({
     organizationId: employee.organizationId,
     userId: employee.userId,
@@ -34,8 +37,10 @@ export async function borrowFromOffer(
       throw new BorrowAmountOutOfRangeError();
     case "INSUFFICIENT_LIQUIDITY":
       throw new InsufficientOfferLiquidityError();
-    case "BALANCE_UNAVAILABLE":
-      throw new BorrowingBalanceUnavailableError();
+    case "INSUFFICIENT_LENDER_BALANCE":
+      throw new InsufficientLenderBalanceError();
+    case "POLICY_VIOLATION":
+      throw new LendingPolicyViolationError(result.violation);
     case "REQUEST_CONFLICT":
       throw new BorrowRequestConflictError();
   }

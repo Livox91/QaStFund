@@ -41,7 +41,9 @@ export type LoanRepaymentMinAggregateOutputType = {
   repaymentRequestId: string | null
   amountMinorUnits: bigint | null
   currency: string | null
+  status: $Enums.RepaymentStatus | null
   paidAt: Date | null
+  completedAt: Date | null
   createdAt: Date | null
 }
 
@@ -52,7 +54,9 @@ export type LoanRepaymentMaxAggregateOutputType = {
   repaymentRequestId: string | null
   amountMinorUnits: bigint | null
   currency: string | null
+  status: $Enums.RepaymentStatus | null
   paidAt: Date | null
+  completedAt: Date | null
   createdAt: Date | null
 }
 
@@ -63,7 +67,9 @@ export type LoanRepaymentCountAggregateOutputType = {
   repaymentRequestId: number
   amountMinorUnits: number
   currency: number
+  status: number
   paidAt: number
+  completedAt: number
   createdAt: number
   _all: number
 }
@@ -84,7 +90,9 @@ export type LoanRepaymentMinAggregateInputType = {
   repaymentRequestId?: true
   amountMinorUnits?: true
   currency?: true
+  status?: true
   paidAt?: true
+  completedAt?: true
   createdAt?: true
 }
 
@@ -95,7 +103,9 @@ export type LoanRepaymentMaxAggregateInputType = {
   repaymentRequestId?: true
   amountMinorUnits?: true
   currency?: true
+  status?: true
   paidAt?: true
+  completedAt?: true
   createdAt?: true
 }
 
@@ -106,7 +116,9 @@ export type LoanRepaymentCountAggregateInputType = {
   repaymentRequestId?: true
   amountMinorUnits?: true
   currency?: true
+  status?: true
   paidAt?: true
+  completedAt?: true
   createdAt?: true
   _all?: true
 }
@@ -204,7 +216,9 @@ export type LoanRepaymentGroupByOutputType = {
   repaymentRequestId: string | null
   amountMinorUnits: bigint
   currency: string
+  status: $Enums.RepaymentStatus
   paidAt: Date
+  completedAt: Date | null
   createdAt: Date
   _count: LoanRepaymentCountAggregateOutputType | null
   _avg: LoanRepaymentAvgAggregateOutputType | null
@@ -238,11 +252,13 @@ export type LoanRepaymentWhereInput = {
   repaymentRequestId?: Prisma.UuidNullableFilter<"LoanRepayment"> | string | null
   amountMinorUnits?: Prisma.BigIntFilter<"LoanRepayment"> | bigint | number
   currency?: Prisma.StringFilter<"LoanRepayment"> | string
+  status?: Prisma.EnumRepaymentStatusFilter<"LoanRepayment"> | $Enums.RepaymentStatus
   paidAt?: Prisma.DateTimeFilter<"LoanRepayment"> | Date | string
+  completedAt?: Prisma.DateTimeNullableFilter<"LoanRepayment"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"LoanRepayment"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   loan?: Prisma.XOR<Prisma.LoanScalarRelationFilter, Prisma.LoanWhereInput>
-  ledgerTransaction?: Prisma.XOR<Prisma.LedgerTransactionNullableScalarRelationFilter, Prisma.LedgerTransactionWhereInput> | null
+  auditEvents?: Prisma.AuditEventListRelationFilter
 }
 
 export type LoanRepaymentOrderByWithRelationInput = {
@@ -252,11 +268,13 @@ export type LoanRepaymentOrderByWithRelationInput = {
   repaymentRequestId?: Prisma.SortOrderInput | Prisma.SortOrder
   amountMinorUnits?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   paidAt?: Prisma.SortOrder
+  completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
   loan?: Prisma.LoanOrderByWithRelationInput
-  ledgerTransaction?: Prisma.LedgerTransactionOrderByWithRelationInput
+  auditEvents?: Prisma.AuditEventOrderByRelationAggregateInput
 }
 
 export type LoanRepaymentWhereUniqueInput = Prisma.AtLeast<{
@@ -270,11 +288,13 @@ export type LoanRepaymentWhereUniqueInput = Prisma.AtLeast<{
   loanId?: Prisma.UuidFilter<"LoanRepayment"> | string
   amountMinorUnits?: Prisma.BigIntFilter<"LoanRepayment"> | bigint | number
   currency?: Prisma.StringFilter<"LoanRepayment"> | string
+  status?: Prisma.EnumRepaymentStatusFilter<"LoanRepayment"> | $Enums.RepaymentStatus
   paidAt?: Prisma.DateTimeFilter<"LoanRepayment"> | Date | string
+  completedAt?: Prisma.DateTimeNullableFilter<"LoanRepayment"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"LoanRepayment"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   loan?: Prisma.XOR<Prisma.LoanScalarRelationFilter, Prisma.LoanWhereInput>
-  ledgerTransaction?: Prisma.XOR<Prisma.LedgerTransactionNullableScalarRelationFilter, Prisma.LedgerTransactionWhereInput> | null
+  auditEvents?: Prisma.AuditEventListRelationFilter
 }, "id" | "repaymentRequestId" | "organizationId_id">
 
 export type LoanRepaymentOrderByWithAggregationInput = {
@@ -284,7 +304,9 @@ export type LoanRepaymentOrderByWithAggregationInput = {
   repaymentRequestId?: Prisma.SortOrderInput | Prisma.SortOrder
   amountMinorUnits?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   paidAt?: Prisma.SortOrder
+  completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.LoanRepaymentCountOrderByAggregateInput
   _avg?: Prisma.LoanRepaymentAvgOrderByAggregateInput
@@ -303,7 +325,9 @@ export type LoanRepaymentScalarWhereWithAggregatesInput = {
   repaymentRequestId?: Prisma.UuidNullableWithAggregatesFilter<"LoanRepayment"> | string | null
   amountMinorUnits?: Prisma.BigIntWithAggregatesFilter<"LoanRepayment"> | bigint | number
   currency?: Prisma.StringWithAggregatesFilter<"LoanRepayment"> | string
+  status?: Prisma.EnumRepaymentStatusWithAggregatesFilter<"LoanRepayment"> | $Enums.RepaymentStatus
   paidAt?: Prisma.DateTimeWithAggregatesFilter<"LoanRepayment"> | Date | string
+  completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"LoanRepayment"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"LoanRepayment"> | Date | string
 }
 
@@ -312,11 +336,13 @@ export type LoanRepaymentCreateInput = {
   repaymentRequestId?: string | null
   amountMinorUnits: bigint | number
   currency: string
+  status?: $Enums.RepaymentStatus
   paidAt: Date | string
+  completedAt?: Date | string | null
   createdAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutRepaymentsInput
   loan: Prisma.LoanCreateNestedOneWithoutRepaymentsInput
-  ledgerTransaction?: Prisma.LedgerTransactionCreateNestedOneWithoutRepaymentInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutRepaymentInput
 }
 
 export type LoanRepaymentUncheckedCreateInput = {
@@ -326,9 +352,11 @@ export type LoanRepaymentUncheckedCreateInput = {
   repaymentRequestId?: string | null
   amountMinorUnits: bigint | number
   currency: string
+  status?: $Enums.RepaymentStatus
   paidAt: Date | string
+  completedAt?: Date | string | null
   createdAt?: Date | string
-  ledgerTransaction?: Prisma.LedgerTransactionUncheckedCreateNestedOneWithoutRepaymentInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutRepaymentInput
 }
 
 export type LoanRepaymentUpdateInput = {
@@ -336,11 +364,13 @@ export type LoanRepaymentUpdateInput = {
   repaymentRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumRepaymentStatusFieldUpdateOperationsInput | $Enums.RepaymentStatus
   paidAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutRepaymentsNestedInput
   loan?: Prisma.LoanUpdateOneRequiredWithoutRepaymentsNestedInput
-  ledgerTransaction?: Prisma.LedgerTransactionUpdateOneWithoutRepaymentNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutRepaymentNestedInput
 }
 
 export type LoanRepaymentUncheckedUpdateInput = {
@@ -350,9 +380,11 @@ export type LoanRepaymentUncheckedUpdateInput = {
   repaymentRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumRepaymentStatusFieldUpdateOperationsInput | $Enums.RepaymentStatus
   paidAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  ledgerTransaction?: Prisma.LedgerTransactionUncheckedUpdateOneWithoutRepaymentNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutRepaymentNestedInput
 }
 
 export type LoanRepaymentCreateManyInput = {
@@ -362,7 +394,9 @@ export type LoanRepaymentCreateManyInput = {
   repaymentRequestId?: string | null
   amountMinorUnits: bigint | number
   currency: string
+  status?: $Enums.RepaymentStatus
   paidAt: Date | string
+  completedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -371,7 +405,9 @@ export type LoanRepaymentUpdateManyMutationInput = {
   repaymentRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumRepaymentStatusFieldUpdateOperationsInput | $Enums.RepaymentStatus
   paidAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -382,7 +418,9 @@ export type LoanRepaymentUncheckedUpdateManyInput = {
   repaymentRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumRepaymentStatusFieldUpdateOperationsInput | $Enums.RepaymentStatus
   paidAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -394,11 +432,6 @@ export type LoanRepaymentListRelationFilter = {
 
 export type LoanRepaymentOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
-}
-
-export type LoanRepaymentNullableScalarRelationFilter = {
-  is?: Prisma.LoanRepaymentWhereInput | null
-  isNot?: Prisma.LoanRepaymentWhereInput | null
 }
 
 export type LoanRepaymentOrganizationIdIdCompoundUniqueInput = {
@@ -413,7 +446,9 @@ export type LoanRepaymentCountOrderByAggregateInput = {
   repaymentRequestId?: Prisma.SortOrder
   amountMinorUnits?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   paidAt?: Prisma.SortOrder
+  completedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -428,7 +463,9 @@ export type LoanRepaymentMaxOrderByAggregateInput = {
   repaymentRequestId?: Prisma.SortOrder
   amountMinorUnits?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   paidAt?: Prisma.SortOrder
+  completedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -439,12 +476,19 @@ export type LoanRepaymentMinOrderByAggregateInput = {
   repaymentRequestId?: Prisma.SortOrder
   amountMinorUnits?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   paidAt?: Prisma.SortOrder
+  completedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type LoanRepaymentSumOrderByAggregateInput = {
   amountMinorUnits?: Prisma.SortOrder
+}
+
+export type LoanRepaymentNullableScalarRelationFilter = {
+  is?: Prisma.LoanRepaymentWhereInput | null
+  isNot?: Prisma.LoanRepaymentWhereInput | null
 }
 
 export type LoanRepaymentCreateNestedManyWithoutOrganizationInput = {
@@ -531,20 +575,24 @@ export type LoanRepaymentUncheckedUpdateManyWithoutLoanNestedInput = {
   deleteMany?: Prisma.LoanRepaymentScalarWhereInput | Prisma.LoanRepaymentScalarWhereInput[]
 }
 
-export type LoanRepaymentCreateNestedOneWithoutLedgerTransactionInput = {
-  create?: Prisma.XOR<Prisma.LoanRepaymentCreateWithoutLedgerTransactionInput, Prisma.LoanRepaymentUncheckedCreateWithoutLedgerTransactionInput>
-  connectOrCreate?: Prisma.LoanRepaymentCreateOrConnectWithoutLedgerTransactionInput
+export type EnumRepaymentStatusFieldUpdateOperationsInput = {
+  set?: $Enums.RepaymentStatus
+}
+
+export type LoanRepaymentCreateNestedOneWithoutAuditEventsInput = {
+  create?: Prisma.XOR<Prisma.LoanRepaymentCreateWithoutAuditEventsInput, Prisma.LoanRepaymentUncheckedCreateWithoutAuditEventsInput>
+  connectOrCreate?: Prisma.LoanRepaymentCreateOrConnectWithoutAuditEventsInput
   connect?: Prisma.LoanRepaymentWhereUniqueInput
 }
 
-export type LoanRepaymentUpdateOneWithoutLedgerTransactionNestedInput = {
-  create?: Prisma.XOR<Prisma.LoanRepaymentCreateWithoutLedgerTransactionInput, Prisma.LoanRepaymentUncheckedCreateWithoutLedgerTransactionInput>
-  connectOrCreate?: Prisma.LoanRepaymentCreateOrConnectWithoutLedgerTransactionInput
-  upsert?: Prisma.LoanRepaymentUpsertWithoutLedgerTransactionInput
+export type LoanRepaymentUpdateOneWithoutAuditEventsNestedInput = {
+  create?: Prisma.XOR<Prisma.LoanRepaymentCreateWithoutAuditEventsInput, Prisma.LoanRepaymentUncheckedCreateWithoutAuditEventsInput>
+  connectOrCreate?: Prisma.LoanRepaymentCreateOrConnectWithoutAuditEventsInput
+  upsert?: Prisma.LoanRepaymentUpsertWithoutAuditEventsInput
   disconnect?: Prisma.LoanRepaymentWhereInput | boolean
   delete?: Prisma.LoanRepaymentWhereInput | boolean
   connect?: Prisma.LoanRepaymentWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.LoanRepaymentUpdateToOneWithWhereWithoutLedgerTransactionInput, Prisma.LoanRepaymentUpdateWithoutLedgerTransactionInput>, Prisma.LoanRepaymentUncheckedUpdateWithoutLedgerTransactionInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LoanRepaymentUpdateToOneWithWhereWithoutAuditEventsInput, Prisma.LoanRepaymentUpdateWithoutAuditEventsInput>, Prisma.LoanRepaymentUncheckedUpdateWithoutAuditEventsInput>
 }
 
 export type LoanRepaymentCreateWithoutOrganizationInput = {
@@ -552,10 +600,12 @@ export type LoanRepaymentCreateWithoutOrganizationInput = {
   repaymentRequestId?: string | null
   amountMinorUnits: bigint | number
   currency: string
+  status?: $Enums.RepaymentStatus
   paidAt: Date | string
+  completedAt?: Date | string | null
   createdAt?: Date | string
   loan: Prisma.LoanCreateNestedOneWithoutRepaymentsInput
-  ledgerTransaction?: Prisma.LedgerTransactionCreateNestedOneWithoutRepaymentInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutRepaymentInput
 }
 
 export type LoanRepaymentUncheckedCreateWithoutOrganizationInput = {
@@ -564,9 +614,11 @@ export type LoanRepaymentUncheckedCreateWithoutOrganizationInput = {
   repaymentRequestId?: string | null
   amountMinorUnits: bigint | number
   currency: string
+  status?: $Enums.RepaymentStatus
   paidAt: Date | string
+  completedAt?: Date | string | null
   createdAt?: Date | string
-  ledgerTransaction?: Prisma.LedgerTransactionUncheckedCreateNestedOneWithoutRepaymentInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutRepaymentInput
 }
 
 export type LoanRepaymentCreateOrConnectWithoutOrganizationInput = {
@@ -605,7 +657,9 @@ export type LoanRepaymentScalarWhereInput = {
   repaymentRequestId?: Prisma.UuidNullableFilter<"LoanRepayment"> | string | null
   amountMinorUnits?: Prisma.BigIntFilter<"LoanRepayment"> | bigint | number
   currency?: Prisma.StringFilter<"LoanRepayment"> | string
+  status?: Prisma.EnumRepaymentStatusFilter<"LoanRepayment"> | $Enums.RepaymentStatus
   paidAt?: Prisma.DateTimeFilter<"LoanRepayment"> | Date | string
+  completedAt?: Prisma.DateTimeNullableFilter<"LoanRepayment"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"LoanRepayment"> | Date | string
 }
 
@@ -614,10 +668,12 @@ export type LoanRepaymentCreateWithoutLoanInput = {
   repaymentRequestId?: string | null
   amountMinorUnits: bigint | number
   currency: string
+  status?: $Enums.RepaymentStatus
   paidAt: Date | string
+  completedAt?: Date | string | null
   createdAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutRepaymentsInput
-  ledgerTransaction?: Prisma.LedgerTransactionCreateNestedOneWithoutRepaymentInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutRepaymentInput
 }
 
 export type LoanRepaymentUncheckedCreateWithoutLoanInput = {
@@ -625,9 +681,11 @@ export type LoanRepaymentUncheckedCreateWithoutLoanInput = {
   repaymentRequestId?: string | null
   amountMinorUnits: bigint | number
   currency: string
+  status?: $Enums.RepaymentStatus
   paidAt: Date | string
+  completedAt?: Date | string | null
   createdAt?: Date | string
-  ledgerTransaction?: Prisma.LedgerTransactionUncheckedCreateNestedOneWithoutRepaymentInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutRepaymentInput
 }
 
 export type LoanRepaymentCreateOrConnectWithoutLoanInput = {
@@ -656,63 +714,71 @@ export type LoanRepaymentUpdateManyWithWhereWithoutLoanInput = {
   data: Prisma.XOR<Prisma.LoanRepaymentUpdateManyMutationInput, Prisma.LoanRepaymentUncheckedUpdateManyWithoutLoanInput>
 }
 
-export type LoanRepaymentCreateWithoutLedgerTransactionInput = {
+export type LoanRepaymentCreateWithoutAuditEventsInput = {
   id?: string
   repaymentRequestId?: string | null
   amountMinorUnits: bigint | number
   currency: string
+  status?: $Enums.RepaymentStatus
   paidAt: Date | string
+  completedAt?: Date | string | null
   createdAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutRepaymentsInput
   loan: Prisma.LoanCreateNestedOneWithoutRepaymentsInput
 }
 
-export type LoanRepaymentUncheckedCreateWithoutLedgerTransactionInput = {
+export type LoanRepaymentUncheckedCreateWithoutAuditEventsInput = {
   id?: string
   organizationId: string
   loanId: string
   repaymentRequestId?: string | null
   amountMinorUnits: bigint | number
   currency: string
+  status?: $Enums.RepaymentStatus
   paidAt: Date | string
+  completedAt?: Date | string | null
   createdAt?: Date | string
 }
 
-export type LoanRepaymentCreateOrConnectWithoutLedgerTransactionInput = {
+export type LoanRepaymentCreateOrConnectWithoutAuditEventsInput = {
   where: Prisma.LoanRepaymentWhereUniqueInput
-  create: Prisma.XOR<Prisma.LoanRepaymentCreateWithoutLedgerTransactionInput, Prisma.LoanRepaymentUncheckedCreateWithoutLedgerTransactionInput>
+  create: Prisma.XOR<Prisma.LoanRepaymentCreateWithoutAuditEventsInput, Prisma.LoanRepaymentUncheckedCreateWithoutAuditEventsInput>
 }
 
-export type LoanRepaymentUpsertWithoutLedgerTransactionInput = {
-  update: Prisma.XOR<Prisma.LoanRepaymentUpdateWithoutLedgerTransactionInput, Prisma.LoanRepaymentUncheckedUpdateWithoutLedgerTransactionInput>
-  create: Prisma.XOR<Prisma.LoanRepaymentCreateWithoutLedgerTransactionInput, Prisma.LoanRepaymentUncheckedCreateWithoutLedgerTransactionInput>
+export type LoanRepaymentUpsertWithoutAuditEventsInput = {
+  update: Prisma.XOR<Prisma.LoanRepaymentUpdateWithoutAuditEventsInput, Prisma.LoanRepaymentUncheckedUpdateWithoutAuditEventsInput>
+  create: Prisma.XOR<Prisma.LoanRepaymentCreateWithoutAuditEventsInput, Prisma.LoanRepaymentUncheckedCreateWithoutAuditEventsInput>
   where?: Prisma.LoanRepaymentWhereInput
 }
 
-export type LoanRepaymentUpdateToOneWithWhereWithoutLedgerTransactionInput = {
+export type LoanRepaymentUpdateToOneWithWhereWithoutAuditEventsInput = {
   where?: Prisma.LoanRepaymentWhereInput
-  data: Prisma.XOR<Prisma.LoanRepaymentUpdateWithoutLedgerTransactionInput, Prisma.LoanRepaymentUncheckedUpdateWithoutLedgerTransactionInput>
+  data: Prisma.XOR<Prisma.LoanRepaymentUpdateWithoutAuditEventsInput, Prisma.LoanRepaymentUncheckedUpdateWithoutAuditEventsInput>
 }
 
-export type LoanRepaymentUpdateWithoutLedgerTransactionInput = {
+export type LoanRepaymentUpdateWithoutAuditEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   repaymentRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumRepaymentStatusFieldUpdateOperationsInput | $Enums.RepaymentStatus
   paidAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutRepaymentsNestedInput
   loan?: Prisma.LoanUpdateOneRequiredWithoutRepaymentsNestedInput
 }
 
-export type LoanRepaymentUncheckedUpdateWithoutLedgerTransactionInput = {
+export type LoanRepaymentUncheckedUpdateWithoutAuditEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   loanId?: Prisma.StringFieldUpdateOperationsInput | string
   repaymentRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumRepaymentStatusFieldUpdateOperationsInput | $Enums.RepaymentStatus
   paidAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -722,7 +788,9 @@ export type LoanRepaymentCreateManyOrganizationInput = {
   repaymentRequestId?: string | null
   amountMinorUnits: bigint | number
   currency: string
+  status?: $Enums.RepaymentStatus
   paidAt: Date | string
+  completedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -731,10 +799,12 @@ export type LoanRepaymentUpdateWithoutOrganizationInput = {
   repaymentRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumRepaymentStatusFieldUpdateOperationsInput | $Enums.RepaymentStatus
   paidAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loan?: Prisma.LoanUpdateOneRequiredWithoutRepaymentsNestedInput
-  ledgerTransaction?: Prisma.LedgerTransactionUpdateOneWithoutRepaymentNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutRepaymentNestedInput
 }
 
 export type LoanRepaymentUncheckedUpdateWithoutOrganizationInput = {
@@ -743,9 +813,11 @@ export type LoanRepaymentUncheckedUpdateWithoutOrganizationInput = {
   repaymentRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumRepaymentStatusFieldUpdateOperationsInput | $Enums.RepaymentStatus
   paidAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  ledgerTransaction?: Prisma.LedgerTransactionUncheckedUpdateOneWithoutRepaymentNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutRepaymentNestedInput
 }
 
 export type LoanRepaymentUncheckedUpdateManyWithoutOrganizationInput = {
@@ -754,7 +826,9 @@ export type LoanRepaymentUncheckedUpdateManyWithoutOrganizationInput = {
   repaymentRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumRepaymentStatusFieldUpdateOperationsInput | $Enums.RepaymentStatus
   paidAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -763,7 +837,9 @@ export type LoanRepaymentCreateManyLoanInput = {
   repaymentRequestId?: string | null
   amountMinorUnits: bigint | number
   currency: string
+  status?: $Enums.RepaymentStatus
   paidAt: Date | string
+  completedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -772,10 +848,12 @@ export type LoanRepaymentUpdateWithoutLoanInput = {
   repaymentRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumRepaymentStatusFieldUpdateOperationsInput | $Enums.RepaymentStatus
   paidAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutRepaymentsNestedInput
-  ledgerTransaction?: Prisma.LedgerTransactionUpdateOneWithoutRepaymentNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutRepaymentNestedInput
 }
 
 export type LoanRepaymentUncheckedUpdateWithoutLoanInput = {
@@ -783,9 +861,11 @@ export type LoanRepaymentUncheckedUpdateWithoutLoanInput = {
   repaymentRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumRepaymentStatusFieldUpdateOperationsInput | $Enums.RepaymentStatus
   paidAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  ledgerTransaction?: Prisma.LedgerTransactionUncheckedUpdateOneWithoutRepaymentNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutRepaymentNestedInput
 }
 
 export type LoanRepaymentUncheckedUpdateManyWithoutLoanInput = {
@@ -793,10 +873,41 @@ export type LoanRepaymentUncheckedUpdateManyWithoutLoanInput = {
   repaymentRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumRepaymentStatusFieldUpdateOperationsInput | $Enums.RepaymentStatus
   paidAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type LoanRepaymentCountOutputType
+ */
+
+export type LoanRepaymentCountOutputType = {
+  auditEvents: number
+}
+
+export type LoanRepaymentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  auditEvents?: boolean | LoanRepaymentCountOutputTypeCountAuditEventsArgs
+}
+
+/**
+ * LoanRepaymentCountOutputType without action
+ */
+export type LoanRepaymentCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LoanRepaymentCountOutputType
+   */
+  select?: Prisma.LoanRepaymentCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * LoanRepaymentCountOutputType without action
+ */
+export type LoanRepaymentCountOutputTypeCountAuditEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AuditEventWhereInput
+}
 
 
 export type LoanRepaymentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -806,11 +917,14 @@ export type LoanRepaymentSelect<ExtArgs extends runtime.Types.Extensions.Interna
   repaymentRequestId?: boolean
   amountMinorUnits?: boolean
   currency?: boolean
+  status?: boolean
   paidAt?: boolean
+  completedAt?: boolean
   createdAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   loan?: boolean | Prisma.LoanDefaultArgs<ExtArgs>
-  ledgerTransaction?: boolean | Prisma.LoanRepayment$ledgerTransactionArgs<ExtArgs>
+  auditEvents?: boolean | Prisma.LoanRepayment$auditEventsArgs<ExtArgs>
+  _count?: boolean | Prisma.LoanRepaymentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["loanRepayment"]>
 
 export type LoanRepaymentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -820,7 +934,9 @@ export type LoanRepaymentSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   repaymentRequestId?: boolean
   amountMinorUnits?: boolean
   currency?: boolean
+  status?: boolean
   paidAt?: boolean
+  completedAt?: boolean
   createdAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   loan?: boolean | Prisma.LoanDefaultArgs<ExtArgs>
@@ -833,7 +949,9 @@ export type LoanRepaymentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   repaymentRequestId?: boolean
   amountMinorUnits?: boolean
   currency?: boolean
+  status?: boolean
   paidAt?: boolean
+  completedAt?: boolean
   createdAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   loan?: boolean | Prisma.LoanDefaultArgs<ExtArgs>
@@ -846,15 +964,18 @@ export type LoanRepaymentSelectScalar = {
   repaymentRequestId?: boolean
   amountMinorUnits?: boolean
   currency?: boolean
+  status?: boolean
   paidAt?: boolean
+  completedAt?: boolean
   createdAt?: boolean
 }
 
-export type LoanRepaymentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "loanId" | "repaymentRequestId" | "amountMinorUnits" | "currency" | "paidAt" | "createdAt", ExtArgs["result"]["loanRepayment"]>
+export type LoanRepaymentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "loanId" | "repaymentRequestId" | "amountMinorUnits" | "currency" | "status" | "paidAt" | "completedAt" | "createdAt", ExtArgs["result"]["loanRepayment"]>
 export type LoanRepaymentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   loan?: boolean | Prisma.LoanDefaultArgs<ExtArgs>
-  ledgerTransaction?: boolean | Prisma.LoanRepayment$ledgerTransactionArgs<ExtArgs>
+  auditEvents?: boolean | Prisma.LoanRepayment$auditEventsArgs<ExtArgs>
+  _count?: boolean | Prisma.LoanRepaymentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type LoanRepaymentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
@@ -870,7 +991,7 @@ export type $LoanRepaymentPayload<ExtArgs extends runtime.Types.Extensions.Inter
   objects: {
     organization: Prisma.$OrganizationPayload<ExtArgs>
     loan: Prisma.$LoanPayload<ExtArgs>
-    ledgerTransaction: Prisma.$LedgerTransactionPayload<ExtArgs> | null
+    auditEvents: Prisma.$AuditEventPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -879,7 +1000,9 @@ export type $LoanRepaymentPayload<ExtArgs extends runtime.Types.Extensions.Inter
     repaymentRequestId: string | null
     amountMinorUnits: bigint
     currency: string
+    status: $Enums.RepaymentStatus
     paidAt: Date
+    completedAt: Date | null
     createdAt: Date
   }, ExtArgs["result"]["loanRepayment"]>
   composites: {}
@@ -1277,7 +1400,7 @@ export interface Prisma__LoanRepaymentClient<T, Null = never, ExtArgs extends ru
   readonly [Symbol.toStringTag]: "PrismaPromise"
   organization<T extends Prisma.OrganizationDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationDefaultArgs<ExtArgs>>): Prisma.Prisma__OrganizationClient<runtime.Types.Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   loan<T extends Prisma.LoanDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LoanDefaultArgs<ExtArgs>>): Prisma.Prisma__LoanClient<runtime.Types.Result.GetResult<Prisma.$LoanPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  ledgerTransaction<T extends Prisma.LoanRepayment$ledgerTransactionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LoanRepayment$ledgerTransactionArgs<ExtArgs>>): Prisma.Prisma__LedgerTransactionClient<runtime.Types.Result.GetResult<Prisma.$LedgerTransactionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  auditEvents<T extends Prisma.LoanRepayment$auditEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LoanRepayment$auditEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1313,7 +1436,9 @@ export interface LoanRepaymentFieldRefs {
   readonly repaymentRequestId: Prisma.FieldRef<"LoanRepayment", 'String'>
   readonly amountMinorUnits: Prisma.FieldRef<"LoanRepayment", 'BigInt'>
   readonly currency: Prisma.FieldRef<"LoanRepayment", 'String'>
+  readonly status: Prisma.FieldRef<"LoanRepayment", 'RepaymentStatus'>
   readonly paidAt: Prisma.FieldRef<"LoanRepayment", 'DateTime'>
+  readonly completedAt: Prisma.FieldRef<"LoanRepayment", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"LoanRepayment", 'DateTime'>
 }
     
@@ -1716,22 +1841,27 @@ export type LoanRepaymentDeleteManyArgs<ExtArgs extends runtime.Types.Extensions
 }
 
 /**
- * LoanRepayment.ledgerTransaction
+ * LoanRepayment.auditEvents
  */
-export type LoanRepayment$ledgerTransactionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type LoanRepayment$auditEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the LedgerTransaction
+   * Select specific fields to fetch from the AuditEvent
    */
-  select?: Prisma.LedgerTransactionSelect<ExtArgs> | null
+  select?: Prisma.AuditEventSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the LedgerTransaction
+   * Omit specific fields from the AuditEvent
    */
-  omit?: Prisma.LedgerTransactionOmit<ExtArgs> | null
+  omit?: Prisma.AuditEventOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.LedgerTransactionInclude<ExtArgs> | null
-  where?: Prisma.LedgerTransactionWhereInput
+  include?: Prisma.AuditEventInclude<ExtArgs> | null
+  where?: Prisma.AuditEventWhereInput
+  orderBy?: Prisma.AuditEventOrderByWithRelationInput | Prisma.AuditEventOrderByWithRelationInput[]
+  cursor?: Prisma.AuditEventWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AuditEventScalarFieldEnum | Prisma.AuditEventScalarFieldEnum[]
 }
 
 /**

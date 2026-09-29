@@ -1,15 +1,13 @@
 import { ForbiddenError } from "@/modules/auth/application/errors/auth-errors";
 import { requireEmployee } from "@/modules/auth/application/authorization";
 import type { AuthenticatedActor } from "@/modules/auth/domain/actor";
-import {
-  InsufficientMockBalanceError,
-  InvalidLendingOfferTermsError,
-} from "@/modules/lending/application/errors/lending-offer-errors";
+import { InvalidLendingOfferTermsError } from "@/modules/lending/application/errors/lending-offer-errors";
 import type { LendingOfferRepository } from "@/modules/lending/application/ports/lending-offer-repository";
 import type {
   CreateLendingOfferCommand,
   LendingOfferView,
 } from "@/modules/lending/domain/lending-offer";
+import { LendingPolicyViolationError } from "@/modules/policies/application/errors";
 
 function hasValidTerms(command: CreateLendingOfferCommand, now: Date): boolean {
   return (
@@ -48,9 +46,8 @@ export async function createLendingOffer(
   });
 
   if (result.kind === "MEMBERSHIP_NOT_FOUND") throw new ForbiddenError();
-  if (result.kind === "INSUFFICIENT_BALANCE") {
-    throw new InsufficientMockBalanceError();
+  if (result.kind === "POLICY_VIOLATION") {
+    throw new LendingPolicyViolationError(result.violation);
   }
-
   return result.offer;
 }

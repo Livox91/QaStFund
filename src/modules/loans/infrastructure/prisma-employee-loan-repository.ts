@@ -2,6 +2,12 @@ import { MembershipRole } from "@/generated/prisma/enums";
 import { prisma } from "@/infrastructure/database/prisma";
 import type { EmployeeLoanRepository } from "@/modules/loans/application/ports/employee-loan-repository";
 import {
+  ensureUserWallet,
+  getCompletedAccountBalance,
+  lockLedgerAccounts,
+  postLedgerTransaction,
+} from "@/modules/ledger/infrastructure/ledger-posting";
+import {
   calculatePrincipalReduction,
   type EmployeeBorrowedLoanRecord,
   type RecordedLoanRepayment,
@@ -11,6 +17,9 @@ const repaymentSelection = {
   id: true,
   amountMinorUnits: true,
   currency: true,
+  status: true,
+  createdAt: true,
+  completedAt: true,
   paidAt: true,
 } as const;
 
@@ -27,6 +36,7 @@ const borrowedLoanSelection = {
   repaymentDueAt: true,
   lenderMembership: { select: { user: { select: { name: true } } } },
   repayments: {
+    where: { status: "COMPLETED" as const },
     orderBy: { paidAt: "asc" as const },
     select: repaymentSelection,
   },
@@ -37,6 +47,7 @@ type ExistingRepaymentRow = {
   amountMinorUnits: bigint;
   currency: string;
   paidAt: Date;
+  completedAt: Date | null;
   loan: {
     id: string;
     organizationId: string;
@@ -48,12 +59,17 @@ type ExistingRepaymentRow = {
 function toRecordedRepayment(
   repayment: ExistingRepaymentRow,
 ): RecordedLoanRepayment {
+  if (!repayment.completedAt) {
+    throw new Error("Completed repayment has no completion timestamp.");
+  }
+
   return {
     id: repayment.id,
     loanId: repayment.loan.id,
     amountMinorUnits: repayment.amountMinorUnits,
     currency: repayment.currency,
     paidAt: repayment.paidAt,
+    completedAt: repayment.completedAt,
     loanStatus: repayment.loan.status,
   };
 }
@@ -164,7 +180,10 @@ export const prismaEmployeeLoanRepository: EmployeeLoanRepository = {
           outstandingPrincipalMinorUnits: true,
           currency: true,
           status: true,
-          repayments: { select: { amountMinorUnits: true } },
+          repayments: {
+            where: { status: "COMPLETED" },
+            select: { amountMinorUnits: true },
+          },
         },
       });
 
@@ -188,69 +207,32 @@ export const prismaEmployeeLoanRepository: EmployeeLoanRepository = {
         return { kind: "LOAN_NOT_REPAYABLE" } as const;
       }
       if (command.amountMinorUnits > remainingAmountMinorUnits) {
-        return { kind: "AMOUNT_EXCEEDS_REMAINING" } as const;
-      }
-
-      const balances = await transaction.employeeBalance.findMany({
-        where: {
-          organizationId,
-          membershipId: {
-            in: [loan.borrowerMembershipId, loan.lenderMembershipId],
-          },
+        return {
+          kind: "AMOUNT_EXCEEDS_REMAINING",
+          remainingAmountMinorUnits,
           currency: loan.currency,
-        },
-        select: { id: true, membershipId: true },
-      });
-
-      if (balances.length !== 2) {
-        return { kind: "BALANCE_UNAVAILABLE" } as const;
+        } as const;
       }
 
-      const balanceIds = balances.map(({ id }) => id).sort();
-      await transaction.$queryRaw`
-        SELECT "id"
-        FROM "EmployeeBalance"
-        WHERE "id" IN (
-          CAST(${balanceIds[0]} AS UUID),
-          CAST(${balanceIds[1]} AS UUID)
-        )
-        ORDER BY "id"
-        FOR UPDATE
-      `;
-
-      const lockedBalances = await transaction.employeeBalance.findMany({
-        where: { id: { in: balanceIds }, organizationId },
-        select: { id: true, membershipId: true, amountMinorUnits: true },
-      });
-      const borrowerBalance = lockedBalances.find(
-        ({ membershipId }) => membershipId === loan.borrowerMembershipId,
-      );
-      const lenderBalance = lockedBalances.find(
-        ({ membershipId }) => membershipId === loan.lenderMembershipId,
-      );
-
-      if (!borrowerBalance || !lenderBalance) {
-        return { kind: "BALANCE_UNAVAILABLE" } as const;
-      }
-
-      const committedOffers = await transaction.lendingOffer.aggregate({
-        where: {
+      const [borrowerWallet, lenderWallet] = await Promise.all([
+        ensureUserWallet(transaction, {
           organizationId,
-          lenderMembershipId: loan.borrowerMembershipId,
-          currency: loan.currency,
-          status: "ACTIVE",
-          expiresAt: { gt: now },
-        },
-        _sum: { availableAmountMinorUnits: true },
+          membershipId: loan.borrowerMembershipId,
+        }),
+        ensureUserWallet(transaction, {
+          organizationId,
+          membershipId: loan.lenderMembershipId,
+        }),
+      ]);
+      await lockLedgerAccounts(transaction, organizationId, [
+        borrowerWallet.id,
+        lenderWallet.id,
+      ]);
+      const borrowerBalance = await getCompletedAccountBalance(transaction, {
+        organizationId,
+        accountId: borrowerWallet.id,
       });
-      const committedMinorUnits =
-        committedOffers._sum.availableAmountMinorUnits ?? 0n;
-      const availableBalanceMinorUnits =
-        borrowerBalance.amountMinorUnits > committedMinorUnits
-          ? borrowerBalance.amountMinorUnits - committedMinorUnits
-          : 0n;
-
-      if (command.amountMinorUnits > availableBalanceMinorUnits) {
+      if (borrowerBalance < command.amountMinorUnits) {
         return { kind: "INSUFFICIENT_BALANCE" } as const;
       }
 
@@ -270,19 +252,35 @@ export const prismaEmployeeLoanRepository: EmployeeLoanRepository = {
           repaymentRequestId: command.requestId,
           amountMinorUnits: command.amountMinorUnits,
           currency: loan.currency,
+          status: "COMPLETED",
           paidAt: now,
+          completedAt: now,
         },
         select: repaymentSelection,
       });
 
-      await transaction.employeeBalance.update({
-        where: { id: borrowerBalance.id },
-        data: { amountMinorUnits: { decrement: command.amountMinorUnits } },
+      await postLedgerTransaction(transaction, {
+        organizationId,
+        type: "LOAN_REPAYMENT",
+        referenceType: "REPAYMENT",
+        referenceId: repayment.id,
+        idempotencyKey: `repayment:${command.requestId}`,
+        now,
+        accountsAlreadyLocked: true,
+        entries: [
+          {
+            accountId: borrowerWallet.id,
+            direction: "DEBIT",
+            amountMinorUnits: command.amountMinorUnits,
+          },
+          {
+            accountId: lenderWallet.id,
+            direction: "CREDIT",
+            amountMinorUnits: command.amountMinorUnits,
+          },
+        ],
       });
-      await transaction.employeeBalance.update({
-        where: { id: lenderBalance.id },
-        data: { amountMinorUnits: { increment: command.amountMinorUnits } },
-      });
+
       const updatedLoan = await transaction.loan.update({
         where: { id: loan.id },
         data: {
@@ -294,94 +292,44 @@ export const prismaEmployeeLoanRepository: EmployeeLoanRepository = {
         select: { status: true },
       });
 
-      const [borrowerAccount, lenderAccount] = await Promise.all([
-        transaction.ledgerAccount.upsert({
-          where: {
-            organizationId_membershipId_currency_type: {
-              organizationId,
-              membershipId: loan.borrowerMembershipId,
-              currency: loan.currency,
-              type: "MOCK_CASH",
-            },
-          },
-          update: {},
-          create: {
-            organizationId,
-            membershipId: loan.borrowerMembershipId,
-            currency: loan.currency,
-            type: "MOCK_CASH",
-          },
-          select: { id: true },
-        }),
-        transaction.ledgerAccount.upsert({
-          where: {
-            organizationId_membershipId_currency_type: {
-              organizationId,
-              membershipId: loan.lenderMembershipId,
-              currency: loan.currency,
-              type: "MOCK_CASH",
-            },
-          },
-          update: {},
-          create: {
-            organizationId,
-            membershipId: loan.lenderMembershipId,
-            currency: loan.currency,
-            type: "MOCK_CASH",
-          },
-          select: { id: true },
-        }),
-      ]);
-
-      const ledgerTransaction = await transaction.ledgerTransaction.create({
-        data: {
-          organizationId,
-          loanId: loan.id,
-          repaymentId: repayment.id,
-          type: "LOAN_REPAYMENT",
-          currency: loan.currency,
-        },
-        select: { id: true },
-      });
-      await transaction.ledgerEntry.createMany({
+      await transaction.auditEvent.createMany({
         data: [
           {
             organizationId,
-            transactionId: ledgerTransaction.id,
-            accountId: borrowerAccount.id,
-            direction: "CREDIT",
+            loanId: loan.id,
+            repaymentId: repayment.id,
             amountMinorUnits: command.amountMinorUnits,
             currency: loan.currency,
+            type: "REPAYMENT_CREATED",
+            title: "Repayment created",
+            actorMembershipId: membership.id,
+            actorLabel: membership.user.name,
+            occurredAt: now,
           },
           {
             organizationId,
-            transactionId: ledgerTransaction.id,
-            accountId: lenderAccount.id,
-            direction: "DEBIT",
+            loanId: loan.id,
+            repaymentId: repayment.id,
             amountMinorUnits: command.amountMinorUnits,
             currency: loan.currency,
+            type: "REPAYMENT_COMPLETED",
+            title: isFullyRepaid
+              ? "Final repayment completed"
+              : "Partial repayment completed",
+            actorMembershipId: membership.id,
+            actorLabel: membership.user.name,
+            occurredAt: now,
           },
         ],
-      });
-
-      await transaction.auditEvent.create({
-        data: {
-          organizationId,
-          loanId: loan.id,
-          type: "REPAYMENT_RECORDED",
-          title: isFullyRepaid
-            ? "Final repayment recorded"
-            : "Partial repayment recorded",
-          actorMembershipId: membership.id,
-          actorLabel: membership.user.name,
-          occurredAt: now,
-        },
       });
       if (isFullyRepaid) {
         await transaction.auditEvent.create({
           data: {
             organizationId,
             loanId: loan.id,
+            repaymentId: repayment.id,
+            amountMinorUnits: command.amountMinorUnits,
+            currency: loan.currency,
             type: "LOAN_REPAID",
             title: "Loan repaid in full",
             actorMembershipId: membership.id,
@@ -394,8 +342,12 @@ export const prismaEmployeeLoanRepository: EmployeeLoanRepository = {
       return {
         kind: "RECORDED",
         repayment: {
-          ...repayment,
+          id: repayment.id,
           loanId: loan.id,
+          amountMinorUnits: repayment.amountMinorUnits,
+          currency: repayment.currency,
+          paidAt: repayment.paidAt,
+          completedAt: now,
           loanStatus: updatedLoan.status,
         },
       } as const;

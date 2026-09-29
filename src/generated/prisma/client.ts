@@ -97,6 +97,11 @@ export type LoanRepayment = Prisma.LoanRepaymentModel
  */
 export type AuditEvent = Prisma.AuditEventModel
 /**
+ * Model OrganizationLendingPolicy
+ * 
+ */
+export type OrganizationLendingPolicy = Prisma.OrganizationLendingPolicyModel
+/**
  * Model Session
  * 
  */

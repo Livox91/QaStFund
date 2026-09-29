@@ -5,9 +5,16 @@ import { redirect } from "next/navigation";
 
 import { logger } from "@/infrastructure/logging/logger";
 import { requireEmployeePage } from "@/modules/auth/infrastructure/auth-guard";
-import { InsufficientMockBalanceError } from "@/modules/lending/application/errors/lending-offer-errors";
-import { createLendingOfferForActor } from "@/modules/lending/index.server";
+import { ApplicationError } from "@/shared/errors/application-error";
+import {
+  createLendingOfferForActor,
+  updateLendingOfferStatusForActor,
+} from "@/modules/lending/index.server";
 import { createLendingOfferSchema } from "@/modules/lending/schemas/create-lending-offer.schema";
+import {
+  lendingOfferIdSchema,
+  updateLendingOfferStatusSchema,
+} from "@/modules/lending/schemas/lending-offer-api.schema";
 
 export type CreateLendingOfferActionState = Readonly<{
   message?: string;
@@ -49,10 +56,7 @@ export async function createLendingOfferAction(
   try {
     await createLendingOfferForActor(actor, parsed.data, now);
   } catch (error) {
-    if (error instanceof InsufficientMockBalanceError) {
-      return { message: error.message };
-    }
-
+    if (error instanceof ApplicationError) return { message: error.message };
     logger.error("Lending offer creation failed", error);
     return { message: "Unable to create the offer right now. Try again." };
   }
@@ -61,4 +65,35 @@ export async function createLendingOfferAction(
   revalidatePath("/app/lending");
   revalidatePath("/app/borrow");
   redirect("/app/lending?created=1");
+}
+
+export async function updateLendingOfferStatusAction(
+  formData: FormData,
+): Promise<void> {
+  const actor = await requireEmployeePage();
+  const parsedId = lendingOfferIdSchema.safeParse(formData.get("offerId"));
+  const parsedStatus = updateLendingOfferStatusSchema.safeParse({
+    status: formData.get("status"),
+  });
+
+  if (!parsedId.success || !parsedStatus.success) {
+    redirect("/app/lending?statusError=1");
+  }
+
+  try {
+    await updateLendingOfferStatusForActor(
+      actor,
+      parsedId.data,
+      parsedStatus.data.status,
+    );
+  } catch (error) {
+    if (!(error instanceof ApplicationError)) {
+      logger.error("Lending offer status update failed", error);
+    }
+    redirect("/app/lending?statusError=1");
+  }
+
+  revalidatePath("/app/lending");
+  revalidatePath("/app/borrow");
+  redirect("/app/lending?offerUpdated=1");
 }

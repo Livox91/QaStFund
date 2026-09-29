@@ -7,6 +7,9 @@ export type EmployeeDashboardLoan = Readonly<{
   counterpartyName: string;
   participation: EmployeeLoanParticipation;
   principalAmountMinorUnits: bigint;
+  feeAmountMinorUnits: bigint;
+  totalAgreedAmountMinorUnits: bigint;
+  repaidAmountMinorUnits: bigint;
   outstandingPrincipalMinorUnits: bigint;
   remainingAgreedAmountMinorUnits: bigint;
   progressBasisPoints: number;

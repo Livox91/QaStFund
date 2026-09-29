@@ -408,6 +408,7 @@ export const ModelName = {
   LedgerEntry: 'LedgerEntry',
   LoanRepayment: 'LoanRepayment',
   AuditEvent: 'AuditEvent',
+  OrganizationLendingPolicy: 'OrganizationLendingPolicy',
   Session: 'Session'
 } as const
 
@@ -424,7 +425,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "organization" | "organizationMembership" | "lendingOffer" | "employeeBalance" | "loan" | "ledgerAccount" | "ledgerTransaction" | "ledgerEntry" | "loanRepayment" | "auditEvent" | "session"
+    modelProps: "user" | "organization" | "organizationMembership" | "lendingOffer" | "employeeBalance" | "loan" | "ledgerAccount" | "ledgerTransaction" | "ledgerEntry" | "loanRepayment" | "auditEvent" | "organizationLendingPolicy" | "session"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1242,6 +1243,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    OrganizationLendingPolicy: {
+      payload: Prisma.$OrganizationLendingPolicyPayload<ExtArgs>
+      fields: Prisma.OrganizationLendingPolicyFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.OrganizationLendingPolicyFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationLendingPolicyPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.OrganizationLendingPolicyFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationLendingPolicyPayload>
+        }
+        findFirst: {
+          args: Prisma.OrganizationLendingPolicyFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationLendingPolicyPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.OrganizationLendingPolicyFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationLendingPolicyPayload>
+        }
+        findMany: {
+          args: Prisma.OrganizationLendingPolicyFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationLendingPolicyPayload>[]
+        }
+        create: {
+          args: Prisma.OrganizationLendingPolicyCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationLendingPolicyPayload>
+        }
+        createMany: {
+          args: Prisma.OrganizationLendingPolicyCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.OrganizationLendingPolicyCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationLendingPolicyPayload>[]
+        }
+        delete: {
+          args: Prisma.OrganizationLendingPolicyDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationLendingPolicyPayload>
+        }
+        update: {
+          args: Prisma.OrganizationLendingPolicyUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationLendingPolicyPayload>
+        }
+        deleteMany: {
+          args: Prisma.OrganizationLendingPolicyDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.OrganizationLendingPolicyUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.OrganizationLendingPolicyUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationLendingPolicyPayload>[]
+        }
+        upsert: {
+          args: Prisma.OrganizationLendingPolicyUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationLendingPolicyPayload>
+        }
+        aggregate: {
+          args: Prisma.OrganizationLendingPolicyAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOrganizationLendingPolicy>
+        }
+        groupBy: {
+          args: Prisma.OrganizationLendingPolicyGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OrganizationLendingPolicyGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.OrganizationLendingPolicyCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OrganizationLendingPolicyCountAggregateOutputType> | number
+        }
+      }
+    }
     Session: {
       payload: Prisma.$SessionPayload<ExtArgs>
       fields: Prisma.SessionFieldRefs
@@ -1385,6 +1460,8 @@ export const OrganizationMembershipScalarFieldEnum = {
   userId: 'userId',
   role: 'role',
   isActive: 'isActive',
+  canBorrow: 'canBorrow',
+  canLend: 'canLend',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1446,7 +1523,9 @@ export const LoanScalarFieldEnum = {
   startedAt: 'startedAt',
   repaymentDueAt: 'repaymentDueAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  policyVersion: 'policyVersion',
+  policySnapshot: 'policySnapshot'
 } as const
 
 export type LoanScalarFieldEnum = (typeof LoanScalarFieldEnum)[keyof typeof LoanScalarFieldEnum]
@@ -1456,7 +1535,7 @@ export const LedgerAccountScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
   membershipId: 'membershipId',
-  currency: 'currency',
+  asset: 'asset',
   type: 'type',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1468,11 +1547,13 @@ export type LedgerAccountScalarFieldEnum = (typeof LedgerAccountScalarFieldEnum)
 export const LedgerTransactionScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
-  loanId: 'loanId',
-  repaymentId: 'repaymentId',
   type: 'type',
-  currency: 'currency',
-  createdAt: 'createdAt'
+  status: 'status',
+  referenceType: 'referenceType',
+  referenceId: 'referenceId',
+  idempotencyKey: 'idempotencyKey',
+  createdAt: 'createdAt',
+  completedAt: 'completedAt'
 } as const
 
 export type LedgerTransactionScalarFieldEnum = (typeof LedgerTransactionScalarFieldEnum)[keyof typeof LedgerTransactionScalarFieldEnum]
@@ -1485,7 +1566,7 @@ export const LedgerEntryScalarFieldEnum = {
   accountId: 'accountId',
   direction: 'direction',
   amountMinorUnits: 'amountMinorUnits',
-  currency: 'currency',
+  asset: 'asset',
   createdAt: 'createdAt'
 } as const
 
@@ -1499,7 +1580,9 @@ export const LoanRepaymentScalarFieldEnum = {
   repaymentRequestId: 'repaymentRequestId',
   amountMinorUnits: 'amountMinorUnits',
   currency: 'currency',
+  status: 'status',
   paidAt: 'paidAt',
+  completedAt: 'completedAt',
   createdAt: 'createdAt'
 } as const
 
@@ -1510,15 +1593,41 @@ export const AuditEventScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
   loanId: 'loanId',
+  lendingOfferId: 'lendingOfferId',
+  repaymentId: 'repaymentId',
   actorMembershipId: 'actorMembershipId',
+  targetMembershipId: 'targetMembershipId',
+  amountMinorUnits: 'amountMinorUnits',
+  currency: 'currency',
   type: 'type',
   title: 'title',
   actorLabel: 'actorLabel',
+  metadata: 'metadata',
   occurredAt: 'occurredAt',
   createdAt: 'createdAt'
 } as const
 
 export type AuditEventScalarFieldEnum = (typeof AuditEventScalarFieldEnum)[keyof typeof AuditEventScalarFieldEnum]
+
+
+export const OrganizationLendingPolicyScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  lendingEnabled: 'lendingEnabled',
+  borrowingEnabled: 'borrowingEnabled',
+  maxLoanAmountMinorUnits: 'maxLoanAmountMinorUnits',
+  maxOutstandingDebtMinorUnits: 'maxOutstandingDebtMinorUnits',
+  maxActiveLoans: 'maxActiveLoans',
+  minInterestRateBasisPoints: 'minInterestRateBasisPoints',
+  maxInterestRateBasisPoints: 'maxInterestRateBasisPoints',
+  minTermDays: 'minTermDays',
+  maxTermDays: 'maxTermDays',
+  policyVersion: 'policyVersion',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OrganizationLendingPolicyScalarFieldEnum = (typeof OrganizationLendingPolicyScalarFieldEnum)[keyof typeof OrganizationLendingPolicyScalarFieldEnum]
 
 
 export const SessionScalarFieldEnum = {
@@ -1541,12 +1650,29 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 export const NullsOrder = {
@@ -1669,6 +1795,20 @@ export type ListEnumLoanStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$P
 
 
 /**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
  * Reference to a field of type 'LedgerAccountType'
  */
 export type EnumLedgerAccountTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LedgerAccountType'>
@@ -1697,6 +1837,34 @@ export type ListEnumLedgerTransactionTypeFieldRefInput<$PrismaModel> = FieldRefI
 
 
 /**
+ * Reference to a field of type 'LedgerTransactionStatus'
+ */
+export type EnumLedgerTransactionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LedgerTransactionStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'LedgerTransactionStatus[]'
+ */
+export type ListEnumLedgerTransactionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LedgerTransactionStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'LedgerReferenceType'
+ */
+export type EnumLedgerReferenceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LedgerReferenceType'>
+    
+
+
+/**
+ * Reference to a field of type 'LedgerReferenceType[]'
+ */
+export type ListEnumLedgerReferenceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LedgerReferenceType[]'>
+    
+
+
+/**
  * Reference to a field of type 'LedgerEntryDirection'
  */
 export type EnumLedgerEntryDirectionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LedgerEntryDirection'>
@@ -1707,6 +1875,20 @@ export type EnumLedgerEntryDirectionFieldRefInput<$PrismaModel> = FieldRefInputT
  * Reference to a field of type 'LedgerEntryDirection[]'
  */
 export type ListEnumLedgerEntryDirectionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LedgerEntryDirection[]'>
+    
+
+
+/**
+ * Reference to a field of type 'RepaymentStatus'
+ */
+export type EnumRepaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RepaymentStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'RepaymentStatus[]'
+ */
+export type ListEnumRepaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RepaymentStatus[]'>
     
 
 
@@ -1899,6 +2081,7 @@ export type GlobalOmitConfig = {
   ledgerEntry?: Prisma.LedgerEntryOmit
   loanRepayment?: Prisma.LoanRepaymentOmit
   auditEvent?: Prisma.AuditEventOmit
+  organizationLendingPolicy?: Prisma.OrganizationLendingPolicyOmit
   session?: Prisma.SessionOmit
 }
 

@@ -44,6 +44,7 @@ const baseLoanSelection = {
   lenderMembership: { select: { user: { select: { name: true } } } },
   borrowerMembership: { select: { user: { select: { name: true } } } },
   repayments: {
+    where: { status: "COMPLETED" as const },
     orderBy: { paidAt: "asc" as const },
     select: {
       id: true,

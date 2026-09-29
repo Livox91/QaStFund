@@ -5,8 +5,9 @@ import type { AuthenticatedActor } from "@/modules/auth/domain/actor";
 import { ApplicationRole } from "@/modules/auth/domain/application-role";
 import {
   EmployeeLoanNotFoundError,
+  InvalidRepaymentError,
+  LoanNotRepayableError,
   InsufficientRepaymentBalanceError,
-  RepaymentExceedsRemainingError,
 } from "@/modules/loans/application/errors/repay-loan-errors";
 import { getEmployeeLoanDetails } from "@/modules/loans/application/get-employee-loan-details";
 import type { EmployeeLoanRepository } from "@/modules/loans/application/ports/employee-loan-repository";
@@ -46,6 +47,9 @@ const loan: EmployeeBorrowedLoanRecord = {
       id: "30000000-0000-4000-8000-000000000001",
       amountMinorUnits: 34_000n,
       currency: "USD",
+      status: "COMPLETED",
+      createdAt: new Date("2026-09-20T12:00:00.000Z"),
+      completedAt: new Date("2026-09-20T12:00:00.000Z"),
       paidAt: new Date("2026-09-20T12:00:00.000Z"),
     },
   ],
@@ -61,6 +65,7 @@ const repayment: RecordedLoanRepayment = {
   amountMinorUnits: command.amountMinorUnits,
   currency: "USD",
   paidAt: now,
+  completedAt: now,
   loanStatus: "ACTIVE",
 };
 
@@ -159,7 +164,7 @@ describe("manual repayment application boundary", () => {
 
   it.each([
     ["LOAN_NOT_FOUND", EmployeeLoanNotFoundError],
-    ["AMOUNT_EXCEEDS_REMAINING", RepaymentExceedsRemainingError],
+    ["LOAN_NOT_REPAYABLE", LoanNotRepayableError],
     ["INSUFFICIENT_BALANCE", InsufficientRepaymentBalanceError],
   ] as const)(
     "maps %s to a safe application error",
@@ -172,6 +177,33 @@ describe("manual repayment application boundary", () => {
       ).rejects.toBeInstanceOf(ErrorType);
     },
   );
+
+  it("reports the authoritative remaining balance for overpayment", async () => {
+    const repository = createRepository();
+    vi.mocked(repository.repayBorrowedLoan).mockResolvedValue({
+      kind: "AMOUNT_EXCEEDS_REMAINING",
+      remainingAmountMinorUnits: 3_150n,
+      currency: "USD",
+    });
+
+    await expect(repayLoan(employee, command, repository, now)).rejects.toThrow(
+      "31.50 USD",
+    );
+  });
+
+  it.each([0n, -1n])("rejects non-positive repayment %s", async (amount) => {
+    const repository = createRepository();
+
+    await expect(
+      repayLoan(
+        employee,
+        { ...command, amountMinorUnits: amount },
+        repository,
+        now,
+      ),
+    ).rejects.toBeInstanceOf(InvalidRepaymentError);
+    expect(repository.repayBorrowedLoan).not.toHaveBeenCalled();
+  });
 
   it("rejects employer admins before repository access", async () => {
     const repository = createRepository();

@@ -1,9 +1,10 @@
 import Link from "next/link";
 
+import { updateLendingOfferStatusAction } from "@/app/(employee)/app/lending/actions";
 import type { EmployeeLendingOverview } from "@/modules/lending/domain/lending-offer";
 import { formatBasisPointsAsPercent } from "@/modules/lending/domain/lending-offer";
 import { CreateLendingOfferForm } from "@/modules/lending/ui/create-lending-offer-form";
-import { buttonStyles } from "@/shared/ui/button";
+import { Button, buttonStyles } from "@/shared/ui/button";
 import {
   Card,
   CardContent,
@@ -55,11 +56,15 @@ function BalanceItem({
 export function MyLending({
   created,
   minimumExpirationDate,
+  offerUpdated,
   overview,
+  statusError,
 }: {
   created: boolean;
   minimumExpirationDate: string;
+  offerUpdated: boolean;
   overview: EmployeeLendingOverview;
+  statusError: boolean;
 }) {
   return (
     <main className="mx-auto max-w-[1500px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
@@ -69,7 +74,7 @@ export function MyLending({
             className={buttonStyles({ variant: "outline" })}
             href="/app/borrow"
           >
-            Borrow Money
+            Lending Marketplace
           </Link>
         }
         description="Create and monitor the funds you make available to coworkers."
@@ -83,6 +88,24 @@ export function MyLending({
           role="status"
         >
           Your lending offer is active and now visible in the marketplace.
+        </p>
+      ) : null}
+
+      {offerUpdated ? (
+        <p
+          className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700"
+          role="status"
+        >
+          Your lending offer status was updated.
+        </p>
+      ) : null}
+
+      {statusError ? (
+        <p
+          className="mt-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+          role="alert"
+        >
+          That offer status change is not allowed.
         </p>
       ) : null}
 
@@ -105,27 +128,17 @@ export function MyLending({
 
         <Card>
           <CardHeader>
-            <CardTitle>Mock balance</CardTitle>
+            <CardTitle>Pledged capital</CardTitle>
             <CardDescription>
-              Internal development funds only. No real money or blockchain
-              transaction is involved.
+              Offer creation records a pledge only. No wallet balance or real
+              payment is involved.
             </CardDescription>
           </CardHeader>
-          <CardContent className="grid gap-3 sm:grid-cols-3 xl:grid-cols-1">
-            <BalanceItem
-              amount={overview.mockBalanceMinorUnits}
-              currency={overview.currency}
-              label="Total mock balance"
-            />
+          <CardContent>
             <BalanceItem
               amount={overview.committedBalanceMinorUnits}
               currency={overview.currency}
-              label="Committed to active offers"
-            />
-            <BalanceItem
-              amount={overview.availableBalanceMinorUnits}
-              currency={overview.currency}
-              label="Available to offer"
+              label="Currently pledged in active offers"
             />
           </CardContent>
         </Card>
@@ -156,6 +169,7 @@ export function MyLending({
                   <TableHead>Fee rate</TableHead>
                   <TableHead>Expires</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -194,6 +208,37 @@ export function MyLending({
                     <TableCell>
                       <StatusDisplay status={offer.status} />
                     </TableCell>
+                    <TableCell>
+                      <div className="flex flex-wrap gap-2">
+                        {offer.status === "ACTIVE" ? (
+                          <OfferStatusButton
+                            label="Pause"
+                            offerId={offer.id}
+                            status="PAUSED"
+                          />
+                        ) : null}
+                        {offer.status === "PAUSED" ? (
+                          <OfferStatusButton
+                            label="Resume"
+                            offerId={offer.id}
+                            status="ACTIVE"
+                          />
+                        ) : null}
+                        {offer.status !== "CLOSED" &&
+                        offer.status !== "EXHAUSTED" ? (
+                          <OfferStatusButton
+                            label="Close"
+                            offerId={offer.id}
+                            status="CLOSED"
+                            variant="danger"
+                          />
+                        ) : (
+                          <span className="text-xs text-slate-400">
+                            No actions
+                          </span>
+                        )}
+                      </div>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -202,5 +247,27 @@ export function MyLending({
         )}
       </Card>
     </main>
+  );
+}
+
+function OfferStatusButton({
+  label,
+  offerId,
+  status,
+  variant = "outline",
+}: {
+  label: string;
+  offerId: string;
+  status: "ACTIVE" | "PAUSED" | "CLOSED";
+  variant?: "outline" | "danger";
+}) {
+  return (
+    <form action={updateLendingOfferStatusAction}>
+      <input name="offerId" type="hidden" value={offerId} />
+      <input name="status" type="hidden" value={status} />
+      <Button size="sm" type="submit" variant={variant}>
+        {label}
+      </Button>
+    </form>
   );
 }

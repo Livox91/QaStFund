@@ -16,6 +16,11 @@ export const borrowOfferParamsSchema = z.object({ offerId: z.uuid() });
 
 export const borrowOfferAmountSchema = z.object({ amount: amountInput });
 
+export const borrowOfferApiSchema = z.object({ amount: amountInput }).strict();
+
+export const borrowIdempotencyKeySchema = z.uuid();
+export const loanIdSchema = z.uuid();
+
 export const confirmBorrowOfferSchema = z.object({
   offerId: z.uuid(),
   amount: amountInput,

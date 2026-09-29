@@ -17,32 +17,22 @@ export class LoanNotRepayableError extends ApplicationError {
 }
 
 export class RepaymentExceedsRemainingError extends ApplicationError {
-  constructor() {
+  constructor(remainingAmountMinorUnits: bigint, currency: string) {
+    const whole = remainingAmountMinorUnits / 100n;
+    const fraction = (remainingAmountMinorUnits % 100n)
+      .toString()
+      .padStart(2, "0");
     super(
       "REPAYMENT_EXCEEDS_REMAINING",
-      "The repayment cannot exceed the remaining loan amount.",
+      `The repayment cannot exceed the remaining balance of ${whole}.${fraction} ${currency}.`,
       422,
     );
   }
 }
 
-export class InsufficientRepaymentBalanceError extends ApplicationError {
+export class InvalidRepaymentError extends ApplicationError {
   constructor() {
-    super(
-      "INSUFFICIENT_REPAYMENT_BALANCE",
-      "Your available mock balance is too low for this repayment.",
-      422,
-    );
-  }
-}
-
-export class RepaymentBalanceUnavailableError extends ApplicationError {
-  constructor() {
-    super(
-      "REPAYMENT_BALANCE_UNAVAILABLE",
-      "The mock balances needed for this repayment are unavailable.",
-      409,
-    );
+    super("INVALID_REPAYMENT", "The repayment request is invalid.", 422);
   }
 }
 
@@ -51,6 +41,16 @@ export class RepaymentRequestConflictError extends ApplicationError {
     super(
       "REPAYMENT_REQUEST_CONFLICT",
       "This repayment request was already used for a different payment.",
+      409,
+    );
+  }
+}
+
+export class InsufficientRepaymentBalanceError extends ApplicationError {
+  constructor() {
+    super(
+      "INSUFFICIENT_REPAYMENT_BALANCE",
+      "Your wallet does not have enough available USDC for this repayment.",
       409,
     );
   }

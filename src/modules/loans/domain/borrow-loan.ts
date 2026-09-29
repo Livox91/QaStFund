@@ -26,6 +26,7 @@ export type CreatedBorrowingLoan = Readonly<{
   currency: string;
   durationDays: number;
   feeRateBasisPoints: number;
+  activatedAt: Date;
   repaymentDueAt: Date;
 }>;
 
@@ -35,6 +36,14 @@ export type BorrowLoanSummary = Readonly<{
   totalRepaymentMinorUnits: bigint;
   repaymentDueAt: Date;
 }>;
+
+/** The fee rate is applied once to the complete loan term; it is not an APR. */
+export type BorrowLoanQuote = BorrowLoanSummary &
+  Readonly<{
+    currency: string;
+    durationDays: number;
+    feeRateBasisPoints: number;
+  }>;
 
 export function calculateBorrowLoanSummary(
   offer: Pick<BorrowableOffer, "durationDays" | "feeRateBasisPoints">,

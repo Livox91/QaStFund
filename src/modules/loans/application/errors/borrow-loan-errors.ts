@@ -30,11 +30,11 @@ export class InsufficientOfferLiquidityError extends ApplicationError {
   }
 }
 
-export class BorrowingBalanceUnavailableError extends ApplicationError {
+export class InsufficientLenderBalanceError extends ApplicationError {
   constructor() {
     super(
-      "BORROWING_BALANCE_UNAVAILABLE",
-      "The mock balance needed for this loan is unavailable.",
+      "INSUFFICIENT_LENDER_BALANCE",
+      "The lender does not have enough available USDC to fund this loan.",
       409,
     );
   }
@@ -47,5 +47,27 @@ export class BorrowRequestConflictError extends ApplicationError {
       "This confirmation request was already used for a different loan.",
       409,
     );
+  }
+}
+
+export class InvalidBorrowRequestError extends ApplicationError {
+  constructor() {
+    super("INVALID_BORROW_REQUEST", "The borrow request is invalid.", 422);
+  }
+}
+
+export class IdempotencyKeyRequiredError extends ApplicationError {
+  constructor() {
+    super(
+      "IDEMPOTENCY_KEY_REQUIRED",
+      "A valid Idempotency-Key header is required.",
+      400,
+    );
+  }
+}
+
+export class LoanNotFoundError extends ApplicationError {
+  constructor() {
+    super("LOAN_NOT_FOUND", "Loan was not found.", 404);
   }
 }

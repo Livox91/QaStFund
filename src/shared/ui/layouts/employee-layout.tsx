@@ -8,7 +8,7 @@ const employeeNavigation: ReadonlyArray<NavigationItem> = [
   {
     href: "/app/borrow",
     icon: "marketplace",
-    label: "Borrow",
+    label: "Marketplace",
   },
   { href: "/profile", icon: "profile", label: "Profile" },
 ];

@@ -8,14 +8,22 @@ import {
   type RepayLoanActionState,
 } from "@/app/(employee)/app/loans/[loanId]/actions";
 import { Button } from "@/shared/ui/button";
+import { CurrencyDisplay } from "@/shared/ui/currency-display";
 import { Field, Input } from "@/shared/ui/input";
+
+function parseMinorUnits(value: string): bigint | null {
+  const match = /^(\d+)(?:\.(\d{0,2}))?$/.exec(value.trim());
+  if (!match) return null;
+
+  return BigInt(match[1]) * 100n + BigInt((match[2] ?? "").padEnd(2, "0"));
+}
 
 function RepayButton() {
   const { pending } = useFormStatus();
 
   return (
     <Button isLoading={pending} size="lg" type="submit">
-      Repay
+      Confirm repayment
     </Button>
   );
 }
@@ -36,11 +44,43 @@ export function RepaymentForm({
     repayLoanAction,
     {},
   );
+  const currentBalanceMinorUnits = parseMinorUnits(fullAmount) ?? 0n;
+  const repaymentMinorUnits = parseMinorUnits(amount);
+  const balanceAfterMinorUnits =
+    repaymentMinorUnits !== null &&
+    repaymentMinorUnits >= 0n &&
+    repaymentMinorUnits <= currentBalanceMinorUnits
+      ? currentBalanceMinorUnits - repaymentMinorUnits
+      : null;
 
   return (
     <form action={action}>
       <input name="loanId" type="hidden" value={loanId} />
       <input name="requestId" type="hidden" value={requestId} />
+      <dl className="mb-5 grid grid-cols-2 gap-4 rounded-xl bg-slate-50 p-4">
+        <div>
+          <dt className="text-xs text-slate-500">Current balance</dt>
+          <dd className="mt-1 font-semibold text-slate-950">
+            <CurrencyDisplay
+              amountMinorUnits={currentBalanceMinorUnits}
+              currency={currency}
+            />
+          </dd>
+        </div>
+        <div>
+          <dt className="text-xs text-slate-500">Balance after</dt>
+          <dd className="mt-1 font-semibold text-slate-950">
+            {balanceAfterMinorUnits === null ? (
+              "—"
+            ) : (
+              <CurrencyDisplay
+                amountMinorUnits={balanceAfterMinorUnits}
+                currency={currency}
+              />
+            )}
+          </dd>
+        </div>
+      </dl>
       <Field
         error={state.fieldErrors?.amount?.[0]}
         hint={`Enter a partial amount or repay the full ${fullAmount} ${currency}.`}

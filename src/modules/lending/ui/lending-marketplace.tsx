@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 import {
-  calculateEstimatedRepayment,
   formatBasisPointsAsPercent,
   getCurrentlyBorrowableMaximum,
   LendingMarketplaceSort,
@@ -54,9 +53,9 @@ export function LendingMarketplaceView({
             My Lending
           </Link>
         }
-        description="Discover active coworker offers without exposing unnecessary personal information."
+        description="Discover active lending offers from coworkers in your organization."
         eyebrow="Employee portal"
-        title="Borrow Money"
+        title="Lending Marketplace"
       />
 
       <Card className="mt-8">
@@ -149,7 +148,7 @@ export function LendingMarketplaceView({
       {marketplace.offers.length === 0 ? (
         <EmptyState
           className="mt-5"
-          description="Try adjusting your amount or duration. Expired, inactive, personal, and other-organization offers are always excluded."
+          description="Try adjusting your amount or duration. Expired, inactive, and other-organization offers are always excluded."
           title="No matching offers"
         />
       ) : (
@@ -159,19 +158,13 @@ export function LendingMarketplaceView({
         >
           {marketplace.offers.map((offer) => {
             const maximumBorrowable = getCurrentlyBorrowableMaximum(offer);
-            const estimatedPrincipal =
-              filters.amountMinorUnits ?? maximumBorrowable;
-            const estimatedRepayment = calculateEstimatedRepayment(
-              estimatedPrincipal,
-              offer.feeRateBasisPoints,
-            );
 
             return (
               <Card key={offer.id} className="overflow-hidden">
                 <CardHeader>
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <CardTitle>Lending offer</CardTitle>
+                      <CardTitle>{offer.lender.name}</CardTitle>
                       <CardDescription>
                         Expires {dateFormatter.format(offer.expiresAt)}
                       </CardDescription>
@@ -218,23 +211,18 @@ export function LendingMarketplaceView({
                       </dd>
                     </div>
                     <div>
-                      <dt className="text-xs text-slate-400">
-                        Estimated repayment
-                      </dt>
+                      <dt className="text-xs text-slate-400">Maximum</dt>
                       <dd className="mt-1 text-sm font-semibold text-slate-950">
                         <CurrencyDisplay
-                          amountMinorUnits={estimatedRepayment}
+                          amountMinorUnits={maximumBorrowable}
                           currency={offer.currency}
                         />
                       </dd>
                     </div>
                   </dl>
                   <p className="mt-5 border-t border-slate-100 pt-4 text-xs leading-5 text-slate-400">
-                    Estimate based on{" "}
-                    {filters.amountMinorUnits
-                      ? "your desired amount"
-                      : "the current maximum amount"}
-                    . Final terms are shown before confirmation.
+                    Review an informational quote before confirming. Capital is
+                    reserved only when the loan is created.
                   </p>
                 </CardContent>
                 <CardFooter>
@@ -242,7 +230,7 @@ export function LendingMarketplaceView({
                     className={buttonStyles({ className: "w-full" })}
                     href={`/app/borrow/${offer.id}${filters.amountMinorUnits ? `?amount=${minorUnitsToInputValue(filters.amountMinorUnits)}` : ""}`}
                   >
-                    Review offer
+                    Borrow
                   </Link>
                 </CardFooter>
               </Card>

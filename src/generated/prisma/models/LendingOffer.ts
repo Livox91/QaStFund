@@ -311,6 +311,7 @@ export type LendingOfferWhereInput = {
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   lenderMembership?: Prisma.XOR<Prisma.OrganizationMembershipScalarRelationFilter, Prisma.OrganizationMembershipWhereInput>
   loans?: Prisma.LoanListRelationFilter
+  auditEvents?: Prisma.AuditEventListRelationFilter
 }
 
 export type LendingOfferOrderByWithRelationInput = {
@@ -331,6 +332,7 @@ export type LendingOfferOrderByWithRelationInput = {
   organization?: Prisma.OrganizationOrderByWithRelationInput
   lenderMembership?: Prisma.OrganizationMembershipOrderByWithRelationInput
   loans?: Prisma.LoanOrderByRelationAggregateInput
+  auditEvents?: Prisma.AuditEventOrderByRelationAggregateInput
 }
 
 export type LendingOfferWhereUniqueInput = Prisma.AtLeast<{
@@ -355,6 +357,7 @@ export type LendingOfferWhereUniqueInput = Prisma.AtLeast<{
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   lenderMembership?: Prisma.XOR<Prisma.OrganizationMembershipScalarRelationFilter, Prisma.OrganizationMembershipWhereInput>
   loans?: Prisma.LoanListRelationFilter
+  auditEvents?: Prisma.AuditEventListRelationFilter
 }, "id" | "organizationId_id">
 
 export type LendingOfferOrderByWithAggregationInput = {
@@ -415,6 +418,7 @@ export type LendingOfferCreateInput = {
   organization: Prisma.OrganizationCreateNestedOneWithoutLendingOffersInput
   lenderMembership: Prisma.OrganizationMembershipCreateNestedOneWithoutLendingOffersInput
   loans?: Prisma.LoanCreateNestedManyWithoutLendingOfferInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutLendingOfferInput
 }
 
 export type LendingOfferUncheckedCreateInput = {
@@ -433,6 +437,7 @@ export type LendingOfferUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   loans?: Prisma.LoanUncheckedCreateNestedManyWithoutLendingOfferInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutLendingOfferInput
 }
 
 export type LendingOfferUpdateInput = {
@@ -451,6 +456,7 @@ export type LendingOfferUpdateInput = {
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutLendingOffersNestedInput
   lenderMembership?: Prisma.OrganizationMembershipUpdateOneRequiredWithoutLendingOffersNestedInput
   loans?: Prisma.LoanUpdateManyWithoutLendingOfferNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutLendingOfferNestedInput
 }
 
 export type LendingOfferUncheckedUpdateInput = {
@@ -469,6 +475,7 @@ export type LendingOfferUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loans?: Prisma.LoanUncheckedUpdateManyWithoutLendingOfferNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutLendingOfferNestedInput
 }
 
 export type LendingOfferCreateManyInput = {
@@ -729,6 +736,22 @@ export type LendingOfferUpdateOneWithoutLoansNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.LendingOfferUpdateToOneWithWhereWithoutLoansInput, Prisma.LendingOfferUpdateWithoutLoansInput>, Prisma.LendingOfferUncheckedUpdateWithoutLoansInput>
 }
 
+export type LendingOfferCreateNestedOneWithoutAuditEventsInput = {
+  create?: Prisma.XOR<Prisma.LendingOfferCreateWithoutAuditEventsInput, Prisma.LendingOfferUncheckedCreateWithoutAuditEventsInput>
+  connectOrCreate?: Prisma.LendingOfferCreateOrConnectWithoutAuditEventsInput
+  connect?: Prisma.LendingOfferWhereUniqueInput
+}
+
+export type LendingOfferUpdateOneWithoutAuditEventsNestedInput = {
+  create?: Prisma.XOR<Prisma.LendingOfferCreateWithoutAuditEventsInput, Prisma.LendingOfferUncheckedCreateWithoutAuditEventsInput>
+  connectOrCreate?: Prisma.LendingOfferCreateOrConnectWithoutAuditEventsInput
+  upsert?: Prisma.LendingOfferUpsertWithoutAuditEventsInput
+  disconnect?: Prisma.LendingOfferWhereInput | boolean
+  delete?: Prisma.LendingOfferWhereInput | boolean
+  connect?: Prisma.LendingOfferWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LendingOfferUpdateToOneWithWhereWithoutAuditEventsInput, Prisma.LendingOfferUpdateWithoutAuditEventsInput>, Prisma.LendingOfferUncheckedUpdateWithoutAuditEventsInput>
+}
+
 export type LendingOfferCreateWithoutOrganizationInput = {
   id?: string
   amountMinorUnits: bigint | number
@@ -744,6 +767,7 @@ export type LendingOfferCreateWithoutOrganizationInput = {
   updatedAt?: Date | string
   lenderMembership: Prisma.OrganizationMembershipCreateNestedOneWithoutLendingOffersInput
   loans?: Prisma.LoanCreateNestedManyWithoutLendingOfferInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutLendingOfferInput
 }
 
 export type LendingOfferUncheckedCreateWithoutOrganizationInput = {
@@ -761,6 +785,7 @@ export type LendingOfferUncheckedCreateWithoutOrganizationInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   loans?: Prisma.LoanUncheckedCreateNestedManyWithoutLendingOfferInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutLendingOfferInput
 }
 
 export type LendingOfferCreateOrConnectWithoutOrganizationInput = {
@@ -824,6 +849,7 @@ export type LendingOfferCreateWithoutLenderMembershipInput = {
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutLendingOffersInput
   loans?: Prisma.LoanCreateNestedManyWithoutLendingOfferInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutLendingOfferInput
 }
 
 export type LendingOfferUncheckedCreateWithoutLenderMembershipInput = {
@@ -840,6 +866,7 @@ export type LendingOfferUncheckedCreateWithoutLenderMembershipInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   loans?: Prisma.LoanUncheckedCreateNestedManyWithoutLendingOfferInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutLendingOfferInput
 }
 
 export type LendingOfferCreateOrConnectWithoutLenderMembershipInput = {
@@ -883,6 +910,7 @@ export type LendingOfferCreateWithoutLoansInput = {
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutLendingOffersInput
   lenderMembership: Prisma.OrganizationMembershipCreateNestedOneWithoutLendingOffersInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutLendingOfferInput
 }
 
 export type LendingOfferUncheckedCreateWithoutLoansInput = {
@@ -900,6 +928,7 @@ export type LendingOfferUncheckedCreateWithoutLoansInput = {
   status: $Enums.LendingOfferStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutLendingOfferInput
 }
 
 export type LendingOfferCreateOrConnectWithoutLoansInput = {
@@ -933,6 +962,7 @@ export type LendingOfferUpdateWithoutLoansInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutLendingOffersNestedInput
   lenderMembership?: Prisma.OrganizationMembershipUpdateOneRequiredWithoutLendingOffersNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutLendingOfferNestedInput
 }
 
 export type LendingOfferUncheckedUpdateWithoutLoansInput = {
@@ -950,6 +980,95 @@ export type LendingOfferUncheckedUpdateWithoutLoansInput = {
   status?: Prisma.EnumLendingOfferStatusFieldUpdateOperationsInput | $Enums.LendingOfferStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutLendingOfferNestedInput
+}
+
+export type LendingOfferCreateWithoutAuditEventsInput = {
+  id?: string
+  amountMinorUnits: bigint | number
+  availableAmountMinorUnits: bigint | number
+  minimumLoanAmountMinorUnits: bigint | number
+  maximumLoanAmountMinorUnits: bigint | number
+  currency: string
+  durationDays: number
+  feeRateBasisPoints: number
+  expiresAt: Date | string
+  status: $Enums.LendingOfferStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutLendingOffersInput
+  lenderMembership: Prisma.OrganizationMembershipCreateNestedOneWithoutLendingOffersInput
+  loans?: Prisma.LoanCreateNestedManyWithoutLendingOfferInput
+}
+
+export type LendingOfferUncheckedCreateWithoutAuditEventsInput = {
+  id?: string
+  organizationId: string
+  lenderMembershipId: string
+  amountMinorUnits: bigint | number
+  availableAmountMinorUnits: bigint | number
+  minimumLoanAmountMinorUnits: bigint | number
+  maximumLoanAmountMinorUnits: bigint | number
+  currency: string
+  durationDays: number
+  feeRateBasisPoints: number
+  expiresAt: Date | string
+  status: $Enums.LendingOfferStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  loans?: Prisma.LoanUncheckedCreateNestedManyWithoutLendingOfferInput
+}
+
+export type LendingOfferCreateOrConnectWithoutAuditEventsInput = {
+  where: Prisma.LendingOfferWhereUniqueInput
+  create: Prisma.XOR<Prisma.LendingOfferCreateWithoutAuditEventsInput, Prisma.LendingOfferUncheckedCreateWithoutAuditEventsInput>
+}
+
+export type LendingOfferUpsertWithoutAuditEventsInput = {
+  update: Prisma.XOR<Prisma.LendingOfferUpdateWithoutAuditEventsInput, Prisma.LendingOfferUncheckedUpdateWithoutAuditEventsInput>
+  create: Prisma.XOR<Prisma.LendingOfferCreateWithoutAuditEventsInput, Prisma.LendingOfferUncheckedCreateWithoutAuditEventsInput>
+  where?: Prisma.LendingOfferWhereInput
+}
+
+export type LendingOfferUpdateToOneWithWhereWithoutAuditEventsInput = {
+  where?: Prisma.LendingOfferWhereInput
+  data: Prisma.XOR<Prisma.LendingOfferUpdateWithoutAuditEventsInput, Prisma.LendingOfferUncheckedUpdateWithoutAuditEventsInput>
+}
+
+export type LendingOfferUpdateWithoutAuditEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  availableAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  minimumLoanAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maximumLoanAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  durationDays?: Prisma.IntFieldUpdateOperationsInput | number
+  feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumLendingOfferStatusFieldUpdateOperationsInput | $Enums.LendingOfferStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutLendingOffersNestedInput
+  lenderMembership?: Prisma.OrganizationMembershipUpdateOneRequiredWithoutLendingOffersNestedInput
+  loans?: Prisma.LoanUpdateManyWithoutLendingOfferNestedInput
+}
+
+export type LendingOfferUncheckedUpdateWithoutAuditEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  lenderMembershipId?: Prisma.StringFieldUpdateOperationsInput | string
+  amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  availableAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  minimumLoanAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  maximumLoanAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  durationDays?: Prisma.IntFieldUpdateOperationsInput | number
+  feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumLendingOfferStatusFieldUpdateOperationsInput | $Enums.LendingOfferStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loans?: Prisma.LoanUncheckedUpdateManyWithoutLendingOfferNestedInput
 }
 
 export type LendingOfferCreateManyOrganizationInput = {
@@ -983,6 +1102,7 @@ export type LendingOfferUpdateWithoutOrganizationInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lenderMembership?: Prisma.OrganizationMembershipUpdateOneRequiredWithoutLendingOffersNestedInput
   loans?: Prisma.LoanUpdateManyWithoutLendingOfferNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutLendingOfferNestedInput
 }
 
 export type LendingOfferUncheckedUpdateWithoutOrganizationInput = {
@@ -1000,6 +1120,7 @@ export type LendingOfferUncheckedUpdateWithoutOrganizationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loans?: Prisma.LoanUncheckedUpdateManyWithoutLendingOfferNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutLendingOfferNestedInput
 }
 
 export type LendingOfferUncheckedUpdateManyWithoutOrganizationInput = {
@@ -1048,6 +1169,7 @@ export type LendingOfferUpdateWithoutLenderMembershipInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutLendingOffersNestedInput
   loans?: Prisma.LoanUpdateManyWithoutLendingOfferNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutLendingOfferNestedInput
 }
 
 export type LendingOfferUncheckedUpdateWithoutLenderMembershipInput = {
@@ -1064,6 +1186,7 @@ export type LendingOfferUncheckedUpdateWithoutLenderMembershipInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loans?: Prisma.LoanUncheckedUpdateManyWithoutLendingOfferNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutLendingOfferNestedInput
 }
 
 export type LendingOfferUncheckedUpdateManyWithoutLenderMembershipInput = {
@@ -1088,10 +1211,12 @@ export type LendingOfferUncheckedUpdateManyWithoutLenderMembershipInput = {
 
 export type LendingOfferCountOutputType = {
   loans: number
+  auditEvents: number
 }
 
 export type LendingOfferCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   loans?: boolean | LendingOfferCountOutputTypeCountLoansArgs
+  auditEvents?: boolean | LendingOfferCountOutputTypeCountAuditEventsArgs
 }
 
 /**
@@ -1109,6 +1234,13 @@ export type LendingOfferCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types
  */
 export type LendingOfferCountOutputTypeCountLoansArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.LoanWhereInput
+}
+
+/**
+ * LendingOfferCountOutputType without action
+ */
+export type LendingOfferCountOutputTypeCountAuditEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AuditEventWhereInput
 }
 
 
@@ -1130,6 +1262,7 @@ export type LendingOfferSelect<ExtArgs extends runtime.Types.Extensions.Internal
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   lenderMembership?: boolean | Prisma.OrganizationMembershipDefaultArgs<ExtArgs>
   loans?: boolean | Prisma.LendingOffer$loansArgs<ExtArgs>
+  auditEvents?: boolean | Prisma.LendingOffer$auditEventsArgs<ExtArgs>
   _count?: boolean | Prisma.LendingOfferCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["lendingOffer"]>
 
@@ -1193,6 +1326,7 @@ export type LendingOfferInclude<ExtArgs extends runtime.Types.Extensions.Interna
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   lenderMembership?: boolean | Prisma.OrganizationMembershipDefaultArgs<ExtArgs>
   loans?: boolean | Prisma.LendingOffer$loansArgs<ExtArgs>
+  auditEvents?: boolean | Prisma.LendingOffer$auditEventsArgs<ExtArgs>
   _count?: boolean | Prisma.LendingOfferCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type LendingOfferIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1210,6 +1344,7 @@ export type $LendingOfferPayload<ExtArgs extends runtime.Types.Extensions.Intern
     organization: Prisma.$OrganizationPayload<ExtArgs>
     lenderMembership: Prisma.$OrganizationMembershipPayload<ExtArgs>
     loans: Prisma.$LoanPayload<ExtArgs>[]
+    auditEvents: Prisma.$AuditEventPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1623,6 +1758,7 @@ export interface Prisma__LendingOfferClient<T, Null = never, ExtArgs extends run
   organization<T extends Prisma.OrganizationDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationDefaultArgs<ExtArgs>>): Prisma.Prisma__OrganizationClient<runtime.Types.Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   lenderMembership<T extends Prisma.OrganizationMembershipDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationMembershipDefaultArgs<ExtArgs>>): Prisma.Prisma__OrganizationMembershipClient<runtime.Types.Result.GetResult<Prisma.$OrganizationMembershipPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   loans<T extends Prisma.LendingOffer$loansArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LendingOffer$loansArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LoanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  auditEvents<T extends Prisma.LendingOffer$auditEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LendingOffer$auditEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2088,6 +2224,30 @@ export type LendingOffer$loansArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.LoanScalarFieldEnum | Prisma.LoanScalarFieldEnum[]
+}
+
+/**
+ * LendingOffer.auditEvents
+ */
+export type LendingOffer$auditEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AuditEvent
+   */
+  select?: Prisma.AuditEventSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AuditEvent
+   */
+  omit?: Prisma.AuditEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuditEventInclude<ExtArgs> | null
+  where?: Prisma.AuditEventWhereInput
+  orderBy?: Prisma.AuditEventOrderByWithRelationInput | Prisma.AuditEventOrderByWithRelationInput[]
+  cursor?: Prisma.AuditEventWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AuditEventScalarFieldEnum | Prisma.AuditEventScalarFieldEnum[]
 }
 
 /**

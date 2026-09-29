@@ -4,6 +4,7 @@ import { randomUUID } from "node:crypto";
 
 import { prisma } from "../src/infrastructure/database/prisma";
 import { prismaBorrowLoanRepository } from "../src/modules/loans/infrastructure/prisma-borrow-loan-repository";
+import { fundEmployeeWallet } from "../src/modules/ledger/infrastructure/prisma-wallet-repository";
 
 const suffix = randomUUID();
 let organizationId: string | undefined;
@@ -12,149 +13,183 @@ const userIds: string[] = [];
 try {
   const organization = await prisma.organization.create({
     data: {
-      name: "Borrow verification",
-      slug: `borrow-${suffix}`,
+      name: "Borrow concurrency verification",
+      slug: `borrow-concurrency-${suffix}`,
       currency: "USD",
     },
   });
   organizationId = organization.id;
-  const borrower = await prisma.user.create({
-    data: {
-      email: `borrower-${suffix}@test.local`,
-      name: "Borrower",
-      passwordHash: "unused",
-    },
+  const testOrganizationId = organization.id;
+
+  const users = await Promise.all(
+    ["Lender", "Bob", "Charlie"].map((name) =>
+      prisma.user.create({
+        data: {
+          email: `${name.toLowerCase()}-${suffix}@test.local`,
+          name,
+          passwordHash: "unused",
+        },
+      }),
+    ),
+  );
+  userIds.push(...users.map(({ id }) => id));
+  const [lender, bob, charlie] = users;
+  if (!lender || !bob || !charlie) throw new Error("Test users missing.");
+
+  const [lenderMembership] = await Promise.all(
+    users.map((user) =>
+      prisma.organizationMembership.create({
+        data: {
+          organizationId: testOrganizationId,
+          userId: user.id,
+          role: "EMPLOYEE",
+        },
+      }),
+    ),
+  );
+  if (!lenderMembership) throw new Error("Lender membership missing.");
+  await fundEmployeeWallet({
+    organizationId: testOrganizationId,
+    userId: lender.id,
+    amountMinorUnits: 5_000n,
+    requestId: randomUUID(),
+    now: new Date(),
   });
-  const lender = await prisma.user.create({
-    data: {
-      email: `lender-${suffix}@test.local`,
-      name: "Lender",
-      passwordHash: "unused",
-    },
-  });
-  userIds.push(borrower.id, lender.id);
-  const borrowerMembership = await prisma.organizationMembership.create({
-    data: { organizationId, userId: borrower.id, role: "EMPLOYEE" },
-  });
-  const lenderMembership = await prisma.organizationMembership.create({
-    data: { organizationId, userId: lender.id, role: "EMPLOYEE" },
-  });
-  await prisma.employeeBalance.createMany({
-    data: [
-      {
-        organizationId,
-        membershipId: borrowerMembership.id,
-        amountMinorUnits: 20_000n,
-        currency: "USD",
-      },
-      {
-        organizationId,
-        membershipId: lenderMembership.id,
-        amountMinorUnits: 100_000n,
-        currency: "USD",
-      },
-    ],
-  });
+
   const offer = await prisma.lendingOffer.create({
     data: {
-      organizationId,
+      organizationId: testOrganizationId,
       lenderMembershipId: lenderMembership.id,
-      amountMinorUnits: 50_000n,
-      availableAmountMinorUnits: 50_000n,
-      minimumLoanAmountMinorUnits: 5_000n,
-      maximumLoanAmountMinorUnits: 25_000n,
+      amountMinorUnits: 5_000n,
+      availableAmountMinorUnits: 5_000n,
+      minimumLoanAmountMinorUnits: 1n,
+      maximumLoanAmountMinorUnits: 5_000n,
       currency: "USD",
       durationDays: 30,
-      feeRateBasisPoints: 500,
+      feeRateBasisPoints: 300,
       expiresAt: new Date(Date.now() + 86_400_000),
       status: "ACTIVE",
     },
   });
-  const command = {
-    offerId: offer.id,
-    amountMinorUnits: 10_000n,
-    requestId: randomUUID(),
-  };
   const now = new Date();
-  const selfOffer = await prismaBorrowLoanRepository.findBorrowableOffer({
-    organizationId,
-    userId: lender.id,
-    offerId: offer.id,
-    now,
-  });
-  const crossOrganizationOffer =
-    await prismaBorrowLoanRepository.findBorrowableOffer({
-      organizationId: randomUUID(),
-      userId: borrower.id,
+  const attempts = [bob, charlie].map((user) => ({
+    userId: user.id,
+    command: {
       offerId: offer.id,
+      amountMinorUnits: 5_000n,
+      requestId: randomUUID(),
+    },
+  }));
+  const request = (attempt: (typeof attempts)[number]) =>
+    prismaBorrowLoanRepository.createFromOffer({
+      organizationId: testOrganizationId,
+      userId: attempt.userId,
+      command: attempt.command,
       now,
     });
-  const first = await prismaBorrowLoanRepository.createFromOffer({
-    organizationId,
-    userId: borrower.id,
-    command,
-    now,
+
+  const results = await Promise.all(attempts.map(request));
+  const successfulIndex = results.findIndex(({ kind }) => kind === "CREATED");
+  const successfulAttempt = attempts[successfulIndex];
+  if (!successfulAttempt) throw new Error("Successful attempt missing.");
+  const retry = await request(successfulAttempt);
+  const updatedOffer = await prisma.lendingOffer.findUniqueOrThrow({
+    where: { id: offer.id },
   });
-  const retry = await prismaBorrowLoanRepository.createFromOffer({
-    organizationId,
-    userId: borrower.id,
-    command,
-    now,
+  const loans = await prisma.loan.findMany({
+    where: { organizationId: testOrganizationId, lendingOfferId: offer.id },
   });
-  const [loanCount, balances, updatedOffer, ledgerEntries, auditCount] =
-    await Promise.all([
-      prisma.loan.count({ where: { borrowRequestId: command.requestId } }),
-      prisma.employeeBalance.findMany({
-        where: { organizationId },
-        orderBy: { membershipId: "asc" },
-      }),
-      prisma.lendingOffer.findUniqueOrThrow({ where: { id: offer.id } }),
-      prisma.ledgerEntry.findMany({ where: { organizationId } }),
-      prisma.auditEvent.count({ where: { organizationId } }),
-    ]);
-  const borrowerBalance = balances.find(
-    (item) => item.membershipId === borrowerMembership.id,
-  );
-  const lenderBalance = balances.find(
-    (item) => item.membershipId === lenderMembership.id,
-  );
-  const debits = ledgerEntries
-    .filter((entry) => entry.direction === "DEBIT")
-    .reduce((sum, entry) => sum + entry.amountMinorUnits, 0n);
-  const credits = ledgerEntries
-    .filter((entry) => entry.direction === "CREDIT")
-    .reduce((sum, entry) => sum + entry.amountMinorUnits, 0n);
+  const auditEvent = await prisma.auditEvent.findFirst({
+    where: { organizationId: testOrganizationId, lendingOfferId: offer.id },
+  });
+  const createdCount = results.filter(({ kind }) => kind === "CREATED").length;
+  const rejectedCount = results.filter(
+    ({ kind }) => kind === "INSUFFICIENT_LIQUIDITY",
+  ).length;
 
   if (
-    first.kind !== "CREATED" ||
+    createdCount !== 1 ||
+    rejectedCount !== 1 ||
+    loans.length !== 1 ||
+    updatedOffer.availableAmountMinorUnits !== 0n ||
+    updatedOffer.status !== "EXHAUSTED" ||
+    updatedOffer.availableAmountMinorUnits < 0n ||
     retry.kind !== "ALREADY_CREATED" ||
-    selfOffer !== null ||
-    crossOrganizationOffer !== null ||
-    loanCount !== 1 ||
-    borrowerBalance?.amountMinorUnits !== 30_000n ||
-    lenderBalance?.amountMinorUnits !== 90_000n ||
-    updatedOffer.availableAmountMinorUnits !== 40_000n ||
-    ledgerEntries.length !== 2 ||
-    debits !== credits ||
-    auditCount !== 1
+    loans[0]?.principalAmountMinorUnits !== 5_000n ||
+    loans[0]?.feeAmountMinorUnits !== 150n ||
+    loans[0]?.durationDays !== 30 ||
+    loans[0]?.feeRateBasisPoints !== 300 ||
+    loans[0]?.activatedAt?.getTime() !== now.getTime() ||
+    loans[0]?.repaymentDueAt.getTime() !== now.getTime() + 30 * 86_400_000 ||
+    auditEvent?.loanId !== loans[0]?.id ||
+    auditEvent?.amountMinorUnits !== 5_000n ||
+    auditEvent?.currency !== "USD" ||
+    !auditEvent.actorMembershipId
   ) {
-    throw new Error("Borrowing transaction verification failed.");
+    throw new Error("Concurrent capital reservation verification failed.");
   }
 
-  console.log(
-    "Borrowing transaction, tenant isolation, and idempotent retry verified.",
-  );
+  const rollbackOffer = await prisma.lendingOffer.create({
+    data: {
+      organizationId: testOrganizationId,
+      lenderMembershipId: lenderMembership.id,
+      amountMinorUnits: 2_500n,
+      availableAmountMinorUnits: 2_500n,
+      minimumLoanAmountMinorUnits: 1n,
+      maximumLoanAmountMinorUnits: 2_500n,
+      currency: "USD",
+      durationDays: 14,
+      feeRateBasisPoints: 200,
+      expiresAt: new Date(Date.now() + 86_400_000),
+      status: "ACTIVE",
+    },
+  });
+  try {
+    await prisma.$transaction(async (transaction) => {
+      await transaction.lendingOffer.updateMany({
+        where: {
+          id: rollbackOffer.id,
+          organizationId: testOrganizationId,
+          status: "ACTIVE",
+          availableAmountMinorUnits: { gte: 2_500n },
+        },
+        data: { availableAmountMinorUnits: { decrement: 2_500n } },
+      });
+      throw new Error("Simulated downstream loan creation failure.");
+    });
+  } catch (error) {
+    if (
+      !(error instanceof Error) ||
+      error.message !== "Simulated downstream loan creation failure."
+    ) {
+      throw error;
+    }
+  }
+  const rolledBackOffer = await prisma.lendingOffer.findUniqueOrThrow({
+    where: { id: rollbackOffer.id },
+  });
+  if (rolledBackOffer.availableAmountMinorUnits !== 2_500n) {
+    throw new Error("Failed loan creation did not roll back reservation.");
+  }
+
+  console.log("Concurrent borrowing and failed-creation rollback verified.");
 } finally {
   if (organizationId) {
-    await prisma.ledgerEntry.deleteMany({ where: { organizationId } });
-    await prisma.ledgerTransaction.deleteMany({ where: { organizationId } });
-    await prisma.auditEvent.deleteMany({ where: { organizationId } });
-    await prisma.loan.deleteMany({ where: { organizationId } });
-    await prisma.lendingOffer.deleteMany({ where: { organizationId } });
-    await prisma.ledgerAccount.deleteMany({ where: { organizationId } });
-    await prisma.employeeBalance.deleteMany({ where: { organizationId } });
-    await prisma.organization.delete({ where: { id: organizationId } });
+    await prisma.$transaction(async (transaction) => {
+      await transaction.$executeRaw`SELECT set_config('app.allow_ledger_cleanup', 'on', true)`;
+      await transaction.auditEvent.deleteMany({ where: { organizationId } });
+      await transaction.ledgerEntry.deleteMany({ where: { organizationId } });
+      await transaction.ledgerTransaction.deleteMany({
+        where: { organizationId },
+      });
+      await transaction.loan.deleteMany({ where: { organizationId } });
+      await transaction.lendingOffer.deleteMany({ where: { organizationId } });
+      await transaction.ledgerAccount.deleteMany({ where: { organizationId } });
+      await transaction.organization.delete({ where: { id: organizationId } });
+    });
   }
-  await prisma.user.deleteMany({ where: { id: { in: userIds } } });
+  if (userIds.length > 0) {
+    await prisma.user.deleteMany({ where: { id: { in: userIds } } });
+  }
   await prisma.$disconnect();
 }

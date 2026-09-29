@@ -4,7 +4,6 @@ import { ForbiddenError } from "@/modules/auth/application/errors/auth-errors";
 import type { AuthenticatedActor } from "@/modules/auth/domain/actor";
 import { ApplicationRole } from "@/modules/auth/domain/application-role";
 import { createLendingOffer } from "@/modules/lending/application/create-lending-offer";
-import { InsufficientMockBalanceError } from "@/modules/lending/application/errors/lending-offer-errors";
 import { getEmployeeLending } from "@/modules/lending/application/get-employee-lending";
 import { getLendingMarketplace } from "@/modules/lending/application/get-lending-marketplace";
 import type { LendingOfferRepository } from "@/modules/lending/application/ports/lending-offer-repository";
@@ -39,6 +38,7 @@ const command: CreateLendingOfferCommand = {
 };
 const offer: LendingOfferView = {
   id: "offer-a",
+  lender: { id: employee.userId, name: employee.name },
   ...command,
   availableAmountMinorUnits: command.amountMinorUnits,
   currency: "USD",
@@ -66,6 +66,16 @@ function createRepository(): LendingOfferRepository {
     listMarketplace: vi.fn(async () => ({
       currency: "USD",
       offers: [offer],
+    })),
+    listActiveForOrganization: vi.fn(async () => [offer]),
+    findForOrganization: vi.fn(async () => offer),
+    findForManagement: vi.fn(async () => ({
+      kind: "FOUND" as const,
+      offer,
+    })),
+    updateStatusIfCurrent: vi.fn(async () => ({
+      kind: "UPDATED" as const,
+      offer,
     })),
   };
 }
@@ -142,24 +152,12 @@ describe("lending offer application services", () => {
     });
   });
 
-  it("returns a safe insufficient-balance error", async () => {
-    const repository = createRepository();
-    vi.mocked(repository.createForEmployee).mockResolvedValue({
-      kind: "INSUFFICIENT_BALANCE",
-      availableBalanceMinorUnits: 10_000n,
-    });
-
-    await expect(
-      createLendingOffer(employee, command, repository, now),
-    ).rejects.toBeInstanceOf(InsufficientMockBalanceError);
-  });
-
   it("scopes My Lending and marketplace reads to the actor", async () => {
     const repository = createRepository();
 
     await expect(
       getEmployeeLending(employee, repository, now),
-    ).resolves.toMatchObject({ availableBalanceMinorUnits: 50_000n });
+    ).resolves.toMatchObject({ availableBalanceMinorUnits: 100_000n });
     await expect(
       getLendingMarketplace(employee, marketplaceFilters, repository, now),
     ).resolves.toMatchObject({ currency: "USD" });
@@ -193,8 +191,8 @@ describe("lending offer application services", () => {
 
 describe("lending offer domain projections", () => {
   it("releases expired commitments from calculated availability", () => {
-    expect(calculateAvailableMockBalance(100_000n, 40_000n)).toBe(60_000n);
-    expect(calculateAvailableMockBalance(100_000n, 120_000n)).toBe(0n);
+    expect(calculateAvailableMockBalance(100_000n, 40_000n)).toBe(100_000n);
+    expect(calculateAvailableMockBalance(100_000n, 120_000n)).toBe(100_000n);
     expect(
       getLendingOfferDisplayStatus(
         "ACTIVE",

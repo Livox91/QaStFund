@@ -72,7 +72,7 @@ export function EmployeeLoanDetails({
 
       <PageHeader
         actions={<StatusDisplay status={loan.status} />}
-        description={`Borrowed from ${loan.lenderName}. Repayments use your internal mock balance.`}
+        description={`Borrowed from ${loan.lenderName}. Repayments are recorded without moving real funds.`}
         eyebrow="Borrowed loan"
         title="Loan details"
       />
@@ -82,7 +82,7 @@ export function EmployeeLoanDetails({
           className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800"
           role="status"
         >
-          Repayment recorded. Balances and repayment progress are updated.
+          Repayment recorded. The remaining balance and loan status are updated.
         </p>
       ) : null}
 
@@ -205,8 +205,9 @@ export function EmployeeLoanDetails({
                   requestId={crypto.randomUUID()}
                 />
                 <p className="mt-5 border-t border-slate-100 pt-4 text-xs leading-5 text-slate-500">
-                  Internal mock balances only. No payroll deduction, Circle,
-                  USDC, or blockchain settlement is performed.
+                  This records repayment progress only. No payroll deduction,
+                  Circle, USDC, bank transfer, or blockchain settlement is
+                  performed.
                 </p>
               </>
             ) : (
@@ -232,7 +233,8 @@ export function EmployeeLoanDetails({
                 <TableHeader>
                   <TableRow>
                     <TableHead>Payment</TableHead>
-                    <TableHead>Date</TableHead>
+                    <TableHead>Completed</TableHead>
+                    <TableHead>Status</TableHead>
                     <TableHead className="text-right">Amount</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -243,7 +245,12 @@ export function EmployeeLoanDetails({
                         Payment {index + 1}
                       </TableCell>
                       <TableCell>
-                        {dateFormatter.format(repayment.paidAt)}
+                        {dateFormatter.format(
+                          repayment.completedAt ?? repayment.paidAt,
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <StatusDisplay status={repayment.status} />
                       </TableCell>
                       <TableCell className="text-right">
                         <CurrencyDisplay

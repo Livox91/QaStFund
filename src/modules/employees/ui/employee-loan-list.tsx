@@ -47,9 +47,13 @@ export function EmployeeLoanList({
             <StatusDisplay status={loan.status} />
           </div>
 
-          <dl className="mt-5 grid grid-cols-2 gap-4">
+          <dl className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3">
             <div>
-              <dt className="text-xs text-slate-400">Original principal</dt>
+              <dt className="text-xs text-slate-400">
+                {loan.participation === "BORROWING"
+                  ? "Borrowed"
+                  : "Original principal"}
+              </dt>
               <dd className="mt-1 text-sm font-semibold text-slate-950">
                 <CurrencyDisplay
                   amountMinorUnits={loan.principalAmountMinorUnits}
@@ -58,10 +62,45 @@ export function EmployeeLoanList({
               </dd>
             </div>
             <div>
-              <dt className="text-xs text-slate-400">Outstanding principal</dt>
+              <dt className="text-xs text-slate-400">
+                {loan.participation === "BORROWING"
+                  ? "Interest"
+                  : "Expected interest"}
+              </dt>
               <dd className="mt-1 text-sm font-semibold text-slate-950">
                 <CurrencyDisplay
-                  amountMinorUnits={loan.outstandingPrincipalMinorUnits}
+                  amountMinorUnits={loan.feeAmountMinorUnits}
+                  currency={loan.currency}
+                />
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs text-slate-400">
+                {loan.participation === "BORROWING"
+                  ? "Total owed"
+                  : "Expected repayment"}
+              </dt>
+              <dd className="mt-1 text-sm font-semibold text-slate-950">
+                <CurrencyDisplay
+                  amountMinorUnits={loan.totalAgreedAmountMinorUnits}
+                  currency={loan.currency}
+                />
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs text-slate-400">Repaid</dt>
+              <dd className="mt-1 text-sm font-semibold text-slate-950">
+                <CurrencyDisplay
+                  amountMinorUnits={loan.repaidAmountMinorUnits}
+                  currency={loan.currency}
+                />
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs text-slate-400">Remaining</dt>
+              <dd className="mt-1 text-sm font-semibold text-teal-700">
+                <CurrencyDisplay
+                  amountMinorUnits={loan.remainingAgreedAmountMinorUnits}
                   currency={loan.currency}
                 />
               </dd>

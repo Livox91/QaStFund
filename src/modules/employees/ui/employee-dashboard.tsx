@@ -17,6 +17,9 @@ import {
 } from "@/shared/ui/card";
 import { CurrencyDisplay } from "@/shared/ui/currency-display";
 import { PageHeader } from "@/shared/ui/page-header";
+import type { Wallet } from "@/modules/ledger/domain/ledger";
+import { WalletCard } from "@/modules/ledger/ui/wallet-card";
+import type { BorrowingCapacity } from "@/modules/policies/domain/lending-policy";
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
   day: "numeric",
@@ -29,11 +32,15 @@ export function EmployeeDashboard({
   employeeName,
   loanCreated = false,
   organizationName,
+  wallet,
+  borrowingCapacity,
 }: {
   dashboard: EmployeeDashboardView;
   employeeName: string;
   loanCreated?: boolean;
   organizationName: string;
+  wallet: Wallet;
+  borrowingCapacity: BorrowingCapacity;
 }) {
   const { metrics } = dashboard;
 
@@ -50,7 +57,7 @@ export function EmployeeDashboard({
               href="/app/borrow"
               title="Browse lending offers"
             >
-              Borrow Money
+              Lending Marketplace
             </Link>
             <Link
               className={buttonStyles({ size: "lg", variant: "secondary" })}
@@ -70,7 +77,7 @@ export function EmployeeDashboard({
           className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800"
           role="status"
         >
-          Loan created. The mock funds and dashboard totals are now updated.
+          Loan created. The offer capital and dashboard totals are now updated.
         </p>
       ) : null}
       <p
@@ -88,7 +95,7 @@ export function EmployeeDashboard({
             value={
               <CurrencyDisplay
                 amountMinorUnits={metrics.availableBalanceMinorUnits}
-                currency={dashboard.currency}
+                currency="USDC"
               />
             }
           />
@@ -143,10 +150,60 @@ export function EmployeeDashboard({
         </div>
       </section>
 
+      <WalletCard wallet={wallet} />
+
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle>Borrowing Capacity</CardTitle>
+          <CardDescription>
+            {!borrowingCapacity.lendingEnabled ||
+            !borrowingCapacity.borrowingEnabled
+              ? "Borrowing is currently unavailable for your organization."
+              : !borrowingCapacity.employeeCanBorrow
+                ? "Your borrowing access is currently disabled."
+                : "Your current capacity under the organization lending policy."}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <CapacityItem label="Available capacity">
+            <CurrencyDisplay
+              amountMinorUnits={
+                borrowingCapacity.remainingDebtCapacityMinorUnits
+              }
+              currency="USDC"
+            />
+          </CapacityItem>
+          <CapacityItem label="Outstanding">
+            <>
+              <CurrencyDisplay
+                amountMinorUnits={borrowingCapacity.outstandingDebtMinorUnits}
+                currency="USDC"
+              />{" "}
+              /{" "}
+              <CurrencyDisplay
+                amountMinorUnits={
+                  borrowingCapacity.maxOutstandingDebtMinorUnits
+                }
+                currency="USDC"
+              />
+            </>
+          </CapacityItem>
+          <CapacityItem label="Active loans">
+            {borrowingCapacity.activeLoans} / {borrowingCapacity.maxActiveLoans}
+          </CapacityItem>
+          <CapacityItem label="Maximum single loan">
+            <CurrencyDisplay
+              amountMinorUnits={borrowingCapacity.maxLoanAmountMinorUnits}
+              currency="USDC"
+            />
+          </CapacityItem>
+        </CardContent>
+      </Card>
+
       <section className="mt-8 grid items-start gap-6 xl:grid-cols-2">
         <Card className="overflow-hidden">
           <CardHeader className="pb-5">
-            <CardTitle>Active borrowing</CardTitle>
+            <CardTitle>My Loans</CardTitle>
             <CardDescription>
               Current loans where you are the borrower.
             </CardDescription>
@@ -160,14 +217,14 @@ export function EmployeeDashboard({
 
         <Card className="overflow-hidden">
           <CardHeader className="pb-5">
-            <CardTitle>Active lending</CardTitle>
+            <CardTitle>Funded Loans</CardTitle>
             <CardDescription>
               Current loans where you are the lender.
             </CardDescription>
           </CardHeader>
           <EmployeeLoanList
             emptyDescription="Loans funded by you will appear here once active."
-            emptyTitle="No active lending"
+            emptyTitle="No funded loans"
             loans={dashboard.activeLending}
           />
         </Card>
@@ -204,5 +261,20 @@ export function EmployeeDashboard({
         completed repayments.
       </p>
     </main>
+  );
+}
+
+function CapacityItem({
+  children,
+  label,
+}: {
+  children: React.ReactNode;
+  label: string;
+}) {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+      <p className="text-xs text-slate-500">{label}</p>
+      <div className="mt-2 font-semibold text-slate-950">{children}</div>
+    </div>
   );
 }

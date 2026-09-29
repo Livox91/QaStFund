@@ -28,7 +28,7 @@ export type LedgerAccountMinAggregateOutputType = {
   id: string | null
   organizationId: string | null
   membershipId: string | null
-  currency: string | null
+  asset: string | null
   type: $Enums.LedgerAccountType | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -38,7 +38,7 @@ export type LedgerAccountMaxAggregateOutputType = {
   id: string | null
   organizationId: string | null
   membershipId: string | null
-  currency: string | null
+  asset: string | null
   type: $Enums.LedgerAccountType | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -48,7 +48,7 @@ export type LedgerAccountCountAggregateOutputType = {
   id: number
   organizationId: number
   membershipId: number
-  currency: number
+  asset: number
   type: number
   createdAt: number
   updatedAt: number
@@ -60,7 +60,7 @@ export type LedgerAccountMinAggregateInputType = {
   id?: true
   organizationId?: true
   membershipId?: true
-  currency?: true
+  asset?: true
   type?: true
   createdAt?: true
   updatedAt?: true
@@ -70,7 +70,7 @@ export type LedgerAccountMaxAggregateInputType = {
   id?: true
   organizationId?: true
   membershipId?: true
-  currency?: true
+  asset?: true
   type?: true
   createdAt?: true
   updatedAt?: true
@@ -80,7 +80,7 @@ export type LedgerAccountCountAggregateInputType = {
   id?: true
   organizationId?: true
   membershipId?: true
-  currency?: true
+  asset?: true
   type?: true
   createdAt?: true
   updatedAt?: true
@@ -162,8 +162,8 @@ export type LedgerAccountGroupByArgs<ExtArgs extends runtime.Types.Extensions.In
 export type LedgerAccountGroupByOutputType = {
   id: string
   organizationId: string
-  membershipId: string
-  currency: string
+  membershipId: string | null
+  asset: string
   type: $Enums.LedgerAccountType
   createdAt: Date
   updatedAt: Date
@@ -193,21 +193,21 @@ export type LedgerAccountWhereInput = {
   NOT?: Prisma.LedgerAccountWhereInput | Prisma.LedgerAccountWhereInput[]
   id?: Prisma.UuidFilter<"LedgerAccount"> | string
   organizationId?: Prisma.UuidFilter<"LedgerAccount"> | string
-  membershipId?: Prisma.UuidFilter<"LedgerAccount"> | string
-  currency?: Prisma.StringFilter<"LedgerAccount"> | string
+  membershipId?: Prisma.UuidNullableFilter<"LedgerAccount"> | string | null
+  asset?: Prisma.StringFilter<"LedgerAccount"> | string
   type?: Prisma.EnumLedgerAccountTypeFilter<"LedgerAccount"> | $Enums.LedgerAccountType
   createdAt?: Prisma.DateTimeFilter<"LedgerAccount"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LedgerAccount"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
-  membership?: Prisma.XOR<Prisma.OrganizationMembershipScalarRelationFilter, Prisma.OrganizationMembershipWhereInput>
+  membership?: Prisma.XOR<Prisma.OrganizationMembershipNullableScalarRelationFilter, Prisma.OrganizationMembershipWhereInput> | null
   entries?: Prisma.LedgerEntryListRelationFilter
 }
 
 export type LedgerAccountOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
-  membershipId?: Prisma.SortOrder
-  currency?: Prisma.SortOrder
+  membershipId?: Prisma.SortOrderInput | Prisma.SortOrder
+  asset?: Prisma.SortOrder
   type?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -218,27 +218,27 @@ export type LedgerAccountOrderByWithRelationInput = {
 
 export type LedgerAccountWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  organizationId_membershipId_currency_type?: Prisma.LedgerAccountOrganizationIdMembershipIdCurrencyTypeCompoundUniqueInput
+  organizationId_membershipId_asset_type?: Prisma.LedgerAccountOrganizationIdMembershipIdAssetTypeCompoundUniqueInput
   organizationId_id?: Prisma.LedgerAccountOrganizationIdIdCompoundUniqueInput
   AND?: Prisma.LedgerAccountWhereInput | Prisma.LedgerAccountWhereInput[]
   OR?: Prisma.LedgerAccountWhereInput[]
   NOT?: Prisma.LedgerAccountWhereInput | Prisma.LedgerAccountWhereInput[]
   organizationId?: Prisma.UuidFilter<"LedgerAccount"> | string
-  membershipId?: Prisma.UuidFilter<"LedgerAccount"> | string
-  currency?: Prisma.StringFilter<"LedgerAccount"> | string
+  membershipId?: Prisma.UuidNullableFilter<"LedgerAccount"> | string | null
+  asset?: Prisma.StringFilter<"LedgerAccount"> | string
   type?: Prisma.EnumLedgerAccountTypeFilter<"LedgerAccount"> | $Enums.LedgerAccountType
   createdAt?: Prisma.DateTimeFilter<"LedgerAccount"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LedgerAccount"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
-  membership?: Prisma.XOR<Prisma.OrganizationMembershipScalarRelationFilter, Prisma.OrganizationMembershipWhereInput>
+  membership?: Prisma.XOR<Prisma.OrganizationMembershipNullableScalarRelationFilter, Prisma.OrganizationMembershipWhereInput> | null
   entries?: Prisma.LedgerEntryListRelationFilter
-}, "id" | "organizationId_membershipId_currency_type" | "organizationId_id">
+}, "id" | "organizationId_membershipId_asset_type" | "organizationId_id">
 
 export type LedgerAccountOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
-  membershipId?: Prisma.SortOrder
-  currency?: Prisma.SortOrder
+  membershipId?: Prisma.SortOrderInput | Prisma.SortOrder
+  asset?: Prisma.SortOrder
   type?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -253,8 +253,8 @@ export type LedgerAccountScalarWhereWithAggregatesInput = {
   NOT?: Prisma.LedgerAccountScalarWhereWithAggregatesInput | Prisma.LedgerAccountScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"LedgerAccount"> | string
   organizationId?: Prisma.UuidWithAggregatesFilter<"LedgerAccount"> | string
-  membershipId?: Prisma.UuidWithAggregatesFilter<"LedgerAccount"> | string
-  currency?: Prisma.StringWithAggregatesFilter<"LedgerAccount"> | string
+  membershipId?: Prisma.UuidNullableWithAggregatesFilter<"LedgerAccount"> | string | null
+  asset?: Prisma.StringWithAggregatesFilter<"LedgerAccount"> | string
   type?: Prisma.EnumLedgerAccountTypeWithAggregatesFilter<"LedgerAccount"> | $Enums.LedgerAccountType
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"LedgerAccount"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"LedgerAccount"> | Date | string
@@ -262,20 +262,20 @@ export type LedgerAccountScalarWhereWithAggregatesInput = {
 
 export type LedgerAccountCreateInput = {
   id?: string
-  currency: string
+  asset: string
   type: $Enums.LedgerAccountType
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutLedgerAccountsInput
-  membership: Prisma.OrganizationMembershipCreateNestedOneWithoutLedgerAccountsInput
+  membership?: Prisma.OrganizationMembershipCreateNestedOneWithoutLedgerAccountsInput
   entries?: Prisma.LedgerEntryCreateNestedManyWithoutAccountInput
 }
 
 export type LedgerAccountUncheckedCreateInput = {
   id?: string
   organizationId: string
-  membershipId: string
-  currency: string
+  membershipId?: string | null
+  asset: string
   type: $Enums.LedgerAccountType
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -284,20 +284,20 @@ export type LedgerAccountUncheckedCreateInput = {
 
 export type LedgerAccountUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  asset?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutLedgerAccountsNestedInput
-  membership?: Prisma.OrganizationMembershipUpdateOneRequiredWithoutLedgerAccountsNestedInput
+  membership?: Prisma.OrganizationMembershipUpdateOneWithoutLedgerAccountsNestedInput
   entries?: Prisma.LedgerEntryUpdateManyWithoutAccountNestedInput
 }
 
 export type LedgerAccountUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
-  membershipId?: Prisma.StringFieldUpdateOperationsInput | string
-  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  membershipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  asset?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -307,8 +307,8 @@ export type LedgerAccountUncheckedUpdateInput = {
 export type LedgerAccountCreateManyInput = {
   id?: string
   organizationId: string
-  membershipId: string
-  currency: string
+  membershipId?: string | null
+  asset: string
   type: $Enums.LedgerAccountType
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -316,7 +316,7 @@ export type LedgerAccountCreateManyInput = {
 
 export type LedgerAccountUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  asset?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -325,8 +325,8 @@ export type LedgerAccountUpdateManyMutationInput = {
 export type LedgerAccountUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
-  membershipId?: Prisma.StringFieldUpdateOperationsInput | string
-  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  membershipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  asset?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -342,10 +342,10 @@ export type LedgerAccountOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type LedgerAccountOrganizationIdMembershipIdCurrencyTypeCompoundUniqueInput = {
+export type LedgerAccountOrganizationIdMembershipIdAssetTypeCompoundUniqueInput = {
   organizationId: string
   membershipId: string
-  currency: string
+  asset: string
   type: $Enums.LedgerAccountType
 }
 
@@ -358,7 +358,7 @@ export type LedgerAccountCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   membershipId?: Prisma.SortOrder
-  currency?: Prisma.SortOrder
+  asset?: Prisma.SortOrder
   type?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -368,7 +368,7 @@ export type LedgerAccountMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   membershipId?: Prisma.SortOrder
-  currency?: Prisma.SortOrder
+  asset?: Prisma.SortOrder
   type?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -378,7 +378,7 @@ export type LedgerAccountMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   membershipId?: Prisma.SortOrder
-  currency?: Prisma.SortOrder
+  asset?: Prisma.SortOrder
   type?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -493,18 +493,18 @@ export type LedgerAccountUpdateOneRequiredWithoutEntriesNestedInput = {
 
 export type LedgerAccountCreateWithoutOrganizationInput = {
   id?: string
-  currency: string
+  asset: string
   type: $Enums.LedgerAccountType
   createdAt?: Date | string
   updatedAt?: Date | string
-  membership: Prisma.OrganizationMembershipCreateNestedOneWithoutLedgerAccountsInput
+  membership?: Prisma.OrganizationMembershipCreateNestedOneWithoutLedgerAccountsInput
   entries?: Prisma.LedgerEntryCreateNestedManyWithoutAccountInput
 }
 
 export type LedgerAccountUncheckedCreateWithoutOrganizationInput = {
   id?: string
-  membershipId: string
-  currency: string
+  membershipId?: string | null
+  asset: string
   type: $Enums.LedgerAccountType
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -543,8 +543,8 @@ export type LedgerAccountScalarWhereInput = {
   NOT?: Prisma.LedgerAccountScalarWhereInput | Prisma.LedgerAccountScalarWhereInput[]
   id?: Prisma.UuidFilter<"LedgerAccount"> | string
   organizationId?: Prisma.UuidFilter<"LedgerAccount"> | string
-  membershipId?: Prisma.UuidFilter<"LedgerAccount"> | string
-  currency?: Prisma.StringFilter<"LedgerAccount"> | string
+  membershipId?: Prisma.UuidNullableFilter<"LedgerAccount"> | string | null
+  asset?: Prisma.StringFilter<"LedgerAccount"> | string
   type?: Prisma.EnumLedgerAccountTypeFilter<"LedgerAccount"> | $Enums.LedgerAccountType
   createdAt?: Prisma.DateTimeFilter<"LedgerAccount"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LedgerAccount"> | Date | string
@@ -552,7 +552,7 @@ export type LedgerAccountScalarWhereInput = {
 
 export type LedgerAccountCreateWithoutMembershipInput = {
   id?: string
-  currency: string
+  asset: string
   type: $Enums.LedgerAccountType
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -562,7 +562,7 @@ export type LedgerAccountCreateWithoutMembershipInput = {
 
 export type LedgerAccountUncheckedCreateWithoutMembershipInput = {
   id?: string
-  currency: string
+  asset: string
   type: $Enums.LedgerAccountType
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -597,19 +597,19 @@ export type LedgerAccountUpdateManyWithWhereWithoutMembershipInput = {
 
 export type LedgerAccountCreateWithoutEntriesInput = {
   id?: string
-  currency: string
+  asset: string
   type: $Enums.LedgerAccountType
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutLedgerAccountsInput
-  membership: Prisma.OrganizationMembershipCreateNestedOneWithoutLedgerAccountsInput
+  membership?: Prisma.OrganizationMembershipCreateNestedOneWithoutLedgerAccountsInput
 }
 
 export type LedgerAccountUncheckedCreateWithoutEntriesInput = {
   id?: string
   organizationId: string
-  membershipId: string
-  currency: string
+  membershipId?: string | null
+  asset: string
   type: $Enums.LedgerAccountType
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -633,19 +633,19 @@ export type LedgerAccountUpdateToOneWithWhereWithoutEntriesInput = {
 
 export type LedgerAccountUpdateWithoutEntriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  asset?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutLedgerAccountsNestedInput
-  membership?: Prisma.OrganizationMembershipUpdateOneRequiredWithoutLedgerAccountsNestedInput
+  membership?: Prisma.OrganizationMembershipUpdateOneWithoutLedgerAccountsNestedInput
 }
 
 export type LedgerAccountUncheckedUpdateWithoutEntriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
-  membershipId?: Prisma.StringFieldUpdateOperationsInput | string
-  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  membershipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  asset?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -653,8 +653,8 @@ export type LedgerAccountUncheckedUpdateWithoutEntriesInput = {
 
 export type LedgerAccountCreateManyOrganizationInput = {
   id?: string
-  membershipId: string
-  currency: string
+  membershipId?: string | null
+  asset: string
   type: $Enums.LedgerAccountType
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -662,18 +662,18 @@ export type LedgerAccountCreateManyOrganizationInput = {
 
 export type LedgerAccountUpdateWithoutOrganizationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  asset?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  membership?: Prisma.OrganizationMembershipUpdateOneRequiredWithoutLedgerAccountsNestedInput
+  membership?: Prisma.OrganizationMembershipUpdateOneWithoutLedgerAccountsNestedInput
   entries?: Prisma.LedgerEntryUpdateManyWithoutAccountNestedInput
 }
 
 export type LedgerAccountUncheckedUpdateWithoutOrganizationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  membershipId?: Prisma.StringFieldUpdateOperationsInput | string
-  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  membershipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  asset?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -682,8 +682,8 @@ export type LedgerAccountUncheckedUpdateWithoutOrganizationInput = {
 
 export type LedgerAccountUncheckedUpdateManyWithoutOrganizationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  membershipId?: Prisma.StringFieldUpdateOperationsInput | string
-  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  membershipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  asset?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -691,7 +691,7 @@ export type LedgerAccountUncheckedUpdateManyWithoutOrganizationInput = {
 
 export type LedgerAccountCreateManyMembershipInput = {
   id?: string
-  currency: string
+  asset: string
   type: $Enums.LedgerAccountType
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -699,7 +699,7 @@ export type LedgerAccountCreateManyMembershipInput = {
 
 export type LedgerAccountUpdateWithoutMembershipInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  asset?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -709,7 +709,7 @@ export type LedgerAccountUpdateWithoutMembershipInput = {
 
 export type LedgerAccountUncheckedUpdateWithoutMembershipInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  asset?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -718,7 +718,7 @@ export type LedgerAccountUncheckedUpdateWithoutMembershipInput = {
 
 export type LedgerAccountUncheckedUpdateManyWithoutMembershipInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  asset?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumLedgerAccountTypeFieldUpdateOperationsInput | $Enums.LedgerAccountType
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -759,12 +759,12 @@ export type LedgerAccountSelect<ExtArgs extends runtime.Types.Extensions.Interna
   id?: boolean
   organizationId?: boolean
   membershipId?: boolean
-  currency?: boolean
+  asset?: boolean
   type?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
-  membership?: boolean | Prisma.OrganizationMembershipDefaultArgs<ExtArgs>
+  membership?: boolean | Prisma.LedgerAccount$membershipArgs<ExtArgs>
   entries?: boolean | Prisma.LedgerAccount$entriesArgs<ExtArgs>
   _count?: boolean | Prisma.LedgerAccountCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["ledgerAccount"]>
@@ -773,64 +773,64 @@ export type LedgerAccountSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   id?: boolean
   organizationId?: boolean
   membershipId?: boolean
-  currency?: boolean
+  asset?: boolean
   type?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
-  membership?: boolean | Prisma.OrganizationMembershipDefaultArgs<ExtArgs>
+  membership?: boolean | Prisma.LedgerAccount$membershipArgs<ExtArgs>
 }, ExtArgs["result"]["ledgerAccount"]>
 
 export type LedgerAccountSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   organizationId?: boolean
   membershipId?: boolean
-  currency?: boolean
+  asset?: boolean
   type?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
-  membership?: boolean | Prisma.OrganizationMembershipDefaultArgs<ExtArgs>
+  membership?: boolean | Prisma.LedgerAccount$membershipArgs<ExtArgs>
 }, ExtArgs["result"]["ledgerAccount"]>
 
 export type LedgerAccountSelectScalar = {
   id?: boolean
   organizationId?: boolean
   membershipId?: boolean
-  currency?: boolean
+  asset?: boolean
   type?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type LedgerAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "membershipId" | "currency" | "type" | "createdAt" | "updatedAt", ExtArgs["result"]["ledgerAccount"]>
+export type LedgerAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "membershipId" | "asset" | "type" | "createdAt" | "updatedAt", ExtArgs["result"]["ledgerAccount"]>
 export type LedgerAccountInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
-  membership?: boolean | Prisma.OrganizationMembershipDefaultArgs<ExtArgs>
+  membership?: boolean | Prisma.LedgerAccount$membershipArgs<ExtArgs>
   entries?: boolean | Prisma.LedgerAccount$entriesArgs<ExtArgs>
   _count?: boolean | Prisma.LedgerAccountCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type LedgerAccountIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
-  membership?: boolean | Prisma.OrganizationMembershipDefaultArgs<ExtArgs>
+  membership?: boolean | Prisma.LedgerAccount$membershipArgs<ExtArgs>
 }
 export type LedgerAccountIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
-  membership?: boolean | Prisma.OrganizationMembershipDefaultArgs<ExtArgs>
+  membership?: boolean | Prisma.LedgerAccount$membershipArgs<ExtArgs>
 }
 
 export type $LedgerAccountPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "LedgerAccount"
   objects: {
     organization: Prisma.$OrganizationPayload<ExtArgs>
-    membership: Prisma.$OrganizationMembershipPayload<ExtArgs>
+    membership: Prisma.$OrganizationMembershipPayload<ExtArgs> | null
     entries: Prisma.$LedgerEntryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     organizationId: string
-    membershipId: string
-    currency: string
+    membershipId: string | null
+    asset: string
     type: $Enums.LedgerAccountType
     createdAt: Date
     updatedAt: Date
@@ -1229,7 +1229,7 @@ readonly fields: LedgerAccountFieldRefs;
 export interface Prisma__LedgerAccountClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   organization<T extends Prisma.OrganizationDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationDefaultArgs<ExtArgs>>): Prisma.Prisma__OrganizationClient<runtime.Types.Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  membership<T extends Prisma.OrganizationMembershipDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationMembershipDefaultArgs<ExtArgs>>): Prisma.Prisma__OrganizationMembershipClient<runtime.Types.Result.GetResult<Prisma.$OrganizationMembershipPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  membership<T extends Prisma.LedgerAccount$membershipArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LedgerAccount$membershipArgs<ExtArgs>>): Prisma.Prisma__OrganizationMembershipClient<runtime.Types.Result.GetResult<Prisma.$OrganizationMembershipPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   entries<T extends Prisma.LedgerAccount$entriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LedgerAccount$entriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LedgerEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1263,7 +1263,7 @@ export interface LedgerAccountFieldRefs {
   readonly id: Prisma.FieldRef<"LedgerAccount", 'String'>
   readonly organizationId: Prisma.FieldRef<"LedgerAccount", 'String'>
   readonly membershipId: Prisma.FieldRef<"LedgerAccount", 'String'>
-  readonly currency: Prisma.FieldRef<"LedgerAccount", 'String'>
+  readonly asset: Prisma.FieldRef<"LedgerAccount", 'String'>
   readonly type: Prisma.FieldRef<"LedgerAccount", 'LedgerAccountType'>
   readonly createdAt: Prisma.FieldRef<"LedgerAccount", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"LedgerAccount", 'DateTime'>
@@ -1665,6 +1665,25 @@ export type LedgerAccountDeleteManyArgs<ExtArgs extends runtime.Types.Extensions
    * Limit how many LedgerAccounts to delete.
    */
   limit?: number
+}
+
+/**
+ * LedgerAccount.membership
+ */
+export type LedgerAccount$membershipArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OrganizationMembership
+   */
+  select?: Prisma.OrganizationMembershipSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OrganizationMembership
+   */
+  omit?: Prisma.OrganizationMembershipOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrganizationMembershipInclude<ExtArgs> | null
+  where?: Prisma.OrganizationMembershipWhereInput
 }
 
 /**

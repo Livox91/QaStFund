@@ -9,11 +9,14 @@ export type RepayLoanRepositoryResult =
       kind: "RECORDED" | "ALREADY_RECORDED";
       repayment: RecordedLoanRepayment;
     }>
+  | Readonly<{ kind: "INSUFFICIENT_BALANCE" }>
   | Readonly<{ kind: "LOAN_NOT_FOUND" }>
   | Readonly<{ kind: "LOAN_NOT_REPAYABLE" }>
-  | Readonly<{ kind: "AMOUNT_EXCEEDS_REMAINING" }>
-  | Readonly<{ kind: "INSUFFICIENT_BALANCE" }>
-  | Readonly<{ kind: "BALANCE_UNAVAILABLE" }>
+  | Readonly<{
+      kind: "AMOUNT_EXCEEDS_REMAINING";
+      remainingAmountMinorUnits: bigint;
+      currency: string;
+    }>
   | Readonly<{ kind: "REQUEST_CONFLICT" }>;
 
 export interface EmployeeLoanRepository {

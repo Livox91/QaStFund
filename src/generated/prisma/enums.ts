@@ -20,7 +20,8 @@ export type MembershipRole = (typeof MembershipRole)[keyof typeof MembershipRole
 export const LendingOfferStatus = {
   ACTIVE: 'ACTIVE',
   PAUSED: 'PAUSED',
-  CLOSED: 'CLOSED'
+  CLOSED: 'CLOSED',
+  EXHAUSTED: 'EXHAUSTED'
 } as const
 
 export type LendingOfferStatus = (typeof LendingOfferStatus)[keyof typeof LendingOfferStatus]
@@ -45,28 +46,69 @@ export const AuditEventType = {
   LOAN_CREATED: 'LOAN_CREATED',
   LOAN_ACTIVATED: 'LOAN_ACTIVATED',
   REPAYMENT_RECORDED: 'REPAYMENT_RECORDED',
+  REPAYMENT_CREATED: 'REPAYMENT_CREATED',
+  REPAYMENT_COMPLETED: 'REPAYMENT_COMPLETED',
   LOAN_REPAID: 'LOAN_REPAID',
   LOAN_OVERDUE: 'LOAN_OVERDUE',
   LOAN_DEFAULTED: 'LOAN_DEFAULTED',
-  LOAN_CANCELLED: 'LOAN_CANCELLED'
+  LOAN_CANCELLED: 'LOAN_CANCELLED',
+  LOAN_MARKED_OVERDUE: 'LOAN_MARKED_OVERDUE',
+  LENDING_POLICY_UPDATED: 'LENDING_POLICY_UPDATED',
+  EMPLOYEE_BORROWING_SUSPENDED: 'EMPLOYEE_BORROWING_SUSPENDED',
+  EMPLOYEE_BORROWING_ENABLED: 'EMPLOYEE_BORROWING_ENABLED',
+  EMPLOYEE_LENDING_SUSPENDED: 'EMPLOYEE_LENDING_SUSPENDED',
+  EMPLOYEE_LENDING_ENABLED: 'EMPLOYEE_LENDING_ENABLED'
 } as const
 
 export type AuditEventType = (typeof AuditEventType)[keyof typeof AuditEventType]
 
 
+export const RepaymentStatus = {
+  PENDING: 'PENDING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type RepaymentStatus = (typeof RepaymentStatus)[keyof typeof RepaymentStatus]
+
+
 export const LedgerAccountType = {
-  MOCK_CASH: 'MOCK_CASH'
+  USER_WALLET: 'USER_WALLET',
+  PLATFORM: 'PLATFORM'
 } as const
 
 export type LedgerAccountType = (typeof LedgerAccountType)[keyof typeof LedgerAccountType]
 
 
 export const LedgerTransactionType = {
+  DEPOSIT: 'DEPOSIT',
   LOAN_DISBURSEMENT: 'LOAN_DISBURSEMENT',
-  LOAN_REPAYMENT: 'LOAN_REPAYMENT'
+  LOAN_REPAYMENT: 'LOAN_REPAYMENT',
+  WITHDRAWAL: 'WITHDRAWAL'
 } as const
 
 export type LedgerTransactionType = (typeof LedgerTransactionType)[keyof typeof LedgerTransactionType]
+
+
+export const LedgerTransactionStatus = {
+  PENDING: 'PENDING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
+  REVERSED: 'REVERSED'
+} as const
+
+export type LedgerTransactionStatus = (typeof LedgerTransactionStatus)[keyof typeof LedgerTransactionStatus]
+
+
+export const LedgerReferenceType = {
+  DEVELOPMENT_FUNDING: 'DEVELOPMENT_FUNDING',
+  LOAN: 'LOAN',
+  REPAYMENT: 'REPAYMENT',
+  WITHDRAWAL: 'WITHDRAWAL'
+} as const
+
+export type LedgerReferenceType = (typeof LedgerReferenceType)[keyof typeof LedgerReferenceType]
 
 
 export const LedgerEntryDirection = {

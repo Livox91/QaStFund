@@ -5,12 +5,15 @@ import { notFound } from "next/navigation";
 import { ConfirmBorrowForm } from "@/app/(employee)/app/borrow/[offerId]/confirm-borrow-form";
 import { requireEmployeePage } from "@/modules/auth/infrastructure/auth-guard";
 import { formatBasisPointsAsPercent } from "@/modules/lending/domain/lending-offer";
-import { LendingOfferNotAvailableError } from "@/modules/loans/application/errors/borrow-loan-errors";
 import {
-  calculateBorrowLoanSummary,
-  isAmountWithinOfferTerms,
-} from "@/modules/loans/domain/borrow-loan";
-import { getBorrowableOfferForActor } from "@/modules/loans/index.server";
+  BorrowAmountOutOfRangeError,
+  InsufficientOfferLiquidityError,
+  LendingOfferNotAvailableError,
+} from "@/modules/loans/application/errors/borrow-loan-errors";
+import {
+  getBorrowableOfferForActor,
+  quoteBorrowFromOfferForActor,
+} from "@/modules/loans/index.server";
 import {
   borrowOfferAmountSchema,
   borrowOfferParamsSchema,
@@ -71,12 +74,28 @@ export default async function BorrowOfferPage({
   const parsedAmount = amountValue
     ? borrowOfferAmountSchema.safeParse({ amount: amountValue })
     : null;
-  const amountWithinTerms =
-    parsedAmount?.success === true &&
-    isAmountWithinOfferTerms(offer, parsedAmount.data.amount);
-  const summary = amountWithinTerms
-    ? calculateBorrowLoanSummary(offer, parsedAmount.data.amount, now)
-    : null;
+  let summary: Awaited<ReturnType<typeof quoteBorrowFromOfferForActor>> | null =
+    null;
+  let quoteError: string | undefined;
+  if (parsedAmount?.success) {
+    try {
+      summary = await quoteBorrowFromOfferForActor(
+        actor,
+        offer.id,
+        parsedAmount.data.amount,
+        now,
+      );
+    } catch (error) {
+      if (
+        error instanceof BorrowAmountOutOfRangeError ||
+        error instanceof InsufficientOfferLiquidityError
+      ) {
+        quoteError = error.message;
+      } else {
+        throw error;
+      }
+    }
+  }
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
@@ -159,9 +178,7 @@ export default async function BorrowOfferPage({
                 error={
                   parsedAmount && !parsedAmount.success
                     ? parsedAmount.error.issues[0]?.message
-                    : parsedAmount?.success && !amountWithinTerms
-                      ? "Amount must be within the current offer limits."
-                      : undefined
+                    : quoteError
                 }
                 hint={`Enter an amount in ${offer.currency}.`}
                 htmlFor="amount"
@@ -242,8 +259,8 @@ export default async function BorrowOfferPage({
                   </div>
                 </dl>
                 <p className="my-5 rounded-xl bg-slate-50 px-4 py-3 text-xs leading-5 text-slate-600">
-                  Confirmation transfers internal mock funds only. No USDC or
-                  blockchain transaction is performed.
+                  Confirmation reserves pledged offer capital and creates an
+                  active loan. No money or blockchain transaction occurs.
                 </p>
                 <ConfirmBorrowForm
                   amount={amountValue}

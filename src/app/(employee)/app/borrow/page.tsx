@@ -5,7 +5,7 @@ import { getLendingMarketplaceForActor } from "@/modules/lending/index.server";
 import { lendingMarketplaceQuerySchema } from "@/modules/lending/schemas/lending-marketplace.schema";
 import { LendingMarketplaceView } from "@/modules/lending/ui/lending-marketplace";
 
-export const metadata: Metadata = { title: "Borrow Money" };
+export const metadata: Metadata = { title: "Lending Marketplace" };
 
 export default async function BorrowMarketplacePage({
   searchParams,

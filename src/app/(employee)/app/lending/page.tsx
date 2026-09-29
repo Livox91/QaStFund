@@ -19,6 +19,8 @@ export default async function MyLendingPage({
   return (
     <MyLending
       created={query.created === "1"}
+      offerUpdated={query.offerUpdated === "1"}
+      statusError={query.statusError === "1"}
       minimumExpirationDate={tomorrow.toISOString().slice(0, 10)}
       overview={overview}
     />

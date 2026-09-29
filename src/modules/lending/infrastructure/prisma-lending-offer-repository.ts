@@ -2,7 +2,12 @@ import { MembershipRole } from "@/generated/prisma/enums";
 import { prisma } from "@/infrastructure/database/prisma";
 import type { LendingOfferRepository } from "@/modules/lending/application/ports/lending-offer-repository";
 import {
-  calculateAvailableMockBalance,
+  ensureUserWallet,
+  getCompletedAccountBalance,
+} from "@/modules/ledger/infrastructure/ledger-posting";
+import { validateOfferAgainstPolicy } from "@/modules/policies/domain/lending-policy";
+import { ensureOrganizationPolicy } from "@/modules/policies/infrastructure/policy-data";
+import {
   getLendingOfferDisplayStatus,
   LendingMarketplaceSort,
   type LendingOfferView,
@@ -19,7 +24,8 @@ type OfferRow = {
   feeRateBasisPoints: number;
   expiresAt: Date;
   createdAt: Date;
-  status: "ACTIVE" | "PAUSED" | "CLOSED";
+  status: "ACTIVE" | "PAUSED" | "CLOSED" | "EXHAUSTED";
+  lenderMembership: { user: { id: string; name: string } };
 };
 
 const offerSelection = {
@@ -34,11 +40,27 @@ const offerSelection = {
   expiresAt: true,
   createdAt: true,
   status: true,
+  lenderMembership: {
+    select: { user: { select: { id: true, name: true } } },
+  },
 } as const;
 
 function toOfferView(offer: OfferRow, now: Date): LendingOfferView {
   return {
-    ...offer,
+    id: offer.id,
+    lender: {
+      id: offer.lenderMembership.user.id,
+      name: offer.lenderMembership.user.name,
+    },
+    amountMinorUnits: offer.amountMinorUnits,
+    availableAmountMinorUnits: offer.availableAmountMinorUnits,
+    minimumLoanAmountMinorUnits: offer.minimumLoanAmountMinorUnits,
+    maximumLoanAmountMinorUnits: offer.maximumLoanAmountMinorUnits,
+    currency: offer.currency,
+    durationDays: offer.durationDays,
+    feeRateBasisPoints: offer.feeRateBasisPoints,
+    expiresAt: offer.expiresAt,
+    createdAt: offer.createdAt,
     status: getLendingOfferDisplayStatus(offer.status, offer.expiresAt, now),
   };
 }
@@ -46,9 +68,21 @@ function toOfferView(offer: OfferRow, now: Date): LendingOfferView {
 export const prismaLendingOfferRepository: LendingOfferRepository = {
   async createForEmployee({ command, now, organizationId, userId }) {
     return prisma.$transaction(async (transaction) => {
+      await transaction.$queryRaw`
+        SELECT "id" FROM "OrganizationMembership"
+        WHERE "organizationId" = CAST(${organizationId} AS UUID)
+          AND "userId" = CAST(${userId} AS UUID)
+        FOR SHARE
+      `;
       const membership = await transaction.organizationMembership.findUnique({
         where: { organizationId_userId: { organizationId, userId } },
-        select: { id: true, isActive: true, role: true },
+        select: {
+          id: true,
+          isActive: true,
+          role: true,
+          canLend: true,
+          organization: { select: { currency: true } },
+        },
       });
 
       if (
@@ -58,53 +92,21 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
         return { kind: "MEMBERSHIP_NOT_FOUND" } as const;
       }
 
-      const balance = await transaction.employeeBalance.findUnique({
-        where: {
-          organizationId_membershipId: {
-            organizationId,
-            membershipId: membership.id,
-          },
-        },
-        select: { id: true, amountMinorUnits: true, currency: true },
-      });
-
-      if (!balance) {
-        return {
-          kind: "INSUFFICIENT_BALANCE",
-          availableBalanceMinorUnits: 0n,
-        } as const;
-      }
-
-      // Serialize offer creation per employee balance so two simultaneous
-      // submissions cannot both spend the same mock funds.
-      await transaction.$queryRaw`
-        SELECT "id"
-        FROM "EmployeeBalance"
-        WHERE "id" = CAST(${balance.id} AS UUID)
-        FOR UPDATE
-      `;
-
-      const committed = await transaction.lendingOffer.aggregate({
-        where: {
-          organizationId,
-          lenderMembershipId: membership.id,
-          currency: balance.currency,
-          status: "ACTIVE",
-          expiresAt: { gt: now },
-        },
-        _sum: { availableAmountMinorUnits: true },
-      });
-      const availableBalanceMinorUnits = calculateAvailableMockBalance(
-        balance.amountMinorUnits,
-        committed._sum.availableAmountMinorUnits ?? 0n,
+      const policy = await ensureOrganizationPolicy(
+        transaction,
+        organizationId,
       );
-
-      if (command.amountMinorUnits > availableBalanceMinorUnits) {
-        return {
-          kind: "INSUFFICIENT_BALANCE",
-          availableBalanceMinorUnits,
-        } as const;
-      }
+      await transaction.$queryRaw`SELECT "id" FROM "OrganizationLendingPolicy" WHERE "id" = CAST(${policy.id} AS UUID) FOR SHARE`;
+      const lockedPolicy =
+        await transaction.organizationLendingPolicy.findUniqueOrThrow({
+          where: { id: policy.id },
+        });
+      const violation = validateOfferAgainstPolicy(
+        lockedPolicy,
+        membership,
+        command,
+      );
+      if (violation) return { kind: "POLICY_VIOLATION", violation } as const;
 
       const offer = await transaction.lendingOffer.create({
         data: {
@@ -114,7 +116,7 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
           availableAmountMinorUnits: command.amountMinorUnits,
           minimumLoanAmountMinorUnits: command.minimumLoanAmountMinorUnits,
           maximumLoanAmountMinorUnits: command.maximumLoanAmountMinorUnits,
-          currency: balance.currency,
+          currency: membership.organization.currency,
           durationDays: command.durationDays,
           feeRateBasisPoints: command.feeRateBasisPoints,
           expiresAt: command.expiresAt,
@@ -131,7 +133,7 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
     return prisma.$transaction(async (transaction) => {
       const membership = await transaction.organizationMembership.findUnique({
         where: { organizationId_userId: { organizationId, userId } },
-        select: { id: true, isActive: true, role: true },
+        select: { id: true, isActive: true, role: true, canBorrow: true },
       });
 
       if (
@@ -141,22 +143,19 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
         return null;
       }
 
-      const balance = await transaction.employeeBalance.findUnique({
-        where: {
-          organizationId_membershipId: {
-            organizationId,
-            membershipId: membership.id,
-          },
-        },
-        select: { amountMinorUnits: true, currency: true },
+      const organization = await transaction.organization.findUniqueOrThrow({
+        where: { id: organizationId },
+        select: { currency: true },
       });
-      const organization = balance
-        ? null
-        : await transaction.organization.findUniqueOrThrow({
-            where: { id: organizationId },
-            select: { currency: true },
-          });
-      const currency = balance?.currency ?? organization!.currency;
+      const wallet = await ensureUserWallet(transaction, {
+        organizationId,
+        membershipId: membership.id,
+      });
+      const walletBalanceMinorUnits = await getCompletedAccountBalance(
+        transaction,
+        { organizationId, accountId: wallet.id },
+      );
+      const currency = organization.currency;
       const offers = await transaction.lendingOffer.findMany({
         where: { organizationId, lenderMembershipId: membership.id },
         orderBy: { createdAt: "desc" },
@@ -175,7 +174,7 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
 
       return {
         currency,
-        mockBalanceMinorUnits: balance?.amountMinorUnits ?? 0n,
+        mockBalanceMinorUnits: walletBalanceMinorUnits,
         committedBalanceMinorUnits:
           committed._sum.availableAmountMinorUnits ?? 0n,
         offers: (offers as OfferRow[]).map((offer) => toOfferView(offer, now)),
@@ -187,7 +186,7 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
     return prisma.$transaction(async (transaction) => {
       const membership = await transaction.organizationMembership.findUnique({
         where: { organizationId_userId: { organizationId, userId } },
-        select: { id: true, isActive: true, role: true },
+        select: { id: true, isActive: true, role: true, canBorrow: true },
       });
 
       if (
@@ -201,6 +200,17 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
         where: { id: organizationId },
         select: { currency: true },
       });
+      const policy = await ensureOrganizationPolicy(
+        transaction,
+        organizationId,
+      );
+      if (
+        !policy.lendingEnabled ||
+        !policy.borrowingEnabled ||
+        !membership.canBorrow
+      ) {
+        return { currency: organization.currency, offers: [] };
+      }
       const orderBy =
         filters.sort === LendingMarketplaceSort.MOST_AVAILABLE
           ? [{ availableAmountMinorUnits: "desc" as const }]
@@ -216,11 +226,10 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
         where: {
           organizationId,
           currency: organization.currency,
-          lenderMembershipId: { not: membership.id },
           status: "ACTIVE",
           expiresAt: { gt: now },
           availableAmountMinorUnits: { gt: 0n },
-          lenderMembership: { isActive: true, role: "EMPLOYEE" },
+          lenderMembership: { isActive: true, role: "EMPLOYEE", canLend: true },
           ...(filters.amountMinorUnits
             ? {
                 minimumLoanAmountMinorUnits: {
@@ -247,5 +256,133 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
         offers: (offers as OfferRow[]).map((offer) => toOfferView(offer, now)),
       };
     });
+  },
+
+  async listActiveForOrganization({ now, organizationId, userId }) {
+    const membership = await prisma.organizationMembership.findUnique({
+      where: { organizationId_userId: { organizationId, userId } },
+      select: { isActive: true, role: true, canBorrow: true },
+    });
+
+    if (!membership?.isActive || membership.role !== MembershipRole.EMPLOYEE) {
+      return null;
+    }
+    const policy = await prisma.$transaction((transaction) =>
+      ensureOrganizationPolicy(transaction, organizationId),
+    );
+    if (
+      !policy.lendingEnabled ||
+      !policy.borrowingEnabled ||
+      !membership.canBorrow
+    )
+      return [];
+
+    const offers = await prisma.lendingOffer.findMany({
+      where: {
+        organizationId,
+        status: "ACTIVE",
+        expiresAt: { gt: now },
+        availableAmountMinorUnits: { gt: 0n },
+        lenderMembership: {
+          isActive: true,
+          role: MembershipRole.EMPLOYEE,
+          canLend: true,
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      select: offerSelection,
+    });
+
+    return (offers as OfferRow[]).map((offer) => toOfferView(offer, now));
+  },
+
+  async findForOrganization({ offerId, now, organizationId, userId }) {
+    const membership = await prisma.organizationMembership.findUnique({
+      where: { organizationId_userId: { organizationId, userId } },
+      select: { isActive: true, role: true },
+    });
+
+    if (!membership?.isActive || membership.role !== MembershipRole.EMPLOYEE) {
+      return null;
+    }
+
+    const offer = await prisma.lendingOffer.findFirst({
+      where: { id: offerId, organizationId },
+      select: offerSelection,
+    });
+
+    return offer ? toOfferView(offer as OfferRow, now) : null;
+  },
+
+  async findForManagement({ offerId, now, organizationId, userId }) {
+    const membership = await prisma.organizationMembership.findUnique({
+      where: { organizationId_userId: { organizationId, userId } },
+      select: { id: true, isActive: true, role: true },
+    });
+
+    if (!membership?.isActive || membership.role !== MembershipRole.EMPLOYEE) {
+      return { kind: "NOT_FOUND" } as const;
+    }
+
+    const offer = await prisma.lendingOffer.findFirst({
+      where: { id: offerId, organizationId },
+      select: { ...offerSelection, lenderMembershipId: true },
+    });
+
+    if (!offer) return { kind: "NOT_FOUND" } as const;
+    if (offer.lenderMembershipId !== membership.id) {
+      return { kind: "NOT_OWNER" } as const;
+    }
+
+    return {
+      kind: "FOUND",
+      offer: toOfferView(offer as OfferRow, now),
+    } as const;
+  },
+
+  async updateStatusIfCurrent({
+    expectedStatus,
+    offerId,
+    now,
+    organizationId,
+    targetStatus,
+    userId,
+  }) {
+    const membership = await prisma.organizationMembership.findUnique({
+      where: { organizationId_userId: { organizationId, userId } },
+      select: { id: true, isActive: true, role: true },
+    });
+
+    if (!membership?.isActive || membership.role !== MembershipRole.EMPLOYEE) {
+      return { kind: "CONFLICT" } as const;
+    }
+
+    const updated = await prisma.lendingOffer.updateMany({
+      where: {
+        id: offerId,
+        organizationId,
+        lenderMembershipId: membership.id,
+        status: expectedStatus,
+        ...(targetStatus === "ACTIVE"
+          ? {
+              availableAmountMinorUnits: { gt: 0n },
+              expiresAt: { gt: now },
+            }
+          : {}),
+      },
+      data: { status: targetStatus },
+    });
+
+    if (updated.count !== 1) return { kind: "CONFLICT" } as const;
+
+    const offer = await prisma.lendingOffer.findUniqueOrThrow({
+      where: { id: offerId },
+      select: offerSelection,
+    });
+
+    return {
+      kind: "UPDATED",
+      offer: toOfferView(offer as OfferRow, now),
+    } as const;
   },
 };

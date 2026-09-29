@@ -2,6 +2,12 @@ import "dotenv/config";
 
 import { scryptPasswordHasher } from "../src/modules/auth/infrastructure/scrypt-password-hasher";
 import { prisma } from "../src/infrastructure/database/prisma";
+import {
+  ensurePlatformFundingAccount,
+  ensureUserWallet,
+  lockLedgerAccounts,
+  postLedgerTransaction,
+} from "../src/modules/ledger/infrastructure/ledger-posting";
 
 const DEMO_ORGANIZATION = {
   name: "Acme Corp",
@@ -124,6 +130,52 @@ async function seed(): Promise<void> {
         amountMinorUnits: balance.amountMinorUnits,
         currency: organization.currency,
       },
+    });
+  }
+
+  const fundingReferences = new Map([
+    ["alice@acme.test", "33000000-0000-4000-8000-000000000001"],
+    ["bob@acme.test", "33000000-0000-4000-8000-000000000002"],
+    ["charlie@acme.test", "33000000-0000-4000-8000-000000000003"],
+  ]);
+  for (const balance of mockBalances) {
+    const referenceId = fundingReferences.get(balance.email);
+    if (!referenceId)
+      throw new Error(`Missing funding reference for ${balance.email}.`);
+    await prisma.$transaction(async (transaction) => {
+      const wallet = await ensureUserWallet(transaction, {
+        organizationId: organization.id,
+        membershipId: membershipId(balance.email),
+      });
+      const platform = await ensurePlatformFundingAccount(
+        transaction,
+        organization.id,
+      );
+      await lockLedgerAccounts(transaction, organization.id, [
+        wallet.id,
+        platform.id,
+      ]);
+      await postLedgerTransaction(transaction, {
+        organizationId: organization.id,
+        type: "DEPOSIT",
+        referenceType: "DEVELOPMENT_FUNDING",
+        referenceId,
+        idempotencyKey: `seed-funding:${balance.email}`,
+        now,
+        accountsAlreadyLocked: true,
+        entries: [
+          {
+            accountId: platform.id,
+            direction: "DEBIT",
+            amountMinorUnits: balance.amountMinorUnits,
+          },
+          {
+            accountId: wallet.id,
+            direction: "CREDIT",
+            amountMinorUnits: balance.amountMinorUnits,
+          },
+        ],
+      });
     });
   }
 
@@ -374,11 +426,13 @@ async function seed(): Promise<void> {
         amountMinorUnits: repayment.amountMinorUnits,
         currency: organization.currency,
         paidAt: repayment.paidAt,
+        completedAt: repayment.paidAt,
       },
       create: {
         ...repayment,
         organizationId: organization.id,
         currency: organization.currency,
+        completedAt: repayment.paidAt,
       },
     });
   }

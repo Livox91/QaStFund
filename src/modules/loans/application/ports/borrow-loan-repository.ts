@@ -3,6 +3,7 @@ import type {
   BorrowLoanCommand,
   CreatedBorrowingLoan,
 } from "@/modules/loans/domain/borrow-loan";
+import type { PolicyViolation } from "@/modules/policies/domain/lending-policy";
 
 export type BorrowLoanRepositoryResult =
   | Readonly<{
@@ -12,7 +13,8 @@ export type BorrowLoanRepositoryResult =
   | Readonly<{ kind: "OFFER_NOT_AVAILABLE" }>
   | Readonly<{ kind: "AMOUNT_OUT_OF_RANGE" }>
   | Readonly<{ kind: "INSUFFICIENT_LIQUIDITY" }>
-  | Readonly<{ kind: "BALANCE_UNAVAILABLE" }>
+  | Readonly<{ kind: "INSUFFICIENT_LENDER_BALANCE" }>
+  | Readonly<{ kind: "POLICY_VIOLATION"; violation: PolicyViolation }>
   | Readonly<{ kind: "REQUEST_CONFLICT" }>;
 
 export interface BorrowLoanRepository {

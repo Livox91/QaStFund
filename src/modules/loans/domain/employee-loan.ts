@@ -7,6 +7,9 @@ export type EmployeeLoanRepayment = Readonly<{
   id: string;
   amountMinorUnits: bigint;
   currency: string;
+  status: "PENDING" | "COMPLETED" | "FAILED" | "CANCELLED";
+  createdAt: Date;
+  completedAt: Date | null;
   paidAt: Date;
 }>;
 
@@ -46,6 +49,7 @@ export type RecordedLoanRepayment = Readonly<{
   amountMinorUnits: bigint;
   currency: string;
   paidAt: Date;
+  completedAt: Date;
   loanStatus: EmployerLoanStatus;
 }>;
 

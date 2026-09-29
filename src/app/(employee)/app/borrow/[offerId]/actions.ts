@@ -7,13 +7,14 @@ import { logger } from "@/infrastructure/logging/logger";
 import { requireEmployeePage } from "@/modules/auth/infrastructure/auth-guard";
 import {
   BorrowAmountOutOfRangeError,
-  BorrowingBalanceUnavailableError,
   BorrowRequestConflictError,
   InsufficientOfferLiquidityError,
+  InsufficientLenderBalanceError,
   LendingOfferNotAvailableError,
 } from "@/modules/loans/application/errors/borrow-loan-errors";
 import { borrowFromOfferForActor } from "@/modules/loans/index.server";
 import { confirmBorrowOfferSchema } from "@/modules/loans/schemas/borrow-from-offer.schema";
+import { LendingPolicyViolationError } from "@/modules/policies/application/errors";
 
 export type ConfirmBorrowOfferActionState = Readonly<{
   message?: string;
@@ -21,10 +22,11 @@ export type ConfirmBorrowOfferActionState = Readonly<{
 
 const expectedErrors = [
   BorrowAmountOutOfRangeError,
-  BorrowingBalanceUnavailableError,
   BorrowRequestConflictError,
   InsufficientOfferLiquidityError,
+  InsufficientLenderBalanceError,
   LendingOfferNotAvailableError,
+  LendingPolicyViolationError,
 ] as const;
 
 export async function confirmBorrowOfferAction(

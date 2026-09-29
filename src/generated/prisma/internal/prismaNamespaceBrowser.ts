@@ -62,6 +62,7 @@ export const ModelName = {
   LedgerEntry: 'LedgerEntry',
   LoanRepayment: 'LoanRepayment',
   AuditEvent: 'AuditEvent',
+  OrganizationLendingPolicy: 'OrganizationLendingPolicy',
   Session: 'Session'
 } as const
 
@@ -111,6 +112,8 @@ export const OrganizationMembershipScalarFieldEnum = {
   userId: 'userId',
   role: 'role',
   isActive: 'isActive',
+  canBorrow: 'canBorrow',
+  canLend: 'canLend',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -172,7 +175,9 @@ export const LoanScalarFieldEnum = {
   startedAt: 'startedAt',
   repaymentDueAt: 'repaymentDueAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  policyVersion: 'policyVersion',
+  policySnapshot: 'policySnapshot'
 } as const
 
 export type LoanScalarFieldEnum = (typeof LoanScalarFieldEnum)[keyof typeof LoanScalarFieldEnum]
@@ -182,7 +187,7 @@ export const LedgerAccountScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
   membershipId: 'membershipId',
-  currency: 'currency',
+  asset: 'asset',
   type: 'type',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -194,11 +199,13 @@ export type LedgerAccountScalarFieldEnum = (typeof LedgerAccountScalarFieldEnum)
 export const LedgerTransactionScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
-  loanId: 'loanId',
-  repaymentId: 'repaymentId',
   type: 'type',
-  currency: 'currency',
-  createdAt: 'createdAt'
+  status: 'status',
+  referenceType: 'referenceType',
+  referenceId: 'referenceId',
+  idempotencyKey: 'idempotencyKey',
+  createdAt: 'createdAt',
+  completedAt: 'completedAt'
 } as const
 
 export type LedgerTransactionScalarFieldEnum = (typeof LedgerTransactionScalarFieldEnum)[keyof typeof LedgerTransactionScalarFieldEnum]
@@ -211,7 +218,7 @@ export const LedgerEntryScalarFieldEnum = {
   accountId: 'accountId',
   direction: 'direction',
   amountMinorUnits: 'amountMinorUnits',
-  currency: 'currency',
+  asset: 'asset',
   createdAt: 'createdAt'
 } as const
 
@@ -225,7 +232,9 @@ export const LoanRepaymentScalarFieldEnum = {
   repaymentRequestId: 'repaymentRequestId',
   amountMinorUnits: 'amountMinorUnits',
   currency: 'currency',
+  status: 'status',
   paidAt: 'paidAt',
+  completedAt: 'completedAt',
   createdAt: 'createdAt'
 } as const
 
@@ -236,15 +245,41 @@ export const AuditEventScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
   loanId: 'loanId',
+  lendingOfferId: 'lendingOfferId',
+  repaymentId: 'repaymentId',
   actorMembershipId: 'actorMembershipId',
+  targetMembershipId: 'targetMembershipId',
+  amountMinorUnits: 'amountMinorUnits',
+  currency: 'currency',
   type: 'type',
   title: 'title',
   actorLabel: 'actorLabel',
+  metadata: 'metadata',
   occurredAt: 'occurredAt',
   createdAt: 'createdAt'
 } as const
 
 export type AuditEventScalarFieldEnum = (typeof AuditEventScalarFieldEnum)[keyof typeof AuditEventScalarFieldEnum]
+
+
+export const OrganizationLendingPolicyScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  lendingEnabled: 'lendingEnabled',
+  borrowingEnabled: 'borrowingEnabled',
+  maxLoanAmountMinorUnits: 'maxLoanAmountMinorUnits',
+  maxOutstandingDebtMinorUnits: 'maxOutstandingDebtMinorUnits',
+  maxActiveLoans: 'maxActiveLoans',
+  minInterestRateBasisPoints: 'minInterestRateBasisPoints',
+  maxInterestRateBasisPoints: 'maxInterestRateBasisPoints',
+  minTermDays: 'minTermDays',
+  maxTermDays: 'maxTermDays',
+  policyVersion: 'policyVersion',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OrganizationLendingPolicyScalarFieldEnum = (typeof OrganizationLendingPolicyScalarFieldEnum)[keyof typeof OrganizationLendingPolicyScalarFieldEnum]
 
 
 export const SessionScalarFieldEnum = {
@@ -267,12 +302,29 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 export const NullsOrder = {

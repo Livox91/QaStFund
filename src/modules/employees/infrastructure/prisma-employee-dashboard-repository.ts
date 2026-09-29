@@ -5,6 +5,10 @@ import type {
   EmployeeDashboardLoanRecord,
   EmployeeDashboardRepository,
 } from "@/modules/employees/application/ports/employee-dashboard-repository";
+import {
+  ensureUserWallet,
+  getCompletedAccountBalance,
+} from "@/modules/ledger/infrastructure/ledger-posting";
 
 const CURRENT_LOAN_STATUSES = [LoanStatus.ACTIVE, LoanStatus.OVERDUE] as const;
 
@@ -82,7 +86,7 @@ const participantSelection = {
 } as const;
 
 export const prismaEmployeeDashboardRepository: EmployeeDashboardRepository = {
-  async loadForEmployee({ now, organizationId, userId }) {
+  async loadForEmployee({ organizationId, userId }) {
     return prisma.$transaction(async (transaction) => {
       const membership = await transaction.organizationMembership.findUnique({
         where: { organizationId_userId: { organizationId, userId } },
@@ -104,24 +108,14 @@ export const prismaEmployeeDashboardRepository: EmployeeDashboardRepository = {
         organizationId,
         currency: organization.currency,
       };
-      const balance = await transaction.employeeBalance.findUnique({
-        where: {
-          organizationId_membershipId: {
-            organizationId,
-            membershipId: membership.id,
-          },
-        },
-        select: { amountMinorUnits: true },
+      const wallet = await ensureUserWallet(transaction, {
+        organizationId,
+        membershipId: membership.id,
       });
-      const committedBalance = await transaction.lendingOffer.aggregate({
-        where: {
-          ...employeeScope,
-          lenderMembershipId: membership.id,
-          status: "ACTIVE",
-          expiresAt: { gt: now },
-        },
-        _sum: { availableAmountMinorUnits: true },
-      });
+      const availableBalanceMinorUnits = await getCompletedAccountBalance(
+        transaction,
+        { organizationId, accountId: wallet.id },
+      );
       const earnings = await transaction.loan.aggregate({
         where: {
           ...employeeScope,
@@ -151,6 +145,7 @@ export const prismaEmployeeDashboardRepository: EmployeeDashboardRepository = {
           status: true,
           repaymentDueAt: true,
           repayments: {
+            where: { status: "COMPLETED" },
             select: { amountMinorUnits: true },
             orderBy: { paidAt: "asc" },
           },
@@ -178,12 +173,7 @@ export const prismaEmployeeDashboardRepository: EmployeeDashboardRepository = {
 
       return {
         currency: organization.currency,
-        availableBalanceMinorUnits:
-          (balance?.amountMinorUnits ?? 0n) >
-          (committedBalance._sum.availableAmountMinorUnits ?? 0n)
-            ? (balance?.amountMinorUnits ?? 0n) -
-              (committedBalance._sum.availableAmountMinorUnits ?? 0n)
-            : 0n,
+        availableBalanceMinorUnits,
         totalEarningsMinorUnits: earnings._sum.feeAmountMinorUnits ?? 0n,
         currentLoans: (currentLoans as CurrentLoanRow[]).map((loan) =>
           toLoanRecord(loan, membership.id),
