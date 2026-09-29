@@ -54,6 +54,7 @@ function createRepository(): OrganizationMembershipRepository {
         name: employee.name,
         email: employee.email,
         role: employee.role,
+        employmentStatus: "ACTIVE" as const,
         isActive: true,
         joinedAt: new Date("2026-01-01T00:00:00.000Z"),
       },

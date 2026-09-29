@@ -53,6 +53,8 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   Organization: 'Organization',
+  ArcWallet: 'ArcWallet',
+  ArcWalletChallenge: 'ArcWalletChallenge',
   OrganizationMembership: 'OrganizationMembership',
   LendingOffer: 'LendingOffer',
   EmployeeBalance: 'EmployeeBalance',
@@ -106,11 +108,43 @@ export const OrganizationScalarFieldEnum = {
 export type OrganizationScalarFieldEnum = (typeof OrganizationScalarFieldEnum)[keyof typeof OrganizationScalarFieldEnum]
 
 
+export const ArcWalletScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  userId: 'userId',
+  address: 'address',
+  network: 'network',
+  chainId: 'chainId',
+  walletType: 'walletType',
+  status: 'status',
+  enrollmentState: 'enrollmentState',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ArcWalletScalarFieldEnum = (typeof ArcWalletScalarFieldEnum)[keyof typeof ArcWalletScalarFieldEnum]
+
+
+export const ArcWalletChallengeScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  userId: 'userId',
+  address: 'address',
+  nonceHash: 'nonceHash',
+  expiresAt: 'expiresAt',
+  consumedAt: 'consumedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ArcWalletChallengeScalarFieldEnum = (typeof ArcWalletChallengeScalarFieldEnum)[keyof typeof ArcWalletChallengeScalarFieldEnum]
+
+
 export const OrganizationMembershipScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
   userId: 'userId',
   role: 'role',
+  employmentStatus: 'employmentStatus',
   isActive: 'isActive',
   canBorrow: 'canBorrow',
   canLend: 'canLend',
@@ -134,6 +168,14 @@ export const LendingOfferScalarFieldEnum = {
   feeRateBasisPoints: 'feeRateBasisPoints',
   expiresAt: 'expiresAt',
   status: 'status',
+  fundingStatus: 'fundingStatus',
+  fundingRequestId: 'fundingRequestId',
+  lenderWalletAddress: 'lenderWalletAddress',
+  principalBaseUnits: 'principalBaseUnits',
+  chainOfferId: 'chainOfferId',
+  contractAddress: 'contractAddress',
+  fundingTransactionHash: 'fundingTransactionHash',
+  fundedAt: 'fundedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -161,6 +203,18 @@ export const LoanScalarFieldEnum = {
   borrowerMembershipId: 'borrowerMembershipId',
   lendingOfferId: 'lendingOfferId',
   borrowRequestId: 'borrowRequestId',
+  chainLoanId: 'chainLoanId',
+  chainOfferId: 'chainOfferId',
+  contractAddress: 'contractAddress',
+  lenderWalletAddress: 'lenderWalletAddress',
+  borrowerWalletAddress: 'borrowerWalletAddress',
+  principalBaseUnits: 'principalBaseUnits',
+  repaymentBaseUnits: 'repaymentBaseUnits',
+  acceptanceTransactionHash: 'acceptanceTransactionHash',
+  repaymentTransactionHash: 'repaymentTransactionHash',
+  onChainStartedAt: 'onChainStartedAt',
+  onChainDueAt: 'onChainDueAt',
+  onChainRepaidAt: 'onChainRepaidAt',
   principalAmountMinorUnits: 'principalAmountMinorUnits',
   feeAmountMinorUnits: 'feeAmountMinorUnits',
   outstandingPrincipalMinorUnits: 'outstandingPrincipalMinorUnits',
@@ -318,6 +372,14 @@ export const QueryMode = {
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
 export const JsonNullValueFilter = {
   DbNull: DbNull,
   JsonNull: JsonNull,
@@ -325,12 +387,4 @@ export const JsonNullValueFilter = {
 } as const
 
 export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
-
-
-export const NullsOrder = {
-  first: 'first',
-  last: 'last'
-} as const
-
-export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

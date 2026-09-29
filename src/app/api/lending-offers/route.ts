@@ -3,16 +3,8 @@ import type { NextRequest } from "next/server";
 import { logger } from "@/infrastructure/logging/logger";
 import { requireAuthenticatedUser } from "@/modules/auth/application/authorization";
 import { getCurrentActor } from "@/modules/auth/infrastructure/auth-guard";
-import { InvalidLendingOfferTermsError } from "@/modules/lending/application/errors/lending-offer-errors";
 import { toLendingOfferResponse } from "@/modules/lending/api/lending-offer-response";
-import {
-  createLendingOfferForActor,
-  listActiveLendingOffersForActor,
-} from "@/modules/lending/index.server";
-import {
-  createLendingOfferApiSchema,
-  toCreateLendingOfferCommand,
-} from "@/modules/lending/schemas/lending-offer-api.schema";
+import { listActiveLendingOffersForActor } from "@/modules/lending/index.server";
 import { apiError, apiSuccess } from "@/shared/api/responses";
 import { assertTrustedRequestOrigin } from "@/shared/api/request-origin";
 import { ApplicationError } from "@/shared/errors/application-error";
@@ -36,25 +28,12 @@ export async function GET(): Promise<Response> {
 export async function POST(request: NextRequest): Promise<Response> {
   try {
     assertTrustedRequestOrigin(request);
-    const actor = requireAuthenticatedUser(await getCurrentActor());
-    const now = new Date();
-
-    let body: unknown;
-    try {
-      body = await request.json();
-    } catch {
-      throw new InvalidLendingOfferTermsError();
-    }
-
-    const parsed = createLendingOfferApiSchema.safeParse(body);
-    if (!parsed.success) throw new InvalidLendingOfferTermsError();
-
-    const offer = await createLendingOfferForActor(
-      actor,
-      toCreateLendingOfferCommand(parsed.data, now),
-      now,
+    requireAuthenticatedUser(await getCurrentActor());
+    throw new ApplicationError(
+      "ONCHAIN_FUNDING_REQUIRED",
+      "Create offers through the wallet funding flow.",
+      405,
     );
-    return apiSuccess({ offer: toLendingOfferResponse(offer) }, 201);
   } catch (error) {
     if (!(error instanceof ApplicationError)) {
       logger.error("Lending-offer creation failed", error);

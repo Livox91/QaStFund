@@ -19,6 +19,7 @@ export const prismaOrganizationMembershipRepository: OrganizationMembershipRepos
           id: true,
           userId: true,
           role: true,
+          employmentStatus: true,
           isActive: true,
           createdAt: true,
           user: { select: { name: true, email: true } },
@@ -31,6 +32,7 @@ export const prismaOrganizationMembershipRepository: OrganizationMembershipRepos
         name: membership.user.name,
         email: membership.user.email,
         role: membership.role as ApplicationRole,
+        employmentStatus: membership.employmentStatus,
         isActive: membership.isActive,
         joinedAt: membership.createdAt,
       }));

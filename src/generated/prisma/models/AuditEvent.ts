@@ -837,14 +837,6 @@ export type AuditEventUncheckedUpdateManyWithoutRepaymentNestedInput = {
   deleteMany?: Prisma.AuditEventScalarWhereInput | Prisma.AuditEventScalarWhereInput[]
 }
 
-export type NullableBigIntFieldUpdateOperationsInput = {
-  set?: bigint | number | null
-  increment?: bigint | number
-  decrement?: bigint | number
-  multiply?: bigint | number
-  divide?: bigint | number
-}
-
 export type EnumAuditEventTypeFieldUpdateOperationsInput = {
   set?: $Enums.AuditEventType
 }

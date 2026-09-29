@@ -32,12 +32,6 @@ const dateFormatter = new Intl.DateTimeFormat("en-US", {
   year: "numeric",
 });
 
-function moneyInputValue(amountMinorUnits: bigint): string {
-  const whole = amountMinorUnits / 100n;
-  const fraction = (amountMinorUnits % 100n).toString().padStart(2, "0");
-  return `${whole}.${fraction}`;
-}
-
 function Detail({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div>
@@ -72,9 +66,9 @@ export function EmployeeLoanDetails({
 
       <PageHeader
         actions={<StatusDisplay status={loan.status} />}
-        description={`Borrowed from ${loan.lenderName}. Repayments are recorded without moving real funds.`}
+        description={`Borrowed from ${loan.lenderName}.`}
         eyebrow="Borrowed loan"
-        title="Loan details"
+        title={loan.status === "REPAID" ? "Loan Repaid ✓" : "Active Loan"}
       />
 
       {repaymentRecorded ? (
@@ -82,7 +76,8 @@ export function EmployeeLoanDetails({
           className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800"
           role="status"
         >
-          Repayment recorded. The remaining balance and loan status are updated.
+          Repayment confirmed. The funds reached {loan.lenderName} and this loan
+          is now repaid.
         </p>
       ) : null}
 
@@ -97,7 +92,7 @@ export function EmployeeLoanDetails({
           <CardContent>
             <dl className="grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
               <Detail
-                label="Principal"
+                label="Borrowed"
                 value={
                   <CurrencyDisplay
                     amountMinorUnits={loan.principalAmountMinorUnits}
@@ -106,7 +101,7 @@ export function EmployeeLoanDetails({
                 }
               />
               <Detail
-                label="Agreed fee"
+                label="Interest"
                 value={
                   <CurrencyDisplay
                     amountMinorUnits={loan.feeAmountMinorUnits}
@@ -120,12 +115,26 @@ export function EmployeeLoanDetails({
               />
               <Detail label="Duration" value={`${loan.durationDays} days`} />
               <Detail
+                label={loan.status === "REPAID" ? "Repaid" : "Amount due"}
+                value={
+                  <CurrencyDisplay
+                    amountMinorUnits={loan.totalAgreedAmountMinorUnits}
+                    currency={loan.currency}
+                  />
+                }
+              />
+              <Detail label="Lender" value={loan.lenderName} />
+              <Detail
                 label="Started"
                 value={dateFormatter.format(loan.startedAt)}
               />
               <Detail
                 label="Due"
                 value={dateFormatter.format(loan.repaymentDueAt)}
+              />
+              <Detail
+                label="Status"
+                value={<StatusDisplay status={loan.status} />}
               />
             </dl>
           </CardContent>
@@ -191,7 +200,7 @@ export function EmployeeLoanDetails({
             </CardTitle>
             <CardDescription>
               {loan.canRepay
-                ? "Make a partial payment or settle the full remaining amount."
+                ? "Repay the full agreed amount to your lender."
                 : "This loan does not accept additional repayments."}
             </CardDescription>
           </CardHeader>
@@ -199,15 +208,13 @@ export function EmployeeLoanDetails({
             {loan.canRepay ? (
               <>
                 <RepaymentForm
-                  currency={loan.currency}
-                  fullAmount={moneyInputValue(loan.remainingAmountMinorUnits)}
+                  lenderName={loan.lenderName}
                   loanId={loan.id}
-                  requestId={crypto.randomUUID()}
+                  repaymentBaseUnits={loan.repaymentBaseUnits!.toString()}
                 />
                 <p className="mt-5 border-t border-slate-100 pt-4 text-xs leading-5 text-slate-500">
-                  This records repayment progress only. No payroll deduction,
-                  Circle, USDC, bank transfer, or blockchain settlement is
-                  performed.
+                  You will authorize the exact amount due. The payment and loan
+                  completion happen together.
                 </p>
               </>
             ) : (
@@ -224,7 +231,7 @@ export function EmployeeLoanDetails({
           <CardHeader className="pb-5">
             <CardTitle>Repayment history</CardTitle>
             <CardDescription>
-              Completed manual and previously recorded repayments.
+              Confirmed repayments for this loan.
             </CardDescription>
           </CardHeader>
           {loan.repayments.length > 0 ? (

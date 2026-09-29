@@ -28,6 +28,7 @@ const borrowedLoanSelection = {
   principalAmountMinorUnits: true,
   feeAmountMinorUnits: true,
   outstandingPrincipalMinorUnits: true,
+  repaymentBaseUnits: true,
   currency: true,
   durationDays: true,
   feeRateBasisPoints: true,

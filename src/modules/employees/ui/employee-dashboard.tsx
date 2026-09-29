@@ -1,6 +1,8 @@
 import Link from "next/link";
 
+import { ArcWalletPanel } from "@/modules/arc-wallet/ui/arc-wallet-panel";
 import type { EmployeeDashboard as EmployeeDashboardView } from "@/modules/employees/domain/employee-dashboard";
+import type { Employee } from "@/modules/employees/domain/employee";
 import {
   EmployeeActivityList,
   UpcomingRepaymentList,
@@ -29,14 +31,14 @@ const dateFormatter = new Intl.DateTimeFormat("en-US", {
 
 export function EmployeeDashboard({
   dashboard,
-  employeeName,
+  employee,
   loanCreated = false,
   organizationName,
   wallet,
   borrowingCapacity,
 }: {
   dashboard: EmployeeDashboardView;
-  employeeName: string;
+  employee: Employee;
   loanCreated?: boolean;
   organizationName: string;
   wallet: Wallet;
@@ -70,14 +72,14 @@ export function EmployeeDashboard({
         }
         description={`A clear view of your lending and borrowing activity within ${organizationName}.`}
         eyebrow="Employee portal"
-        title={`Welcome, ${employeeName}`}
+        title={`Welcome, ${employee.name}`}
       />
       {loanCreated ? (
         <p
           className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800"
           role="status"
         >
-          Loan created. The offer capital and dashboard totals are now updated.
+          Funds received. Your loan is now active and its repayment date is set.
         </p>
       ) : null}
       <p
@@ -150,6 +152,8 @@ export function EmployeeDashboard({
         </div>
       </section>
 
+      <ArcWalletPanel employee={employee} />
+
       <WalletCard wallet={wallet} />
 
       <Card className="mt-6">
@@ -205,7 +209,7 @@ export function EmployeeDashboard({
           <CardHeader className="pb-5">
             <CardTitle>My Loans</CardTitle>
             <CardDescription>
-              Current loans where you are the borrower.
+              Active and repaid loans where you are the borrower.
             </CardDescription>
           </CardHeader>
           <EmployeeLoanList
@@ -219,7 +223,7 @@ export function EmployeeDashboard({
           <CardHeader className="pb-5">
             <CardTitle>Funded Loans</CardTitle>
             <CardDescription>
-              Current loans where you are the lender.
+              Active and repaid loans where you are the lender.
             </CardDescription>
           </CardHeader>
           <EmployeeLoanList

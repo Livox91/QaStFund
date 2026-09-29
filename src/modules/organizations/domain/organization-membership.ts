@@ -13,6 +13,7 @@ export type OrganizationMember = Readonly<{
   name: string;
   email: string;
   role: ApplicationRole;
+  employmentStatus: "ACTIVE" | "SUSPENDED" | "TERMINATED";
   isActive: boolean;
   joinedAt: Date;
 }>;

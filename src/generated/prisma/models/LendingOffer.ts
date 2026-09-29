@@ -33,6 +33,7 @@ export type LendingOfferAvgAggregateOutputType = {
   maximumLoanAmountMinorUnits: number | null
   durationDays: number | null
   feeRateBasisPoints: number | null
+  principalBaseUnits: number | null
 }
 
 export type LendingOfferSumAggregateOutputType = {
@@ -42,6 +43,7 @@ export type LendingOfferSumAggregateOutputType = {
   maximumLoanAmountMinorUnits: bigint | null
   durationDays: number | null
   feeRateBasisPoints: number | null
+  principalBaseUnits: bigint | null
 }
 
 export type LendingOfferMinAggregateOutputType = {
@@ -57,6 +59,14 @@ export type LendingOfferMinAggregateOutputType = {
   feeRateBasisPoints: number | null
   expiresAt: Date | null
   status: $Enums.LendingOfferStatus | null
+  fundingStatus: $Enums.LendingOfferFundingStatus | null
+  fundingRequestId: string | null
+  lenderWalletAddress: string | null
+  principalBaseUnits: bigint | null
+  chainOfferId: string | null
+  contractAddress: string | null
+  fundingTransactionHash: string | null
+  fundedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -74,6 +84,14 @@ export type LendingOfferMaxAggregateOutputType = {
   feeRateBasisPoints: number | null
   expiresAt: Date | null
   status: $Enums.LendingOfferStatus | null
+  fundingStatus: $Enums.LendingOfferFundingStatus | null
+  fundingRequestId: string | null
+  lenderWalletAddress: string | null
+  principalBaseUnits: bigint | null
+  chainOfferId: string | null
+  contractAddress: string | null
+  fundingTransactionHash: string | null
+  fundedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -91,6 +109,14 @@ export type LendingOfferCountAggregateOutputType = {
   feeRateBasisPoints: number
   expiresAt: number
   status: number
+  fundingStatus: number
+  fundingRequestId: number
+  lenderWalletAddress: number
+  principalBaseUnits: number
+  chainOfferId: number
+  contractAddress: number
+  fundingTransactionHash: number
+  fundedAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -104,6 +130,7 @@ export type LendingOfferAvgAggregateInputType = {
   maximumLoanAmountMinorUnits?: true
   durationDays?: true
   feeRateBasisPoints?: true
+  principalBaseUnits?: true
 }
 
 export type LendingOfferSumAggregateInputType = {
@@ -113,6 +140,7 @@ export type LendingOfferSumAggregateInputType = {
   maximumLoanAmountMinorUnits?: true
   durationDays?: true
   feeRateBasisPoints?: true
+  principalBaseUnits?: true
 }
 
 export type LendingOfferMinAggregateInputType = {
@@ -128,6 +156,14 @@ export type LendingOfferMinAggregateInputType = {
   feeRateBasisPoints?: true
   expiresAt?: true
   status?: true
+  fundingStatus?: true
+  fundingRequestId?: true
+  lenderWalletAddress?: true
+  principalBaseUnits?: true
+  chainOfferId?: true
+  contractAddress?: true
+  fundingTransactionHash?: true
+  fundedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -145,6 +181,14 @@ export type LendingOfferMaxAggregateInputType = {
   feeRateBasisPoints?: true
   expiresAt?: true
   status?: true
+  fundingStatus?: true
+  fundingRequestId?: true
+  lenderWalletAddress?: true
+  principalBaseUnits?: true
+  chainOfferId?: true
+  contractAddress?: true
+  fundingTransactionHash?: true
+  fundedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -162,6 +206,14 @@ export type LendingOfferCountAggregateInputType = {
   feeRateBasisPoints?: true
   expiresAt?: true
   status?: true
+  fundingStatus?: true
+  fundingRequestId?: true
+  lenderWalletAddress?: true
+  principalBaseUnits?: true
+  chainOfferId?: true
+  contractAddress?: true
+  fundingTransactionHash?: true
+  fundedAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -266,6 +318,14 @@ export type LendingOfferGroupByOutputType = {
   feeRateBasisPoints: number
   expiresAt: Date
   status: $Enums.LendingOfferStatus
+  fundingStatus: $Enums.LendingOfferFundingStatus
+  fundingRequestId: string | null
+  lenderWalletAddress: string | null
+  principalBaseUnits: bigint | null
+  chainOfferId: string | null
+  contractAddress: string | null
+  fundingTransactionHash: string | null
+  fundedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: LendingOfferCountAggregateOutputType | null
@@ -306,6 +366,14 @@ export type LendingOfferWhereInput = {
   feeRateBasisPoints?: Prisma.IntFilter<"LendingOffer"> | number
   expiresAt?: Prisma.DateTimeFilter<"LendingOffer"> | Date | string
   status?: Prisma.EnumLendingOfferStatusFilter<"LendingOffer"> | $Enums.LendingOfferStatus
+  fundingStatus?: Prisma.EnumLendingOfferFundingStatusFilter<"LendingOffer"> | $Enums.LendingOfferFundingStatus
+  fundingRequestId?: Prisma.UuidNullableFilter<"LendingOffer"> | string | null
+  lenderWalletAddress?: Prisma.StringNullableFilter<"LendingOffer"> | string | null
+  principalBaseUnits?: Prisma.BigIntNullableFilter<"LendingOffer"> | bigint | number | null
+  chainOfferId?: Prisma.StringNullableFilter<"LendingOffer"> | string | null
+  contractAddress?: Prisma.StringNullableFilter<"LendingOffer"> | string | null
+  fundingTransactionHash?: Prisma.StringNullableFilter<"LendingOffer"> | string | null
+  fundedAt?: Prisma.DateTimeNullableFilter<"LendingOffer"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"LendingOffer"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LendingOffer"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
@@ -327,6 +395,14 @@ export type LendingOfferOrderByWithRelationInput = {
   feeRateBasisPoints?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  fundingStatus?: Prisma.SortOrder
+  fundingRequestId?: Prisma.SortOrderInput | Prisma.SortOrder
+  lenderWalletAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  principalBaseUnits?: Prisma.SortOrderInput | Prisma.SortOrder
+  chainOfferId?: Prisma.SortOrderInput | Prisma.SortOrder
+  contractAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  fundingTransactionHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  fundedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
@@ -337,6 +413,8 @@ export type LendingOfferOrderByWithRelationInput = {
 
 export type LendingOfferWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  fundingRequestId?: string
+  fundingTransactionHash?: string
   organizationId_id?: Prisma.LendingOfferOrganizationIdIdCompoundUniqueInput
   AND?: Prisma.LendingOfferWhereInput | Prisma.LendingOfferWhereInput[]
   OR?: Prisma.LendingOfferWhereInput[]
@@ -352,13 +430,19 @@ export type LendingOfferWhereUniqueInput = Prisma.AtLeast<{
   feeRateBasisPoints?: Prisma.IntFilter<"LendingOffer"> | number
   expiresAt?: Prisma.DateTimeFilter<"LendingOffer"> | Date | string
   status?: Prisma.EnumLendingOfferStatusFilter<"LendingOffer"> | $Enums.LendingOfferStatus
+  fundingStatus?: Prisma.EnumLendingOfferFundingStatusFilter<"LendingOffer"> | $Enums.LendingOfferFundingStatus
+  lenderWalletAddress?: Prisma.StringNullableFilter<"LendingOffer"> | string | null
+  principalBaseUnits?: Prisma.BigIntNullableFilter<"LendingOffer"> | bigint | number | null
+  chainOfferId?: Prisma.StringNullableFilter<"LendingOffer"> | string | null
+  contractAddress?: Prisma.StringNullableFilter<"LendingOffer"> | string | null
+  fundedAt?: Prisma.DateTimeNullableFilter<"LendingOffer"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"LendingOffer"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LendingOffer"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   lenderMembership?: Prisma.XOR<Prisma.OrganizationMembershipScalarRelationFilter, Prisma.OrganizationMembershipWhereInput>
   loans?: Prisma.LoanListRelationFilter
   auditEvents?: Prisma.AuditEventListRelationFilter
-}, "id" | "organizationId_id">
+}, "id" | "fundingRequestId" | "fundingTransactionHash" | "organizationId_id">
 
 export type LendingOfferOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -373,6 +457,14 @@ export type LendingOfferOrderByWithAggregationInput = {
   feeRateBasisPoints?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  fundingStatus?: Prisma.SortOrder
+  fundingRequestId?: Prisma.SortOrderInput | Prisma.SortOrder
+  lenderWalletAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  principalBaseUnits?: Prisma.SortOrderInput | Prisma.SortOrder
+  chainOfferId?: Prisma.SortOrderInput | Prisma.SortOrder
+  contractAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  fundingTransactionHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  fundedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.LendingOfferCountOrderByAggregateInput
@@ -398,6 +490,14 @@ export type LendingOfferScalarWhereWithAggregatesInput = {
   feeRateBasisPoints?: Prisma.IntWithAggregatesFilter<"LendingOffer"> | number
   expiresAt?: Prisma.DateTimeWithAggregatesFilter<"LendingOffer"> | Date | string
   status?: Prisma.EnumLendingOfferStatusWithAggregatesFilter<"LendingOffer"> | $Enums.LendingOfferStatus
+  fundingStatus?: Prisma.EnumLendingOfferFundingStatusWithAggregatesFilter<"LendingOffer"> | $Enums.LendingOfferFundingStatus
+  fundingRequestId?: Prisma.UuidNullableWithAggregatesFilter<"LendingOffer"> | string | null
+  lenderWalletAddress?: Prisma.StringNullableWithAggregatesFilter<"LendingOffer"> | string | null
+  principalBaseUnits?: Prisma.BigIntNullableWithAggregatesFilter<"LendingOffer"> | bigint | number | null
+  chainOfferId?: Prisma.StringNullableWithAggregatesFilter<"LendingOffer"> | string | null
+  contractAddress?: Prisma.StringNullableWithAggregatesFilter<"LendingOffer"> | string | null
+  fundingTransactionHash?: Prisma.StringNullableWithAggregatesFilter<"LendingOffer"> | string | null
+  fundedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"LendingOffer"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"LendingOffer"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"LendingOffer"> | Date | string
 }
@@ -413,6 +513,14 @@ export type LendingOfferCreateInput = {
   feeRateBasisPoints: number
   expiresAt: Date | string
   status: $Enums.LendingOfferStatus
+  fundingStatus?: $Enums.LendingOfferFundingStatus
+  fundingRequestId?: string | null
+  lenderWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  fundingTransactionHash?: string | null
+  fundedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutLendingOffersInput
@@ -434,6 +542,14 @@ export type LendingOfferUncheckedCreateInput = {
   feeRateBasisPoints: number
   expiresAt: Date | string
   status: $Enums.LendingOfferStatus
+  fundingStatus?: $Enums.LendingOfferFundingStatus
+  fundingRequestId?: string | null
+  lenderWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  fundingTransactionHash?: string | null
+  fundedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   loans?: Prisma.LoanUncheckedCreateNestedManyWithoutLendingOfferInput
@@ -451,6 +567,14 @@ export type LendingOfferUpdateInput = {
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumLendingOfferStatusFieldUpdateOperationsInput | $Enums.LendingOfferStatus
+  fundingStatus?: Prisma.EnumLendingOfferFundingStatusFieldUpdateOperationsInput | $Enums.LendingOfferFundingStatus
+  fundingRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundingTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutLendingOffersNestedInput
@@ -472,6 +596,14 @@ export type LendingOfferUncheckedUpdateInput = {
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumLendingOfferStatusFieldUpdateOperationsInput | $Enums.LendingOfferStatus
+  fundingStatus?: Prisma.EnumLendingOfferFundingStatusFieldUpdateOperationsInput | $Enums.LendingOfferFundingStatus
+  fundingRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundingTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loans?: Prisma.LoanUncheckedUpdateManyWithoutLendingOfferNestedInput
@@ -491,6 +623,14 @@ export type LendingOfferCreateManyInput = {
   feeRateBasisPoints: number
   expiresAt: Date | string
   status: $Enums.LendingOfferStatus
+  fundingStatus?: $Enums.LendingOfferFundingStatus
+  fundingRequestId?: string | null
+  lenderWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  fundingTransactionHash?: string | null
+  fundedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -506,6 +646,14 @@ export type LendingOfferUpdateManyMutationInput = {
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumLendingOfferStatusFieldUpdateOperationsInput | $Enums.LendingOfferStatus
+  fundingStatus?: Prisma.EnumLendingOfferFundingStatusFieldUpdateOperationsInput | $Enums.LendingOfferFundingStatus
+  fundingRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundingTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -523,6 +671,14 @@ export type LendingOfferUncheckedUpdateManyInput = {
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumLendingOfferStatusFieldUpdateOperationsInput | $Enums.LendingOfferStatus
+  fundingStatus?: Prisma.EnumLendingOfferFundingStatusFieldUpdateOperationsInput | $Enums.LendingOfferFundingStatus
+  fundingRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundingTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -555,6 +711,14 @@ export type LendingOfferCountOrderByAggregateInput = {
   feeRateBasisPoints?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  fundingStatus?: Prisma.SortOrder
+  fundingRequestId?: Prisma.SortOrder
+  lenderWalletAddress?: Prisma.SortOrder
+  principalBaseUnits?: Prisma.SortOrder
+  chainOfferId?: Prisma.SortOrder
+  contractAddress?: Prisma.SortOrder
+  fundingTransactionHash?: Prisma.SortOrder
+  fundedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -566,6 +730,7 @@ export type LendingOfferAvgOrderByAggregateInput = {
   maximumLoanAmountMinorUnits?: Prisma.SortOrder
   durationDays?: Prisma.SortOrder
   feeRateBasisPoints?: Prisma.SortOrder
+  principalBaseUnits?: Prisma.SortOrder
 }
 
 export type LendingOfferMaxOrderByAggregateInput = {
@@ -581,6 +746,14 @@ export type LendingOfferMaxOrderByAggregateInput = {
   feeRateBasisPoints?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  fundingStatus?: Prisma.SortOrder
+  fundingRequestId?: Prisma.SortOrder
+  lenderWalletAddress?: Prisma.SortOrder
+  principalBaseUnits?: Prisma.SortOrder
+  chainOfferId?: Prisma.SortOrder
+  contractAddress?: Prisma.SortOrder
+  fundingTransactionHash?: Prisma.SortOrder
+  fundedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -598,6 +771,14 @@ export type LendingOfferMinOrderByAggregateInput = {
   feeRateBasisPoints?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  fundingStatus?: Prisma.SortOrder
+  fundingRequestId?: Prisma.SortOrder
+  lenderWalletAddress?: Prisma.SortOrder
+  principalBaseUnits?: Prisma.SortOrder
+  chainOfferId?: Prisma.SortOrder
+  contractAddress?: Prisma.SortOrder
+  fundingTransactionHash?: Prisma.SortOrder
+  fundedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -609,6 +790,7 @@ export type LendingOfferSumOrderByAggregateInput = {
   maximumLoanAmountMinorUnits?: Prisma.SortOrder
   durationDays?: Prisma.SortOrder
   feeRateBasisPoints?: Prisma.SortOrder
+  principalBaseUnits?: Prisma.SortOrder
 }
 
 export type LendingOfferNullableScalarRelationFilter = {
@@ -708,16 +890,20 @@ export type BigIntFieldUpdateOperationsInput = {
   divide?: bigint | number
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type EnumLendingOfferStatusFieldUpdateOperationsInput = {
   set?: $Enums.LendingOfferStatus
+}
+
+export type EnumLendingOfferFundingStatusFieldUpdateOperationsInput = {
+  set?: $Enums.LendingOfferFundingStatus
+}
+
+export type NullableBigIntFieldUpdateOperationsInput = {
+  set?: bigint | number | null
+  increment?: bigint | number
+  decrement?: bigint | number
+  multiply?: bigint | number
+  divide?: bigint | number
 }
 
 export type LendingOfferCreateNestedOneWithoutLoansInput = {
@@ -763,6 +949,14 @@ export type LendingOfferCreateWithoutOrganizationInput = {
   feeRateBasisPoints: number
   expiresAt: Date | string
   status: $Enums.LendingOfferStatus
+  fundingStatus?: $Enums.LendingOfferFundingStatus
+  fundingRequestId?: string | null
+  lenderWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  fundingTransactionHash?: string | null
+  fundedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   lenderMembership: Prisma.OrganizationMembershipCreateNestedOneWithoutLendingOffersInput
@@ -782,6 +976,14 @@ export type LendingOfferUncheckedCreateWithoutOrganizationInput = {
   feeRateBasisPoints: number
   expiresAt: Date | string
   status: $Enums.LendingOfferStatus
+  fundingStatus?: $Enums.LendingOfferFundingStatus
+  fundingRequestId?: string | null
+  lenderWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  fundingTransactionHash?: string | null
+  fundedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   loans?: Prisma.LoanUncheckedCreateNestedManyWithoutLendingOfferInput
@@ -830,6 +1032,14 @@ export type LendingOfferScalarWhereInput = {
   feeRateBasisPoints?: Prisma.IntFilter<"LendingOffer"> | number
   expiresAt?: Prisma.DateTimeFilter<"LendingOffer"> | Date | string
   status?: Prisma.EnumLendingOfferStatusFilter<"LendingOffer"> | $Enums.LendingOfferStatus
+  fundingStatus?: Prisma.EnumLendingOfferFundingStatusFilter<"LendingOffer"> | $Enums.LendingOfferFundingStatus
+  fundingRequestId?: Prisma.UuidNullableFilter<"LendingOffer"> | string | null
+  lenderWalletAddress?: Prisma.StringNullableFilter<"LendingOffer"> | string | null
+  principalBaseUnits?: Prisma.BigIntNullableFilter<"LendingOffer"> | bigint | number | null
+  chainOfferId?: Prisma.StringNullableFilter<"LendingOffer"> | string | null
+  contractAddress?: Prisma.StringNullableFilter<"LendingOffer"> | string | null
+  fundingTransactionHash?: Prisma.StringNullableFilter<"LendingOffer"> | string | null
+  fundedAt?: Prisma.DateTimeNullableFilter<"LendingOffer"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"LendingOffer"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"LendingOffer"> | Date | string
 }
@@ -845,6 +1055,14 @@ export type LendingOfferCreateWithoutLenderMembershipInput = {
   feeRateBasisPoints: number
   expiresAt: Date | string
   status: $Enums.LendingOfferStatus
+  fundingStatus?: $Enums.LendingOfferFundingStatus
+  fundingRequestId?: string | null
+  lenderWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  fundingTransactionHash?: string | null
+  fundedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutLendingOffersInput
@@ -863,6 +1081,14 @@ export type LendingOfferUncheckedCreateWithoutLenderMembershipInput = {
   feeRateBasisPoints: number
   expiresAt: Date | string
   status: $Enums.LendingOfferStatus
+  fundingStatus?: $Enums.LendingOfferFundingStatus
+  fundingRequestId?: string | null
+  lenderWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  fundingTransactionHash?: string | null
+  fundedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   loans?: Prisma.LoanUncheckedCreateNestedManyWithoutLendingOfferInput
@@ -906,6 +1132,14 @@ export type LendingOfferCreateWithoutLoansInput = {
   feeRateBasisPoints: number
   expiresAt: Date | string
   status: $Enums.LendingOfferStatus
+  fundingStatus?: $Enums.LendingOfferFundingStatus
+  fundingRequestId?: string | null
+  lenderWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  fundingTransactionHash?: string | null
+  fundedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutLendingOffersInput
@@ -926,6 +1160,14 @@ export type LendingOfferUncheckedCreateWithoutLoansInput = {
   feeRateBasisPoints: number
   expiresAt: Date | string
   status: $Enums.LendingOfferStatus
+  fundingStatus?: $Enums.LendingOfferFundingStatus
+  fundingRequestId?: string | null
+  lenderWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  fundingTransactionHash?: string | null
+  fundedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutLendingOfferInput
@@ -958,6 +1200,14 @@ export type LendingOfferUpdateWithoutLoansInput = {
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumLendingOfferStatusFieldUpdateOperationsInput | $Enums.LendingOfferStatus
+  fundingStatus?: Prisma.EnumLendingOfferFundingStatusFieldUpdateOperationsInput | $Enums.LendingOfferFundingStatus
+  fundingRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundingTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutLendingOffersNestedInput
@@ -978,6 +1228,14 @@ export type LendingOfferUncheckedUpdateWithoutLoansInput = {
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumLendingOfferStatusFieldUpdateOperationsInput | $Enums.LendingOfferStatus
+  fundingStatus?: Prisma.EnumLendingOfferFundingStatusFieldUpdateOperationsInput | $Enums.LendingOfferFundingStatus
+  fundingRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundingTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutLendingOfferNestedInput
@@ -994,6 +1252,14 @@ export type LendingOfferCreateWithoutAuditEventsInput = {
   feeRateBasisPoints: number
   expiresAt: Date | string
   status: $Enums.LendingOfferStatus
+  fundingStatus?: $Enums.LendingOfferFundingStatus
+  fundingRequestId?: string | null
+  lenderWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  fundingTransactionHash?: string | null
+  fundedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutLendingOffersInput
@@ -1014,6 +1280,14 @@ export type LendingOfferUncheckedCreateWithoutAuditEventsInput = {
   feeRateBasisPoints: number
   expiresAt: Date | string
   status: $Enums.LendingOfferStatus
+  fundingStatus?: $Enums.LendingOfferFundingStatus
+  fundingRequestId?: string | null
+  lenderWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  fundingTransactionHash?: string | null
+  fundedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   loans?: Prisma.LoanUncheckedCreateNestedManyWithoutLendingOfferInput
@@ -1046,6 +1320,14 @@ export type LendingOfferUpdateWithoutAuditEventsInput = {
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumLendingOfferStatusFieldUpdateOperationsInput | $Enums.LendingOfferStatus
+  fundingStatus?: Prisma.EnumLendingOfferFundingStatusFieldUpdateOperationsInput | $Enums.LendingOfferFundingStatus
+  fundingRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundingTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutLendingOffersNestedInput
@@ -1066,6 +1348,14 @@ export type LendingOfferUncheckedUpdateWithoutAuditEventsInput = {
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumLendingOfferStatusFieldUpdateOperationsInput | $Enums.LendingOfferStatus
+  fundingStatus?: Prisma.EnumLendingOfferFundingStatusFieldUpdateOperationsInput | $Enums.LendingOfferFundingStatus
+  fundingRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundingTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loans?: Prisma.LoanUncheckedUpdateManyWithoutLendingOfferNestedInput
@@ -1083,6 +1373,14 @@ export type LendingOfferCreateManyOrganizationInput = {
   feeRateBasisPoints: number
   expiresAt: Date | string
   status: $Enums.LendingOfferStatus
+  fundingStatus?: $Enums.LendingOfferFundingStatus
+  fundingRequestId?: string | null
+  lenderWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  fundingTransactionHash?: string | null
+  fundedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1098,6 +1396,14 @@ export type LendingOfferUpdateWithoutOrganizationInput = {
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumLendingOfferStatusFieldUpdateOperationsInput | $Enums.LendingOfferStatus
+  fundingStatus?: Prisma.EnumLendingOfferFundingStatusFieldUpdateOperationsInput | $Enums.LendingOfferFundingStatus
+  fundingRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundingTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lenderMembership?: Prisma.OrganizationMembershipUpdateOneRequiredWithoutLendingOffersNestedInput
@@ -1117,6 +1423,14 @@ export type LendingOfferUncheckedUpdateWithoutOrganizationInput = {
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumLendingOfferStatusFieldUpdateOperationsInput | $Enums.LendingOfferStatus
+  fundingStatus?: Prisma.EnumLendingOfferFundingStatusFieldUpdateOperationsInput | $Enums.LendingOfferFundingStatus
+  fundingRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundingTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loans?: Prisma.LoanUncheckedUpdateManyWithoutLendingOfferNestedInput
@@ -1135,6 +1449,14 @@ export type LendingOfferUncheckedUpdateManyWithoutOrganizationInput = {
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumLendingOfferStatusFieldUpdateOperationsInput | $Enums.LendingOfferStatus
+  fundingStatus?: Prisma.EnumLendingOfferFundingStatusFieldUpdateOperationsInput | $Enums.LendingOfferFundingStatus
+  fundingRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundingTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1150,6 +1472,14 @@ export type LendingOfferCreateManyLenderMembershipInput = {
   feeRateBasisPoints: number
   expiresAt: Date | string
   status: $Enums.LendingOfferStatus
+  fundingStatus?: $Enums.LendingOfferFundingStatus
+  fundingRequestId?: string | null
+  lenderWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  fundingTransactionHash?: string | null
+  fundedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1165,6 +1495,14 @@ export type LendingOfferUpdateWithoutLenderMembershipInput = {
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumLendingOfferStatusFieldUpdateOperationsInput | $Enums.LendingOfferStatus
+  fundingStatus?: Prisma.EnumLendingOfferFundingStatusFieldUpdateOperationsInput | $Enums.LendingOfferFundingStatus
+  fundingRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundingTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutLendingOffersNestedInput
@@ -1183,6 +1521,14 @@ export type LendingOfferUncheckedUpdateWithoutLenderMembershipInput = {
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumLendingOfferStatusFieldUpdateOperationsInput | $Enums.LendingOfferStatus
+  fundingStatus?: Prisma.EnumLendingOfferFundingStatusFieldUpdateOperationsInput | $Enums.LendingOfferFundingStatus
+  fundingRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundingTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   loans?: Prisma.LoanUncheckedUpdateManyWithoutLendingOfferNestedInput
@@ -1200,6 +1546,14 @@ export type LendingOfferUncheckedUpdateManyWithoutLenderMembershipInput = {
   feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumLendingOfferStatusFieldUpdateOperationsInput | $Enums.LendingOfferStatus
+  fundingStatus?: Prisma.EnumLendingOfferFundingStatusFieldUpdateOperationsInput | $Enums.LendingOfferFundingStatus
+  fundingRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundingTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fundedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1257,6 +1611,14 @@ export type LendingOfferSelect<ExtArgs extends runtime.Types.Extensions.Internal
   feeRateBasisPoints?: boolean
   expiresAt?: boolean
   status?: boolean
+  fundingStatus?: boolean
+  fundingRequestId?: boolean
+  lenderWalletAddress?: boolean
+  principalBaseUnits?: boolean
+  chainOfferId?: boolean
+  contractAddress?: boolean
+  fundingTransactionHash?: boolean
+  fundedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
@@ -1279,6 +1641,14 @@ export type LendingOfferSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   feeRateBasisPoints?: boolean
   expiresAt?: boolean
   status?: boolean
+  fundingStatus?: boolean
+  fundingRequestId?: boolean
+  lenderWalletAddress?: boolean
+  principalBaseUnits?: boolean
+  chainOfferId?: boolean
+  contractAddress?: boolean
+  fundingTransactionHash?: boolean
+  fundedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
@@ -1298,6 +1668,14 @@ export type LendingOfferSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   feeRateBasisPoints?: boolean
   expiresAt?: boolean
   status?: boolean
+  fundingStatus?: boolean
+  fundingRequestId?: boolean
+  lenderWalletAddress?: boolean
+  principalBaseUnits?: boolean
+  chainOfferId?: boolean
+  contractAddress?: boolean
+  fundingTransactionHash?: boolean
+  fundedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
@@ -1317,11 +1695,19 @@ export type LendingOfferSelectScalar = {
   feeRateBasisPoints?: boolean
   expiresAt?: boolean
   status?: boolean
+  fundingStatus?: boolean
+  fundingRequestId?: boolean
+  lenderWalletAddress?: boolean
+  principalBaseUnits?: boolean
+  chainOfferId?: boolean
+  contractAddress?: boolean
+  fundingTransactionHash?: boolean
+  fundedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type LendingOfferOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "lenderMembershipId" | "amountMinorUnits" | "availableAmountMinorUnits" | "minimumLoanAmountMinorUnits" | "maximumLoanAmountMinorUnits" | "currency" | "durationDays" | "feeRateBasisPoints" | "expiresAt" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["lendingOffer"]>
+export type LendingOfferOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "lenderMembershipId" | "amountMinorUnits" | "availableAmountMinorUnits" | "minimumLoanAmountMinorUnits" | "maximumLoanAmountMinorUnits" | "currency" | "durationDays" | "feeRateBasisPoints" | "expiresAt" | "status" | "fundingStatus" | "fundingRequestId" | "lenderWalletAddress" | "principalBaseUnits" | "chainOfferId" | "contractAddress" | "fundingTransactionHash" | "fundedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["lendingOffer"]>
 export type LendingOfferInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   lenderMembership?: boolean | Prisma.OrganizationMembershipDefaultArgs<ExtArgs>
@@ -1359,6 +1745,14 @@ export type $LendingOfferPayload<ExtArgs extends runtime.Types.Extensions.Intern
     feeRateBasisPoints: number
     expiresAt: Date
     status: $Enums.LendingOfferStatus
+    fundingStatus: $Enums.LendingOfferFundingStatus
+    fundingRequestId: string | null
+    lenderWalletAddress: string | null
+    principalBaseUnits: bigint | null
+    chainOfferId: string | null
+    contractAddress: string | null
+    fundingTransactionHash: string | null
+    fundedAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["lendingOffer"]>
@@ -1800,6 +2194,14 @@ export interface LendingOfferFieldRefs {
   readonly feeRateBasisPoints: Prisma.FieldRef<"LendingOffer", 'Int'>
   readonly expiresAt: Prisma.FieldRef<"LendingOffer", 'DateTime'>
   readonly status: Prisma.FieldRef<"LendingOffer", 'LendingOfferStatus'>
+  readonly fundingStatus: Prisma.FieldRef<"LendingOffer", 'LendingOfferFundingStatus'>
+  readonly fundingRequestId: Prisma.FieldRef<"LendingOffer", 'String'>
+  readonly lenderWalletAddress: Prisma.FieldRef<"LendingOffer", 'String'>
+  readonly principalBaseUnits: Prisma.FieldRef<"LendingOffer", 'BigInt'>
+  readonly chainOfferId: Prisma.FieldRef<"LendingOffer", 'String'>
+  readonly contractAddress: Prisma.FieldRef<"LendingOffer", 'String'>
+  readonly fundingTransactionHash: Prisma.FieldRef<"LendingOffer", 'String'>
+  readonly fundedAt: Prisma.FieldRef<"LendingOffer", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"LendingOffer", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"LendingOffer", 'DateTime'>
 }

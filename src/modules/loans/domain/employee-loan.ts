@@ -19,6 +19,7 @@ export type EmployeeBorrowedLoanRecord = Readonly<{
   principalAmountMinorUnits: bigint;
   feeAmountMinorUnits: bigint;
   outstandingPrincipalMinorUnits: bigint;
+  repaymentBaseUnits: bigint | null;
   currency: string;
   durationDays: number;
   feeRateBasisPoints: number;
@@ -68,7 +69,8 @@ export function toEmployeeBorrowedLoanDetails(
     ...loan,
     ...progress,
     canRepay:
-      (loan.status === "ACTIVE" || loan.status === "OVERDUE") &&
+      loan.status === "ACTIVE" &&
+      loan.repaymentBaseUnits !== null &&
       progress.remainingAmountMinorUnits > 0n,
   };
 }

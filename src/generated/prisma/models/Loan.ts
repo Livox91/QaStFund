@@ -27,6 +27,8 @@ export type AggregateLoan = {
 }
 
 export type LoanAvgAggregateOutputType = {
+  principalBaseUnits: number | null
+  repaymentBaseUnits: number | null
   principalAmountMinorUnits: number | null
   feeAmountMinorUnits: number | null
   outstandingPrincipalMinorUnits: number | null
@@ -36,6 +38,8 @@ export type LoanAvgAggregateOutputType = {
 }
 
 export type LoanSumAggregateOutputType = {
+  principalBaseUnits: bigint | null
+  repaymentBaseUnits: bigint | null
   principalAmountMinorUnits: bigint | null
   feeAmountMinorUnits: bigint | null
   outstandingPrincipalMinorUnits: bigint | null
@@ -51,6 +55,18 @@ export type LoanMinAggregateOutputType = {
   borrowerMembershipId: string | null
   lendingOfferId: string | null
   borrowRequestId: string | null
+  chainLoanId: string | null
+  chainOfferId: string | null
+  contractAddress: string | null
+  lenderWalletAddress: string | null
+  borrowerWalletAddress: string | null
+  principalBaseUnits: bigint | null
+  repaymentBaseUnits: bigint | null
+  acceptanceTransactionHash: string | null
+  repaymentTransactionHash: string | null
+  onChainStartedAt: Date | null
+  onChainDueAt: Date | null
+  onChainRepaidAt: Date | null
   principalAmountMinorUnits: bigint | null
   feeAmountMinorUnits: bigint | null
   outstandingPrincipalMinorUnits: bigint | null
@@ -76,6 +92,18 @@ export type LoanMaxAggregateOutputType = {
   borrowerMembershipId: string | null
   lendingOfferId: string | null
   borrowRequestId: string | null
+  chainLoanId: string | null
+  chainOfferId: string | null
+  contractAddress: string | null
+  lenderWalletAddress: string | null
+  borrowerWalletAddress: string | null
+  principalBaseUnits: bigint | null
+  repaymentBaseUnits: bigint | null
+  acceptanceTransactionHash: string | null
+  repaymentTransactionHash: string | null
+  onChainStartedAt: Date | null
+  onChainDueAt: Date | null
+  onChainRepaidAt: Date | null
   principalAmountMinorUnits: bigint | null
   feeAmountMinorUnits: bigint | null
   outstandingPrincipalMinorUnits: bigint | null
@@ -101,6 +129,18 @@ export type LoanCountAggregateOutputType = {
   borrowerMembershipId: number
   lendingOfferId: number
   borrowRequestId: number
+  chainLoanId: number
+  chainOfferId: number
+  contractAddress: number
+  lenderWalletAddress: number
+  borrowerWalletAddress: number
+  principalBaseUnits: number
+  repaymentBaseUnits: number
+  acceptanceTransactionHash: number
+  repaymentTransactionHash: number
+  onChainStartedAt: number
+  onChainDueAt: number
+  onChainRepaidAt: number
   principalAmountMinorUnits: number
   feeAmountMinorUnits: number
   outstandingPrincipalMinorUnits: number
@@ -123,6 +163,8 @@ export type LoanCountAggregateOutputType = {
 
 
 export type LoanAvgAggregateInputType = {
+  principalBaseUnits?: true
+  repaymentBaseUnits?: true
   principalAmountMinorUnits?: true
   feeAmountMinorUnits?: true
   outstandingPrincipalMinorUnits?: true
@@ -132,6 +174,8 @@ export type LoanAvgAggregateInputType = {
 }
 
 export type LoanSumAggregateInputType = {
+  principalBaseUnits?: true
+  repaymentBaseUnits?: true
   principalAmountMinorUnits?: true
   feeAmountMinorUnits?: true
   outstandingPrincipalMinorUnits?: true
@@ -147,6 +191,18 @@ export type LoanMinAggregateInputType = {
   borrowerMembershipId?: true
   lendingOfferId?: true
   borrowRequestId?: true
+  chainLoanId?: true
+  chainOfferId?: true
+  contractAddress?: true
+  lenderWalletAddress?: true
+  borrowerWalletAddress?: true
+  principalBaseUnits?: true
+  repaymentBaseUnits?: true
+  acceptanceTransactionHash?: true
+  repaymentTransactionHash?: true
+  onChainStartedAt?: true
+  onChainDueAt?: true
+  onChainRepaidAt?: true
   principalAmountMinorUnits?: true
   feeAmountMinorUnits?: true
   outstandingPrincipalMinorUnits?: true
@@ -172,6 +228,18 @@ export type LoanMaxAggregateInputType = {
   borrowerMembershipId?: true
   lendingOfferId?: true
   borrowRequestId?: true
+  chainLoanId?: true
+  chainOfferId?: true
+  contractAddress?: true
+  lenderWalletAddress?: true
+  borrowerWalletAddress?: true
+  principalBaseUnits?: true
+  repaymentBaseUnits?: true
+  acceptanceTransactionHash?: true
+  repaymentTransactionHash?: true
+  onChainStartedAt?: true
+  onChainDueAt?: true
+  onChainRepaidAt?: true
   principalAmountMinorUnits?: true
   feeAmountMinorUnits?: true
   outstandingPrincipalMinorUnits?: true
@@ -197,6 +265,18 @@ export type LoanCountAggregateInputType = {
   borrowerMembershipId?: true
   lendingOfferId?: true
   borrowRequestId?: true
+  chainLoanId?: true
+  chainOfferId?: true
+  contractAddress?: true
+  lenderWalletAddress?: true
+  borrowerWalletAddress?: true
+  principalBaseUnits?: true
+  repaymentBaseUnits?: true
+  acceptanceTransactionHash?: true
+  repaymentTransactionHash?: true
+  onChainStartedAt?: true
+  onChainDueAt?: true
+  onChainRepaidAt?: true
   principalAmountMinorUnits?: true
   feeAmountMinorUnits?: true
   outstandingPrincipalMinorUnits?: true
@@ -310,6 +390,18 @@ export type LoanGroupByOutputType = {
   borrowerMembershipId: string
   lendingOfferId: string | null
   borrowRequestId: string | null
+  chainLoanId: string | null
+  chainOfferId: string | null
+  contractAddress: string | null
+  lenderWalletAddress: string | null
+  borrowerWalletAddress: string | null
+  principalBaseUnits: bigint | null
+  repaymentBaseUnits: bigint | null
+  acceptanceTransactionHash: string | null
+  repaymentTransactionHash: string | null
+  onChainStartedAt: Date | null
+  onChainDueAt: Date | null
+  onChainRepaidAt: Date | null
   principalAmountMinorUnits: bigint
   feeAmountMinorUnits: bigint
   outstandingPrincipalMinorUnits: bigint
@@ -359,6 +451,18 @@ export type LoanWhereInput = {
   borrowerMembershipId?: Prisma.UuidFilter<"Loan"> | string
   lendingOfferId?: Prisma.UuidNullableFilter<"Loan"> | string | null
   borrowRequestId?: Prisma.UuidNullableFilter<"Loan"> | string | null
+  chainLoanId?: Prisma.StringNullableFilter<"Loan"> | string | null
+  chainOfferId?: Prisma.StringNullableFilter<"Loan"> | string | null
+  contractAddress?: Prisma.StringNullableFilter<"Loan"> | string | null
+  lenderWalletAddress?: Prisma.StringNullableFilter<"Loan"> | string | null
+  borrowerWalletAddress?: Prisma.StringNullableFilter<"Loan"> | string | null
+  principalBaseUnits?: Prisma.BigIntNullableFilter<"Loan"> | bigint | number | null
+  repaymentBaseUnits?: Prisma.BigIntNullableFilter<"Loan"> | bigint | number | null
+  acceptanceTransactionHash?: Prisma.StringNullableFilter<"Loan"> | string | null
+  repaymentTransactionHash?: Prisma.StringNullableFilter<"Loan"> | string | null
+  onChainStartedAt?: Prisma.DateTimeNullableFilter<"Loan"> | Date | string | null
+  onChainDueAt?: Prisma.DateTimeNullableFilter<"Loan"> | Date | string | null
+  onChainRepaidAt?: Prisma.DateTimeNullableFilter<"Loan"> | Date | string | null
   principalAmountMinorUnits?: Prisma.BigIntFilter<"Loan"> | bigint | number
   feeAmountMinorUnits?: Prisma.BigIntFilter<"Loan"> | bigint | number
   outstandingPrincipalMinorUnits?: Prisma.BigIntFilter<"Loan"> | bigint | number
@@ -391,6 +495,18 @@ export type LoanOrderByWithRelationInput = {
   borrowerMembershipId?: Prisma.SortOrder
   lendingOfferId?: Prisma.SortOrderInput | Prisma.SortOrder
   borrowRequestId?: Prisma.SortOrderInput | Prisma.SortOrder
+  chainLoanId?: Prisma.SortOrderInput | Prisma.SortOrder
+  chainOfferId?: Prisma.SortOrderInput | Prisma.SortOrder
+  contractAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  lenderWalletAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  borrowerWalletAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  principalBaseUnits?: Prisma.SortOrderInput | Prisma.SortOrder
+  repaymentBaseUnits?: Prisma.SortOrderInput | Prisma.SortOrder
+  acceptanceTransactionHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  repaymentTransactionHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  onChainStartedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  onChainDueAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  onChainRepaidAt?: Prisma.SortOrderInput | Prisma.SortOrder
   principalAmountMinorUnits?: Prisma.SortOrder
   feeAmountMinorUnits?: Prisma.SortOrder
   outstandingPrincipalMinorUnits?: Prisma.SortOrder
@@ -419,7 +535,10 @@ export type LoanOrderByWithRelationInput = {
 export type LoanWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   borrowRequestId?: string
+  acceptanceTransactionHash?: string
+  repaymentTransactionHash?: string
   organizationId_id?: Prisma.LoanOrganizationIdIdCompoundUniqueInput
+  contractAddress_chainLoanId?: Prisma.LoanContractAddressChainLoanIdCompoundUniqueInput
   AND?: Prisma.LoanWhereInput | Prisma.LoanWhereInput[]
   OR?: Prisma.LoanWhereInput[]
   NOT?: Prisma.LoanWhereInput | Prisma.LoanWhereInput[]
@@ -427,6 +546,16 @@ export type LoanWhereUniqueInput = Prisma.AtLeast<{
   lenderMembershipId?: Prisma.UuidFilter<"Loan"> | string
   borrowerMembershipId?: Prisma.UuidFilter<"Loan"> | string
   lendingOfferId?: Prisma.UuidNullableFilter<"Loan"> | string | null
+  chainLoanId?: Prisma.StringNullableFilter<"Loan"> | string | null
+  chainOfferId?: Prisma.StringNullableFilter<"Loan"> | string | null
+  contractAddress?: Prisma.StringNullableFilter<"Loan"> | string | null
+  lenderWalletAddress?: Prisma.StringNullableFilter<"Loan"> | string | null
+  borrowerWalletAddress?: Prisma.StringNullableFilter<"Loan"> | string | null
+  principalBaseUnits?: Prisma.BigIntNullableFilter<"Loan"> | bigint | number | null
+  repaymentBaseUnits?: Prisma.BigIntNullableFilter<"Loan"> | bigint | number | null
+  onChainStartedAt?: Prisma.DateTimeNullableFilter<"Loan"> | Date | string | null
+  onChainDueAt?: Prisma.DateTimeNullableFilter<"Loan"> | Date | string | null
+  onChainRepaidAt?: Prisma.DateTimeNullableFilter<"Loan"> | Date | string | null
   principalAmountMinorUnits?: Prisma.BigIntFilter<"Loan"> | bigint | number
   feeAmountMinorUnits?: Prisma.BigIntFilter<"Loan"> | bigint | number
   outstandingPrincipalMinorUnits?: Prisma.BigIntFilter<"Loan"> | bigint | number
@@ -450,7 +579,7 @@ export type LoanWhereUniqueInput = Prisma.AtLeast<{
   lendingOffer?: Prisma.XOR<Prisma.LendingOfferNullableScalarRelationFilter, Prisma.LendingOfferWhereInput> | null
   repayments?: Prisma.LoanRepaymentListRelationFilter
   auditEvents?: Prisma.AuditEventListRelationFilter
-}, "id" | "borrowRequestId" | "organizationId_id">
+}, "id" | "borrowRequestId" | "acceptanceTransactionHash" | "repaymentTransactionHash" | "organizationId_id" | "contractAddress_chainLoanId">
 
 export type LoanOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -459,6 +588,18 @@ export type LoanOrderByWithAggregationInput = {
   borrowerMembershipId?: Prisma.SortOrder
   lendingOfferId?: Prisma.SortOrderInput | Prisma.SortOrder
   borrowRequestId?: Prisma.SortOrderInput | Prisma.SortOrder
+  chainLoanId?: Prisma.SortOrderInput | Prisma.SortOrder
+  chainOfferId?: Prisma.SortOrderInput | Prisma.SortOrder
+  contractAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  lenderWalletAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  borrowerWalletAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  principalBaseUnits?: Prisma.SortOrderInput | Prisma.SortOrder
+  repaymentBaseUnits?: Prisma.SortOrderInput | Prisma.SortOrder
+  acceptanceTransactionHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  repaymentTransactionHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  onChainStartedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  onChainDueAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  onChainRepaidAt?: Prisma.SortOrderInput | Prisma.SortOrder
   principalAmountMinorUnits?: Prisma.SortOrder
   feeAmountMinorUnits?: Prisma.SortOrder
   outstandingPrincipalMinorUnits?: Prisma.SortOrder
@@ -493,6 +634,18 @@ export type LoanScalarWhereWithAggregatesInput = {
   borrowerMembershipId?: Prisma.UuidWithAggregatesFilter<"Loan"> | string
   lendingOfferId?: Prisma.UuidNullableWithAggregatesFilter<"Loan"> | string | null
   borrowRequestId?: Prisma.UuidNullableWithAggregatesFilter<"Loan"> | string | null
+  chainLoanId?: Prisma.StringNullableWithAggregatesFilter<"Loan"> | string | null
+  chainOfferId?: Prisma.StringNullableWithAggregatesFilter<"Loan"> | string | null
+  contractAddress?: Prisma.StringNullableWithAggregatesFilter<"Loan"> | string | null
+  lenderWalletAddress?: Prisma.StringNullableWithAggregatesFilter<"Loan"> | string | null
+  borrowerWalletAddress?: Prisma.StringNullableWithAggregatesFilter<"Loan"> | string | null
+  principalBaseUnits?: Prisma.BigIntNullableWithAggregatesFilter<"Loan"> | bigint | number | null
+  repaymentBaseUnits?: Prisma.BigIntNullableWithAggregatesFilter<"Loan"> | bigint | number | null
+  acceptanceTransactionHash?: Prisma.StringNullableWithAggregatesFilter<"Loan"> | string | null
+  repaymentTransactionHash?: Prisma.StringNullableWithAggregatesFilter<"Loan"> | string | null
+  onChainStartedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Loan"> | Date | string | null
+  onChainDueAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Loan"> | Date | string | null
+  onChainRepaidAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Loan"> | Date | string | null
   principalAmountMinorUnits?: Prisma.BigIntWithAggregatesFilter<"Loan"> | bigint | number
   feeAmountMinorUnits?: Prisma.BigIntWithAggregatesFilter<"Loan"> | bigint | number
   outstandingPrincipalMinorUnits?: Prisma.BigIntWithAggregatesFilter<"Loan"> | bigint | number
@@ -515,6 +668,18 @@ export type LoanScalarWhereWithAggregatesInput = {
 export type LoanCreateInput = {
   id?: string
   borrowRequestId?: string | null
+  chainLoanId?: string | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  lenderWalletAddress?: string | null
+  borrowerWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  repaymentBaseUnits?: bigint | number | null
+  acceptanceTransactionHash?: string | null
+  repaymentTransactionHash?: string | null
+  onChainStartedAt?: Date | string | null
+  onChainDueAt?: Date | string | null
+  onChainRepaidAt?: Date | string | null
   principalAmountMinorUnits: bigint | number
   feeAmountMinorUnits?: bigint | number
   outstandingPrincipalMinorUnits: bigint | number
@@ -547,6 +712,18 @@ export type LoanUncheckedCreateInput = {
   borrowerMembershipId: string
   lendingOfferId?: string | null
   borrowRequestId?: string | null
+  chainLoanId?: string | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  lenderWalletAddress?: string | null
+  borrowerWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  repaymentBaseUnits?: bigint | number | null
+  acceptanceTransactionHash?: string | null
+  repaymentTransactionHash?: string | null
+  onChainStartedAt?: Date | string | null
+  onChainDueAt?: Date | string | null
+  onChainRepaidAt?: Date | string | null
   principalAmountMinorUnits: bigint | number
   feeAmountMinorUnits?: bigint | number
   outstandingPrincipalMinorUnits: bigint | number
@@ -571,6 +748,18 @@ export type LoanUncheckedCreateInput = {
 export type LoanUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   borrowRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainLoanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowerWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  repaymentBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  acceptanceTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  repaymentTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onChainStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainRepaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   principalAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   feeAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   outstandingPrincipalMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -603,6 +792,18 @@ export type LoanUncheckedUpdateInput = {
   borrowerMembershipId?: Prisma.StringFieldUpdateOperationsInput | string
   lendingOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   borrowRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainLoanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowerWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  repaymentBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  acceptanceTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  repaymentTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onChainStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainRepaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   principalAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   feeAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   outstandingPrincipalMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -631,6 +832,18 @@ export type LoanCreateManyInput = {
   borrowerMembershipId: string
   lendingOfferId?: string | null
   borrowRequestId?: string | null
+  chainLoanId?: string | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  lenderWalletAddress?: string | null
+  borrowerWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  repaymentBaseUnits?: bigint | number | null
+  acceptanceTransactionHash?: string | null
+  repaymentTransactionHash?: string | null
+  onChainStartedAt?: Date | string | null
+  onChainDueAt?: Date | string | null
+  onChainRepaidAt?: Date | string | null
   principalAmountMinorUnits: bigint | number
   feeAmountMinorUnits?: bigint | number
   outstandingPrincipalMinorUnits: bigint | number
@@ -653,6 +866,18 @@ export type LoanCreateManyInput = {
 export type LoanUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   borrowRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainLoanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowerWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  repaymentBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  acceptanceTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  repaymentTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onChainStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainRepaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   principalAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   feeAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   outstandingPrincipalMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -679,6 +904,18 @@ export type LoanUncheckedUpdateManyInput = {
   borrowerMembershipId?: Prisma.StringFieldUpdateOperationsInput | string
   lendingOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   borrowRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainLoanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowerWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  repaymentBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  acceptanceTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  repaymentTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onChainStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainRepaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   principalAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   feeAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   outstandingPrincipalMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -713,6 +950,11 @@ export type LoanOrganizationIdIdCompoundUniqueInput = {
   id: string
 }
 
+export type LoanContractAddressChainLoanIdCompoundUniqueInput = {
+  contractAddress: string
+  chainLoanId: string
+}
+
 export type LoanCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
@@ -720,6 +962,18 @@ export type LoanCountOrderByAggregateInput = {
   borrowerMembershipId?: Prisma.SortOrder
   lendingOfferId?: Prisma.SortOrder
   borrowRequestId?: Prisma.SortOrder
+  chainLoanId?: Prisma.SortOrder
+  chainOfferId?: Prisma.SortOrder
+  contractAddress?: Prisma.SortOrder
+  lenderWalletAddress?: Prisma.SortOrder
+  borrowerWalletAddress?: Prisma.SortOrder
+  principalBaseUnits?: Prisma.SortOrder
+  repaymentBaseUnits?: Prisma.SortOrder
+  acceptanceTransactionHash?: Prisma.SortOrder
+  repaymentTransactionHash?: Prisma.SortOrder
+  onChainStartedAt?: Prisma.SortOrder
+  onChainDueAt?: Prisma.SortOrder
+  onChainRepaidAt?: Prisma.SortOrder
   principalAmountMinorUnits?: Prisma.SortOrder
   feeAmountMinorUnits?: Prisma.SortOrder
   outstandingPrincipalMinorUnits?: Prisma.SortOrder
@@ -740,6 +994,8 @@ export type LoanCountOrderByAggregateInput = {
 }
 
 export type LoanAvgOrderByAggregateInput = {
+  principalBaseUnits?: Prisma.SortOrder
+  repaymentBaseUnits?: Prisma.SortOrder
   principalAmountMinorUnits?: Prisma.SortOrder
   feeAmountMinorUnits?: Prisma.SortOrder
   outstandingPrincipalMinorUnits?: Prisma.SortOrder
@@ -755,6 +1011,18 @@ export type LoanMaxOrderByAggregateInput = {
   borrowerMembershipId?: Prisma.SortOrder
   lendingOfferId?: Prisma.SortOrder
   borrowRequestId?: Prisma.SortOrder
+  chainLoanId?: Prisma.SortOrder
+  chainOfferId?: Prisma.SortOrder
+  contractAddress?: Prisma.SortOrder
+  lenderWalletAddress?: Prisma.SortOrder
+  borrowerWalletAddress?: Prisma.SortOrder
+  principalBaseUnits?: Prisma.SortOrder
+  repaymentBaseUnits?: Prisma.SortOrder
+  acceptanceTransactionHash?: Prisma.SortOrder
+  repaymentTransactionHash?: Prisma.SortOrder
+  onChainStartedAt?: Prisma.SortOrder
+  onChainDueAt?: Prisma.SortOrder
+  onChainRepaidAt?: Prisma.SortOrder
   principalAmountMinorUnits?: Prisma.SortOrder
   feeAmountMinorUnits?: Prisma.SortOrder
   outstandingPrincipalMinorUnits?: Prisma.SortOrder
@@ -780,6 +1048,18 @@ export type LoanMinOrderByAggregateInput = {
   borrowerMembershipId?: Prisma.SortOrder
   lendingOfferId?: Prisma.SortOrder
   borrowRequestId?: Prisma.SortOrder
+  chainLoanId?: Prisma.SortOrder
+  chainOfferId?: Prisma.SortOrder
+  contractAddress?: Prisma.SortOrder
+  lenderWalletAddress?: Prisma.SortOrder
+  borrowerWalletAddress?: Prisma.SortOrder
+  principalBaseUnits?: Prisma.SortOrder
+  repaymentBaseUnits?: Prisma.SortOrder
+  acceptanceTransactionHash?: Prisma.SortOrder
+  repaymentTransactionHash?: Prisma.SortOrder
+  onChainStartedAt?: Prisma.SortOrder
+  onChainDueAt?: Prisma.SortOrder
+  onChainRepaidAt?: Prisma.SortOrder
   principalAmountMinorUnits?: Prisma.SortOrder
   feeAmountMinorUnits?: Prisma.SortOrder
   outstandingPrincipalMinorUnits?: Prisma.SortOrder
@@ -799,6 +1079,8 @@ export type LoanMinOrderByAggregateInput = {
 }
 
 export type LoanSumOrderByAggregateInput = {
+  principalBaseUnits?: Prisma.SortOrder
+  repaymentBaseUnits?: Prisma.SortOrder
   principalAmountMinorUnits?: Prisma.SortOrder
   feeAmountMinorUnits?: Prisma.SortOrder
   outstandingPrincipalMinorUnits?: Prisma.SortOrder
@@ -985,16 +1267,8 @@ export type LoanUncheckedUpdateManyWithoutLendingOfferNestedInput = {
   deleteMany?: Prisma.LoanScalarWhereInput | Prisma.LoanScalarWhereInput[]
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type EnumLoanStatusFieldUpdateOperationsInput = {
   set?: $Enums.LoanStatus
-}
-
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
 }
 
 export type NullableIntFieldUpdateOperationsInput = {
@@ -1038,6 +1312,18 @@ export type LoanUpdateOneWithoutAuditEventsNestedInput = {
 export type LoanCreateWithoutOrganizationInput = {
   id?: string
   borrowRequestId?: string | null
+  chainLoanId?: string | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  lenderWalletAddress?: string | null
+  borrowerWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  repaymentBaseUnits?: bigint | number | null
+  acceptanceTransactionHash?: string | null
+  repaymentTransactionHash?: string | null
+  onChainStartedAt?: Date | string | null
+  onChainDueAt?: Date | string | null
+  onChainRepaidAt?: Date | string | null
   principalAmountMinorUnits: bigint | number
   feeAmountMinorUnits?: bigint | number
   outstandingPrincipalMinorUnits: bigint | number
@@ -1068,6 +1354,18 @@ export type LoanUncheckedCreateWithoutOrganizationInput = {
   borrowerMembershipId: string
   lendingOfferId?: string | null
   borrowRequestId?: string | null
+  chainLoanId?: string | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  lenderWalletAddress?: string | null
+  borrowerWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  repaymentBaseUnits?: bigint | number | null
+  acceptanceTransactionHash?: string | null
+  repaymentTransactionHash?: string | null
+  onChainStartedAt?: Date | string | null
+  onChainDueAt?: Date | string | null
+  onChainRepaidAt?: Date | string | null
   principalAmountMinorUnits: bigint | number
   feeAmountMinorUnits?: bigint | number
   outstandingPrincipalMinorUnits: bigint | number
@@ -1125,6 +1423,18 @@ export type LoanScalarWhereInput = {
   borrowerMembershipId?: Prisma.UuidFilter<"Loan"> | string
   lendingOfferId?: Prisma.UuidNullableFilter<"Loan"> | string | null
   borrowRequestId?: Prisma.UuidNullableFilter<"Loan"> | string | null
+  chainLoanId?: Prisma.StringNullableFilter<"Loan"> | string | null
+  chainOfferId?: Prisma.StringNullableFilter<"Loan"> | string | null
+  contractAddress?: Prisma.StringNullableFilter<"Loan"> | string | null
+  lenderWalletAddress?: Prisma.StringNullableFilter<"Loan"> | string | null
+  borrowerWalletAddress?: Prisma.StringNullableFilter<"Loan"> | string | null
+  principalBaseUnits?: Prisma.BigIntNullableFilter<"Loan"> | bigint | number | null
+  repaymentBaseUnits?: Prisma.BigIntNullableFilter<"Loan"> | bigint | number | null
+  acceptanceTransactionHash?: Prisma.StringNullableFilter<"Loan"> | string | null
+  repaymentTransactionHash?: Prisma.StringNullableFilter<"Loan"> | string | null
+  onChainStartedAt?: Prisma.DateTimeNullableFilter<"Loan"> | Date | string | null
+  onChainDueAt?: Prisma.DateTimeNullableFilter<"Loan"> | Date | string | null
+  onChainRepaidAt?: Prisma.DateTimeNullableFilter<"Loan"> | Date | string | null
   principalAmountMinorUnits?: Prisma.BigIntFilter<"Loan"> | bigint | number
   feeAmountMinorUnits?: Prisma.BigIntFilter<"Loan"> | bigint | number
   outstandingPrincipalMinorUnits?: Prisma.BigIntFilter<"Loan"> | bigint | number
@@ -1147,6 +1457,18 @@ export type LoanScalarWhereInput = {
 export type LoanCreateWithoutLenderMembershipInput = {
   id?: string
   borrowRequestId?: string | null
+  chainLoanId?: string | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  lenderWalletAddress?: string | null
+  borrowerWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  repaymentBaseUnits?: bigint | number | null
+  acceptanceTransactionHash?: string | null
+  repaymentTransactionHash?: string | null
+  onChainStartedAt?: Date | string | null
+  onChainDueAt?: Date | string | null
+  onChainRepaidAt?: Date | string | null
   principalAmountMinorUnits: bigint | number
   feeAmountMinorUnits?: bigint | number
   outstandingPrincipalMinorUnits: bigint | number
@@ -1176,6 +1498,18 @@ export type LoanUncheckedCreateWithoutLenderMembershipInput = {
   borrowerMembershipId: string
   lendingOfferId?: string | null
   borrowRequestId?: string | null
+  chainLoanId?: string | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  lenderWalletAddress?: string | null
+  borrowerWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  repaymentBaseUnits?: bigint | number | null
+  acceptanceTransactionHash?: string | null
+  repaymentTransactionHash?: string | null
+  onChainStartedAt?: Date | string | null
+  onChainDueAt?: Date | string | null
+  onChainRepaidAt?: Date | string | null
   principalAmountMinorUnits: bigint | number
   feeAmountMinorUnits?: bigint | number
   outstandingPrincipalMinorUnits: bigint | number
@@ -1210,6 +1544,18 @@ export type LoanCreateManyLenderMembershipInputEnvelope = {
 export type LoanCreateWithoutBorrowerMembershipInput = {
   id?: string
   borrowRequestId?: string | null
+  chainLoanId?: string | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  lenderWalletAddress?: string | null
+  borrowerWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  repaymentBaseUnits?: bigint | number | null
+  acceptanceTransactionHash?: string | null
+  repaymentTransactionHash?: string | null
+  onChainStartedAt?: Date | string | null
+  onChainDueAt?: Date | string | null
+  onChainRepaidAt?: Date | string | null
   principalAmountMinorUnits: bigint | number
   feeAmountMinorUnits?: bigint | number
   outstandingPrincipalMinorUnits: bigint | number
@@ -1239,6 +1585,18 @@ export type LoanUncheckedCreateWithoutBorrowerMembershipInput = {
   lenderMembershipId: string
   lendingOfferId?: string | null
   borrowRequestId?: string | null
+  chainLoanId?: string | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  lenderWalletAddress?: string | null
+  borrowerWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  repaymentBaseUnits?: bigint | number | null
+  acceptanceTransactionHash?: string | null
+  repaymentTransactionHash?: string | null
+  onChainStartedAt?: Date | string | null
+  onChainDueAt?: Date | string | null
+  onChainRepaidAt?: Date | string | null
   principalAmountMinorUnits: bigint | number
   feeAmountMinorUnits?: bigint | number
   outstandingPrincipalMinorUnits: bigint | number
@@ -1305,6 +1663,18 @@ export type LoanUpdateManyWithWhereWithoutBorrowerMembershipInput = {
 export type LoanCreateWithoutLendingOfferInput = {
   id?: string
   borrowRequestId?: string | null
+  chainLoanId?: string | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  lenderWalletAddress?: string | null
+  borrowerWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  repaymentBaseUnits?: bigint | number | null
+  acceptanceTransactionHash?: string | null
+  repaymentTransactionHash?: string | null
+  onChainStartedAt?: Date | string | null
+  onChainDueAt?: Date | string | null
+  onChainRepaidAt?: Date | string | null
   principalAmountMinorUnits: bigint | number
   feeAmountMinorUnits?: bigint | number
   outstandingPrincipalMinorUnits: bigint | number
@@ -1334,6 +1704,18 @@ export type LoanUncheckedCreateWithoutLendingOfferInput = {
   lenderMembershipId: string
   borrowerMembershipId: string
   borrowRequestId?: string | null
+  chainLoanId?: string | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  lenderWalletAddress?: string | null
+  borrowerWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  repaymentBaseUnits?: bigint | number | null
+  acceptanceTransactionHash?: string | null
+  repaymentTransactionHash?: string | null
+  onChainStartedAt?: Date | string | null
+  onChainDueAt?: Date | string | null
+  onChainRepaidAt?: Date | string | null
   principalAmountMinorUnits: bigint | number
   feeAmountMinorUnits?: bigint | number
   outstandingPrincipalMinorUnits: bigint | number
@@ -1384,6 +1766,18 @@ export type LoanUpdateManyWithWhereWithoutLendingOfferInput = {
 export type LoanCreateWithoutRepaymentsInput = {
   id?: string
   borrowRequestId?: string | null
+  chainLoanId?: string | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  lenderWalletAddress?: string | null
+  borrowerWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  repaymentBaseUnits?: bigint | number | null
+  acceptanceTransactionHash?: string | null
+  repaymentTransactionHash?: string | null
+  onChainStartedAt?: Date | string | null
+  onChainDueAt?: Date | string | null
+  onChainRepaidAt?: Date | string | null
   principalAmountMinorUnits: bigint | number
   feeAmountMinorUnits?: bigint | number
   outstandingPrincipalMinorUnits: bigint | number
@@ -1415,6 +1809,18 @@ export type LoanUncheckedCreateWithoutRepaymentsInput = {
   borrowerMembershipId: string
   lendingOfferId?: string | null
   borrowRequestId?: string | null
+  chainLoanId?: string | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  lenderWalletAddress?: string | null
+  borrowerWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  repaymentBaseUnits?: bigint | number | null
+  acceptanceTransactionHash?: string | null
+  repaymentTransactionHash?: string | null
+  onChainStartedAt?: Date | string | null
+  onChainDueAt?: Date | string | null
+  onChainRepaidAt?: Date | string | null
   principalAmountMinorUnits: bigint | number
   feeAmountMinorUnits?: bigint | number
   outstandingPrincipalMinorUnits: bigint | number
@@ -1454,6 +1860,18 @@ export type LoanUpdateToOneWithWhereWithoutRepaymentsInput = {
 export type LoanUpdateWithoutRepaymentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   borrowRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainLoanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowerWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  repaymentBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  acceptanceTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  repaymentTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onChainStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainRepaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   principalAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   feeAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   outstandingPrincipalMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -1485,6 +1903,18 @@ export type LoanUncheckedUpdateWithoutRepaymentsInput = {
   borrowerMembershipId?: Prisma.StringFieldUpdateOperationsInput | string
   lendingOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   borrowRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainLoanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowerWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  repaymentBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  acceptanceTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  repaymentTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onChainStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainRepaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   principalAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   feeAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   outstandingPrincipalMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -1508,6 +1938,18 @@ export type LoanUncheckedUpdateWithoutRepaymentsInput = {
 export type LoanCreateWithoutAuditEventsInput = {
   id?: string
   borrowRequestId?: string | null
+  chainLoanId?: string | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  lenderWalletAddress?: string | null
+  borrowerWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  repaymentBaseUnits?: bigint | number | null
+  acceptanceTransactionHash?: string | null
+  repaymentTransactionHash?: string | null
+  onChainStartedAt?: Date | string | null
+  onChainDueAt?: Date | string | null
+  onChainRepaidAt?: Date | string | null
   principalAmountMinorUnits: bigint | number
   feeAmountMinorUnits?: bigint | number
   outstandingPrincipalMinorUnits: bigint | number
@@ -1539,6 +1981,18 @@ export type LoanUncheckedCreateWithoutAuditEventsInput = {
   borrowerMembershipId: string
   lendingOfferId?: string | null
   borrowRequestId?: string | null
+  chainLoanId?: string | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  lenderWalletAddress?: string | null
+  borrowerWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  repaymentBaseUnits?: bigint | number | null
+  acceptanceTransactionHash?: string | null
+  repaymentTransactionHash?: string | null
+  onChainStartedAt?: Date | string | null
+  onChainDueAt?: Date | string | null
+  onChainRepaidAt?: Date | string | null
   principalAmountMinorUnits: bigint | number
   feeAmountMinorUnits?: bigint | number
   outstandingPrincipalMinorUnits: bigint | number
@@ -1578,6 +2032,18 @@ export type LoanUpdateToOneWithWhereWithoutAuditEventsInput = {
 export type LoanUpdateWithoutAuditEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   borrowRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainLoanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowerWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  repaymentBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  acceptanceTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  repaymentTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onChainStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainRepaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   principalAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   feeAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   outstandingPrincipalMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -1609,6 +2075,18 @@ export type LoanUncheckedUpdateWithoutAuditEventsInput = {
   borrowerMembershipId?: Prisma.StringFieldUpdateOperationsInput | string
   lendingOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   borrowRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainLoanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowerWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  repaymentBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  acceptanceTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  repaymentTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onChainStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainRepaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   principalAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   feeAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   outstandingPrincipalMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -1635,6 +2113,18 @@ export type LoanCreateManyOrganizationInput = {
   borrowerMembershipId: string
   lendingOfferId?: string | null
   borrowRequestId?: string | null
+  chainLoanId?: string | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  lenderWalletAddress?: string | null
+  borrowerWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  repaymentBaseUnits?: bigint | number | null
+  acceptanceTransactionHash?: string | null
+  repaymentTransactionHash?: string | null
+  onChainStartedAt?: Date | string | null
+  onChainDueAt?: Date | string | null
+  onChainRepaidAt?: Date | string | null
   principalAmountMinorUnits: bigint | number
   feeAmountMinorUnits?: bigint | number
   outstandingPrincipalMinorUnits: bigint | number
@@ -1657,6 +2147,18 @@ export type LoanCreateManyOrganizationInput = {
 export type LoanUpdateWithoutOrganizationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   borrowRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainLoanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowerWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  repaymentBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  acceptanceTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  repaymentTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onChainStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainRepaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   principalAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   feeAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   outstandingPrincipalMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -1687,6 +2189,18 @@ export type LoanUncheckedUpdateWithoutOrganizationInput = {
   borrowerMembershipId?: Prisma.StringFieldUpdateOperationsInput | string
   lendingOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   borrowRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainLoanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowerWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  repaymentBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  acceptanceTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  repaymentTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onChainStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainRepaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   principalAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   feeAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   outstandingPrincipalMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -1714,6 +2228,18 @@ export type LoanUncheckedUpdateManyWithoutOrganizationInput = {
   borrowerMembershipId?: Prisma.StringFieldUpdateOperationsInput | string
   lendingOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   borrowRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainLoanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowerWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  repaymentBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  acceptanceTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  repaymentTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onChainStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainRepaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   principalAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   feeAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   outstandingPrincipalMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -1738,6 +2264,18 @@ export type LoanCreateManyLenderMembershipInput = {
   borrowerMembershipId: string
   lendingOfferId?: string | null
   borrowRequestId?: string | null
+  chainLoanId?: string | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  lenderWalletAddress?: string | null
+  borrowerWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  repaymentBaseUnits?: bigint | number | null
+  acceptanceTransactionHash?: string | null
+  repaymentTransactionHash?: string | null
+  onChainStartedAt?: Date | string | null
+  onChainDueAt?: Date | string | null
+  onChainRepaidAt?: Date | string | null
   principalAmountMinorUnits: bigint | number
   feeAmountMinorUnits?: bigint | number
   outstandingPrincipalMinorUnits: bigint | number
@@ -1762,6 +2300,18 @@ export type LoanCreateManyBorrowerMembershipInput = {
   lenderMembershipId: string
   lendingOfferId?: string | null
   borrowRequestId?: string | null
+  chainLoanId?: string | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  lenderWalletAddress?: string | null
+  borrowerWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  repaymentBaseUnits?: bigint | number | null
+  acceptanceTransactionHash?: string | null
+  repaymentTransactionHash?: string | null
+  onChainStartedAt?: Date | string | null
+  onChainDueAt?: Date | string | null
+  onChainRepaidAt?: Date | string | null
   principalAmountMinorUnits: bigint | number
   feeAmountMinorUnits?: bigint | number
   outstandingPrincipalMinorUnits: bigint | number
@@ -1784,6 +2334,18 @@ export type LoanCreateManyBorrowerMembershipInput = {
 export type LoanUpdateWithoutLenderMembershipInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   borrowRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainLoanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowerWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  repaymentBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  acceptanceTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  repaymentTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onChainStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainRepaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   principalAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   feeAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   outstandingPrincipalMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -1813,6 +2375,18 @@ export type LoanUncheckedUpdateWithoutLenderMembershipInput = {
   borrowerMembershipId?: Prisma.StringFieldUpdateOperationsInput | string
   lendingOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   borrowRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainLoanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowerWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  repaymentBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  acceptanceTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  repaymentTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onChainStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainRepaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   principalAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   feeAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   outstandingPrincipalMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -1839,6 +2413,18 @@ export type LoanUncheckedUpdateManyWithoutLenderMembershipInput = {
   borrowerMembershipId?: Prisma.StringFieldUpdateOperationsInput | string
   lendingOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   borrowRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainLoanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowerWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  repaymentBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  acceptanceTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  repaymentTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onChainStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainRepaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   principalAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   feeAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   outstandingPrincipalMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -1861,6 +2447,18 @@ export type LoanUncheckedUpdateManyWithoutLenderMembershipInput = {
 export type LoanUpdateWithoutBorrowerMembershipInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   borrowRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainLoanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowerWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  repaymentBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  acceptanceTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  repaymentTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onChainStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainRepaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   principalAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   feeAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   outstandingPrincipalMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -1890,6 +2488,18 @@ export type LoanUncheckedUpdateWithoutBorrowerMembershipInput = {
   lenderMembershipId?: Prisma.StringFieldUpdateOperationsInput | string
   lendingOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   borrowRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainLoanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowerWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  repaymentBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  acceptanceTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  repaymentTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onChainStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainRepaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   principalAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   feeAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   outstandingPrincipalMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -1916,6 +2526,18 @@ export type LoanUncheckedUpdateManyWithoutBorrowerMembershipInput = {
   lenderMembershipId?: Prisma.StringFieldUpdateOperationsInput | string
   lendingOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   borrowRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainLoanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowerWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  repaymentBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  acceptanceTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  repaymentTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onChainStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainRepaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   principalAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   feeAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   outstandingPrincipalMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -1940,6 +2562,18 @@ export type LoanCreateManyLendingOfferInput = {
   lenderMembershipId: string
   borrowerMembershipId: string
   borrowRequestId?: string | null
+  chainLoanId?: string | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  lenderWalletAddress?: string | null
+  borrowerWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  repaymentBaseUnits?: bigint | number | null
+  acceptanceTransactionHash?: string | null
+  repaymentTransactionHash?: string | null
+  onChainStartedAt?: Date | string | null
+  onChainDueAt?: Date | string | null
+  onChainRepaidAt?: Date | string | null
   principalAmountMinorUnits: bigint | number
   feeAmountMinorUnits?: bigint | number
   outstandingPrincipalMinorUnits: bigint | number
@@ -1962,6 +2596,18 @@ export type LoanCreateManyLendingOfferInput = {
 export type LoanUpdateWithoutLendingOfferInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   borrowRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainLoanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowerWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  repaymentBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  acceptanceTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  repaymentTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onChainStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainRepaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   principalAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   feeAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   outstandingPrincipalMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -1991,6 +2637,18 @@ export type LoanUncheckedUpdateWithoutLendingOfferInput = {
   lenderMembershipId?: Prisma.StringFieldUpdateOperationsInput | string
   borrowerMembershipId?: Prisma.StringFieldUpdateOperationsInput | string
   borrowRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainLoanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowerWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  repaymentBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  acceptanceTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  repaymentTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onChainStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainRepaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   principalAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   feeAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   outstandingPrincipalMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -2017,6 +2675,18 @@ export type LoanUncheckedUpdateManyWithoutLendingOfferInput = {
   lenderMembershipId?: Prisma.StringFieldUpdateOperationsInput | string
   borrowerMembershipId?: Prisma.StringFieldUpdateOperationsInput | string
   borrowRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainLoanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowerWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  repaymentBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  acceptanceTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  repaymentTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onChainStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainRepaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   principalAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   feeAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   outstandingPrincipalMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
@@ -2083,6 +2753,18 @@ export type LoanSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   borrowerMembershipId?: boolean
   lendingOfferId?: boolean
   borrowRequestId?: boolean
+  chainLoanId?: boolean
+  chainOfferId?: boolean
+  contractAddress?: boolean
+  lenderWalletAddress?: boolean
+  borrowerWalletAddress?: boolean
+  principalBaseUnits?: boolean
+  repaymentBaseUnits?: boolean
+  acceptanceTransactionHash?: boolean
+  repaymentTransactionHash?: boolean
+  onChainStartedAt?: boolean
+  onChainDueAt?: boolean
+  onChainRepaidAt?: boolean
   principalAmountMinorUnits?: boolean
   feeAmountMinorUnits?: boolean
   outstandingPrincipalMinorUnits?: boolean
@@ -2116,6 +2798,18 @@ export type LoanSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   borrowerMembershipId?: boolean
   lendingOfferId?: boolean
   borrowRequestId?: boolean
+  chainLoanId?: boolean
+  chainOfferId?: boolean
+  contractAddress?: boolean
+  lenderWalletAddress?: boolean
+  borrowerWalletAddress?: boolean
+  principalBaseUnits?: boolean
+  repaymentBaseUnits?: boolean
+  acceptanceTransactionHash?: boolean
+  repaymentTransactionHash?: boolean
+  onChainStartedAt?: boolean
+  onChainDueAt?: boolean
+  onChainRepaidAt?: boolean
   principalAmountMinorUnits?: boolean
   feeAmountMinorUnits?: boolean
   outstandingPrincipalMinorUnits?: boolean
@@ -2146,6 +2840,18 @@ export type LoanSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   borrowerMembershipId?: boolean
   lendingOfferId?: boolean
   borrowRequestId?: boolean
+  chainLoanId?: boolean
+  chainOfferId?: boolean
+  contractAddress?: boolean
+  lenderWalletAddress?: boolean
+  borrowerWalletAddress?: boolean
+  principalBaseUnits?: boolean
+  repaymentBaseUnits?: boolean
+  acceptanceTransactionHash?: boolean
+  repaymentTransactionHash?: boolean
+  onChainStartedAt?: boolean
+  onChainDueAt?: boolean
+  onChainRepaidAt?: boolean
   principalAmountMinorUnits?: boolean
   feeAmountMinorUnits?: boolean
   outstandingPrincipalMinorUnits?: boolean
@@ -2176,6 +2882,18 @@ export type LoanSelectScalar = {
   borrowerMembershipId?: boolean
   lendingOfferId?: boolean
   borrowRequestId?: boolean
+  chainLoanId?: boolean
+  chainOfferId?: boolean
+  contractAddress?: boolean
+  lenderWalletAddress?: boolean
+  borrowerWalletAddress?: boolean
+  principalBaseUnits?: boolean
+  repaymentBaseUnits?: boolean
+  acceptanceTransactionHash?: boolean
+  repaymentTransactionHash?: boolean
+  onChainStartedAt?: boolean
+  onChainDueAt?: boolean
+  onChainRepaidAt?: boolean
   principalAmountMinorUnits?: boolean
   feeAmountMinorUnits?: boolean
   outstandingPrincipalMinorUnits?: boolean
@@ -2195,7 +2913,7 @@ export type LoanSelectScalar = {
   policySnapshot?: boolean
 }
 
-export type LoanOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "lenderMembershipId" | "borrowerMembershipId" | "lendingOfferId" | "borrowRequestId" | "principalAmountMinorUnits" | "feeAmountMinorUnits" | "outstandingPrincipalMinorUnits" | "currency" | "durationDays" | "feeRateBasisPoints" | "status" | "requestedAt" | "approvedAt" | "activatedAt" | "closedAt" | "startedAt" | "repaymentDueAt" | "createdAt" | "updatedAt" | "policyVersion" | "policySnapshot", ExtArgs["result"]["loan"]>
+export type LoanOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "lenderMembershipId" | "borrowerMembershipId" | "lendingOfferId" | "borrowRequestId" | "chainLoanId" | "chainOfferId" | "contractAddress" | "lenderWalletAddress" | "borrowerWalletAddress" | "principalBaseUnits" | "repaymentBaseUnits" | "acceptanceTransactionHash" | "repaymentTransactionHash" | "onChainStartedAt" | "onChainDueAt" | "onChainRepaidAt" | "principalAmountMinorUnits" | "feeAmountMinorUnits" | "outstandingPrincipalMinorUnits" | "currency" | "durationDays" | "feeRateBasisPoints" | "status" | "requestedAt" | "approvedAt" | "activatedAt" | "closedAt" | "startedAt" | "repaymentDueAt" | "createdAt" | "updatedAt" | "policyVersion" | "policySnapshot", ExtArgs["result"]["loan"]>
 export type LoanInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   lenderMembership?: boolean | Prisma.OrganizationMembershipDefaultArgs<ExtArgs>
@@ -2235,6 +2953,18 @@ export type $LoanPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     borrowerMembershipId: string
     lendingOfferId: string | null
     borrowRequestId: string | null
+    chainLoanId: string | null
+    chainOfferId: string | null
+    contractAddress: string | null
+    lenderWalletAddress: string | null
+    borrowerWalletAddress: string | null
+    principalBaseUnits: bigint | null
+    repaymentBaseUnits: bigint | null
+    acceptanceTransactionHash: string | null
+    repaymentTransactionHash: string | null
+    onChainStartedAt: Date | null
+    onChainDueAt: Date | null
+    onChainRepaidAt: Date | null
     principalAmountMinorUnits: bigint
     feeAmountMinorUnits: bigint
     outstandingPrincipalMinorUnits: bigint
@@ -2687,6 +3417,18 @@ export interface LoanFieldRefs {
   readonly borrowerMembershipId: Prisma.FieldRef<"Loan", 'String'>
   readonly lendingOfferId: Prisma.FieldRef<"Loan", 'String'>
   readonly borrowRequestId: Prisma.FieldRef<"Loan", 'String'>
+  readonly chainLoanId: Prisma.FieldRef<"Loan", 'String'>
+  readonly chainOfferId: Prisma.FieldRef<"Loan", 'String'>
+  readonly contractAddress: Prisma.FieldRef<"Loan", 'String'>
+  readonly lenderWalletAddress: Prisma.FieldRef<"Loan", 'String'>
+  readonly borrowerWalletAddress: Prisma.FieldRef<"Loan", 'String'>
+  readonly principalBaseUnits: Prisma.FieldRef<"Loan", 'BigInt'>
+  readonly repaymentBaseUnits: Prisma.FieldRef<"Loan", 'BigInt'>
+  readonly acceptanceTransactionHash: Prisma.FieldRef<"Loan", 'String'>
+  readonly repaymentTransactionHash: Prisma.FieldRef<"Loan", 'String'>
+  readonly onChainStartedAt: Prisma.FieldRef<"Loan", 'DateTime'>
+  readonly onChainDueAt: Prisma.FieldRef<"Loan", 'DateTime'>
+  readonly onChainRepaidAt: Prisma.FieldRef<"Loan", 'DateTime'>
   readonly principalAmountMinorUnits: Prisma.FieldRef<"Loan", 'BigInt'>
   readonly feeAmountMinorUnits: Prisma.FieldRef<"Loan", 'BigInt'>
   readonly outstandingPrincipalMinorUnits: Prisma.FieldRef<"Loan", 'BigInt'>

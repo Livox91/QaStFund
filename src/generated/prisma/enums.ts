@@ -17,6 +17,15 @@ export const MembershipRole = {
 export type MembershipRole = (typeof MembershipRole)[keyof typeof MembershipRole]
 
 
+export const EmploymentStatus = {
+  ACTIVE: 'ACTIVE',
+  SUSPENDED: 'SUSPENDED',
+  TERMINATED: 'TERMINATED'
+} as const
+
+export type EmploymentStatus = (typeof EmploymentStatus)[keyof typeof EmploymentStatus]
+
+
 export const LendingOfferStatus = {
   ACTIVE: 'ACTIVE',
   PAUSED: 'PAUSED',
@@ -25,6 +34,16 @@ export const LendingOfferStatus = {
 } as const
 
 export type LendingOfferStatus = (typeof LendingOfferStatus)[keyof typeof LendingOfferStatus]
+
+
+export const LendingOfferFundingStatus = {
+  LEGACY: 'LEGACY',
+  PENDING: 'PENDING',
+  FUNDED: 'FUNDED',
+  FAILED: 'FAILED'
+} as const
+
+export type LendingOfferFundingStatus = (typeof LendingOfferFundingStatus)[keyof typeof LendingOfferFundingStatus]
 
 
 export const LoanStatus = {
@@ -117,3 +136,38 @@ export const LedgerEntryDirection = {
 } as const
 
 export type LedgerEntryDirection = (typeof LedgerEntryDirection)[keyof typeof LedgerEntryDirection]
+
+
+export const ArcWalletNetwork = {
+  ARC_TESTNET: 'ARC_TESTNET'
+} as const
+
+export type ArcWalletNetwork = (typeof ArcWalletNetwork)[keyof typeof ArcWalletNetwork]
+
+
+export const ArcWalletType = {
+  CIRCLE_MODULAR: 'CIRCLE_MODULAR'
+} as const
+
+export type ArcWalletType = (typeof ArcWalletType)[keyof typeof ArcWalletType]
+
+
+export const ArcWalletStatus = {
+  PENDING: 'PENDING',
+  ACTIVE: 'ACTIVE',
+  FAILED: 'FAILED'
+} as const
+
+export type ArcWalletStatus = (typeof ArcWalletStatus)[keyof typeof ArcWalletStatus]
+
+
+export const ArcWalletEnrollmentState = {
+  NOT_STARTED: 'NOT_STARTED',
+  REGISTERING: 'REGISTERING',
+  REGISTERED: 'REGISTERED',
+  VERIFYING: 'VERIFYING',
+  ACTIVE: 'ACTIVE',
+  FAILED_RECOVERABLE: 'FAILED_RECOVERABLE'
+} as const
+
+export type ArcWalletEnrollmentState = (typeof ArcWalletEnrollmentState)[keyof typeof ArcWalletEnrollmentState]

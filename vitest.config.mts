@@ -6,5 +6,7 @@ export default defineConfig({
   },
   test: {
     environment: "node",
+    exclude: ["contracts-test/**", "node_modules/**"],
+    setupFiles: ["dotenv/config"],
   },
 });

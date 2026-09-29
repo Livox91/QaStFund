@@ -87,6 +87,40 @@ export default async function SignInPage({
               Sign in
             </Button>
           </form>
+
+          {process.env.NODE_ENV !== "production" ? (
+            <div className="mt-8 border-t border-slate-200 pt-6">
+              <p className="text-xs font-semibold tracking-wide text-slate-500 uppercase">
+                Development accounts
+              </p>
+              <p className="mt-1 text-sm text-slate-500">
+                Switch between the two seeded employee identities using the
+                normal sign-in flow.
+              </p>
+              <div className="mt-4 grid grid-cols-2 gap-3">
+                {[
+                  { email: "alice@acme.test", label: "Sign in as Alice" },
+                  { email: "bob@acme.test", label: "Sign in as Bob" },
+                ].map((account) => (
+                  <form
+                    action="/api/auth/sign-in"
+                    method="post"
+                    key={account.email}
+                  >
+                    <input name="email" type="hidden" value={account.email} />
+                    <input
+                      name="password"
+                      type="hidden"
+                      value="AcmeEmployee123!"
+                    />
+                    <Button className="w-full" type="submit" variant="outline">
+                      {account.label}
+                    </Button>
+                  </form>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </CardContent>
       </Card>
     </main>

@@ -14,6 +14,9 @@ export type LendingOfferView = Readonly<{
   expiresAt: Date;
   createdAt: Date;
   status: LendingOfferDisplayStatus;
+  fundingStatus?: "LEGACY" | "PENDING" | "FUNDED" | "FAILED";
+  fundingTransactionHash?: string | null;
+  chainOfferId?: string | null;
 }>;
 
 export type EmployeeLendingOverview = Readonly<{

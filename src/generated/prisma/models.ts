@@ -10,6 +10,8 @@
  */
 export type * from './models/User'
 export type * from './models/Organization'
+export type * from './models/ArcWallet'
+export type * from './models/ArcWalletChallenge'
 export type * from './models/OrganizationMembership'
 export type * from './models/LendingOffer'
 export type * from './models/EmployeeBalance'

@@ -399,6 +399,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   User: 'User',
   Organization: 'Organization',
+  ArcWallet: 'ArcWallet',
+  ArcWalletChallenge: 'ArcWalletChallenge',
   OrganizationMembership: 'OrganizationMembership',
   LendingOffer: 'LendingOffer',
   EmployeeBalance: 'EmployeeBalance',
@@ -425,7 +427,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "organization" | "organizationMembership" | "lendingOffer" | "employeeBalance" | "loan" | "ledgerAccount" | "ledgerTransaction" | "ledgerEntry" | "loanRepayment" | "auditEvent" | "organizationLendingPolicy" | "session"
+    modelProps: "user" | "organization" | "arcWallet" | "arcWalletChallenge" | "organizationMembership" | "lendingOffer" | "employeeBalance" | "loan" | "ledgerAccount" | "ledgerTransaction" | "ledgerEntry" | "loanRepayment" | "auditEvent" | "organizationLendingPolicy" | "session"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -574,6 +576,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.OrganizationCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.OrganizationCountAggregateOutputType> | number
+        }
+      }
+    }
+    ArcWallet: {
+      payload: Prisma.$ArcWalletPayload<ExtArgs>
+      fields: Prisma.ArcWalletFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ArcWalletFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArcWalletPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ArcWalletFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArcWalletPayload>
+        }
+        findFirst: {
+          args: Prisma.ArcWalletFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArcWalletPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ArcWalletFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArcWalletPayload>
+        }
+        findMany: {
+          args: Prisma.ArcWalletFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArcWalletPayload>[]
+        }
+        create: {
+          args: Prisma.ArcWalletCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArcWalletPayload>
+        }
+        createMany: {
+          args: Prisma.ArcWalletCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ArcWalletCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArcWalletPayload>[]
+        }
+        delete: {
+          args: Prisma.ArcWalletDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArcWalletPayload>
+        }
+        update: {
+          args: Prisma.ArcWalletUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArcWalletPayload>
+        }
+        deleteMany: {
+          args: Prisma.ArcWalletDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ArcWalletUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ArcWalletUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArcWalletPayload>[]
+        }
+        upsert: {
+          args: Prisma.ArcWalletUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArcWalletPayload>
+        }
+        aggregate: {
+          args: Prisma.ArcWalletAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateArcWallet>
+        }
+        groupBy: {
+          args: Prisma.ArcWalletGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ArcWalletGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ArcWalletCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ArcWalletCountAggregateOutputType> | number
+        }
+      }
+    }
+    ArcWalletChallenge: {
+      payload: Prisma.$ArcWalletChallengePayload<ExtArgs>
+      fields: Prisma.ArcWalletChallengeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ArcWalletChallengeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArcWalletChallengePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ArcWalletChallengeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArcWalletChallengePayload>
+        }
+        findFirst: {
+          args: Prisma.ArcWalletChallengeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArcWalletChallengePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ArcWalletChallengeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArcWalletChallengePayload>
+        }
+        findMany: {
+          args: Prisma.ArcWalletChallengeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArcWalletChallengePayload>[]
+        }
+        create: {
+          args: Prisma.ArcWalletChallengeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArcWalletChallengePayload>
+        }
+        createMany: {
+          args: Prisma.ArcWalletChallengeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ArcWalletChallengeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArcWalletChallengePayload>[]
+        }
+        delete: {
+          args: Prisma.ArcWalletChallengeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArcWalletChallengePayload>
+        }
+        update: {
+          args: Prisma.ArcWalletChallengeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArcWalletChallengePayload>
+        }
+        deleteMany: {
+          args: Prisma.ArcWalletChallengeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ArcWalletChallengeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ArcWalletChallengeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArcWalletChallengePayload>[]
+        }
+        upsert: {
+          args: Prisma.ArcWalletChallengeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArcWalletChallengePayload>
+        }
+        aggregate: {
+          args: Prisma.ArcWalletChallengeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateArcWalletChallenge>
+        }
+        groupBy: {
+          args: Prisma.ArcWalletChallengeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ArcWalletChallengeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ArcWalletChallengeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ArcWalletChallengeCountAggregateOutputType> | number
         }
       }
     }
@@ -1454,11 +1604,43 @@ export const OrganizationScalarFieldEnum = {
 export type OrganizationScalarFieldEnum = (typeof OrganizationScalarFieldEnum)[keyof typeof OrganizationScalarFieldEnum]
 
 
+export const ArcWalletScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  userId: 'userId',
+  address: 'address',
+  network: 'network',
+  chainId: 'chainId',
+  walletType: 'walletType',
+  status: 'status',
+  enrollmentState: 'enrollmentState',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ArcWalletScalarFieldEnum = (typeof ArcWalletScalarFieldEnum)[keyof typeof ArcWalletScalarFieldEnum]
+
+
+export const ArcWalletChallengeScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  userId: 'userId',
+  address: 'address',
+  nonceHash: 'nonceHash',
+  expiresAt: 'expiresAt',
+  consumedAt: 'consumedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ArcWalletChallengeScalarFieldEnum = (typeof ArcWalletChallengeScalarFieldEnum)[keyof typeof ArcWalletChallengeScalarFieldEnum]
+
+
 export const OrganizationMembershipScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
   userId: 'userId',
   role: 'role',
+  employmentStatus: 'employmentStatus',
   isActive: 'isActive',
   canBorrow: 'canBorrow',
   canLend: 'canLend',
@@ -1482,6 +1664,14 @@ export const LendingOfferScalarFieldEnum = {
   feeRateBasisPoints: 'feeRateBasisPoints',
   expiresAt: 'expiresAt',
   status: 'status',
+  fundingStatus: 'fundingStatus',
+  fundingRequestId: 'fundingRequestId',
+  lenderWalletAddress: 'lenderWalletAddress',
+  principalBaseUnits: 'principalBaseUnits',
+  chainOfferId: 'chainOfferId',
+  contractAddress: 'contractAddress',
+  fundingTransactionHash: 'fundingTransactionHash',
+  fundedAt: 'fundedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1509,6 +1699,18 @@ export const LoanScalarFieldEnum = {
   borrowerMembershipId: 'borrowerMembershipId',
   lendingOfferId: 'lendingOfferId',
   borrowRequestId: 'borrowRequestId',
+  chainLoanId: 'chainLoanId',
+  chainOfferId: 'chainOfferId',
+  contractAddress: 'contractAddress',
+  lenderWalletAddress: 'lenderWalletAddress',
+  borrowerWalletAddress: 'borrowerWalletAddress',
+  principalBaseUnits: 'principalBaseUnits',
+  repaymentBaseUnits: 'repaymentBaseUnits',
+  acceptanceTransactionHash: 'acceptanceTransactionHash',
+  repaymentTransactionHash: 'repaymentTransactionHash',
+  onChainStartedAt: 'onChainStartedAt',
+  onChainDueAt: 'onChainDueAt',
+  onChainRepaidAt: 'onChainRepaidAt',
   principalAmountMinorUnits: 'principalAmountMinorUnits',
   feeAmountMinorUnits: 'feeAmountMinorUnits',
   outstandingPrincipalMinorUnits: 'outstandingPrincipalMinorUnits',
@@ -1666,6 +1868,14 @@ export const QueryMode = {
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
 export const JsonNullValueFilter = {
   DbNull: DbNull,
   JsonNull: JsonNull,
@@ -1673,14 +1883,6 @@ export const JsonNullValueFilter = {
 } as const
 
 export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
-
-
-export const NullsOrder = {
-  first: 'first',
-  last: 'last'
-} as const
-
-export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
 
@@ -1718,6 +1920,76 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
+ * Reference to a field of type 'ArcWalletNetwork'
+ */
+export type EnumArcWalletNetworkFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ArcWalletNetwork'>
+    
+
+
+/**
+ * Reference to a field of type 'ArcWalletNetwork[]'
+ */
+export type ListEnumArcWalletNetworkFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ArcWalletNetwork[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+/**
+ * Reference to a field of type 'Int[]'
+ */
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ArcWalletType'
+ */
+export type EnumArcWalletTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ArcWalletType'>
+    
+
+
+/**
+ * Reference to a field of type 'ArcWalletType[]'
+ */
+export type ListEnumArcWalletTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ArcWalletType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ArcWalletStatus'
+ */
+export type EnumArcWalletStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ArcWalletStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ArcWalletStatus[]'
+ */
+export type ListEnumArcWalletStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ArcWalletStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ArcWalletEnrollmentState'
+ */
+export type EnumArcWalletEnrollmentStateFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ArcWalletEnrollmentState'>
+    
+
+
+/**
+ * Reference to a field of type 'ArcWalletEnrollmentState[]'
+ */
+export type ListEnumArcWalletEnrollmentStateFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ArcWalletEnrollmentState[]'>
+    
+
+
+/**
  * Reference to a field of type 'MembershipRole'
  */
 export type EnumMembershipRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MembershipRole'>
@@ -1728,6 +2000,20 @@ export type EnumMembershipRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$P
  * Reference to a field of type 'MembershipRole[]'
  */
 export type ListEnumMembershipRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MembershipRole[]'>
+    
+
+
+/**
+ * Reference to a field of type 'EmploymentStatus'
+ */
+export type EnumEmploymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmploymentStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'EmploymentStatus[]'
+ */
+export type ListEnumEmploymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmploymentStatus[]'>
     
 
 
@@ -1753,20 +2039,6 @@ export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 
 
 /**
- * Reference to a field of type 'Int'
- */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-/**
- * Reference to a field of type 'Int[]'
- */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
-
-
-/**
  * Reference to a field of type 'LendingOfferStatus'
  */
 export type EnumLendingOfferStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LendingOfferStatus'>
@@ -1777,6 +2049,20 @@ export type EnumLendingOfferStatusFieldRefInput<$PrismaModel> = FieldRefInputTyp
  * Reference to a field of type 'LendingOfferStatus[]'
  */
 export type ListEnumLendingOfferStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LendingOfferStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'LendingOfferFundingStatus'
+ */
+export type EnumLendingOfferFundingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LendingOfferFundingStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'LendingOfferFundingStatus[]'
+ */
+export type ListEnumLendingOfferFundingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LendingOfferFundingStatus[]'>
     
 
 
@@ -2072,6 +2358,8 @@ export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaC
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   organization?: Prisma.OrganizationOmit
+  arcWallet?: Prisma.ArcWalletOmit
+  arcWalletChallenge?: Prisma.ArcWalletChallengeOmit
   organizationMembership?: Prisma.OrganizationMembershipOmit
   lendingOffer?: Prisma.LendingOfferOmit
   employeeBalance?: Prisma.EmployeeBalanceOmit

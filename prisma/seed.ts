@@ -87,12 +87,14 @@ async function seed(): Promise<void> {
       },
       update: {
         role: demoUser.role,
+        employmentStatus: "ACTIVE",
         isActive: true,
       },
       create: {
         organizationId: organization.id,
         userId: user.id,
         role: demoUser.role,
+        employmentStatus: "ACTIVE",
       },
     });
 

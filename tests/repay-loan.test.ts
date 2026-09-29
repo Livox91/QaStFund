@@ -36,6 +36,7 @@ const loan: EmployeeBorrowedLoanRecord = {
   principalAmountMinorUnits: 80_000n,
   feeAmountMinorUnits: 4_000n,
   outstandingPrincipalMinorUnits: 50_000n,
+  repaymentBaseUnits: 840_000_000n,
   currency: "USD",
   durationDays: 30,
   feeRateBasisPoints: 500,

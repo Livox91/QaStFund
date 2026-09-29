@@ -29,6 +29,7 @@ export type OrganizationMembershipMinAggregateOutputType = {
   organizationId: string | null
   userId: string | null
   role: $Enums.MembershipRole | null
+  employmentStatus: $Enums.EmploymentStatus | null
   isActive: boolean | null
   canBorrow: boolean | null
   canLend: boolean | null
@@ -41,6 +42,7 @@ export type OrganizationMembershipMaxAggregateOutputType = {
   organizationId: string | null
   userId: string | null
   role: $Enums.MembershipRole | null
+  employmentStatus: $Enums.EmploymentStatus | null
   isActive: boolean | null
   canBorrow: boolean | null
   canLend: boolean | null
@@ -53,6 +55,7 @@ export type OrganizationMembershipCountAggregateOutputType = {
   organizationId: number
   userId: number
   role: number
+  employmentStatus: number
   isActive: number
   canBorrow: number
   canLend: number
@@ -67,6 +70,7 @@ export type OrganizationMembershipMinAggregateInputType = {
   organizationId?: true
   userId?: true
   role?: true
+  employmentStatus?: true
   isActive?: true
   canBorrow?: true
   canLend?: true
@@ -79,6 +83,7 @@ export type OrganizationMembershipMaxAggregateInputType = {
   organizationId?: true
   userId?: true
   role?: true
+  employmentStatus?: true
   isActive?: true
   canBorrow?: true
   canLend?: true
@@ -91,6 +96,7 @@ export type OrganizationMembershipCountAggregateInputType = {
   organizationId?: true
   userId?: true
   role?: true
+  employmentStatus?: true
   isActive?: true
   canBorrow?: true
   canLend?: true
@@ -176,6 +182,7 @@ export type OrganizationMembershipGroupByOutputType = {
   organizationId: string
   userId: string
   role: $Enums.MembershipRole
+  employmentStatus: $Enums.EmploymentStatus
   isActive: boolean
   canBorrow: boolean
   canLend: boolean
@@ -209,6 +216,7 @@ export type OrganizationMembershipWhereInput = {
   organizationId?: Prisma.UuidFilter<"OrganizationMembership"> | string
   userId?: Prisma.UuidFilter<"OrganizationMembership"> | string
   role?: Prisma.EnumMembershipRoleFilter<"OrganizationMembership"> | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFilter<"OrganizationMembership"> | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFilter<"OrganizationMembership"> | boolean
   canBorrow?: Prisma.BoolFilter<"OrganizationMembership"> | boolean
   canLend?: Prisma.BoolFilter<"OrganizationMembership"> | boolean
@@ -231,6 +239,7 @@ export type OrganizationMembershipOrderByWithRelationInput = {
   organizationId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  employmentStatus?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   canBorrow?: Prisma.SortOrder
   canLend?: Prisma.SortOrder
@@ -258,6 +267,7 @@ export type OrganizationMembershipWhereUniqueInput = Prisma.AtLeast<{
   organizationId?: Prisma.UuidFilter<"OrganizationMembership"> | string
   userId?: Prisma.UuidFilter<"OrganizationMembership"> | string
   role?: Prisma.EnumMembershipRoleFilter<"OrganizationMembership"> | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFilter<"OrganizationMembership"> | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFilter<"OrganizationMembership"> | boolean
   canBorrow?: Prisma.BoolFilter<"OrganizationMembership"> | boolean
   canLend?: Prisma.BoolFilter<"OrganizationMembership"> | boolean
@@ -280,6 +290,7 @@ export type OrganizationMembershipOrderByWithAggregationInput = {
   organizationId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  employmentStatus?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   canBorrow?: Prisma.SortOrder
   canLend?: Prisma.SortOrder
@@ -298,6 +309,7 @@ export type OrganizationMembershipScalarWhereWithAggregatesInput = {
   organizationId?: Prisma.UuidWithAggregatesFilter<"OrganizationMembership"> | string
   userId?: Prisma.UuidWithAggregatesFilter<"OrganizationMembership"> | string
   role?: Prisma.EnumMembershipRoleWithAggregatesFilter<"OrganizationMembership"> | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusWithAggregatesFilter<"OrganizationMembership"> | $Enums.EmploymentStatus
   isActive?: Prisma.BoolWithAggregatesFilter<"OrganizationMembership"> | boolean
   canBorrow?: Prisma.BoolWithAggregatesFilter<"OrganizationMembership"> | boolean
   canLend?: Prisma.BoolWithAggregatesFilter<"OrganizationMembership"> | boolean
@@ -308,6 +320,7 @@ export type OrganizationMembershipScalarWhereWithAggregatesInput = {
 export type OrganizationMembershipCreateInput = {
   id?: string
   role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -330,6 +343,7 @@ export type OrganizationMembershipUncheckedCreateInput = {
   organizationId: string
   userId: string
   role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -348,6 +362,7 @@ export type OrganizationMembershipUncheckedCreateInput = {
 export type OrganizationMembershipUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -370,6 +385,7 @@ export type OrganizationMembershipUncheckedUpdateInput = {
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -390,6 +406,7 @@ export type OrganizationMembershipCreateManyInput = {
   organizationId: string
   userId: string
   role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -400,6 +417,7 @@ export type OrganizationMembershipCreateManyInput = {
 export type OrganizationMembershipUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -412,6 +430,7 @@ export type OrganizationMembershipUncheckedUpdateManyInput = {
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -444,6 +463,7 @@ export type OrganizationMembershipCountOrderByAggregateInput = {
   organizationId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  employmentStatus?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   canBorrow?: Prisma.SortOrder
   canLend?: Prisma.SortOrder
@@ -456,6 +476,7 @@ export type OrganizationMembershipMaxOrderByAggregateInput = {
   organizationId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  employmentStatus?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   canBorrow?: Prisma.SortOrder
   canLend?: Prisma.SortOrder
@@ -468,6 +489,7 @@ export type OrganizationMembershipMinOrderByAggregateInput = {
   organizationId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  employmentStatus?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   canBorrow?: Prisma.SortOrder
   canLend?: Prisma.SortOrder
@@ -571,6 +593,10 @@ export type OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedIn
 
 export type EnumMembershipRoleFieldUpdateOperationsInput = {
   set?: $Enums.MembershipRole
+}
+
+export type EnumEmploymentStatusFieldUpdateOperationsInput = {
+  set?: $Enums.EmploymentStatus
 }
 
 export type BoolFieldUpdateOperationsInput = {
@@ -698,6 +724,7 @@ export type OrganizationMembershipUpdateOneRequiredWithoutSessionsNestedInput = 
 export type OrganizationMembershipCreateWithoutUserInput = {
   id?: string
   role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -718,6 +745,7 @@ export type OrganizationMembershipUncheckedCreateWithoutUserInput = {
   id?: string
   organizationId: string
   role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -767,6 +795,7 @@ export type OrganizationMembershipScalarWhereInput = {
   organizationId?: Prisma.UuidFilter<"OrganizationMembership"> | string
   userId?: Prisma.UuidFilter<"OrganizationMembership"> | string
   role?: Prisma.EnumMembershipRoleFilter<"OrganizationMembership"> | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFilter<"OrganizationMembership"> | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFilter<"OrganizationMembership"> | boolean
   canBorrow?: Prisma.BoolFilter<"OrganizationMembership"> | boolean
   canLend?: Prisma.BoolFilter<"OrganizationMembership"> | boolean
@@ -777,6 +806,7 @@ export type OrganizationMembershipScalarWhereInput = {
 export type OrganizationMembershipCreateWithoutOrganizationInput = {
   id?: string
   role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -797,6 +827,7 @@ export type OrganizationMembershipUncheckedCreateWithoutOrganizationInput = {
   id?: string
   userId: string
   role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -841,6 +872,7 @@ export type OrganizationMembershipUpdateManyWithWhereWithoutOrganizationInput = 
 export type OrganizationMembershipCreateWithoutLendingOffersInput = {
   id?: string
   role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -862,6 +894,7 @@ export type OrganizationMembershipUncheckedCreateWithoutLendingOffersInput = {
   organizationId: string
   userId: string
   role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -895,6 +928,7 @@ export type OrganizationMembershipUpdateToOneWithWhereWithoutLendingOffersInput 
 export type OrganizationMembershipUpdateWithoutLendingOffersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -916,6 +950,7 @@ export type OrganizationMembershipUncheckedUpdateWithoutLendingOffersInput = {
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -933,6 +968,7 @@ export type OrganizationMembershipUncheckedUpdateWithoutLendingOffersInput = {
 export type OrganizationMembershipCreateWithoutBalanceInput = {
   id?: string
   role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -954,6 +990,7 @@ export type OrganizationMembershipUncheckedCreateWithoutBalanceInput = {
   organizationId: string
   userId: string
   role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -987,6 +1024,7 @@ export type OrganizationMembershipUpdateToOneWithWhereWithoutBalanceInput = {
 export type OrganizationMembershipUpdateWithoutBalanceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1008,6 +1046,7 @@ export type OrganizationMembershipUncheckedUpdateWithoutBalanceInput = {
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1025,6 +1064,7 @@ export type OrganizationMembershipUncheckedUpdateWithoutBalanceInput = {
 export type OrganizationMembershipCreateWithoutLoansAsLenderInput = {
   id?: string
   role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -1046,6 +1086,7 @@ export type OrganizationMembershipUncheckedCreateWithoutLoansAsLenderInput = {
   organizationId: string
   userId: string
   role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -1068,6 +1109,7 @@ export type OrganizationMembershipCreateOrConnectWithoutLoansAsLenderInput = {
 export type OrganizationMembershipCreateWithoutLoansAsBorrowerInput = {
   id?: string
   role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -1089,6 +1131,7 @@ export type OrganizationMembershipUncheckedCreateWithoutLoansAsBorrowerInput = {
   organizationId: string
   userId: string
   role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -1122,6 +1165,7 @@ export type OrganizationMembershipUpdateToOneWithWhereWithoutLoansAsLenderInput 
 export type OrganizationMembershipUpdateWithoutLoansAsLenderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1143,6 +1187,7 @@ export type OrganizationMembershipUncheckedUpdateWithoutLoansAsLenderInput = {
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1171,6 +1216,7 @@ export type OrganizationMembershipUpdateToOneWithWhereWithoutLoansAsBorrowerInpu
 export type OrganizationMembershipUpdateWithoutLoansAsBorrowerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1192,6 +1238,7 @@ export type OrganizationMembershipUncheckedUpdateWithoutLoansAsBorrowerInput = {
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1209,6 +1256,7 @@ export type OrganizationMembershipUncheckedUpdateWithoutLoansAsBorrowerInput = {
 export type OrganizationMembershipCreateWithoutLedgerAccountsInput = {
   id?: string
   role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -1230,6 +1278,7 @@ export type OrganizationMembershipUncheckedCreateWithoutLedgerAccountsInput = {
   organizationId: string
   userId: string
   role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -1263,6 +1312,7 @@ export type OrganizationMembershipUpdateToOneWithWhereWithoutLedgerAccountsInput
 export type OrganizationMembershipUpdateWithoutLedgerAccountsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1284,6 +1334,7 @@ export type OrganizationMembershipUncheckedUpdateWithoutLedgerAccountsInput = {
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1301,6 +1352,7 @@ export type OrganizationMembershipUncheckedUpdateWithoutLedgerAccountsInput = {
 export type OrganizationMembershipCreateWithoutAuditEventsActedInput = {
   id?: string
   role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -1322,6 +1374,7 @@ export type OrganizationMembershipUncheckedCreateWithoutAuditEventsActedInput = 
   organizationId: string
   userId: string
   role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -1344,6 +1397,7 @@ export type OrganizationMembershipCreateOrConnectWithoutAuditEventsActedInput = 
 export type OrganizationMembershipCreateWithoutAuditEventsTargetedInput = {
   id?: string
   role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -1365,6 +1419,7 @@ export type OrganizationMembershipUncheckedCreateWithoutAuditEventsTargetedInput
   organizationId: string
   userId: string
   role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -1398,6 +1453,7 @@ export type OrganizationMembershipUpdateToOneWithWhereWithoutAuditEventsActedInp
 export type OrganizationMembershipUpdateWithoutAuditEventsActedInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1419,6 +1475,7 @@ export type OrganizationMembershipUncheckedUpdateWithoutAuditEventsActedInput = 
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1447,6 +1504,7 @@ export type OrganizationMembershipUpdateToOneWithWhereWithoutAuditEventsTargeted
 export type OrganizationMembershipUpdateWithoutAuditEventsTargetedInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1468,6 +1526,7 @@ export type OrganizationMembershipUncheckedUpdateWithoutAuditEventsTargetedInput
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1485,6 +1544,7 @@ export type OrganizationMembershipUncheckedUpdateWithoutAuditEventsTargetedInput
 export type OrganizationMembershipCreateWithoutSessionsInput = {
   id?: string
   role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -1506,6 +1566,7 @@ export type OrganizationMembershipUncheckedCreateWithoutSessionsInput = {
   organizationId: string
   userId: string
   role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -1539,6 +1600,7 @@ export type OrganizationMembershipUpdateToOneWithWhereWithoutSessionsInput = {
 export type OrganizationMembershipUpdateWithoutSessionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1560,6 +1622,7 @@ export type OrganizationMembershipUncheckedUpdateWithoutSessionsInput = {
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1578,6 +1641,7 @@ export type OrganizationMembershipCreateManyUserInput = {
   id?: string
   organizationId: string
   role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -1588,6 +1652,7 @@ export type OrganizationMembershipCreateManyUserInput = {
 export type OrganizationMembershipUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1608,6 +1673,7 @@ export type OrganizationMembershipUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1627,6 +1693,7 @@ export type OrganizationMembershipUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1638,6 +1705,7 @@ export type OrganizationMembershipCreateManyOrganizationInput = {
   id?: string
   userId: string
   role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -1648,6 +1716,7 @@ export type OrganizationMembershipCreateManyOrganizationInput = {
 export type OrganizationMembershipUpdateWithoutOrganizationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1668,6 +1737,7 @@ export type OrganizationMembershipUncheckedUpdateWithoutOrganizationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1687,6 +1757,7 @@ export type OrganizationMembershipUncheckedUpdateManyWithoutOrganizationInput = 
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
   canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1784,6 +1855,7 @@ export type OrganizationMembershipSelect<ExtArgs extends runtime.Types.Extension
   organizationId?: boolean
   userId?: boolean
   role?: boolean
+  employmentStatus?: boolean
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -1807,6 +1879,7 @@ export type OrganizationMembershipSelectCreateManyAndReturn<ExtArgs extends runt
   organizationId?: boolean
   userId?: boolean
   role?: boolean
+  employmentStatus?: boolean
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -1821,6 +1894,7 @@ export type OrganizationMembershipSelectUpdateManyAndReturn<ExtArgs extends runt
   organizationId?: boolean
   userId?: boolean
   role?: boolean
+  employmentStatus?: boolean
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -1835,6 +1909,7 @@ export type OrganizationMembershipSelectScalar = {
   organizationId?: boolean
   userId?: boolean
   role?: boolean
+  employmentStatus?: boolean
   isActive?: boolean
   canBorrow?: boolean
   canLend?: boolean
@@ -1842,7 +1917,7 @@ export type OrganizationMembershipSelectScalar = {
   updatedAt?: boolean
 }
 
-export type OrganizationMembershipOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "userId" | "role" | "isActive" | "canBorrow" | "canLend" | "createdAt" | "updatedAt", ExtArgs["result"]["organizationMembership"]>
+export type OrganizationMembershipOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "userId" | "role" | "employmentStatus" | "isActive" | "canBorrow" | "canLend" | "createdAt" | "updatedAt", ExtArgs["result"]["organizationMembership"]>
 export type OrganizationMembershipInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1884,6 +1959,7 @@ export type $OrganizationMembershipPayload<ExtArgs extends runtime.Types.Extensi
     organizationId: string
     userId: string
     role: $Enums.MembershipRole
+    employmentStatus: $Enums.EmploymentStatus
     isActive: boolean
     canBorrow: boolean
     canLend: boolean
@@ -2326,6 +2402,7 @@ export interface OrganizationMembershipFieldRefs {
   readonly organizationId: Prisma.FieldRef<"OrganizationMembership", 'String'>
   readonly userId: Prisma.FieldRef<"OrganizationMembership", 'String'>
   readonly role: Prisma.FieldRef<"OrganizationMembership", 'MembershipRole'>
+  readonly employmentStatus: Prisma.FieldRef<"OrganizationMembership", 'EmploymentStatus'>
   readonly isActive: Prisma.FieldRef<"OrganizationMembership", 'Boolean'>
   readonly canBorrow: Prisma.FieldRef<"OrganizationMembership", 'Boolean'>
   readonly canLend: Prisma.FieldRef<"OrganizationMembership", 'Boolean'>

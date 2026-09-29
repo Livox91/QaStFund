@@ -52,6 +52,16 @@ export type User = Prisma.UserModel
  */
 export type Organization = Prisma.OrganizationModel
 /**
+ * Model ArcWallet
+ * 
+ */
+export type ArcWallet = Prisma.ArcWalletModel
+/**
+ * Model ArcWalletChallenge
+ * 
+ */
+export type ArcWalletChallenge = Prisma.ArcWalletChallengeModel
+/**
  * Model OrganizationMembership
  * 
  */

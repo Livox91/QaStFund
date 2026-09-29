@@ -12,11 +12,24 @@ enum MembershipRole {
   EMPLOYEE
 }
 
+enum EmploymentStatus {
+  ACTIVE
+  SUSPENDED
+  TERMINATED
+}
+
 enum LendingOfferStatus {
   ACTIVE
   PAUSED
   CLOSED
   EXHAUSTED
+}
+
+enum LendingOfferFundingStatus {
+  LEGACY
+  PENDING
+  FUNDED
+  FAILED
 }
 
 enum LoanStatus {
@@ -87,33 +100,95 @@ enum LedgerEntryDirection {
   CREDIT
 }
 
+enum ArcWalletNetwork {
+  ARC_TESTNET
+}
+
+enum ArcWalletType {
+  CIRCLE_MODULAR
+}
+
+enum ArcWalletStatus {
+  PENDING
+  ACTIVE
+  FAILED
+}
+
+enum ArcWalletEnrollmentState {
+  NOT_STARTED
+  REGISTERING
+  REGISTERED
+  VERIFYING
+  ACTIVE
+  FAILED_RECOVERABLE
+}
+
 model User {
-  id           String                   @id @default(uuid()) @db.Uuid
-  email        String                   @unique
-  name         String
-  passwordHash String
-  createdAt    DateTime                 @default(now())
-  updatedAt    DateTime                 @updatedAt
-  memberships  OrganizationMembership[]
+  id                  String                   @id @default(uuid()) @db.Uuid
+  email               String                   @unique
+  name                String
+  passwordHash        String
+  createdAt           DateTime                 @default(now())
+  updatedAt           DateTime                 @updatedAt
+  memberships         OrganizationMembership[]
+  arcWallets          ArcWallet[]
+  arcWalletChallenges ArcWalletChallenge[]
 }
 
 model Organization {
-  id                 String                     @id @default(uuid()) @db.Uuid
-  name               String
-  slug               String                     @unique
-  currency           String                     @default("USD") @db.VarChar(3)
-  createdAt          DateTime                   @default(now())
-  updatedAt          DateTime                   @updatedAt
-  memberships        OrganizationMembership[]
-  lendingOffers      LendingOffer[]
-  loans              Loan[]
-  repayments         LoanRepayment[]
-  auditEvents        AuditEvent[]
-  balances           EmployeeBalance[]
-  ledgerAccounts     LedgerAccount[]
-  ledgerTransactions LedgerTransaction[]
-  ledgerEntries      LedgerEntry[]
-  lendingPolicy      OrganizationLendingPolicy?
+  id                  String                     @id @default(uuid()) @db.Uuid
+  name                String
+  slug                String                     @unique
+  currency            String                     @default("USD") @db.VarChar(3)
+  createdAt           DateTime                   @default(now())
+  updatedAt           DateTime                   @updatedAt
+  memberships         OrganizationMembership[]
+  lendingOffers       LendingOffer[]
+  loans               Loan[]
+  repayments          LoanRepayment[]
+  auditEvents         AuditEvent[]
+  balances            EmployeeBalance[]
+  ledgerAccounts      LedgerAccount[]
+  ledgerTransactions  LedgerTransaction[]
+  ledgerEntries       LedgerEntry[]
+  lendingPolicy       OrganizationLendingPolicy?
+  arcWallets          ArcWallet[]
+  arcWalletChallenges ArcWalletChallenge[]
+}
+
+model ArcWallet {
+  id              String                   @id @default(uuid()) @db.Uuid
+  organizationId  String                   @db.Uuid
+  userId          String                   @db.Uuid
+  address         String?                  @unique @db.VarChar(42)
+  network         ArcWalletNetwork         @default(ARC_TESTNET)
+  chainId         Int                      @default(5042002)
+  walletType      ArcWalletType            @default(CIRCLE_MODULAR)
+  status          ArcWalletStatus          @default(PENDING)
+  enrollmentState ArcWalletEnrollmentState @default(NOT_STARTED)
+  createdAt       DateTime                 @default(now())
+  updatedAt       DateTime                 @updatedAt
+  organization    Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user            User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, network])
+  @@unique([organizationId, id])
+  @@index([organizationId, status])
+}
+
+model ArcWalletChallenge {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  userId         String       @db.Uuid
+  address        String       @db.VarChar(42)
+  nonceHash      String       @db.VarChar(64)
+  expiresAt      DateTime
+  consumedAt     DateTime?
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, userId, expiresAt])
 }
 
 model OrganizationMembership {
@@ -121,6 +196,7 @@ model OrganizationMembership {
   organizationId      String           @db.Uuid
   userId              String           @db.Uuid
   role                MembershipRole
+  employmentStatus    EmploymentStatus @default(ACTIVE)
   isActive            Boolean          @default(true)
   canBorrow           Boolean          @default(true)
   canLend             Boolean          @default(true)
@@ -143,27 +219,36 @@ model OrganizationMembership {
 }
 
 model LendingOffer {
-  id                          String                 @id @default(uuid()) @db.Uuid
-  organizationId              String                 @db.Uuid
-  lenderMembershipId          String                 @db.Uuid
+  id                          String                    @id @default(uuid()) @db.Uuid
+  organizationId              String                    @db.Uuid
+  lenderMembershipId          String                    @db.Uuid
   amountMinorUnits            BigInt
   availableAmountMinorUnits   BigInt
   minimumLoanAmountMinorUnits BigInt
   maximumLoanAmountMinorUnits BigInt
-  currency                    String                 @db.VarChar(3)
+  currency                    String                    @db.VarChar(3)
   durationDays                Int
   feeRateBasisPoints          Int
   expiresAt                   DateTime
   status                      LendingOfferStatus
-  createdAt                   DateTime               @default(now())
-  updatedAt                   DateTime               @updatedAt
-  organization                Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  lenderMembership            OrganizationMembership @relation("MembershipLendingOffers", fields: [organizationId, lenderMembershipId], references: [organizationId, id], onDelete: Restrict)
+  fundingStatus               LendingOfferFundingStatus @default(LEGACY)
+  fundingRequestId            String?                   @unique @db.Uuid
+  lenderWalletAddress         String?                   @db.VarChar(42)
+  principalBaseUnits          BigInt?
+  chainOfferId                String?                   @db.VarChar(78)
+  contractAddress             String?                   @db.VarChar(42)
+  fundingTransactionHash      String?                   @unique @db.VarChar(66)
+  fundedAt                    DateTime?
+  createdAt                   DateTime                  @default(now())
+  updatedAt                   DateTime                  @updatedAt
+  organization                Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  lenderMembership            OrganizationMembership    @relation("MembershipLendingOffers", fields: [organizationId, lenderMembershipId], references: [organizationId, id], onDelete: Restrict)
   loans                       Loan[]
   auditEvents                 AuditEvent[]
 
   @@unique([organizationId, id])
   @@index([organizationId, status])
+  @@index([organizationId, fundingStatus, status])
   @@index([organizationId, status, expiresAt])
   @@index([organizationId, lenderMembershipId])
 }
@@ -190,6 +275,18 @@ model Loan {
   borrowerMembershipId           String                 @db.Uuid
   lendingOfferId                 String?                @db.Uuid
   borrowRequestId                String?                @unique @db.Uuid
+  chainLoanId                    String?                @db.VarChar(78)
+  chainOfferId                   String?                @db.VarChar(78)
+  contractAddress                String?                @db.VarChar(42)
+  lenderWalletAddress            String?                @db.VarChar(42)
+  borrowerWalletAddress          String?                @db.VarChar(42)
+  principalBaseUnits             BigInt?
+  repaymentBaseUnits             BigInt?
+  acceptanceTransactionHash      String?                @unique @db.VarChar(66)
+  repaymentTransactionHash       String?                @unique @db.VarChar(66)
+  onChainStartedAt               DateTime?
+  onChainDueAt                   DateTime?
+  onChainRepaidAt                DateTime?
   principalAmountMinorUnits      BigInt
   feeAmountMinorUnits            BigInt                 @default(0)
   outstandingPrincipalMinorUnits BigInt
@@ -215,12 +312,14 @@ model Loan {
   auditEvents                    AuditEvent[]
 
   @@unique([organizationId, id])
+  @@unique([contractAddress, chainLoanId])
   @@index([organizationId, status])
   @@index([organizationId, repaymentDueAt])
   @@index([organizationId, lenderMembershipId])
   @@index([organizationId, borrowerMembershipId])
   @@index([organizationId, lenderMembershipId, status])
   @@index([organizationId, borrowerMembershipId, status])
+  @@index([organizationId, chainOfferId])
 }
 
 model LedgerAccount {

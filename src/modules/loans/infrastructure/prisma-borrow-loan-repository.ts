@@ -30,6 +30,7 @@ const offerSelection = {
   durationDays: true,
   feeRateBasisPoints: true,
   expiresAt: true,
+  lenderMembership: { select: { user: { select: { name: true } } } },
 } as const;
 
 const createdLoanSelection = {
@@ -100,12 +101,13 @@ export const prismaBorrowLoanRepository: BorrowLoanRepository = {
     if (!membership.canBorrow) return null;
     const policy = await getPolicyForOfferRead(organizationId);
     if (!policy.lendingEnabled || !policy.borrowingEnabled) return null;
-    return prisma.lendingOffer.findFirst({
+    const offer = await prisma.lendingOffer.findFirst({
       where: {
         id: offerId,
         organizationId,
         lenderMembershipId: { not: membership.id },
         status: "ACTIVE",
+        fundingStatus: "FUNDED",
         expiresAt: { gt: now },
         availableAmountMinorUnits: { gt: 0n },
         lenderMembership: {
@@ -115,7 +117,13 @@ export const prismaBorrowLoanRepository: BorrowLoanRepository = {
         },
       },
       select: offerSelection,
-    }) as Promise<BorrowableOffer | null>;
+    });
+    return offer
+      ? ({
+          ...offer,
+          lenderName: offer.lenderMembership.user.name,
+        } as BorrowableOffer)
+      : null;
   },
 
   async createFromOffer({ organizationId, userId, command, now }) {
@@ -192,6 +200,7 @@ export const prismaBorrowLoanRepository: BorrowLoanRepository = {
           organizationId,
           lenderMembershipId: { not: membership.id },
           status: "ACTIVE",
+          fundingStatus: "LEGACY",
           expiresAt: { gt: now },
           lenderMembership: {
             isActive: true,

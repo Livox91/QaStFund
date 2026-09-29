@@ -2,6 +2,7 @@ import { calculateEstimatedRepayment } from "@/modules/lending/domain/lending-of
 
 export type BorrowableOffer = Readonly<{
   id: string;
+  lenderName?: string;
   availableAmountMinorUnits: bigint;
   minimumLoanAmountMinorUnits: bigint;
   maximumLoanAmountMinorUnits: bigint;

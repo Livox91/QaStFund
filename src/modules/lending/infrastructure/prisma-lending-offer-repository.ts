@@ -25,6 +25,9 @@ type OfferRow = {
   expiresAt: Date;
   createdAt: Date;
   status: "ACTIVE" | "PAUSED" | "CLOSED" | "EXHAUSTED";
+  fundingStatus: "LEGACY" | "PENDING" | "FUNDED" | "FAILED";
+  fundingTransactionHash: string | null;
+  chainOfferId: string | null;
   lenderMembership: { user: { id: string; name: string } };
 };
 
@@ -40,6 +43,9 @@ const offerSelection = {
   expiresAt: true,
   createdAt: true,
   status: true,
+  fundingStatus: true,
+  fundingTransactionHash: true,
+  chainOfferId: true,
   lenderMembership: {
     select: { user: { select: { id: true, name: true } } },
   },
@@ -62,6 +68,9 @@ function toOfferView(offer: OfferRow, now: Date): LendingOfferView {
     expiresAt: offer.expiresAt,
     createdAt: offer.createdAt,
     status: getLendingOfferDisplayStatus(offer.status, offer.expiresAt, now),
+    fundingStatus: offer.fundingStatus,
+    fundingTransactionHash: offer.fundingTransactionHash,
+    chainOfferId: offer.chainOfferId,
   };
 }
 
@@ -167,6 +176,7 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
           lenderMembershipId: membership.id,
           currency,
           status: "ACTIVE",
+          fundingStatus: "FUNDED",
           expiresAt: { gt: now },
         },
         _sum: { availableAmountMinorUnits: true },
@@ -227,6 +237,8 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
           organizationId,
           currency: organization.currency,
           status: "ACTIVE",
+          fundingStatus: "FUNDED",
+          lenderMembershipId: { not: membership.id },
           expiresAt: { gt: now },
           availableAmountMinorUnits: { gt: 0n },
           lenderMembership: { isActive: true, role: "EMPLOYEE", canLend: true },
@@ -261,7 +273,7 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
   async listActiveForOrganization({ now, organizationId, userId }) {
     const membership = await prisma.organizationMembership.findUnique({
       where: { organizationId_userId: { organizationId, userId } },
-      select: { isActive: true, role: true, canBorrow: true },
+      select: { id: true, isActive: true, role: true, canBorrow: true },
     });
 
     if (!membership?.isActive || membership.role !== MembershipRole.EMPLOYEE) {
@@ -281,6 +293,8 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
       where: {
         organizationId,
         status: "ACTIVE",
+        fundingStatus: "FUNDED",
+        lenderMembershipId: { not: membership.id },
         expiresAt: { gt: now },
         availableAmountMinorUnits: { gt: 0n },
         lenderMembership: {
@@ -307,7 +321,7 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
     }
 
     const offer = await prisma.lendingOffer.findFirst({
-      where: { id: offerId, organizationId },
+      where: { id: offerId, organizationId, fundingStatus: "FUNDED" },
       select: offerSelection,
     });
 
@@ -362,6 +376,7 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
         id: offerId,
         organizationId,
         lenderMembershipId: membership.id,
+        fundingStatus: "LEGACY",
         status: expectedStatus,
         ...(targetStatus === "ACTIVE"
           ? {

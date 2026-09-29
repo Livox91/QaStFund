@@ -63,9 +63,11 @@ export function EmployeeLoanList({
             </div>
             <div>
               <dt className="text-xs text-slate-400">
-                {loan.participation === "BORROWING"
-                  ? "Interest"
-                  : "Expected interest"}
+                {loan.participation === "LENDING" && loan.status === "REPAID"
+                  ? "Interest earned"
+                  : loan.participation === "BORROWING"
+                    ? "Interest"
+                    : "Expected interest"}
               </dt>
               <dd className="mt-1 text-sm font-semibold text-slate-950">
                 <CurrencyDisplay
@@ -76,9 +78,13 @@ export function EmployeeLoanList({
             </div>
             <div>
               <dt className="text-xs text-slate-400">
-                {loan.participation === "BORROWING"
-                  ? "Total owed"
-                  : "Expected repayment"}
+                {loan.status === "REPAID"
+                  ? loan.participation === "BORROWING"
+                    ? "Paid"
+                    : "Received"
+                  : loan.participation === "BORROWING"
+                    ? "Total owed"
+                    : "Expected repayment"}
               </dt>
               <dd className="mt-1 text-sm font-semibold text-slate-950">
                 <CurrencyDisplay
@@ -120,7 +126,7 @@ export function EmployeeLoanList({
               })}
               href={`/app/loans/${loan.id}`}
             >
-              View and repay
+              {loan.status === "REPAID" ? "View repayment" : "View and repay"}
             </Link>
           ) : null}
         </li>

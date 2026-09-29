@@ -2,7 +2,10 @@ import Link from "next/link";
 
 import { updateLendingOfferStatusAction } from "@/app/(employee)/app/lending/actions";
 import type { EmployeeLendingOverview } from "@/modules/lending/domain/lending-offer";
-import { formatBasisPointsAsPercent } from "@/modules/lending/domain/lending-offer";
+import {
+  calculateEstimatedRepayment,
+  formatBasisPointsAsPercent,
+} from "@/modules/lending/domain/lending-offer";
 import { CreateLendingOfferForm } from "@/modules/lending/ui/create-lending-offer-form";
 import { Button, buttonStyles } from "@/shared/ui/button";
 import {
@@ -55,13 +58,11 @@ function BalanceItem({
 
 export function MyLending({
   created,
-  minimumExpirationDate,
   offerUpdated,
   overview,
   statusError,
 }: {
   created: boolean;
-  minimumExpirationDate: string;
   offerUpdated: boolean;
   overview: EmployeeLendingOverview;
   statusError: boolean;
@@ -114,31 +115,26 @@ export function MyLending({
           <CardHeader>
             <CardTitle>Create a lending offer</CardTitle>
             <CardDescription>
-              Define the amount, loan range, duration, fee, and availability
-              window.
+              Choose terms, then use your wallet passkey to secure the USDC.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <CreateLendingOfferForm
-              currency={overview.currency}
-              minimumExpirationDate={minimumExpirationDate}
-            />
+            <CreateLendingOfferForm currency={overview.currency} />
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Pledged capital</CardTitle>
+            <CardTitle>Funded capital</CardTitle>
             <CardDescription>
-              Offer creation records a pledge only. No wallet balance or real
-              payment is involved.
+              USDC secured in confirmed, active lending offers.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <BalanceItem
               amount={overview.committedBalanceMinorUnits}
               currency={overview.currency}
-              label="Currently pledged in active offers"
+              label="Currently secured in active offers"
             />
           </CardContent>
         </Card>
@@ -167,7 +163,9 @@ export function MyLending({
                   <TableHead>Loan range</TableHead>
                   <TableHead>Duration</TableHead>
                   <TableHead>Fee rate</TableHead>
+                  <TableHead>Potential repayment</TableHead>
                   <TableHead>Expires</TableHead>
+                  <TableHead>Funding</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
@@ -203,41 +201,67 @@ export function MyLending({
                       {formatBasisPointsAsPercent(offer.feeRateBasisPoints)}
                     </TableCell>
                     <TableCell>
+                      <CurrencyDisplay
+                        amountMinorUnits={calculateEstimatedRepayment(
+                          offer.amountMinorUnits,
+                          offer.feeRateBasisPoints,
+                        )}
+                        currency={offer.currency}
+                      />
+                    </TableCell>
+                    <TableCell>
                       {dateFormatter.format(offer.expiresAt)}
                     </TableCell>
                     <TableCell>
-                      <StatusDisplay status={offer.status} />
+                      <StatusDisplay status={offer.fundingStatus ?? "LEGACY"} />
                     </TableCell>
                     <TableCell>
-                      <div className="flex flex-wrap gap-2">
-                        {offer.status === "ACTIVE" ? (
-                          <OfferStatusButton
-                            label="Pause"
-                            offerId={offer.id}
-                            status="PAUSED"
-                          />
-                        ) : null}
-                        {offer.status === "PAUSED" ? (
-                          <OfferStatusButton
-                            label="Resume"
-                            offerId={offer.id}
-                            status="ACTIVE"
-                          />
-                        ) : null}
-                        {offer.status !== "CLOSED" &&
-                        offer.status !== "EXHAUSTED" ? (
-                          <OfferStatusButton
-                            label="Close"
-                            offerId={offer.id}
-                            status="CLOSED"
-                            variant="danger"
-                          />
-                        ) : (
-                          <span className="text-xs text-slate-400">
-                            No actions
-                          </span>
-                        )}
-                      </div>
+                      <StatusDisplay
+                        label={
+                          offer.fundingStatus === "FUNDED" &&
+                          offer.status === "ACTIVE"
+                            ? "Available"
+                            : undefined
+                        }
+                        status={offer.status}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      {offer.fundingStatus === "FUNDED" ? (
+                        <span className="text-xs text-slate-500">
+                          Secured on Arc
+                        </span>
+                      ) : (
+                        <div className="flex flex-wrap gap-2">
+                          {offer.status === "ACTIVE" ? (
+                            <OfferStatusButton
+                              label="Pause"
+                              offerId={offer.id}
+                              status="PAUSED"
+                            />
+                          ) : null}
+                          {offer.status === "PAUSED" ? (
+                            <OfferStatusButton
+                              label="Resume"
+                              offerId={offer.id}
+                              status="ACTIVE"
+                            />
+                          ) : null}
+                          {offer.status !== "CLOSED" &&
+                          offer.status !== "EXHAUSTED" ? (
+                            <OfferStatusButton
+                              label="Close"
+                              offerId={offer.id}
+                              status="CLOSED"
+                              variant="danger"
+                            />
+                          ) : (
+                            <span className="text-xs text-slate-400">
+                              No actions
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}

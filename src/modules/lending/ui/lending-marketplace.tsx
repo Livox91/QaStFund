@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 import {
+  calculateEstimatedRepayment,
   formatBasisPointsAsPercent,
-  getCurrentlyBorrowableMaximum,
   LendingMarketplaceSort,
   type LendingMarketplace,
 } from "@/modules/lending/domain/lending-offer";
@@ -157,7 +157,10 @@ export function LendingMarketplaceView({
           className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3"
         >
           {marketplace.offers.map((offer) => {
-            const maximumBorrowable = getCurrentlyBorrowableMaximum(offer);
+            const repayment = calculateEstimatedRepayment(
+              offer.availableAmountMinorUnits,
+              offer.feeRateBasisPoints,
+            );
 
             return (
               <Card key={offer.id} className="overflow-hidden">
@@ -185,15 +188,10 @@ export function LendingMarketplaceView({
                   </div>
                   <dl className="mt-5 grid grid-cols-2 gap-x-4 gap-y-5">
                     <div>
-                      <dt className="text-xs text-slate-400">Amount range</dt>
+                      <dt className="text-xs text-slate-400">You repay</dt>
                       <dd className="mt-1 text-sm font-semibold text-slate-950">
                         <CurrencyDisplay
-                          amountMinorUnits={offer.minimumLoanAmountMinorUnits}
-                          currency={offer.currency}
-                        />{" "}
-                        –{" "}
-                        <CurrencyDisplay
-                          amountMinorUnits={maximumBorrowable}
+                          amountMinorUnits={repayment}
                           currency={offer.currency}
                         />
                       </dd>
@@ -211,26 +209,24 @@ export function LendingMarketplaceView({
                       </dd>
                     </div>
                     <div>
-                      <dt className="text-xs text-slate-400">Maximum</dt>
+                      <dt className="text-xs text-slate-400">Lender</dt>
                       <dd className="mt-1 text-sm font-semibold text-slate-950">
-                        <CurrencyDisplay
-                          amountMinorUnits={maximumBorrowable}
-                          currency={offer.currency}
-                        />
+                        {offer.lender.name}
                       </dd>
                     </div>
                   </dl>
                   <p className="mt-5 border-t border-slate-100 pt-4 text-xs leading-5 text-slate-400">
-                    Review an informational quote before confirming. Capital is
-                    reserved only when the loan is created.
+                    Funds are already secured and are released to your wallet
+                    only after you confirm.
                   </p>
                 </CardContent>
                 <CardFooter>
                   <Link
                     className={buttonStyles({ className: "w-full" })}
-                    href={`/app/borrow/${offer.id}${filters.amountMinorUnits ? `?amount=${minorUnitsToInputValue(filters.amountMinorUnits)}` : ""}`}
+                    href={`/app/borrow/${offer.id}`}
                   >
-                    Borrow
+                    Borrow {offer.currency}{" "}
+                    {minorUnitsToInputValue(offer.amountMinorUnits)}
                   </Link>
                 </CardFooter>
               </Card>

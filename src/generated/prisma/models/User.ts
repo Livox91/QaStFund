@@ -191,6 +191,8 @@ export type UserWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   memberships?: Prisma.OrganizationMembershipListRelationFilter
+  arcWallets?: Prisma.ArcWalletListRelationFilter
+  arcWalletChallenges?: Prisma.ArcWalletChallengeListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -201,6 +203,8 @@ export type UserOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   memberships?: Prisma.OrganizationMembershipOrderByRelationAggregateInput
+  arcWallets?: Prisma.ArcWalletOrderByRelationAggregateInput
+  arcWalletChallenges?: Prisma.ArcWalletChallengeOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -214,6 +218,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   memberships?: Prisma.OrganizationMembershipListRelationFilter
+  arcWallets?: Prisma.ArcWalletListRelationFilter
+  arcWalletChallenges?: Prisma.ArcWalletChallengeListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -248,6 +254,8 @@ export type UserCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   memberships?: Prisma.OrganizationMembershipCreateNestedManyWithoutUserInput
+  arcWallets?: Prisma.ArcWalletCreateNestedManyWithoutUserInput
+  arcWalletChallenges?: Prisma.ArcWalletChallengeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -258,6 +266,8 @@ export type UserUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   memberships?: Prisma.OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+  arcWallets?: Prisma.ArcWalletUncheckedCreateNestedManyWithoutUserInput
+  arcWalletChallenges?: Prisma.ArcWalletChallengeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -268,6 +278,8 @@ export type UserUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.OrganizationMembershipUpdateManyWithoutUserNestedInput
+  arcWallets?: Prisma.ArcWalletUpdateManyWithoutUserNestedInput
+  arcWalletChallenges?: Prisma.ArcWalletChallengeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -278,6 +290,8 @@ export type UserUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+  arcWallets?: Prisma.ArcWalletUncheckedUpdateManyWithoutUserNestedInput
+  arcWalletChallenges?: Prisma.ArcWalletChallengeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -347,6 +361,34 @@ export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
 }
 
+export type UserCreateNestedOneWithoutArcWalletsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutArcWalletsInput, Prisma.UserUncheckedCreateWithoutArcWalletsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutArcWalletsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutArcWalletsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutArcWalletsInput, Prisma.UserUncheckedCreateWithoutArcWalletsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutArcWalletsInput
+  upsert?: Prisma.UserUpsertWithoutArcWalletsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutArcWalletsInput, Prisma.UserUpdateWithoutArcWalletsInput>, Prisma.UserUncheckedUpdateWithoutArcWalletsInput>
+}
+
+export type UserCreateNestedOneWithoutArcWalletChallengesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutArcWalletChallengesInput, Prisma.UserUncheckedCreateWithoutArcWalletChallengesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutArcWalletChallengesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutArcWalletChallengesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutArcWalletChallengesInput, Prisma.UserUncheckedCreateWithoutArcWalletChallengesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutArcWalletChallengesInput
+  upsert?: Prisma.UserUpsertWithoutArcWalletChallengesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutArcWalletChallengesInput, Prisma.UserUpdateWithoutArcWalletChallengesInput>, Prisma.UserUncheckedUpdateWithoutArcWalletChallengesInput>
+}
+
 export type UserCreateNestedOneWithoutMembershipsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutMembershipsInput, Prisma.UserUncheckedCreateWithoutMembershipsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutMembershipsInput
@@ -361,6 +403,126 @@ export type UserUpdateOneRequiredWithoutMembershipsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMembershipsInput, Prisma.UserUpdateWithoutMembershipsInput>, Prisma.UserUncheckedUpdateWithoutMembershipsInput>
 }
 
+export type UserCreateWithoutArcWalletsInput = {
+  id?: string
+  email: string
+  name: string
+  passwordHash: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.OrganizationMembershipCreateNestedManyWithoutUserInput
+  arcWalletChallenges?: Prisma.ArcWalletChallengeCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutArcWalletsInput = {
+  id?: string
+  email: string
+  name: string
+  passwordHash: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+  arcWalletChallenges?: Prisma.ArcWalletChallengeUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutArcWalletsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutArcWalletsInput, Prisma.UserUncheckedCreateWithoutArcWalletsInput>
+}
+
+export type UserUpsertWithoutArcWalletsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutArcWalletsInput, Prisma.UserUncheckedUpdateWithoutArcWalletsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutArcWalletsInput, Prisma.UserUncheckedCreateWithoutArcWalletsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutArcWalletsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutArcWalletsInput, Prisma.UserUncheckedUpdateWithoutArcWalletsInput>
+}
+
+export type UserUpdateWithoutArcWalletsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.OrganizationMembershipUpdateManyWithoutUserNestedInput
+  arcWalletChallenges?: Prisma.ArcWalletChallengeUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutArcWalletsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+  arcWalletChallenges?: Prisma.ArcWalletChallengeUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutArcWalletChallengesInput = {
+  id?: string
+  email: string
+  name: string
+  passwordHash: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.OrganizationMembershipCreateNestedManyWithoutUserInput
+  arcWallets?: Prisma.ArcWalletCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutArcWalletChallengesInput = {
+  id?: string
+  email: string
+  name: string
+  passwordHash: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.OrganizationMembershipUncheckedCreateNestedManyWithoutUserInput
+  arcWallets?: Prisma.ArcWalletUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutArcWalletChallengesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutArcWalletChallengesInput, Prisma.UserUncheckedCreateWithoutArcWalletChallengesInput>
+}
+
+export type UserUpsertWithoutArcWalletChallengesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutArcWalletChallengesInput, Prisma.UserUncheckedUpdateWithoutArcWalletChallengesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutArcWalletChallengesInput, Prisma.UserUncheckedCreateWithoutArcWalletChallengesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutArcWalletChallengesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutArcWalletChallengesInput, Prisma.UserUncheckedUpdateWithoutArcWalletChallengesInput>
+}
+
+export type UserUpdateWithoutArcWalletChallengesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.OrganizationMembershipUpdateManyWithoutUserNestedInput
+  arcWallets?: Prisma.ArcWalletUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutArcWalletChallengesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.OrganizationMembershipUncheckedUpdateManyWithoutUserNestedInput
+  arcWallets?: Prisma.ArcWalletUncheckedUpdateManyWithoutUserNestedInput
+}
+
 export type UserCreateWithoutMembershipsInput = {
   id?: string
   email: string
@@ -368,6 +530,8 @@ export type UserCreateWithoutMembershipsInput = {
   passwordHash: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  arcWallets?: Prisma.ArcWalletCreateNestedManyWithoutUserInput
+  arcWalletChallenges?: Prisma.ArcWalletChallengeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMembershipsInput = {
@@ -377,6 +541,8 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   passwordHash: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  arcWallets?: Prisma.ArcWalletUncheckedCreateNestedManyWithoutUserInput
+  arcWalletChallenges?: Prisma.ArcWalletChallengeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMembershipsInput = {
@@ -402,6 +568,8 @@ export type UserUpdateWithoutMembershipsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  arcWallets?: Prisma.ArcWalletUpdateManyWithoutUserNestedInput
+  arcWalletChallenges?: Prisma.ArcWalletChallengeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMembershipsInput = {
@@ -411,6 +579,8 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  arcWallets?: Prisma.ArcWalletUncheckedUpdateManyWithoutUserNestedInput
+  arcWalletChallenges?: Prisma.ArcWalletChallengeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -420,10 +590,14 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
 
 export type UserCountOutputType = {
   memberships: number
+  arcWallets: number
+  arcWalletChallenges: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   memberships?: boolean | UserCountOutputTypeCountMembershipsArgs
+  arcWallets?: boolean | UserCountOutputTypeCountArcWalletsArgs
+  arcWalletChallenges?: boolean | UserCountOutputTypeCountArcWalletChallengesArgs
 }
 
 /**
@@ -443,6 +617,20 @@ export type UserCountOutputTypeCountMembershipsArgs<ExtArgs extends runtime.Type
   where?: Prisma.OrganizationMembershipWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountArcWalletsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ArcWalletWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountArcWalletChallengesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ArcWalletChallengeWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -452,6 +640,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   updatedAt?: boolean
   memberships?: boolean | Prisma.User$membershipsArgs<ExtArgs>
+  arcWallets?: boolean | Prisma.User$arcWalletsArgs<ExtArgs>
+  arcWalletChallenges?: boolean | Prisma.User$arcWalletChallengesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -485,6 +675,8 @@ export type UserSelectScalar = {
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "passwordHash" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   memberships?: boolean | Prisma.User$membershipsArgs<ExtArgs>
+  arcWallets?: boolean | Prisma.User$arcWalletsArgs<ExtArgs>
+  arcWalletChallenges?: boolean | Prisma.User$arcWalletChallengesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -494,6 +686,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   name: "User"
   objects: {
     memberships: Prisma.$OrganizationMembershipPayload<ExtArgs>[]
+    arcWallets: Prisma.$ArcWalletPayload<ExtArgs>[]
+    arcWalletChallenges: Prisma.$ArcWalletChallengePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -897,6 +1091,8 @@ readonly fields: UserFieldRefs;
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   memberships<T extends Prisma.User$membershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$membershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrganizationMembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  arcWallets<T extends Prisma.User$arcWalletsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$arcWalletsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ArcWalletPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  arcWalletChallenges<T extends Prisma.User$arcWalletChallengesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$arcWalletChallengesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ArcWalletChallengePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1346,6 +1542,54 @@ export type User$membershipsArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.OrganizationMembershipScalarFieldEnum | Prisma.OrganizationMembershipScalarFieldEnum[]
+}
+
+/**
+ * User.arcWallets
+ */
+export type User$arcWalletsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ArcWallet
+   */
+  select?: Prisma.ArcWalletSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ArcWallet
+   */
+  omit?: Prisma.ArcWalletOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ArcWalletInclude<ExtArgs> | null
+  where?: Prisma.ArcWalletWhereInput
+  orderBy?: Prisma.ArcWalletOrderByWithRelationInput | Prisma.ArcWalletOrderByWithRelationInput[]
+  cursor?: Prisma.ArcWalletWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ArcWalletScalarFieldEnum | Prisma.ArcWalletScalarFieldEnum[]
+}
+
+/**
+ * User.arcWalletChallenges
+ */
+export type User$arcWalletChallengesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ArcWalletChallenge
+   */
+  select?: Prisma.ArcWalletChallengeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ArcWalletChallenge
+   */
+  omit?: Prisma.ArcWalletChallengeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ArcWalletChallengeInclude<ExtArgs> | null
+  where?: Prisma.ArcWalletChallengeWhereInput
+  orderBy?: Prisma.ArcWalletChallengeOrderByWithRelationInput | Prisma.ArcWalletChallengeOrderByWithRelationInput[]
+  cursor?: Prisma.ArcWalletChallengeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ArcWalletChallengeScalarFieldEnum | Prisma.ArcWalletChallengeScalarFieldEnum[]
 }
 
 /**

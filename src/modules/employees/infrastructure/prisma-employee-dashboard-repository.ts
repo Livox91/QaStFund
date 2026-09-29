@@ -10,7 +10,11 @@ import {
   getCompletedAccountBalance,
 } from "@/modules/ledger/infrastructure/ledger-posting";
 
-const CURRENT_LOAN_STATUSES = [LoanStatus.ACTIVE, LoanStatus.OVERDUE] as const;
+const VISIBLE_LOAN_STATUSES = [
+  LoanStatus.ACTIVE,
+  LoanStatus.OVERDUE,
+  LoanStatus.REPAID,
+] as const;
 
 type CurrentLoanRow = {
   id: string;
@@ -127,8 +131,7 @@ export const prismaEmployeeDashboardRepository: EmployeeDashboardRepository = {
       const currentLoans = await transaction.loan.findMany({
         where: {
           ...employeeScope,
-          status: { in: [...CURRENT_LOAN_STATUSES] },
-          outstandingPrincipalMinorUnits: { gt: 0n },
+          status: { in: [...VISIBLE_LOAN_STATUSES] },
           OR: [
             { lenderMembershipId: membership.id },
             { borrowerMembershipId: membership.id },
