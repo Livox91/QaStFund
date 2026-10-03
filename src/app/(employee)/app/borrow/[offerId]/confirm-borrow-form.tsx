@@ -53,15 +53,25 @@ export function ConfirmBorrowForm({ offerId }: { offerId: string }) {
         throw new Error(await readApiError(intentResponse));
       }
       const { intent } = (await intentResponse.json()) as {
-        intent: {
-          loanId: string;
-          contractAddress: Address;
-          chainOfferId: string;
-          authorizationExpiry: string;
-          authorizationId: `0x${string}`;
-          authorizationSignature: `0x${string}`;
-        };
+        intent:
+          | { state: "CONFIRMED"; loanId: string }
+          | {
+              state: "PENDING";
+              loanId: string;
+              contractAddress: Address;
+              chainOfferId: string;
+              authorizationExpiry: string;
+              authorizationId: `0x${string}`;
+              authorizationSignature: `0x${string}`;
+            };
       };
+      if (intent.state === "CONFIRMED") {
+        requestId.current = null;
+        await wallet.refreshWallet();
+        router.push(`/app?loanCreated=1&loanId=${intent.loanId}`);
+        router.refresh();
+        return;
+      }
 
       setPhase("authorizing");
       setMessage("Confirm with your passkey to receive the funds.");

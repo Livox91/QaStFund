@@ -20,6 +20,7 @@
     "verify:repayment": "tsx scripts/verify-repayment.ts",
     "verify:ledger": "tsx scripts/verify-ledger.ts",
     "verify:policy": "tsx scripts/verify-policy.ts",
+    "reconcile:arc": "tsx scripts/reconcile-arc.ts",
     "prisma:generate": "prisma generate",
     "prisma:validate": "prisma validate",
     "prisma:migrate": "prisma migrate dev",

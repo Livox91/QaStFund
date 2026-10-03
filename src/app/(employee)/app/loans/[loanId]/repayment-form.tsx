@@ -107,14 +107,26 @@ export function RepaymentForm({
       if (!intentResponse.ok)
         throw new Error(await readApiError(intentResponse));
       const { intent } = (await intentResponse.json()) as {
-        intent: {
-          repaymentId: string;
-          contractAddress: Address;
-          chainLoanId: string;
-          usdcAddress: Address;
-          repaymentBaseUnits: string;
-        };
+        intent:
+          | { state: "CONFIRMED"; repaymentId: string; loanId: string }
+          | {
+              state: "PENDING";
+              repaymentId: string;
+              contractAddress: Address;
+              chainLoanId: string;
+              usdcAddress: Address;
+              repaymentBaseUnits: string;
+            };
       };
+      if (intent.state === "CONFIRMED") {
+        requestId.current = null;
+        setPhase("confirmed");
+        setMessage("Confirmed. Your loan is repaid.");
+        await wallet.refreshWallet();
+        router.push(`/app/loans/${loanId}?repaid=1`);
+        router.refresh();
+        return;
+      }
 
       setPhase("authorizing");
       setMessage("Awaiting authorization…");

@@ -956,6 +956,40 @@ export type EnumAuditEventTypeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumAuditEventTypeFilter<$PrismaModel>
 }
 
+export type EnumBlockchainEventNameFilter<$PrismaModel = never> = {
+  equals?: $Enums.BlockchainEventName | Prisma.EnumBlockchainEventNameFieldRefInput<$PrismaModel>
+  in?: $Enums.BlockchainEventName[] | Prisma.ListEnumBlockchainEventNameFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BlockchainEventName[] | Prisma.ListEnumBlockchainEventNameFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBlockchainEventNameFilter<$PrismaModel> | $Enums.BlockchainEventName
+}
+
+export type EnumBlockchainEventStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.BlockchainEventStatus | Prisma.EnumBlockchainEventStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.BlockchainEventStatus[] | Prisma.ListEnumBlockchainEventStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BlockchainEventStatus[] | Prisma.ListEnumBlockchainEventStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBlockchainEventStatusFilter<$PrismaModel> | $Enums.BlockchainEventStatus
+}
+
+export type EnumBlockchainEventNameWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.BlockchainEventName | Prisma.EnumBlockchainEventNameFieldRefInput<$PrismaModel>
+  in?: $Enums.BlockchainEventName[] | Prisma.ListEnumBlockchainEventNameFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BlockchainEventName[] | Prisma.ListEnumBlockchainEventNameFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBlockchainEventNameWithAggregatesFilter<$PrismaModel> | $Enums.BlockchainEventName
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumBlockchainEventNameFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumBlockchainEventNameFilter<$PrismaModel>
+}
+
+export type EnumBlockchainEventStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.BlockchainEventStatus | Prisma.EnumBlockchainEventStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.BlockchainEventStatus[] | Prisma.ListEnumBlockchainEventStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BlockchainEventStatus[] | Prisma.ListEnumBlockchainEventStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBlockchainEventStatusWithAggregatesFilter<$PrismaModel> | $Enums.BlockchainEventStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumBlockchainEventStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumBlockchainEventStatusFilter<$PrismaModel>
+}
+
 export type NestedUuidFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -1851,6 +1885,40 @@ export type NestedEnumAuditEventTypeWithAggregatesFilter<$PrismaModel = never> =
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumAuditEventTypeFilter<$PrismaModel>
   _max?: Prisma.NestedEnumAuditEventTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumBlockchainEventNameFilter<$PrismaModel = never> = {
+  equals?: $Enums.BlockchainEventName | Prisma.EnumBlockchainEventNameFieldRefInput<$PrismaModel>
+  in?: $Enums.BlockchainEventName[] | Prisma.ListEnumBlockchainEventNameFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BlockchainEventName[] | Prisma.ListEnumBlockchainEventNameFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBlockchainEventNameFilter<$PrismaModel> | $Enums.BlockchainEventName
+}
+
+export type NestedEnumBlockchainEventStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.BlockchainEventStatus | Prisma.EnumBlockchainEventStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.BlockchainEventStatus[] | Prisma.ListEnumBlockchainEventStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BlockchainEventStatus[] | Prisma.ListEnumBlockchainEventStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBlockchainEventStatusFilter<$PrismaModel> | $Enums.BlockchainEventStatus
+}
+
+export type NestedEnumBlockchainEventNameWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.BlockchainEventName | Prisma.EnumBlockchainEventNameFieldRefInput<$PrismaModel>
+  in?: $Enums.BlockchainEventName[] | Prisma.ListEnumBlockchainEventNameFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BlockchainEventName[] | Prisma.ListEnumBlockchainEventNameFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBlockchainEventNameWithAggregatesFilter<$PrismaModel> | $Enums.BlockchainEventName
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumBlockchainEventNameFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumBlockchainEventNameFilter<$PrismaModel>
+}
+
+export type NestedEnumBlockchainEventStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.BlockchainEventStatus | Prisma.EnumBlockchainEventStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.BlockchainEventStatus[] | Prisma.ListEnumBlockchainEventStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BlockchainEventStatus[] | Prisma.ListEnumBlockchainEventStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBlockchainEventStatusWithAggregatesFilter<$PrismaModel> | $Enums.BlockchainEventStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumBlockchainEventStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumBlockchainEventStatusFilter<$PrismaModel>
 }
 
 

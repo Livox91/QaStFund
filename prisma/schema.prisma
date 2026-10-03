@@ -114,6 +114,20 @@ enum RepaymentStatus {
   CANCELLED
 }
 
+enum BlockchainEventName {
+  OFFER_CREATED
+  LOAN_STARTED
+  LOAN_REPAID
+}
+
+enum BlockchainEventStatus {
+  PROVISIONAL
+  APPLIED
+  UNMATCHED
+  CONFLICT
+  REORGED
+}
+
 enum LoanDecisionClassification {
   HEALTHY
   DUE_SOON
@@ -703,4 +717,46 @@ model Session {
 
   @@index([userId])
   @@index([expiresAt])
+}
+
+model BlockchainReconciliationCursor {
+  id                 String   @id @default(uuid()) @db.Uuid
+  chainId            Int
+  contractAddress    String   @db.VarChar(42)
+  nextBlock          BigInt
+  finalizedThrough   BigInt
+  leaseOwner         String?  @db.Uuid
+  leaseExpiresAt     DateTime?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@unique([chainId, contractAddress])
+}
+
+model BlockchainEvent {
+  id                 String                  @id @default(uuid()) @db.Uuid
+  chainId            Int
+  contractAddress    String                  @db.VarChar(42)
+  blockNumber        BigInt
+  blockHash          String                  @db.VarChar(66)
+  transactionHash    String                  @db.VarChar(66)
+  logIndex           Int
+  name               BlockchainEventName
+  status             BlockchainEventStatus   @default(PROVISIONAL)
+  isFinalized        Boolean                 @default(false)
+  payload            Json
+  organizationId     String?                 @db.Uuid
+  matchedRecordId    String?                 @db.Uuid
+  investigationCode  String?                 @db.VarChar(64)
+  investigationNote  String?                 @db.VarChar(240)
+  observedAt         DateTime                @default(now())
+  finalizedAt        DateTime?
+  processedAt        DateTime?
+  createdAt          DateTime                @default(now())
+  updatedAt          DateTime                @updatedAt
+
+  @@unique([chainId, contractAddress, transactionHash, logIndex])
+  @@index([chainId, contractAddress, blockNumber])
+  @@index([chainId, contractAddress, isFinalized, status, blockNumber])
+  @@index([status, updatedAt])
 }

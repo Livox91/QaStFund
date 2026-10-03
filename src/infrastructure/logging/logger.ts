@@ -29,6 +29,12 @@ function sanitizeContext(context?: LogContext): LogContext | undefined {
 }
 
 export const logger = {
+  info(message: string, context?: LogContext): void {
+    console.info(redactLogValue(message), sanitizeContext(context));
+  },
+  warn(message: string, context?: LogContext): void {
+    console.warn(redactLogValue(message), sanitizeContext(context));
+  },
   error(message: string, error: unknown, context?: LogContext): void {
     console.error(redactLogValue(message), {
       ...sanitizeContext(context),

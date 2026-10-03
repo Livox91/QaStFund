@@ -31,6 +31,52 @@ const client = createPublicClient({
   transport: http(ARC_TESTNET_RPC_URL),
 });
 
+async function readChainLoan(
+  contractAddress: `0x${string}`,
+  chainLoanId: bigint,
+) {
+  return client.readContract({
+    address: contractAddress,
+    abi: employeeLendingEscrowAbi,
+    functionName: "loans",
+    args: [chainLoanId],
+  });
+}
+
+async function readUsdcBalance(walletAddress: `0x${string}`) {
+  return client.readContract({
+    address: ARC_USDC_ADDRESS,
+    abi: erc20UsdcAbi,
+    functionName: "balanceOf",
+    args: [walletAddress],
+  });
+}
+
+type PrepareOnChainRepaymentDependencies = Readonly<{
+  contractAddress?: `0x${string}`;
+  database?: typeof prisma;
+  now?: () => Date;
+  readBalance?: typeof readUsdcBalance;
+  readLoan?: typeof readChainLoan;
+}>;
+
+function isUniqueConstraintError(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    error.code === "P2002"
+  );
+}
+
+function repaymentIntentConflictError() {
+  return new ApplicationError(
+    "REPAYMENT_INTENT_CONFLICT",
+    "Another repayment attempt is already in progress for this loan.",
+    409,
+  );
+}
+
 function configurationError() {
   return new ApplicationError(
     "LENDING_ESCROW_NOT_CONFIGURED",
@@ -55,18 +101,23 @@ export async function prepareOnChainRepayment(
   actor: AuthenticatedActor,
   loanId: string,
   requestId: string,
+  dependencies: PrepareOnChainRepaymentDependencies = {},
 ) {
-  const configuredContract = getConfiguredEscrowAddress();
+  const database = dependencies.database ?? prisma;
+  const configuredContract =
+    dependencies.contractAddress ?? getConfiguredEscrowAddress();
   if (!configuredContract) throw configurationError();
 
-  const existing = await prisma.loanRepayment.findUnique({
+  const existing = await database.loanRepayment.findUnique({
     where: { repaymentRequestId: requestId },
     select: {
       id: true,
       status: true,
+      amountMinorUnits: true,
       loan: {
         select: {
           id: true,
+          status: true,
           organizationId: true,
           borrowerMembership: { select: { userId: true } },
           chainLoanId: true,
@@ -80,24 +131,67 @@ export async function prepareOnChainRepayment(
     if (
       existing.loan.id !== loanId ||
       existing.loan.organizationId !== actor.organizationId ||
-      existing.loan.borrowerMembership.userId !== actor.userId ||
-      existing.status !== "PENDING" ||
+      existing.loan.borrowerMembership.userId !== actor.userId
+    ) {
+      throw new ApplicationError(
+        "REPAYMENT_REQUEST_CONFLICT",
+        "This repayment request has already been used.",
+        409,
+      );
+    }
+    if (
       !existing.loan.chainLoanId ||
       existing.loan.repaymentBaseUnits === null ||
       !existing.loan.contractAddress
     ) {
       throw unavailableError();
     }
-    return {
-      repaymentId: existing.id,
-      contractAddress: getAddress(existing.loan.contractAddress),
-      chainLoanId: existing.loan.chainLoanId,
-      usdcAddress: ARC_USDC_ADDRESS,
-      repaymentBaseUnits: existing.loan.repaymentBaseUnits.toString(),
-    };
+    if (
+      existing.amountMinorUnits !==
+      baseUnitsToMinorUnitsRoundedUp(existing.loan.repaymentBaseUnits)
+    ) {
+      throw new ApplicationError(
+        "REPAYMENT_REQUEST_CONFLICT",
+        "This repayment request has already been used.",
+        409,
+      );
+    }
+    if (existing.status === "COMPLETED") {
+      if (existing.loan.status !== "REPAID") throw unavailableError();
+      return {
+        state: "CONFIRMED" as const,
+        repaymentId: existing.id,
+        loanId: existing.loan.id,
+      };
+    }
+    if (existing.status === "PENDING") {
+      return {
+        state: "PENDING" as const,
+        repaymentId: existing.id,
+        contractAddress: getAddress(existing.loan.contractAddress),
+        chainLoanId: existing.loan.chainLoanId,
+        usdcAddress: ARC_USDC_ADDRESS,
+        repaymentBaseUnits: existing.loan.repaymentBaseUnits.toString(),
+      };
+    }
+    if (existing.status !== "FAILED" && existing.status !== "CANCELLED") {
+      throw unavailableError();
+    }
+  } else {
+    const competing = await database.loanRepayment.findFirst({
+      where: {
+        loanId,
+        organizationId: actor.organizationId,
+        status: "PENDING",
+      },
+      select: { repaymentRequestId: true },
+    });
+    if (competing && competing.repaymentRequestId !== requestId) {
+      throw repaymentIntentConflictError();
+    }
   }
 
-  const context = await prisma.loan.findFirst({
+  const context = await database.loan.findFirst({
     where: {
       id: loanId,
       organizationId: actor.organizationId,
@@ -135,7 +229,7 @@ export async function prepareOnChainRepayment(
     throw unavailableError();
   }
 
-  const wallet = await prisma.arcWallet.findUnique({
+  const wallet = await database.arcWallet.findUnique({
     where: {
       userId_network: { userId: actor.userId, network: ARC_TESTNET_NETWORK },
     },
@@ -160,12 +254,10 @@ export async function prepareOnChainRepayment(
     );
   }
 
-  const chainLoan = await client.readContract({
-    address: configuredContract,
-    abi: employeeLendingEscrowAbi,
-    functionName: "loans",
-    args: [BigInt(context.chainLoanId)],
-  });
+  const chainLoan = await (dependencies.readLoan ?? readChainLoan)(
+    configuredContract,
+    BigInt(context.chainLoanId),
+  );
   if (
     chainLoan[0] !== BigInt(context.chainLoanId) ||
     chainLoan[1] !== BigInt(context.chainOfferId) ||
@@ -180,12 +272,9 @@ export async function prepareOnChainRepayment(
     throw unavailableError();
   }
 
-  const balanceBaseUnits = await client.readContract({
-    address: ARC_USDC_ADDRESS,
-    abi: erc20UsdcAbi,
-    functionName: "balanceOf",
-    args: [getAddress(wallet.address)],
-  });
+  const balanceBaseUnits = await (dependencies.readBalance ?? readUsdcBalance)(
+    getAddress(wallet.address),
+  );
   if (balanceBaseUnits < context.repaymentBaseUnits) {
     throw new ApplicationError(
       "INSUFFICIENT_USDC_BALANCE",
@@ -194,34 +283,87 @@ export async function prepareOnChainRepayment(
     );
   }
 
-  const repayment = await prisma.$transaction(async (transaction) => {
-    const pending = await transaction.loanRepayment.findFirst({
-      where: {
-        loanId,
-        organizationId: actor.organizationId,
-        status: "PENDING",
-      },
-      select: { id: true },
-    });
-    if (pending) return pending;
+  const amountMinorUnits = baseUnitsToMinorUnitsRoundedUp(
+    context.repaymentBaseUnits,
+  );
+  const paidAt = dependencies.now?.() ?? new Date();
+  let repayment: { id: string };
+  try {
+    if (existing) {
+      const revived = await database.loanRepayment.updateMany({
+        where: {
+          id: existing.id,
+          status: { in: ["FAILED", "CANCELLED"] },
+        },
+        data: { status: "PENDING", paidAt, completedAt: null },
+      });
+      if (revived.count === 1) {
+        repayment = existing;
+      } else {
+        const current = await database.loanRepayment.findUnique({
+          where: { repaymentRequestId: requestId },
+          select: { id: true, status: true },
+        });
+        if (current?.status !== "PENDING") {
+          throw repaymentIntentConflictError();
+        }
+        repayment = current;
+      }
+    } else {
+      repayment = await database.loanRepayment.create({
+        data: {
+          organizationId: actor.organizationId,
+          loanId,
+          repaymentRequestId: requestId,
+          amountMinorUnits,
+          currency: context.currency,
+          status: "PENDING",
+          paidAt,
+        },
+        select: { id: true },
+      });
+    }
+  } catch (error) {
+    if (!isUniqueConstraintError(error)) throw error;
 
-    return transaction.loanRepayment.create({
-      data: {
-        organizationId: actor.organizationId,
-        loanId,
-        repaymentRequestId: requestId,
-        amountMinorUnits: baseUnitsToMinorUnitsRoundedUp(
-          context.repaymentBaseUnits!,
-        ),
-        currency: context.currency,
-        status: "PENDING",
-        paidAt: new Date(),
+    const sameRequest = await database.loanRepayment.findUnique({
+      where: { repaymentRequestId: requestId },
+      select: {
+        id: true,
+        status: true,
+        loan: {
+          select: {
+            id: true,
+            organizationId: true,
+            borrowerMembership: { select: { userId: true } },
+          },
+        },
       },
-      select: { id: true },
     });
-  });
+    if (
+      sameRequest?.loan.id === loanId &&
+      sameRequest.loan.organizationId === actor.organizationId &&
+      sameRequest.loan.borrowerMembership.userId === actor.userId
+    ) {
+      if (sameRequest.status === "COMPLETED") {
+        return {
+          state: "CONFIRMED" as const,
+          repaymentId: sameRequest.id,
+          loanId,
+        };
+      }
+      if (sameRequest.status === "PENDING") {
+        repayment = sameRequest;
+      } else {
+        throw repaymentIntentConflictError();
+      }
+    } else {
+      throw repaymentIntentConflictError();
+    }
+  }
 
   return {
+    state: "PENDING" as const,
     repaymentId: repayment.id,
     contractAddress: configuredContract,
     chainLoanId: context.chainLoanId,

@@ -161,6 +161,26 @@ export const RepaymentStatus = {
 export type RepaymentStatus = (typeof RepaymentStatus)[keyof typeof RepaymentStatus]
 
 
+export const BlockchainEventName = {
+  OFFER_CREATED: 'OFFER_CREATED',
+  LOAN_STARTED: 'LOAN_STARTED',
+  LOAN_REPAID: 'LOAN_REPAID'
+} as const
+
+export type BlockchainEventName = (typeof BlockchainEventName)[keyof typeof BlockchainEventName]
+
+
+export const BlockchainEventStatus = {
+  PROVISIONAL: 'PROVISIONAL',
+  APPLIED: 'APPLIED',
+  UNMATCHED: 'UNMATCHED',
+  CONFLICT: 'CONFLICT',
+  REORGED: 'REORGED'
+} as const
+
+export type BlockchainEventStatus = (typeof BlockchainEventStatus)[keyof typeof BlockchainEventStatus]
+
+
 export const LoanDecisionClassification = {
   HEALTHY: 'HEALTHY',
   DUE_SOON: 'DUE_SOON',

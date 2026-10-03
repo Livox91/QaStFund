@@ -42,10 +42,32 @@ const client = createPublicClient({
 
 const BORROW_AUTHORIZATION_TTL_SECONDS = 5n * 60n;
 
+async function readChainOffer(
+  contractAddress: `0x${string}`,
+  chainOfferId: bigint,
+) {
+  return client.readContract({
+    address: contractAddress,
+    abi: employeeLendingEscrowAbi,
+    functionName: "offers",
+    args: [chainOfferId],
+  });
+}
+
+async function readChainAuthorizationSigner(contractAddress: `0x${string}`) {
+  return client.readContract({
+    address: contractAddress,
+    abi: employeeLendingEscrowAbi,
+    functionName: "authorizationSigner",
+  });
+}
+
 type PrepareOnChainBorrowDependencies = Readonly<{
   contractAddress?: `0x${string}`;
   database?: typeof prisma;
   now?: () => Date;
+  readAuthorizationSigner?: typeof readChainAuthorizationSigner;
+  readOffer?: typeof readChainOffer;
   signAuthorization?: typeof signBorrowAuthorization;
 }>;
 
@@ -55,6 +77,23 @@ type ConfirmOnChainBorrowDependencies = Readonly<{
   getTransactionReceipt?: typeof client.getTransactionReceipt;
   now?: () => Date;
 }>;
+
+function isUniqueConstraintError(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    error.code === "P2002"
+  );
+}
+
+function acceptanceIntentConflictError() {
+  return new ApplicationError(
+    "ACCEPTANCE_INTENT_CONFLICT",
+    "Another borrowing attempt is already in progress for this offer.",
+    409,
+  );
+}
 
 function unavailableError() {
   return new ApplicationError(
@@ -96,6 +135,7 @@ export async function prepareOnChainBorrow(
       lendingOfferId: true,
       chainOfferId: true,
       contractAddress: true,
+      borrowerWalletAddress: true,
       status: true,
     },
   });
@@ -113,7 +153,26 @@ export async function prepareOnChainBorrow(
         409,
       );
     }
-    if (existing.status !== "REQUESTED") throw unavailableError();
+    if (
+      ["ACTIVE", "OVERDUE", "REPAID", "DEFAULTED"].includes(existing.status)
+    ) {
+      return { state: "CONFIRMED" as const, loanId: existing.id };
+    }
+    if (existing.status !== "REQUESTED" && existing.status !== "CANCELLED") {
+      throw unavailableError();
+    }
+  } else {
+    const competing = await database.loan.findFirst({
+      where: {
+        organizationId: actor.organizationId,
+        lendingOfferId: offerId,
+        status: "REQUESTED",
+      },
+      select: { borrowRequestId: true },
+    });
+    if (competing && competing.borrowRequestId !== requestId) {
+      throw acceptanceIntentConflictError();
+    }
   }
 
   const now = dependencies.now?.() ?? new Date();
@@ -244,13 +303,22 @@ export async function prepareOnChainBorrow(
   ) {
     throw unavailableError();
   }
+  if (
+    existing?.borrowerWalletAddress &&
+    existing.borrowerWalletAddress.toLowerCase() !==
+      borrowerWalletAddress.toLowerCase()
+  ) {
+    throw new ApplicationError(
+      "BORROW_REQUEST_CONFLICT",
+      "This borrowing request has already been used.",
+      409,
+    );
+  }
 
-  const chainOffer = await client.readContract({
-    address: configuredContract,
-    abi: employeeLendingEscrowAbi,
-    functionName: "offers",
-    args: [BigInt(chainOfferId)],
-  });
+  const chainOffer = await (dependencies.readOffer ?? readChainOffer)(
+    configuredContract,
+    BigInt(chainOfferId),
+  );
   if (
     chainOffer[0] !== BigInt(chainOfferId) ||
     chainOffer[1].toLowerCase() !== lenderWalletAddress.toLowerCase() ||
@@ -276,11 +344,9 @@ export async function prepareOnChainBorrow(
     },
     configuredContract,
   );
-  const configuredAuthorizationSigner = await client.readContract({
-    address: configuredContract,
-    abi: employeeLendingEscrowAbi,
-    functionName: "authorizationSigner",
-  });
+  const configuredAuthorizationSigner = await (
+    dependencies.readAuthorizationSigner ?? readChainAuthorizationSigner
+  )(configuredContract);
   if (
     configuredAuthorizationSigner.toLowerCase() !==
     authorization.signerAddress.toLowerCase()
@@ -306,9 +372,35 @@ export async function prepareOnChainBorrow(
     now.getTime() + context.offer.durationDays * 86_400_000,
   );
 
-  const loan = existing
-    ? existing
-    : await database.loan.create({
+  let loan: { id: string };
+  try {
+    if (existing?.status === "CANCELLED") {
+      const revived = await database.loan.updateMany({
+        where: { id: existing.id, status: "CANCELLED" },
+        data: {
+          status: "REQUESTED",
+          closedAt: null,
+          requestedAt: now,
+          startedAt: now,
+          repaymentDueAt: estimatedDueAt,
+        },
+      });
+      if (revived.count === 1) {
+        loan = existing;
+      } else {
+        const current = await database.loan.findUnique({
+          where: { borrowRequestId: requestId },
+          select: { id: true, status: true },
+        });
+        if (current?.status !== "REQUESTED") {
+          throw acceptanceIntentConflictError();
+        }
+        loan = current;
+      }
+    } else if (existing) {
+      loan = existing;
+    } else {
+      loan = await database.loan.create({
         data: {
           organizationId: actor.organizationId,
           lenderMembershipId: context.offer.lenderMembershipId,
@@ -336,8 +428,44 @@ export async function prepareOnChainBorrow(
         },
         select: { id: true },
       });
+    }
+  } catch (error) {
+    if (!isUniqueConstraintError(error)) throw error;
+
+    const sameRequest = await database.loan.findUnique({
+      where: { borrowRequestId: requestId },
+      select: {
+        id: true,
+        organizationId: true,
+        lendingOfferId: true,
+        status: true,
+        borrowerMembership: { select: { userId: true } },
+      },
+    });
+    if (
+      sameRequest?.organizationId === actor.organizationId &&
+      sameRequest.borrowerMembership.userId === actor.userId &&
+      sameRequest.lendingOfferId === offerId
+    ) {
+      if (
+        ["ACTIVE", "OVERDUE", "REPAID", "DEFAULTED"].includes(
+          sameRequest.status,
+        )
+      ) {
+        return { state: "CONFIRMED" as const, loanId: sameRequest.id };
+      }
+      if (sameRequest.status === "REQUESTED") {
+        loan = sameRequest;
+      } else {
+        throw acceptanceIntentConflictError();
+      }
+    } else {
+      throw acceptanceIntentConflictError();
+    }
+  }
 
   return {
+    state: "PENDING" as const,
     loanId: loan.id,
     contractAddress: configuredContract,
     chainOfferId,

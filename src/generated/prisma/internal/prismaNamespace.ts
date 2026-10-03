@@ -417,7 +417,9 @@ export const ModelName = {
   LoanRepayment: 'LoanRepayment',
   AuditEvent: 'AuditEvent',
   OrganizationLendingPolicy: 'OrganizationLendingPolicy',
-  Session: 'Session'
+  Session: 'Session',
+  BlockchainReconciliationCursor: 'BlockchainReconciliationCursor',
+  BlockchainEvent: 'BlockchainEvent'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -433,7 +435,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "organization" | "arcWallet" | "arcWalletChallenge" | "organizationMembership" | "employeeDirectoryIntegration" | "employeeDirectoryMapping" | "employeeDirectorySyncRun" | "lendingOffer" | "employeeBalance" | "loan" | "loanDecisionEvaluation" | "loanDecisionReview" | "employerActionAttempt" | "ledgerAccount" | "ledgerTransaction" | "ledgerEntry" | "loanRepayment" | "auditEvent" | "organizationLendingPolicy" | "session"
+    modelProps: "user" | "organization" | "arcWallet" | "arcWalletChallenge" | "organizationMembership" | "employeeDirectoryIntegration" | "employeeDirectoryMapping" | "employeeDirectorySyncRun" | "lendingOffer" | "employeeBalance" | "loan" | "loanDecisionEvaluation" | "loanDecisionReview" | "employerActionAttempt" | "ledgerAccount" | "ledgerTransaction" | "ledgerEntry" | "loanRepayment" | "auditEvent" | "organizationLendingPolicy" | "session" | "blockchainReconciliationCursor" | "blockchainEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1991,6 +1993,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    BlockchainReconciliationCursor: {
+      payload: Prisma.$BlockchainReconciliationCursorPayload<ExtArgs>
+      fields: Prisma.BlockchainReconciliationCursorFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BlockchainReconciliationCursorFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockchainReconciliationCursorPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BlockchainReconciliationCursorFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockchainReconciliationCursorPayload>
+        }
+        findFirst: {
+          args: Prisma.BlockchainReconciliationCursorFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockchainReconciliationCursorPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BlockchainReconciliationCursorFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockchainReconciliationCursorPayload>
+        }
+        findMany: {
+          args: Prisma.BlockchainReconciliationCursorFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockchainReconciliationCursorPayload>[]
+        }
+        create: {
+          args: Prisma.BlockchainReconciliationCursorCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockchainReconciliationCursorPayload>
+        }
+        createMany: {
+          args: Prisma.BlockchainReconciliationCursorCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BlockchainReconciliationCursorCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockchainReconciliationCursorPayload>[]
+        }
+        delete: {
+          args: Prisma.BlockchainReconciliationCursorDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockchainReconciliationCursorPayload>
+        }
+        update: {
+          args: Prisma.BlockchainReconciliationCursorUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockchainReconciliationCursorPayload>
+        }
+        deleteMany: {
+          args: Prisma.BlockchainReconciliationCursorDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BlockchainReconciliationCursorUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BlockchainReconciliationCursorUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockchainReconciliationCursorPayload>[]
+        }
+        upsert: {
+          args: Prisma.BlockchainReconciliationCursorUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockchainReconciliationCursorPayload>
+        }
+        aggregate: {
+          args: Prisma.BlockchainReconciliationCursorAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBlockchainReconciliationCursor>
+        }
+        groupBy: {
+          args: Prisma.BlockchainReconciliationCursorGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BlockchainReconciliationCursorGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BlockchainReconciliationCursorCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BlockchainReconciliationCursorCountAggregateOutputType> | number
+        }
+      }
+    }
+    BlockchainEvent: {
+      payload: Prisma.$BlockchainEventPayload<ExtArgs>
+      fields: Prisma.BlockchainEventFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BlockchainEventFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockchainEventPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BlockchainEventFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockchainEventPayload>
+        }
+        findFirst: {
+          args: Prisma.BlockchainEventFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockchainEventPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BlockchainEventFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockchainEventPayload>
+        }
+        findMany: {
+          args: Prisma.BlockchainEventFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockchainEventPayload>[]
+        }
+        create: {
+          args: Prisma.BlockchainEventCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockchainEventPayload>
+        }
+        createMany: {
+          args: Prisma.BlockchainEventCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BlockchainEventCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockchainEventPayload>[]
+        }
+        delete: {
+          args: Prisma.BlockchainEventDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockchainEventPayload>
+        }
+        update: {
+          args: Prisma.BlockchainEventUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockchainEventPayload>
+        }
+        deleteMany: {
+          args: Prisma.BlockchainEventDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BlockchainEventUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BlockchainEventUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockchainEventPayload>[]
+        }
+        upsert: {
+          args: Prisma.BlockchainEventUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlockchainEventPayload>
+        }
+        aggregate: {
+          args: Prisma.BlockchainEventAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBlockchainEvent>
+        }
+        groupBy: {
+          args: Prisma.BlockchainEventGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BlockchainEventGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BlockchainEventCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BlockchainEventCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2423,6 +2573,47 @@ export const SessionScalarFieldEnum = {
 export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
 
 
+export const BlockchainReconciliationCursorScalarFieldEnum = {
+  id: 'id',
+  chainId: 'chainId',
+  contractAddress: 'contractAddress',
+  nextBlock: 'nextBlock',
+  finalizedThrough: 'finalizedThrough',
+  leaseOwner: 'leaseOwner',
+  leaseExpiresAt: 'leaseExpiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BlockchainReconciliationCursorScalarFieldEnum = (typeof BlockchainReconciliationCursorScalarFieldEnum)[keyof typeof BlockchainReconciliationCursorScalarFieldEnum]
+
+
+export const BlockchainEventScalarFieldEnum = {
+  id: 'id',
+  chainId: 'chainId',
+  contractAddress: 'contractAddress',
+  blockNumber: 'blockNumber',
+  blockHash: 'blockHash',
+  transactionHash: 'transactionHash',
+  logIndex: 'logIndex',
+  name: 'name',
+  status: 'status',
+  isFinalized: 'isFinalized',
+  payload: 'payload',
+  organizationId: 'organizationId',
+  matchedRecordId: 'matchedRecordId',
+  investigationCode: 'investigationCode',
+  investigationNote: 'investigationNote',
+  observedAt: 'observedAt',
+  finalizedAt: 'finalizedAt',
+  processedAt: 'processedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BlockchainEventScalarFieldEnum = (typeof BlockchainEventScalarFieldEnum)[keyof typeof BlockchainEventScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2481,28 +2672,28 @@ export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof Json
  * Reference to a field of type 'String'
  */
 export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>
-    
+
 
 
 /**
  * Reference to a field of type 'String[]'
  */
 export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
-    
+
 
 
 /**
  * Reference to a field of type 'DateTime'
  */
 export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
-    
+
 
 
 /**
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
-    
+
 
 
 /**
@@ -2975,6 +3166,34 @@ export type ListEnumAuditEventTypeFieldRefInput<$PrismaModel> = FieldRefInputTyp
 
 
 /**
+ * Reference to a field of type 'BlockchainEventName'
+ */
+export type EnumBlockchainEventNameFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BlockchainEventName'>
+
+
+
+/**
+ * Reference to a field of type 'BlockchainEventName[]'
+ */
+export type ListEnumBlockchainEventNameFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BlockchainEventName[]'>
+
+
+
+/**
+ * Reference to a field of type 'BlockchainEventStatus'
+ */
+export type EnumBlockchainEventStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BlockchainEventStatus'>
+
+
+
+/**
+ * Reference to a field of type 'BlockchainEventStatus[]'
+ */
+export type ListEnumBlockchainEventStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BlockchainEventStatus[]'>
+
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -3159,6 +3378,8 @@ export type GlobalOmitConfig = {
   auditEvent?: Prisma.AuditEventOmit
   organizationLendingPolicy?: Prisma.OrganizationLendingPolicyOmit
   session?: Prisma.SessionOmit
+  blockchainReconciliationCursor?: Prisma.BlockchainReconciliationCursorOmit
+  blockchainEvent?: Prisma.BlockchainEventOmit
 }
 
 /* Types for Logging */
@@ -3221,4 +3442,3 @@ export type PrismaAction =
  * `PrismaClient` proxy available in interactive transactions.
  */
 export type TransactionClient = Omit<DefaultPrismaClient, runtime.ITXClientDenyList>
-

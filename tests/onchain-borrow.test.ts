@@ -113,7 +113,10 @@ describe("on-chain borrowing values", () => {
   it("does not issue authorization to an ineligible employee", async () => {
     const signAuthorization = vi.fn();
     const database = {
-      loan: { findUnique: vi.fn().mockResolvedValue(null) },
+      loan: {
+        findFirst: vi.fn().mockResolvedValue(null),
+        findUnique: vi.fn().mockResolvedValue(null),
+      },
       $transaction: vi.fn(async (run: (transaction: unknown) => unknown) =>
         run({
           organizationMembership: {
@@ -143,7 +146,10 @@ describe("on-chain borrowing values", () => {
   it("does not issue authorization for a cross-organization offer", async () => {
     const signAuthorization = vi.fn();
     const database = {
-      loan: { findUnique: vi.fn().mockResolvedValue(null) },
+      loan: {
+        findFirst: vi.fn().mockResolvedValue(null),
+        findUnique: vi.fn().mockResolvedValue(null),
+      },
       $transaction: vi.fn(async (run: (transaction: unknown) => unknown) =>
         run({
           organizationMembership: {

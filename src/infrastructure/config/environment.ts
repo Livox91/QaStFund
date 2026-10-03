@@ -27,6 +27,52 @@ const environmentSchema = z
         )
         .optional(),
     ),
+    ARC_RECONCILIATION_ENABLED: z
+      .enum(["true", "false"])
+      .default("false")
+      .transform((value) => value === "true"),
+    ARC_RECONCILIATION_RPC_URL: z
+      .url()
+      .default("https://rpc.testnet.arc.network"),
+    ARC_RECONCILIATION_START_BLOCK: z
+      .string()
+      .regex(/^\d+$/)
+      .default("0")
+      .transform((value) => BigInt(value)),
+    ARC_RECONCILIATION_CONFIRMATIONS: z.coerce
+      .number()
+      .int()
+      .min(1)
+      .max(100)
+      .default(5),
+    ARC_RECONCILIATION_BLOCK_RANGE: z.coerce
+      .number()
+      .int()
+      .min(10)
+      .max(10_000)
+      .default(1000),
+    ARC_RECONCILIATION_REORG_WINDOW: z.coerce
+      .number()
+      .int()
+      .min(1)
+      .max(1000)
+      .default(20),
+    ARC_RECONCILIATION_MAX_RANGES: z.coerce
+      .number()
+      .int()
+      .min(1)
+      .max(100)
+      .default(10),
+    ARC_RECONCILIATION_RPC_RETRIES: z.coerce
+      .number()
+      .int()
+      .min(1)
+      .max(10)
+      .default(3),
+    ARC_RECONCILIATION_CRON_SECRET: z.preprocess(
+      (value) => (value === "" ? undefined : value),
+      z.string().min(32).optional(),
+    ),
     LOAN_DECISION_PROVIDER: z.enum(["rules", "model"]).default("rules"),
     EMPLOYER_ACTION_PROVIDER: z.enum(["mock"]).default("mock"),
     ERP_NEXT_ALLOW_LOCAL_HTTP: z
@@ -66,6 +112,38 @@ const environmentSchema = z
           "ERP_NEXT_SYNC_CRON_SECRET is required when scheduling is enabled",
       });
     }
+    if (
+      environment.ARC_RECONCILIATION_ENABLED &&
+      !environment.ARC_RECONCILIATION_CRON_SECRET
+    ) {
+      context.addIssue({
+        code: "custom",
+        path: ["ARC_RECONCILIATION_CRON_SECRET"],
+        message:
+          "ARC_RECONCILIATION_CRON_SECRET is required when reconciliation is enabled",
+      });
+    }
+    if (
+      environment.ARC_RECONCILIATION_BLOCK_RANGE <=
+      environment.ARC_RECONCILIATION_REORG_WINDOW
+    ) {
+      context.addIssue({
+        code: "custom",
+        path: ["ARC_RECONCILIATION_BLOCK_RANGE"],
+        message: "block range must be greater than the reorganization window",
+      });
+    }
+    if (
+      environment.ARC_RECONCILIATION_REORG_WINDOW <
+      environment.ARC_RECONCILIATION_CONFIRMATIONS
+    ) {
+      context.addIssue({
+        code: "custom",
+        path: ["ARC_RECONCILIATION_REORG_WINDOW"],
+        message:
+          "reorganization window must be at least the confirmation depth",
+      });
+    }
   });
 
 export type Environment = z.infer<typeof environmentSchema>;
@@ -88,6 +166,15 @@ export function parseEnvironment(
     ERP_NEXT_SYNC_STALE_AFTER_MINUTES?: NodeJS.ProcessEnv[string];
     ERP_NEXT_SYNC_CRON_SECRET?: NodeJS.ProcessEnv[string];
     ARC_BORROW_AUTHORIZER_PRIVATE_KEY?: NodeJS.ProcessEnv[string];
+    ARC_RECONCILIATION_ENABLED?: NodeJS.ProcessEnv[string];
+    ARC_RECONCILIATION_RPC_URL?: NodeJS.ProcessEnv[string];
+    ARC_RECONCILIATION_START_BLOCK?: NodeJS.ProcessEnv[string];
+    ARC_RECONCILIATION_CONFIRMATIONS?: NodeJS.ProcessEnv[string];
+    ARC_RECONCILIATION_BLOCK_RANGE?: NodeJS.ProcessEnv[string];
+    ARC_RECONCILIATION_REORG_WINDOW?: NodeJS.ProcessEnv[string];
+    ARC_RECONCILIATION_MAX_RANGES?: NodeJS.ProcessEnv[string];
+    ARC_RECONCILIATION_RPC_RETRIES?: NodeJS.ProcessEnv[string];
+    ARC_RECONCILIATION_CRON_SECRET?: NodeJS.ProcessEnv[string];
   },
 ): Environment {
   const result = environmentSchema.safeParse(environment);
@@ -115,6 +202,17 @@ export function validateEnvironment(): Environment {
     NEXT_PUBLIC_CIRCLE_CLIENT_URL: process.env.NEXT_PUBLIC_CIRCLE_CLIENT_URL,
     ARC_BORROW_AUTHORIZER_PRIVATE_KEY:
       process.env.ARC_BORROW_AUTHORIZER_PRIVATE_KEY,
+    ARC_RECONCILIATION_ENABLED: process.env.ARC_RECONCILIATION_ENABLED,
+    ARC_RECONCILIATION_RPC_URL: process.env.ARC_RECONCILIATION_RPC_URL,
+    ARC_RECONCILIATION_START_BLOCK: process.env.ARC_RECONCILIATION_START_BLOCK,
+    ARC_RECONCILIATION_CONFIRMATIONS:
+      process.env.ARC_RECONCILIATION_CONFIRMATIONS,
+    ARC_RECONCILIATION_BLOCK_RANGE: process.env.ARC_RECONCILIATION_BLOCK_RANGE,
+    ARC_RECONCILIATION_REORG_WINDOW:
+      process.env.ARC_RECONCILIATION_REORG_WINDOW,
+    ARC_RECONCILIATION_MAX_RANGES: process.env.ARC_RECONCILIATION_MAX_RANGES,
+    ARC_RECONCILIATION_RPC_RETRIES: process.env.ARC_RECONCILIATION_RPC_RETRIES,
+    ARC_RECONCILIATION_CRON_SECRET: process.env.ARC_RECONCILIATION_CRON_SECRET,
     LOAN_DECISION_PROVIDER: process.env.LOAN_DECISION_PROVIDER,
     EMPLOYER_ACTION_PROVIDER: process.env.EMPLOYER_ACTION_PROVIDER,
     ERP_NEXT_ALLOW_LOCAL_HTTP: process.env.ERP_NEXT_ALLOW_LOCAL_HTTP,

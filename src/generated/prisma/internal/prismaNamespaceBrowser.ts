@@ -71,7 +71,9 @@ export const ModelName = {
   LoanRepayment: 'LoanRepayment',
   AuditEvent: 'AuditEvent',
   OrganizationLendingPolicy: 'OrganizationLendingPolicy',
-  Session: 'Session'
+  Session: 'Session',
+  BlockchainReconciliationCursor: 'BlockchainReconciliationCursor',
+  BlockchainEvent: 'BlockchainEvent'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -481,6 +483,47 @@ export const SessionScalarFieldEnum = {
 } as const
 
 export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
+
+
+export const BlockchainReconciliationCursorScalarFieldEnum = {
+  id: 'id',
+  chainId: 'chainId',
+  contractAddress: 'contractAddress',
+  nextBlock: 'nextBlock',
+  finalizedThrough: 'finalizedThrough',
+  leaseOwner: 'leaseOwner',
+  leaseExpiresAt: 'leaseExpiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BlockchainReconciliationCursorScalarFieldEnum = (typeof BlockchainReconciliationCursorScalarFieldEnum)[keyof typeof BlockchainReconciliationCursorScalarFieldEnum]
+
+
+export const BlockchainEventScalarFieldEnum = {
+  id: 'id',
+  chainId: 'chainId',
+  contractAddress: 'contractAddress',
+  blockNumber: 'blockNumber',
+  blockHash: 'blockHash',
+  transactionHash: 'transactionHash',
+  logIndex: 'logIndex',
+  name: 'name',
+  status: 'status',
+  isFinalized: 'isFinalized',
+  payload: 'payload',
+  organizationId: 'organizationId',
+  matchedRecordId: 'matchedRecordId',
+  investigationCode: 'investigationCode',
+  investigationNote: 'investigationNote',
+  observedAt: 'observedAt',
+  finalizedAt: 'finalizedAt',
+  processedAt: 'processedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BlockchainEventScalarFieldEnum = (typeof BlockchainEventScalarFieldEnum)[keyof typeof BlockchainEventScalarFieldEnum]
 
 
 export const SortOrder = {
