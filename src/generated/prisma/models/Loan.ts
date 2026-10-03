@@ -486,6 +486,9 @@ export type LoanWhereInput = {
   lendingOffer?: Prisma.XOR<Prisma.LendingOfferNullableScalarRelationFilter, Prisma.LendingOfferWhereInput> | null
   repayments?: Prisma.LoanRepaymentListRelationFilter
   auditEvents?: Prisma.AuditEventListRelationFilter
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationListRelationFilter
+  decisionReviews?: Prisma.LoanDecisionReviewListRelationFilter
+  employerActionAttempts?: Prisma.EmployerActionAttemptListRelationFilter
 }
 
 export type LoanOrderByWithRelationInput = {
@@ -530,6 +533,9 @@ export type LoanOrderByWithRelationInput = {
   lendingOffer?: Prisma.LendingOfferOrderByWithRelationInput
   repayments?: Prisma.LoanRepaymentOrderByRelationAggregateInput
   auditEvents?: Prisma.AuditEventOrderByRelationAggregateInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationOrderByRelationAggregateInput
+  decisionReviews?: Prisma.LoanDecisionReviewOrderByRelationAggregateInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptOrderByRelationAggregateInput
 }
 
 export type LoanWhereUniqueInput = Prisma.AtLeast<{
@@ -579,6 +585,9 @@ export type LoanWhereUniqueInput = Prisma.AtLeast<{
   lendingOffer?: Prisma.XOR<Prisma.LendingOfferNullableScalarRelationFilter, Prisma.LendingOfferWhereInput> | null
   repayments?: Prisma.LoanRepaymentListRelationFilter
   auditEvents?: Prisma.AuditEventListRelationFilter
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationListRelationFilter
+  decisionReviews?: Prisma.LoanDecisionReviewListRelationFilter
+  employerActionAttempts?: Prisma.EmployerActionAttemptListRelationFilter
 }, "id" | "borrowRequestId" | "acceptanceTransactionHash" | "repaymentTransactionHash" | "organizationId_id" | "contractAddress_chainLoanId">
 
 export type LoanOrderByWithAggregationInput = {
@@ -703,6 +712,9 @@ export type LoanCreateInput = {
   lendingOffer?: Prisma.LendingOfferCreateNestedOneWithoutLoansInput
   repayments?: Prisma.LoanRepaymentCreateNestedManyWithoutLoanInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutLoanInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationCreateNestedManyWithoutLoanInput
+  decisionReviews?: Prisma.LoanDecisionReviewCreateNestedManyWithoutLoanInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptCreateNestedManyWithoutLoanInput
 }
 
 export type LoanUncheckedCreateInput = {
@@ -743,6 +755,9 @@ export type LoanUncheckedCreateInput = {
   policySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   repayments?: Prisma.LoanRepaymentUncheckedCreateNestedManyWithoutLoanInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutLoanInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUncheckedCreateNestedManyWithoutLoanInput
+  decisionReviews?: Prisma.LoanDecisionReviewUncheckedCreateNestedManyWithoutLoanInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedCreateNestedManyWithoutLoanInput
 }
 
 export type LoanUpdateInput = {
@@ -783,6 +798,9 @@ export type LoanUpdateInput = {
   lendingOffer?: Prisma.LendingOfferUpdateOneWithoutLoansNestedInput
   repayments?: Prisma.LoanRepaymentUpdateManyWithoutLoanNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutLoanNestedInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUpdateManyWithoutLoanNestedInput
+  decisionReviews?: Prisma.LoanDecisionReviewUpdateManyWithoutLoanNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUpdateManyWithoutLoanNestedInput
 }
 
 export type LoanUncheckedUpdateInput = {
@@ -823,6 +841,9 @@ export type LoanUncheckedUpdateInput = {
   policySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   repayments?: Prisma.LoanRepaymentUncheckedUpdateManyWithoutLoanNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutLoanNestedInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUncheckedUpdateManyWithoutLoanNestedInput
+  decisionReviews?: Prisma.LoanDecisionReviewUncheckedUpdateManyWithoutLoanNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedUpdateManyWithoutLoanNestedInput
 }
 
 export type LoanCreateManyInput = {
@@ -1271,12 +1292,46 @@ export type EnumLoanStatusFieldUpdateOperationsInput = {
   set?: $Enums.LoanStatus
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
+export type LoanCreateNestedOneWithoutDecisionEvaluationsInput = {
+  create?: Prisma.XOR<Prisma.LoanCreateWithoutDecisionEvaluationsInput, Prisma.LoanUncheckedCreateWithoutDecisionEvaluationsInput>
+  connectOrCreate?: Prisma.LoanCreateOrConnectWithoutDecisionEvaluationsInput
+  connect?: Prisma.LoanWhereUniqueInput
+}
+
+export type LoanUpdateOneRequiredWithoutDecisionEvaluationsNestedInput = {
+  create?: Prisma.XOR<Prisma.LoanCreateWithoutDecisionEvaluationsInput, Prisma.LoanUncheckedCreateWithoutDecisionEvaluationsInput>
+  connectOrCreate?: Prisma.LoanCreateOrConnectWithoutDecisionEvaluationsInput
+  upsert?: Prisma.LoanUpsertWithoutDecisionEvaluationsInput
+  connect?: Prisma.LoanWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LoanUpdateToOneWithWhereWithoutDecisionEvaluationsInput, Prisma.LoanUpdateWithoutDecisionEvaluationsInput>, Prisma.LoanUncheckedUpdateWithoutDecisionEvaluationsInput>
+}
+
+export type LoanCreateNestedOneWithoutDecisionReviewsInput = {
+  create?: Prisma.XOR<Prisma.LoanCreateWithoutDecisionReviewsInput, Prisma.LoanUncheckedCreateWithoutDecisionReviewsInput>
+  connectOrCreate?: Prisma.LoanCreateOrConnectWithoutDecisionReviewsInput
+  connect?: Prisma.LoanWhereUniqueInput
+}
+
+export type LoanUpdateOneRequiredWithoutDecisionReviewsNestedInput = {
+  create?: Prisma.XOR<Prisma.LoanCreateWithoutDecisionReviewsInput, Prisma.LoanUncheckedCreateWithoutDecisionReviewsInput>
+  connectOrCreate?: Prisma.LoanCreateOrConnectWithoutDecisionReviewsInput
+  upsert?: Prisma.LoanUpsertWithoutDecisionReviewsInput
+  connect?: Prisma.LoanWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LoanUpdateToOneWithWhereWithoutDecisionReviewsInput, Prisma.LoanUpdateWithoutDecisionReviewsInput>, Prisma.LoanUncheckedUpdateWithoutDecisionReviewsInput>
+}
+
+export type LoanCreateNestedOneWithoutEmployerActionAttemptsInput = {
+  create?: Prisma.XOR<Prisma.LoanCreateWithoutEmployerActionAttemptsInput, Prisma.LoanUncheckedCreateWithoutEmployerActionAttemptsInput>
+  connectOrCreate?: Prisma.LoanCreateOrConnectWithoutEmployerActionAttemptsInput
+  connect?: Prisma.LoanWhereUniqueInput
+}
+
+export type LoanUpdateOneRequiredWithoutEmployerActionAttemptsNestedInput = {
+  create?: Prisma.XOR<Prisma.LoanCreateWithoutEmployerActionAttemptsInput, Prisma.LoanUncheckedCreateWithoutEmployerActionAttemptsInput>
+  connectOrCreate?: Prisma.LoanCreateOrConnectWithoutEmployerActionAttemptsInput
+  upsert?: Prisma.LoanUpsertWithoutEmployerActionAttemptsInput
+  connect?: Prisma.LoanWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LoanUpdateToOneWithWhereWithoutEmployerActionAttemptsInput, Prisma.LoanUpdateWithoutEmployerActionAttemptsInput>, Prisma.LoanUncheckedUpdateWithoutEmployerActionAttemptsInput>
 }
 
 export type LoanCreateNestedOneWithoutRepaymentsInput = {
@@ -1346,6 +1401,9 @@ export type LoanCreateWithoutOrganizationInput = {
   lendingOffer?: Prisma.LendingOfferCreateNestedOneWithoutLoansInput
   repayments?: Prisma.LoanRepaymentCreateNestedManyWithoutLoanInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutLoanInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationCreateNestedManyWithoutLoanInput
+  decisionReviews?: Prisma.LoanDecisionReviewCreateNestedManyWithoutLoanInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptCreateNestedManyWithoutLoanInput
 }
 
 export type LoanUncheckedCreateWithoutOrganizationInput = {
@@ -1385,6 +1443,9 @@ export type LoanUncheckedCreateWithoutOrganizationInput = {
   policySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   repayments?: Prisma.LoanRepaymentUncheckedCreateNestedManyWithoutLoanInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutLoanInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUncheckedCreateNestedManyWithoutLoanInput
+  decisionReviews?: Prisma.LoanDecisionReviewUncheckedCreateNestedManyWithoutLoanInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedCreateNestedManyWithoutLoanInput
 }
 
 export type LoanCreateOrConnectWithoutOrganizationInput = {
@@ -1491,6 +1552,9 @@ export type LoanCreateWithoutLenderMembershipInput = {
   lendingOffer?: Prisma.LendingOfferCreateNestedOneWithoutLoansInput
   repayments?: Prisma.LoanRepaymentCreateNestedManyWithoutLoanInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutLoanInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationCreateNestedManyWithoutLoanInput
+  decisionReviews?: Prisma.LoanDecisionReviewCreateNestedManyWithoutLoanInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptCreateNestedManyWithoutLoanInput
 }
 
 export type LoanUncheckedCreateWithoutLenderMembershipInput = {
@@ -1529,6 +1593,9 @@ export type LoanUncheckedCreateWithoutLenderMembershipInput = {
   policySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   repayments?: Prisma.LoanRepaymentUncheckedCreateNestedManyWithoutLoanInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutLoanInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUncheckedCreateNestedManyWithoutLoanInput
+  decisionReviews?: Prisma.LoanDecisionReviewUncheckedCreateNestedManyWithoutLoanInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedCreateNestedManyWithoutLoanInput
 }
 
 export type LoanCreateOrConnectWithoutLenderMembershipInput = {
@@ -1578,6 +1645,9 @@ export type LoanCreateWithoutBorrowerMembershipInput = {
   lendingOffer?: Prisma.LendingOfferCreateNestedOneWithoutLoansInput
   repayments?: Prisma.LoanRepaymentCreateNestedManyWithoutLoanInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutLoanInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationCreateNestedManyWithoutLoanInput
+  decisionReviews?: Prisma.LoanDecisionReviewCreateNestedManyWithoutLoanInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptCreateNestedManyWithoutLoanInput
 }
 
 export type LoanUncheckedCreateWithoutBorrowerMembershipInput = {
@@ -1616,6 +1686,9 @@ export type LoanUncheckedCreateWithoutBorrowerMembershipInput = {
   policySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   repayments?: Prisma.LoanRepaymentUncheckedCreateNestedManyWithoutLoanInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutLoanInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUncheckedCreateNestedManyWithoutLoanInput
+  decisionReviews?: Prisma.LoanDecisionReviewUncheckedCreateNestedManyWithoutLoanInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedCreateNestedManyWithoutLoanInput
 }
 
 export type LoanCreateOrConnectWithoutBorrowerMembershipInput = {
@@ -1697,6 +1770,9 @@ export type LoanCreateWithoutLendingOfferInput = {
   borrowerMembership: Prisma.OrganizationMembershipCreateNestedOneWithoutLoansAsBorrowerInput
   repayments?: Prisma.LoanRepaymentCreateNestedManyWithoutLoanInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutLoanInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationCreateNestedManyWithoutLoanInput
+  decisionReviews?: Prisma.LoanDecisionReviewCreateNestedManyWithoutLoanInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptCreateNestedManyWithoutLoanInput
 }
 
 export type LoanUncheckedCreateWithoutLendingOfferInput = {
@@ -1735,6 +1811,9 @@ export type LoanUncheckedCreateWithoutLendingOfferInput = {
   policySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   repayments?: Prisma.LoanRepaymentUncheckedCreateNestedManyWithoutLoanInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutLoanInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUncheckedCreateNestedManyWithoutLoanInput
+  decisionReviews?: Prisma.LoanDecisionReviewUncheckedCreateNestedManyWithoutLoanInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedCreateNestedManyWithoutLoanInput
 }
 
 export type LoanCreateOrConnectWithoutLendingOfferInput = {
@@ -1761,6 +1840,558 @@ export type LoanUpdateWithWhereUniqueWithoutLendingOfferInput = {
 export type LoanUpdateManyWithWhereWithoutLendingOfferInput = {
   where: Prisma.LoanScalarWhereInput
   data: Prisma.XOR<Prisma.LoanUpdateManyMutationInput, Prisma.LoanUncheckedUpdateManyWithoutLendingOfferInput>
+}
+
+export type LoanCreateWithoutDecisionEvaluationsInput = {
+  id?: string
+  borrowRequestId?: string | null
+  chainLoanId?: string | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  lenderWalletAddress?: string | null
+  borrowerWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  repaymentBaseUnits?: bigint | number | null
+  acceptanceTransactionHash?: string | null
+  repaymentTransactionHash?: string | null
+  onChainStartedAt?: Date | string | null
+  onChainDueAt?: Date | string | null
+  onChainRepaidAt?: Date | string | null
+  principalAmountMinorUnits: bigint | number
+  feeAmountMinorUnits?: bigint | number
+  outstandingPrincipalMinorUnits: bigint | number
+  currency: string
+  durationDays: number
+  feeRateBasisPoints: number
+  status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
+  startedAt?: Date | string
+  repaymentDueAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  policyVersion?: number | null
+  policySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  organization: Prisma.OrganizationCreateNestedOneWithoutLoansInput
+  lenderMembership: Prisma.OrganizationMembershipCreateNestedOneWithoutLoansAsLenderInput
+  borrowerMembership: Prisma.OrganizationMembershipCreateNestedOneWithoutLoansAsBorrowerInput
+  lendingOffer?: Prisma.LendingOfferCreateNestedOneWithoutLoansInput
+  repayments?: Prisma.LoanRepaymentCreateNestedManyWithoutLoanInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutLoanInput
+  decisionReviews?: Prisma.LoanDecisionReviewCreateNestedManyWithoutLoanInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptCreateNestedManyWithoutLoanInput
+}
+
+export type LoanUncheckedCreateWithoutDecisionEvaluationsInput = {
+  id?: string
+  organizationId: string
+  lenderMembershipId: string
+  borrowerMembershipId: string
+  lendingOfferId?: string | null
+  borrowRequestId?: string | null
+  chainLoanId?: string | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  lenderWalletAddress?: string | null
+  borrowerWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  repaymentBaseUnits?: bigint | number | null
+  acceptanceTransactionHash?: string | null
+  repaymentTransactionHash?: string | null
+  onChainStartedAt?: Date | string | null
+  onChainDueAt?: Date | string | null
+  onChainRepaidAt?: Date | string | null
+  principalAmountMinorUnits: bigint | number
+  feeAmountMinorUnits?: bigint | number
+  outstandingPrincipalMinorUnits: bigint | number
+  currency: string
+  durationDays: number
+  feeRateBasisPoints: number
+  status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
+  startedAt?: Date | string
+  repaymentDueAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  policyVersion?: number | null
+  policySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  repayments?: Prisma.LoanRepaymentUncheckedCreateNestedManyWithoutLoanInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutLoanInput
+  decisionReviews?: Prisma.LoanDecisionReviewUncheckedCreateNestedManyWithoutLoanInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedCreateNestedManyWithoutLoanInput
+}
+
+export type LoanCreateOrConnectWithoutDecisionEvaluationsInput = {
+  where: Prisma.LoanWhereUniqueInput
+  create: Prisma.XOR<Prisma.LoanCreateWithoutDecisionEvaluationsInput, Prisma.LoanUncheckedCreateWithoutDecisionEvaluationsInput>
+}
+
+export type LoanUpsertWithoutDecisionEvaluationsInput = {
+  update: Prisma.XOR<Prisma.LoanUpdateWithoutDecisionEvaluationsInput, Prisma.LoanUncheckedUpdateWithoutDecisionEvaluationsInput>
+  create: Prisma.XOR<Prisma.LoanCreateWithoutDecisionEvaluationsInput, Prisma.LoanUncheckedCreateWithoutDecisionEvaluationsInput>
+  where?: Prisma.LoanWhereInput
+}
+
+export type LoanUpdateToOneWithWhereWithoutDecisionEvaluationsInput = {
+  where?: Prisma.LoanWhereInput
+  data: Prisma.XOR<Prisma.LoanUpdateWithoutDecisionEvaluationsInput, Prisma.LoanUncheckedUpdateWithoutDecisionEvaluationsInput>
+}
+
+export type LoanUpdateWithoutDecisionEvaluationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  borrowRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainLoanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowerWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  repaymentBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  acceptanceTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  repaymentTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onChainStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainRepaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  principalAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  feeAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  outstandingPrincipalMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  durationDays?: Prisma.IntFieldUpdateOperationsInput | number
+  feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  policyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  policySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutLoansNestedInput
+  lenderMembership?: Prisma.OrganizationMembershipUpdateOneRequiredWithoutLoansAsLenderNestedInput
+  borrowerMembership?: Prisma.OrganizationMembershipUpdateOneRequiredWithoutLoansAsBorrowerNestedInput
+  lendingOffer?: Prisma.LendingOfferUpdateOneWithoutLoansNestedInput
+  repayments?: Prisma.LoanRepaymentUpdateManyWithoutLoanNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutLoanNestedInput
+  decisionReviews?: Prisma.LoanDecisionReviewUpdateManyWithoutLoanNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUpdateManyWithoutLoanNestedInput
+}
+
+export type LoanUncheckedUpdateWithoutDecisionEvaluationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  lenderMembershipId?: Prisma.StringFieldUpdateOperationsInput | string
+  borrowerMembershipId?: Prisma.StringFieldUpdateOperationsInput | string
+  lendingOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainLoanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowerWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  repaymentBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  acceptanceTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  repaymentTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onChainStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainRepaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  principalAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  feeAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  outstandingPrincipalMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  durationDays?: Prisma.IntFieldUpdateOperationsInput | number
+  feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  policyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  policySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  repayments?: Prisma.LoanRepaymentUncheckedUpdateManyWithoutLoanNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutLoanNestedInput
+  decisionReviews?: Prisma.LoanDecisionReviewUncheckedUpdateManyWithoutLoanNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedUpdateManyWithoutLoanNestedInput
+}
+
+export type LoanCreateWithoutDecisionReviewsInput = {
+  id?: string
+  borrowRequestId?: string | null
+  chainLoanId?: string | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  lenderWalletAddress?: string | null
+  borrowerWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  repaymentBaseUnits?: bigint | number | null
+  acceptanceTransactionHash?: string | null
+  repaymentTransactionHash?: string | null
+  onChainStartedAt?: Date | string | null
+  onChainDueAt?: Date | string | null
+  onChainRepaidAt?: Date | string | null
+  principalAmountMinorUnits: bigint | number
+  feeAmountMinorUnits?: bigint | number
+  outstandingPrincipalMinorUnits: bigint | number
+  currency: string
+  durationDays: number
+  feeRateBasisPoints: number
+  status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
+  startedAt?: Date | string
+  repaymentDueAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  policyVersion?: number | null
+  policySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  organization: Prisma.OrganizationCreateNestedOneWithoutLoansInput
+  lenderMembership: Prisma.OrganizationMembershipCreateNestedOneWithoutLoansAsLenderInput
+  borrowerMembership: Prisma.OrganizationMembershipCreateNestedOneWithoutLoansAsBorrowerInput
+  lendingOffer?: Prisma.LendingOfferCreateNestedOneWithoutLoansInput
+  repayments?: Prisma.LoanRepaymentCreateNestedManyWithoutLoanInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutLoanInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationCreateNestedManyWithoutLoanInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptCreateNestedManyWithoutLoanInput
+}
+
+export type LoanUncheckedCreateWithoutDecisionReviewsInput = {
+  id?: string
+  organizationId: string
+  lenderMembershipId: string
+  borrowerMembershipId: string
+  lendingOfferId?: string | null
+  borrowRequestId?: string | null
+  chainLoanId?: string | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  lenderWalletAddress?: string | null
+  borrowerWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  repaymentBaseUnits?: bigint | number | null
+  acceptanceTransactionHash?: string | null
+  repaymentTransactionHash?: string | null
+  onChainStartedAt?: Date | string | null
+  onChainDueAt?: Date | string | null
+  onChainRepaidAt?: Date | string | null
+  principalAmountMinorUnits: bigint | number
+  feeAmountMinorUnits?: bigint | number
+  outstandingPrincipalMinorUnits: bigint | number
+  currency: string
+  durationDays: number
+  feeRateBasisPoints: number
+  status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
+  startedAt?: Date | string
+  repaymentDueAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  policyVersion?: number | null
+  policySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  repayments?: Prisma.LoanRepaymentUncheckedCreateNestedManyWithoutLoanInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutLoanInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUncheckedCreateNestedManyWithoutLoanInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedCreateNestedManyWithoutLoanInput
+}
+
+export type LoanCreateOrConnectWithoutDecisionReviewsInput = {
+  where: Prisma.LoanWhereUniqueInput
+  create: Prisma.XOR<Prisma.LoanCreateWithoutDecisionReviewsInput, Prisma.LoanUncheckedCreateWithoutDecisionReviewsInput>
+}
+
+export type LoanUpsertWithoutDecisionReviewsInput = {
+  update: Prisma.XOR<Prisma.LoanUpdateWithoutDecisionReviewsInput, Prisma.LoanUncheckedUpdateWithoutDecisionReviewsInput>
+  create: Prisma.XOR<Prisma.LoanCreateWithoutDecisionReviewsInput, Prisma.LoanUncheckedCreateWithoutDecisionReviewsInput>
+  where?: Prisma.LoanWhereInput
+}
+
+export type LoanUpdateToOneWithWhereWithoutDecisionReviewsInput = {
+  where?: Prisma.LoanWhereInput
+  data: Prisma.XOR<Prisma.LoanUpdateWithoutDecisionReviewsInput, Prisma.LoanUncheckedUpdateWithoutDecisionReviewsInput>
+}
+
+export type LoanUpdateWithoutDecisionReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  borrowRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainLoanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowerWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  repaymentBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  acceptanceTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  repaymentTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onChainStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainRepaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  principalAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  feeAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  outstandingPrincipalMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  durationDays?: Prisma.IntFieldUpdateOperationsInput | number
+  feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  policyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  policySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutLoansNestedInput
+  lenderMembership?: Prisma.OrganizationMembershipUpdateOneRequiredWithoutLoansAsLenderNestedInput
+  borrowerMembership?: Prisma.OrganizationMembershipUpdateOneRequiredWithoutLoansAsBorrowerNestedInput
+  lendingOffer?: Prisma.LendingOfferUpdateOneWithoutLoansNestedInput
+  repayments?: Prisma.LoanRepaymentUpdateManyWithoutLoanNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutLoanNestedInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUpdateManyWithoutLoanNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUpdateManyWithoutLoanNestedInput
+}
+
+export type LoanUncheckedUpdateWithoutDecisionReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  lenderMembershipId?: Prisma.StringFieldUpdateOperationsInput | string
+  borrowerMembershipId?: Prisma.StringFieldUpdateOperationsInput | string
+  lendingOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainLoanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowerWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  repaymentBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  acceptanceTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  repaymentTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onChainStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainRepaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  principalAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  feeAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  outstandingPrincipalMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  durationDays?: Prisma.IntFieldUpdateOperationsInput | number
+  feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  policyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  policySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  repayments?: Prisma.LoanRepaymentUncheckedUpdateManyWithoutLoanNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutLoanNestedInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUncheckedUpdateManyWithoutLoanNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedUpdateManyWithoutLoanNestedInput
+}
+
+export type LoanCreateWithoutEmployerActionAttemptsInput = {
+  id?: string
+  borrowRequestId?: string | null
+  chainLoanId?: string | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  lenderWalletAddress?: string | null
+  borrowerWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  repaymentBaseUnits?: bigint | number | null
+  acceptanceTransactionHash?: string | null
+  repaymentTransactionHash?: string | null
+  onChainStartedAt?: Date | string | null
+  onChainDueAt?: Date | string | null
+  onChainRepaidAt?: Date | string | null
+  principalAmountMinorUnits: bigint | number
+  feeAmountMinorUnits?: bigint | number
+  outstandingPrincipalMinorUnits: bigint | number
+  currency: string
+  durationDays: number
+  feeRateBasisPoints: number
+  status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
+  startedAt?: Date | string
+  repaymentDueAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  policyVersion?: number | null
+  policySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  organization: Prisma.OrganizationCreateNestedOneWithoutLoansInput
+  lenderMembership: Prisma.OrganizationMembershipCreateNestedOneWithoutLoansAsLenderInput
+  borrowerMembership: Prisma.OrganizationMembershipCreateNestedOneWithoutLoansAsBorrowerInput
+  lendingOffer?: Prisma.LendingOfferCreateNestedOneWithoutLoansInput
+  repayments?: Prisma.LoanRepaymentCreateNestedManyWithoutLoanInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutLoanInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationCreateNestedManyWithoutLoanInput
+  decisionReviews?: Prisma.LoanDecisionReviewCreateNestedManyWithoutLoanInput
+}
+
+export type LoanUncheckedCreateWithoutEmployerActionAttemptsInput = {
+  id?: string
+  organizationId: string
+  lenderMembershipId: string
+  borrowerMembershipId: string
+  lendingOfferId?: string | null
+  borrowRequestId?: string | null
+  chainLoanId?: string | null
+  chainOfferId?: string | null
+  contractAddress?: string | null
+  lenderWalletAddress?: string | null
+  borrowerWalletAddress?: string | null
+  principalBaseUnits?: bigint | number | null
+  repaymentBaseUnits?: bigint | number | null
+  acceptanceTransactionHash?: string | null
+  repaymentTransactionHash?: string | null
+  onChainStartedAt?: Date | string | null
+  onChainDueAt?: Date | string | null
+  onChainRepaidAt?: Date | string | null
+  principalAmountMinorUnits: bigint | number
+  feeAmountMinorUnits?: bigint | number
+  outstandingPrincipalMinorUnits: bigint | number
+  currency: string
+  durationDays: number
+  feeRateBasisPoints: number
+  status: $Enums.LoanStatus
+  requestedAt?: Date | string
+  approvedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  closedAt?: Date | string | null
+  startedAt?: Date | string
+  repaymentDueAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  policyVersion?: number | null
+  policySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  repayments?: Prisma.LoanRepaymentUncheckedCreateNestedManyWithoutLoanInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutLoanInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUncheckedCreateNestedManyWithoutLoanInput
+  decisionReviews?: Prisma.LoanDecisionReviewUncheckedCreateNestedManyWithoutLoanInput
+}
+
+export type LoanCreateOrConnectWithoutEmployerActionAttemptsInput = {
+  where: Prisma.LoanWhereUniqueInput
+  create: Prisma.XOR<Prisma.LoanCreateWithoutEmployerActionAttemptsInput, Prisma.LoanUncheckedCreateWithoutEmployerActionAttemptsInput>
+}
+
+export type LoanUpsertWithoutEmployerActionAttemptsInput = {
+  update: Prisma.XOR<Prisma.LoanUpdateWithoutEmployerActionAttemptsInput, Prisma.LoanUncheckedUpdateWithoutEmployerActionAttemptsInput>
+  create: Prisma.XOR<Prisma.LoanCreateWithoutEmployerActionAttemptsInput, Prisma.LoanUncheckedCreateWithoutEmployerActionAttemptsInput>
+  where?: Prisma.LoanWhereInput
+}
+
+export type LoanUpdateToOneWithWhereWithoutEmployerActionAttemptsInput = {
+  where?: Prisma.LoanWhereInput
+  data: Prisma.XOR<Prisma.LoanUpdateWithoutEmployerActionAttemptsInput, Prisma.LoanUncheckedUpdateWithoutEmployerActionAttemptsInput>
+}
+
+export type LoanUpdateWithoutEmployerActionAttemptsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  borrowRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainLoanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowerWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  repaymentBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  acceptanceTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  repaymentTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onChainStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainRepaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  principalAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  feeAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  outstandingPrincipalMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  durationDays?: Prisma.IntFieldUpdateOperationsInput | number
+  feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  policyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  policySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutLoansNestedInput
+  lenderMembership?: Prisma.OrganizationMembershipUpdateOneRequiredWithoutLoansAsLenderNestedInput
+  borrowerMembership?: Prisma.OrganizationMembershipUpdateOneRequiredWithoutLoansAsBorrowerNestedInput
+  lendingOffer?: Prisma.LendingOfferUpdateOneWithoutLoansNestedInput
+  repayments?: Prisma.LoanRepaymentUpdateManyWithoutLoanNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutLoanNestedInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUpdateManyWithoutLoanNestedInput
+  decisionReviews?: Prisma.LoanDecisionReviewUpdateManyWithoutLoanNestedInput
+}
+
+export type LoanUncheckedUpdateWithoutEmployerActionAttemptsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  lenderMembershipId?: Prisma.StringFieldUpdateOperationsInput | string
+  borrowerMembershipId?: Prisma.StringFieldUpdateOperationsInput | string
+  lendingOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainLoanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chainOfferId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lenderWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  borrowerWalletAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  principalBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  repaymentBaseUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  acceptanceTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  repaymentTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onChainStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onChainRepaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  principalAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  feeAmountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  outstandingPrincipalMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  durationDays?: Prisma.IntFieldUpdateOperationsInput | number
+  feeRateBasisPoints?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumLoanStatusFieldUpdateOperationsInput | $Enums.LoanStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  repaymentDueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  policyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  policySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  repayments?: Prisma.LoanRepaymentUncheckedUpdateManyWithoutLoanNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutLoanNestedInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUncheckedUpdateManyWithoutLoanNestedInput
+  decisionReviews?: Prisma.LoanDecisionReviewUncheckedUpdateManyWithoutLoanNestedInput
 }
 
 export type LoanCreateWithoutRepaymentsInput = {
@@ -1800,6 +2431,9 @@ export type LoanCreateWithoutRepaymentsInput = {
   borrowerMembership: Prisma.OrganizationMembershipCreateNestedOneWithoutLoansAsBorrowerInput
   lendingOffer?: Prisma.LendingOfferCreateNestedOneWithoutLoansInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutLoanInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationCreateNestedManyWithoutLoanInput
+  decisionReviews?: Prisma.LoanDecisionReviewCreateNestedManyWithoutLoanInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptCreateNestedManyWithoutLoanInput
 }
 
 export type LoanUncheckedCreateWithoutRepaymentsInput = {
@@ -1839,6 +2473,9 @@ export type LoanUncheckedCreateWithoutRepaymentsInput = {
   policyVersion?: number | null
   policySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutLoanInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUncheckedCreateNestedManyWithoutLoanInput
+  decisionReviews?: Prisma.LoanDecisionReviewUncheckedCreateNestedManyWithoutLoanInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedCreateNestedManyWithoutLoanInput
 }
 
 export type LoanCreateOrConnectWithoutRepaymentsInput = {
@@ -1894,6 +2531,9 @@ export type LoanUpdateWithoutRepaymentsInput = {
   borrowerMembership?: Prisma.OrganizationMembershipUpdateOneRequiredWithoutLoansAsBorrowerNestedInput
   lendingOffer?: Prisma.LendingOfferUpdateOneWithoutLoansNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutLoanNestedInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUpdateManyWithoutLoanNestedInput
+  decisionReviews?: Prisma.LoanDecisionReviewUpdateManyWithoutLoanNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUpdateManyWithoutLoanNestedInput
 }
 
 export type LoanUncheckedUpdateWithoutRepaymentsInput = {
@@ -1933,6 +2573,9 @@ export type LoanUncheckedUpdateWithoutRepaymentsInput = {
   policyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   policySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutLoanNestedInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUncheckedUpdateManyWithoutLoanNestedInput
+  decisionReviews?: Prisma.LoanDecisionReviewUncheckedUpdateManyWithoutLoanNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedUpdateManyWithoutLoanNestedInput
 }
 
 export type LoanCreateWithoutAuditEventsInput = {
@@ -1972,6 +2615,9 @@ export type LoanCreateWithoutAuditEventsInput = {
   borrowerMembership: Prisma.OrganizationMembershipCreateNestedOneWithoutLoansAsBorrowerInput
   lendingOffer?: Prisma.LendingOfferCreateNestedOneWithoutLoansInput
   repayments?: Prisma.LoanRepaymentCreateNestedManyWithoutLoanInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationCreateNestedManyWithoutLoanInput
+  decisionReviews?: Prisma.LoanDecisionReviewCreateNestedManyWithoutLoanInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptCreateNestedManyWithoutLoanInput
 }
 
 export type LoanUncheckedCreateWithoutAuditEventsInput = {
@@ -2011,6 +2657,9 @@ export type LoanUncheckedCreateWithoutAuditEventsInput = {
   policyVersion?: number | null
   policySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   repayments?: Prisma.LoanRepaymentUncheckedCreateNestedManyWithoutLoanInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUncheckedCreateNestedManyWithoutLoanInput
+  decisionReviews?: Prisma.LoanDecisionReviewUncheckedCreateNestedManyWithoutLoanInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedCreateNestedManyWithoutLoanInput
 }
 
 export type LoanCreateOrConnectWithoutAuditEventsInput = {
@@ -2066,6 +2715,9 @@ export type LoanUpdateWithoutAuditEventsInput = {
   borrowerMembership?: Prisma.OrganizationMembershipUpdateOneRequiredWithoutLoansAsBorrowerNestedInput
   lendingOffer?: Prisma.LendingOfferUpdateOneWithoutLoansNestedInput
   repayments?: Prisma.LoanRepaymentUpdateManyWithoutLoanNestedInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUpdateManyWithoutLoanNestedInput
+  decisionReviews?: Prisma.LoanDecisionReviewUpdateManyWithoutLoanNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUpdateManyWithoutLoanNestedInput
 }
 
 export type LoanUncheckedUpdateWithoutAuditEventsInput = {
@@ -2105,6 +2757,9 @@ export type LoanUncheckedUpdateWithoutAuditEventsInput = {
   policyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   policySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   repayments?: Prisma.LoanRepaymentUncheckedUpdateManyWithoutLoanNestedInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUncheckedUpdateManyWithoutLoanNestedInput
+  decisionReviews?: Prisma.LoanDecisionReviewUncheckedUpdateManyWithoutLoanNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedUpdateManyWithoutLoanNestedInput
 }
 
 export type LoanCreateManyOrganizationInput = {
@@ -2181,6 +2836,9 @@ export type LoanUpdateWithoutOrganizationInput = {
   lendingOffer?: Prisma.LendingOfferUpdateOneWithoutLoansNestedInput
   repayments?: Prisma.LoanRepaymentUpdateManyWithoutLoanNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutLoanNestedInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUpdateManyWithoutLoanNestedInput
+  decisionReviews?: Prisma.LoanDecisionReviewUpdateManyWithoutLoanNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUpdateManyWithoutLoanNestedInput
 }
 
 export type LoanUncheckedUpdateWithoutOrganizationInput = {
@@ -2220,6 +2878,9 @@ export type LoanUncheckedUpdateWithoutOrganizationInput = {
   policySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   repayments?: Prisma.LoanRepaymentUncheckedUpdateManyWithoutLoanNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutLoanNestedInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUncheckedUpdateManyWithoutLoanNestedInput
+  decisionReviews?: Prisma.LoanDecisionReviewUncheckedUpdateManyWithoutLoanNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedUpdateManyWithoutLoanNestedInput
 }
 
 export type LoanUncheckedUpdateManyWithoutOrganizationInput = {
@@ -2368,6 +3029,9 @@ export type LoanUpdateWithoutLenderMembershipInput = {
   lendingOffer?: Prisma.LendingOfferUpdateOneWithoutLoansNestedInput
   repayments?: Prisma.LoanRepaymentUpdateManyWithoutLoanNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutLoanNestedInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUpdateManyWithoutLoanNestedInput
+  decisionReviews?: Prisma.LoanDecisionReviewUpdateManyWithoutLoanNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUpdateManyWithoutLoanNestedInput
 }
 
 export type LoanUncheckedUpdateWithoutLenderMembershipInput = {
@@ -2406,6 +3070,9 @@ export type LoanUncheckedUpdateWithoutLenderMembershipInput = {
   policySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   repayments?: Prisma.LoanRepaymentUncheckedUpdateManyWithoutLoanNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutLoanNestedInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUncheckedUpdateManyWithoutLoanNestedInput
+  decisionReviews?: Prisma.LoanDecisionReviewUncheckedUpdateManyWithoutLoanNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedUpdateManyWithoutLoanNestedInput
 }
 
 export type LoanUncheckedUpdateManyWithoutLenderMembershipInput = {
@@ -2481,6 +3148,9 @@ export type LoanUpdateWithoutBorrowerMembershipInput = {
   lendingOffer?: Prisma.LendingOfferUpdateOneWithoutLoansNestedInput
   repayments?: Prisma.LoanRepaymentUpdateManyWithoutLoanNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutLoanNestedInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUpdateManyWithoutLoanNestedInput
+  decisionReviews?: Prisma.LoanDecisionReviewUpdateManyWithoutLoanNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUpdateManyWithoutLoanNestedInput
 }
 
 export type LoanUncheckedUpdateWithoutBorrowerMembershipInput = {
@@ -2519,6 +3189,9 @@ export type LoanUncheckedUpdateWithoutBorrowerMembershipInput = {
   policySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   repayments?: Prisma.LoanRepaymentUncheckedUpdateManyWithoutLoanNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutLoanNestedInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUncheckedUpdateManyWithoutLoanNestedInput
+  decisionReviews?: Prisma.LoanDecisionReviewUncheckedUpdateManyWithoutLoanNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedUpdateManyWithoutLoanNestedInput
 }
 
 export type LoanUncheckedUpdateManyWithoutBorrowerMembershipInput = {
@@ -2630,6 +3303,9 @@ export type LoanUpdateWithoutLendingOfferInput = {
   borrowerMembership?: Prisma.OrganizationMembershipUpdateOneRequiredWithoutLoansAsBorrowerNestedInput
   repayments?: Prisma.LoanRepaymentUpdateManyWithoutLoanNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutLoanNestedInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUpdateManyWithoutLoanNestedInput
+  decisionReviews?: Prisma.LoanDecisionReviewUpdateManyWithoutLoanNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUpdateManyWithoutLoanNestedInput
 }
 
 export type LoanUncheckedUpdateWithoutLendingOfferInput = {
@@ -2668,6 +3344,9 @@ export type LoanUncheckedUpdateWithoutLendingOfferInput = {
   policySnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   repayments?: Prisma.LoanRepaymentUncheckedUpdateManyWithoutLoanNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutLoanNestedInput
+  decisionEvaluations?: Prisma.LoanDecisionEvaluationUncheckedUpdateManyWithoutLoanNestedInput
+  decisionReviews?: Prisma.LoanDecisionReviewUncheckedUpdateManyWithoutLoanNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedUpdateManyWithoutLoanNestedInput
 }
 
 export type LoanUncheckedUpdateManyWithoutLendingOfferInput = {
@@ -2714,11 +3393,17 @@ export type LoanUncheckedUpdateManyWithoutLendingOfferInput = {
 export type LoanCountOutputType = {
   repayments: number
   auditEvents: number
+  decisionEvaluations: number
+  decisionReviews: number
+  employerActionAttempts: number
 }
 
 export type LoanCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   repayments?: boolean | LoanCountOutputTypeCountRepaymentsArgs
   auditEvents?: boolean | LoanCountOutputTypeCountAuditEventsArgs
+  decisionEvaluations?: boolean | LoanCountOutputTypeCountDecisionEvaluationsArgs
+  decisionReviews?: boolean | LoanCountOutputTypeCountDecisionReviewsArgs
+  employerActionAttempts?: boolean | LoanCountOutputTypeCountEmployerActionAttemptsArgs
 }
 
 /**
@@ -2743,6 +3428,27 @@ export type LoanCountOutputTypeCountRepaymentsArgs<ExtArgs extends runtime.Types
  */
 export type LoanCountOutputTypeCountAuditEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.AuditEventWhereInput
+}
+
+/**
+ * LoanCountOutputType without action
+ */
+export type LoanCountOutputTypeCountDecisionEvaluationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LoanDecisionEvaluationWhereInput
+}
+
+/**
+ * LoanCountOutputType without action
+ */
+export type LoanCountOutputTypeCountDecisionReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LoanDecisionReviewWhereInput
+}
+
+/**
+ * LoanCountOutputType without action
+ */
+export type LoanCountOutputTypeCountEmployerActionAttemptsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployerActionAttemptWhereInput
 }
 
 
@@ -2788,6 +3494,9 @@ export type LoanSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   lendingOffer?: boolean | Prisma.Loan$lendingOfferArgs<ExtArgs>
   repayments?: boolean | Prisma.Loan$repaymentsArgs<ExtArgs>
   auditEvents?: boolean | Prisma.Loan$auditEventsArgs<ExtArgs>
+  decisionEvaluations?: boolean | Prisma.Loan$decisionEvaluationsArgs<ExtArgs>
+  decisionReviews?: boolean | Prisma.Loan$decisionReviewsArgs<ExtArgs>
+  employerActionAttempts?: boolean | Prisma.Loan$employerActionAttemptsArgs<ExtArgs>
   _count?: boolean | Prisma.LoanCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["loan"]>
 
@@ -2921,6 +3630,9 @@ export type LoanInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   lendingOffer?: boolean | Prisma.Loan$lendingOfferArgs<ExtArgs>
   repayments?: boolean | Prisma.Loan$repaymentsArgs<ExtArgs>
   auditEvents?: boolean | Prisma.Loan$auditEventsArgs<ExtArgs>
+  decisionEvaluations?: boolean | Prisma.Loan$decisionEvaluationsArgs<ExtArgs>
+  decisionReviews?: boolean | Prisma.Loan$decisionReviewsArgs<ExtArgs>
+  employerActionAttempts?: boolean | Prisma.Loan$employerActionAttemptsArgs<ExtArgs>
   _count?: boolean | Prisma.LoanCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type LoanIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2945,6 +3657,9 @@ export type $LoanPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     lendingOffer: Prisma.$LendingOfferPayload<ExtArgs> | null
     repayments: Prisma.$LoanRepaymentPayload<ExtArgs>[]
     auditEvents: Prisma.$AuditEventPayload<ExtArgs>[]
+    decisionEvaluations: Prisma.$LoanDecisionEvaluationPayload<ExtArgs>[]
+    decisionReviews: Prisma.$LoanDecisionReviewPayload<ExtArgs>[]
+    employerActionAttempts: Prisma.$EmployerActionAttemptPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3382,6 +4097,9 @@ export interface Prisma__LoanClient<T, Null = never, ExtArgs extends runtime.Typ
   lendingOffer<T extends Prisma.Loan$lendingOfferArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Loan$lendingOfferArgs<ExtArgs>>): Prisma.Prisma__LendingOfferClient<runtime.Types.Result.GetResult<Prisma.$LendingOfferPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   repayments<T extends Prisma.Loan$repaymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Loan$repaymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LoanRepaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditEvents<T extends Prisma.Loan$auditEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Loan$auditEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  decisionEvaluations<T extends Prisma.Loan$decisionEvaluationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Loan$decisionEvaluationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LoanDecisionEvaluationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  decisionReviews<T extends Prisma.Loan$decisionReviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Loan$decisionReviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LoanDecisionReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  employerActionAttempts<T extends Prisma.Loan$employerActionAttemptsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Loan$employerActionAttemptsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployerActionAttemptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3911,6 +4629,78 @@ export type Loan$auditEventsArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.AuditEventScalarFieldEnum | Prisma.AuditEventScalarFieldEnum[]
+}
+
+/**
+ * Loan.decisionEvaluations
+ */
+export type Loan$decisionEvaluationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LoanDecisionEvaluation
+   */
+  select?: Prisma.LoanDecisionEvaluationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LoanDecisionEvaluation
+   */
+  omit?: Prisma.LoanDecisionEvaluationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LoanDecisionEvaluationInclude<ExtArgs> | null
+  where?: Prisma.LoanDecisionEvaluationWhereInput
+  orderBy?: Prisma.LoanDecisionEvaluationOrderByWithRelationInput | Prisma.LoanDecisionEvaluationOrderByWithRelationInput[]
+  cursor?: Prisma.LoanDecisionEvaluationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LoanDecisionEvaluationScalarFieldEnum | Prisma.LoanDecisionEvaluationScalarFieldEnum[]
+}
+
+/**
+ * Loan.decisionReviews
+ */
+export type Loan$decisionReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LoanDecisionReview
+   */
+  select?: Prisma.LoanDecisionReviewSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LoanDecisionReview
+   */
+  omit?: Prisma.LoanDecisionReviewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LoanDecisionReviewInclude<ExtArgs> | null
+  where?: Prisma.LoanDecisionReviewWhereInput
+  orderBy?: Prisma.LoanDecisionReviewOrderByWithRelationInput | Prisma.LoanDecisionReviewOrderByWithRelationInput[]
+  cursor?: Prisma.LoanDecisionReviewWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LoanDecisionReviewScalarFieldEnum | Prisma.LoanDecisionReviewScalarFieldEnum[]
+}
+
+/**
+ * Loan.employerActionAttempts
+ */
+export type Loan$employerActionAttemptsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployerActionAttempt
+   */
+  select?: Prisma.EmployerActionAttemptSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployerActionAttempt
+   */
+  omit?: Prisma.EmployerActionAttemptOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployerActionAttemptInclude<ExtArgs> | null
+  where?: Prisma.EmployerActionAttemptWhereInput
+  orderBy?: Prisma.EmployerActionAttemptOrderByWithRelationInput | Prisma.EmployerActionAttemptOrderByWithRelationInput[]
+  cursor?: Prisma.EmployerActionAttemptWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployerActionAttemptScalarFieldEnum | Prisma.EmployerActionAttemptScalarFieldEnum[]
 }
 
 /**

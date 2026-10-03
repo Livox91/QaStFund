@@ -44,7 +44,15 @@ export function EmployeeLoanList({
                 Due {dateFormatter.format(loan.repaymentDueAt)}
               </p>
             </div>
-            <StatusDisplay status={loan.status} />
+            <StatusDisplay
+              status={
+                loan.status !== "REPAID" &&
+                (loan.riskClassification === "overdue" ||
+                  loan.riskClassification === "default_candidate")
+                  ? "OVERDUE"
+                  : loan.status
+              }
+            />
           </div>
 
           <dl className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3">

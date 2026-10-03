@@ -1,6 +1,6 @@
 # Employee P2P Lending MVP
 
-A production-oriented foundation for an employee peer-to-peer lending application. Local authentication, organization membership, employer reporting, employee dashboards, lending offers, marketplace discovery, transactional borrowing, and manual partial/full repayment with internal mock balances are implemented. Payroll, external settlement, ERP, and blockchain behavior are intentionally not implemented.
+A production-oriented foundation for an employee peer-to-peer lending application. Local authentication, organization membership, employer reporting, employee dashboards, lending offers, marketplace discovery, Arc Testnet escrow funding and borrowing, full on-chain repayment, loan monitoring, and read-only ERPNext employee synchronization are implemented. Payroll writes and production settlement are intentionally not implemented.
 
 ## Prerequisites
 
@@ -113,6 +113,11 @@ APP_URL="http://localhost:3000"
 All `.env*` files except `.env.example` are ignored by Git. Server startup validates both required variables with Zod and reports field-level configuration errors without printing secrets.
 
 `APP_URL` must match the browser origin, including its port. Authentication POST routes reject requests from other origins.
+
+Arc borrowing additionally requires a deployed authorization-enabled escrow
+and the server-only `ARC_BORROW_AUTHORIZER_PRIVATE_KEY`. See
+[`BORROW_AUTHORIZATION.md`](./BORROW_AUTHORIZATION.md) for the trust model,
+deployment steps, and incompatibility with offers from the previous contract.
 
 ## PostgreSQL setup without Docker
 

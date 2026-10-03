@@ -122,8 +122,8 @@ export function CreateLendingOfferForm({ currency }: { currency: string }) {
             functionName: "createOffer",
             args: [
               principal,
-              intent.feeRateBasisPoints,
-              intent.durationSeconds,
+              BigInt(intent.feeRateBasisPoints),
+              BigInt(intent.durationSeconds),
               intent.requestId,
             ],
           }),

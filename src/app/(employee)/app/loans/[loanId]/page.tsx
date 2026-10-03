@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { requireEmployeePage } from "@/modules/auth/infrastructure/auth-guard";
 import { EmployeeLoanNotFoundError } from "@/modules/loans/application/errors/repay-loan-errors";
+import { evaluateBorrowerLoanForActor } from "@/modules/loan-decisions/index.server";
 import { getEmployeeLoanDetailsForActor } from "@/modules/loans/index.server";
 import { employeeLoanIdSchema } from "@/modules/loans/schemas/repay-loan.schema";
 import { EmployeeLoanDetails } from "@/modules/loans/ui/employee-loan-details";
@@ -27,8 +28,13 @@ export default async function EmployeeLoanDetailsPage({
   }
 
   const query = await searchParams;
+  const decision = await evaluateBorrowerLoanForActor(actor, parsedLoanId.data);
 
   return (
-    <EmployeeLoanDetails loan={loan} repaymentRecorded={query.repaid === "1"} />
+    <EmployeeLoanDetails
+      decision={decision}
+      loan={loan}
+      repaymentRecorded={query.repaid === "1"}
+    />
   );
 }

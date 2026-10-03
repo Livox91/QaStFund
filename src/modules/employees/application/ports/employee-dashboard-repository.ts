@@ -1,5 +1,6 @@
 import type { EmployeeLoanParticipation } from "@/modules/employees/domain/employee-dashboard";
 import type { LoanStatus } from "@/modules/loans";
+import type { LoanDecisionClassification } from "@/modules/loan-decisions/domain/loan-decision";
 
 export type EmployeeDashboardLoanRecord = Readonly<{
   id: string;
@@ -10,6 +11,7 @@ export type EmployeeDashboardLoanRecord = Readonly<{
   outstandingPrincipalMinorUnits: bigint;
   currency: string;
   status: LoanStatus;
+  riskClassification?: LoanDecisionClassification | null;
   repaymentDueAt: Date;
   repayments: ReadonlyArray<Readonly<{ amountMinorUnits: bigint }>>;
 }>;

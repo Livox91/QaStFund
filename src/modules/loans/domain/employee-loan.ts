@@ -69,7 +69,7 @@ export function toEmployeeBorrowedLoanDetails(
     ...loan,
     ...progress,
     canRepay:
-      loan.status === "ACTIVE" &&
+      (loan.status === "ACTIVE" || loan.status === "OVERDUE") &&
       loan.repaymentBaseUnits !== null &&
       progress.remainingAmountMinorUnits > 0n,
   };

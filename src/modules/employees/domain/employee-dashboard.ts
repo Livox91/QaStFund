@@ -1,4 +1,5 @@
 import type { LoanStatus } from "@/modules/loans";
+import type { LoanDecisionClassification } from "@/modules/loan-decisions/domain/loan-decision";
 
 export type EmployeeLoanParticipation = "BORROWING" | "LENDING";
 
@@ -15,6 +16,7 @@ export type EmployeeDashboardLoan = Readonly<{
   progressBasisPoints: number;
   currency: string;
   status: LoanStatus;
+  riskClassification?: LoanDecisionClassification | null;
   repaymentDueAt: Date;
 }>;
 

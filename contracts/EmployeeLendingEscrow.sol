@@ -3,10 +3,16 @@ pragma solidity ^0.8.28;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {EIP712} from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
+import {SignatureChecker} from "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
-contract EmployeeLendingEscrow is ReentrancyGuard {
+contract EmployeeLendingEscrow is EIP712, ReentrancyGuard {
     using SafeERC20 for IERC20;
+
+    bytes32 public constant BORROW_AUTHORIZATION_TYPEHASH = keccak256(
+        "BorrowAuthorization(uint256 offerId,address borrower,uint256 expiry,bytes32 authorizationId)"
+    );
 
     struct LoanOffer {
         uint256 id;
@@ -39,6 +45,7 @@ contract EmployeeLendingEscrow is ReentrancyGuard {
     }
 
     IERC20 public immutable usdc;
+    address public immutable authorizationSigner;
     uint256 public nextOfferId = 1;
     uint256 public nextLoanId = 1;
     uint256 public totalReserved;
@@ -47,8 +54,13 @@ contract EmployeeLendingEscrow is ReentrancyGuard {
     mapping(uint256 loanId => Loan loan) public loans;
     mapping(uint256 offerId => uint256 loanId) public offerLoanIds;
     mapping(bytes32 requestId => bool used) public usedRequestIds;
+    mapping(bytes32 authorizationId => bool used) public usedBorrowAuthorizations;
 
+    error AuthorizationAlreadyUsed();
+    error AuthorizationExpired();
     error DuplicateRequest();
+    error InvalidAuthorization();
+    error InvalidAuthorizationId();
     error InvalidDuration();
     error InvalidInterestRate();
     error InvalidLoan();
@@ -96,9 +108,13 @@ contract EmployeeLendingEscrow is ReentrancyGuard {
         uint256 repaidAt
     );
 
-    constructor(IERC20 usdcAddress) {
-        if (address(usdcAddress) == address(0)) revert ZeroAddress();
+    constructor(IERC20 usdcAddress, address borrowAuthorizationSigner) EIP712("EmployeeLendingEscrow", "1") {
+        if (
+            address(usdcAddress) == address(0) ||
+            borrowAuthorizationSigner == address(0)
+        ) revert ZeroAddress();
         usdc = usdcAddress;
+        authorizationSigner = borrowAuthorizationSigner;
     }
 
     function createOffer(
@@ -155,11 +171,39 @@ contract EmployeeLendingEscrow is ReentrancyGuard {
     }
 
     function acceptOffer(
-        uint256 offerId
+        uint256 offerId,
+        uint256 authorizationExpiry,
+        bytes32 authorizationId,
+        bytes calldata authorizationSignature
     ) external nonReentrant returns (uint256 loanId) {
+        if (authorizationId == bytes32(0)) revert InvalidAuthorizationId();
+        if (usedBorrowAuthorizations[authorizationId]) {
+            revert AuthorizationAlreadyUsed();
+        }
+        if (block.timestamp > authorizationExpiry) revert AuthorizationExpired();
+
         LoanOffer storage offer = offers[offerId];
         if (!offer.active) revert OfferNotActive();
         if (offer.lender == msg.sender) revert SelfBorrowingNotAllowed();
+
+        bytes32 authorizationDigest = _hashTypedDataV4(
+            keccak256(
+                abi.encode(
+                    BORROW_AUTHORIZATION_TYPEHASH,
+                    offerId,
+                    msg.sender,
+                    authorizationExpiry,
+                    authorizationId
+                )
+            )
+        );
+        if (
+            !SignatureChecker.isValidSignatureNow(
+                authorizationSigner,
+                authorizationDigest,
+                authorizationSignature
+            )
+        ) revert InvalidAuthorization();
 
         // Round interest up to the nearest USDC base unit so a positive
         // fractional-base-unit obligation is never rounded away.
@@ -170,6 +214,7 @@ contract EmployeeLendingEscrow is ReentrancyGuard {
         uint256 dueTime = startTime + offer.duration;
 
         offer.active = false;
+        usedBorrowAuthorizations[authorizationId] = true;
         totalReserved -= offer.principal;
         loanId = nextLoanId++;
         offerLoanIds[offerId] = loanId;

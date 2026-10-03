@@ -29,6 +29,7 @@ type CurrentLoanRow = {
   lenderMembership: { user: { name: string } };
   borrowerMembership: { user: { name: string } };
   repayments: Array<{ amountMinorUnits: bigint }>;
+  decisionEvaluations: Array<{ classification: string }>;
 };
 
 type ActivityRow = {
@@ -62,6 +63,10 @@ function toLoanRecord(
     status: loan.status,
     repaymentDueAt: loan.repaymentDueAt,
     repayments: loan.repayments,
+    riskClassification:
+      (loan.decisionEvaluations[0]?.classification.toLowerCase() as
+        "healthy" | "due_soon" | "overdue" | "default_candidate" | undefined) ??
+      null,
   };
 }
 
@@ -151,6 +156,11 @@ export const prismaEmployeeDashboardRepository: EmployeeDashboardRepository = {
             where: { status: "COMPLETED" },
             select: { amountMinorUnits: true },
             orderBy: { paidAt: "asc" },
+          },
+          decisionEvaluations: {
+            orderBy: { evaluatedAt: "desc" },
+            take: 1,
+            select: { classification: true },
           },
         },
       });

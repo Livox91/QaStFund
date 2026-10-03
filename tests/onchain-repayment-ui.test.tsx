@@ -99,4 +99,30 @@ describe("on-chain repayment UI", () => {
     expect(markup).toContain("Interest earned");
     expect(markup).toContain("$5.00");
   });
+
+  it("shows Alice an overdue state without claiming repayment", () => {
+    const loan: EmployeeDashboardLoan = {
+      id: baseLoan.id,
+      counterpartyName: "Bob",
+      participation: "LENDING",
+      principalAmountMinorUnits: 10_000n,
+      feeAmountMinorUnits: 500n,
+      totalAgreedAmountMinorUnits: 10_500n,
+      repaidAmountMinorUnits: 0n,
+      outstandingPrincipalMinorUnits: 10_000n,
+      remainingAgreedAmountMinorUnits: 10_500n,
+      progressBasisPoints: 0,
+      currency: "USD",
+      status: "ACTIVE",
+      riskClassification: "overdue",
+      repaymentDueAt: dueAt,
+    };
+    const markup = renderToStaticMarkup(
+      <EmployeeLoanList emptyDescription="" emptyTitle="" loans={[loan]} />,
+    );
+
+    expect(markup).toContain("Overdue");
+    expect(markup).toContain("Expected repayment");
+    expect(markup).not.toContain("Received");
+  });
 });

@@ -26,6 +26,73 @@ export const EmploymentStatus = {
 export type EmploymentStatus = (typeof EmploymentStatus)[keyof typeof EmploymentStatus]
 
 
+export const EmploymentStatusSource = {
+  ERPNEXT: 'ERPNEXT'
+} as const
+
+export type EmploymentStatusSource = (typeof EmploymentStatusSource)[keyof typeof EmploymentStatusSource]
+
+
+export const EmployeeDirectoryProvider = {
+  ERPNEXT: 'ERPNEXT'
+} as const
+
+export type EmployeeDirectoryProvider = (typeof EmployeeDirectoryProvider)[keyof typeof EmployeeDirectoryProvider]
+
+
+export const EmployeeDirectoryAuthMethod = {
+  TOKEN: 'TOKEN',
+  OAUTH_BEARER: 'OAUTH_BEARER'
+} as const
+
+export type EmployeeDirectoryAuthMethod = (typeof EmployeeDirectoryAuthMethod)[keyof typeof EmployeeDirectoryAuthMethod]
+
+
+export const EmployeeDirectoryConnectionStatus = {
+  NOT_TESTED: 'NOT_TESTED',
+  CONNECTED: 'CONNECTED',
+  FAILED: 'FAILED'
+} as const
+
+export type EmployeeDirectoryConnectionStatus = (typeof EmployeeDirectoryConnectionStatus)[keyof typeof EmployeeDirectoryConnectionStatus]
+
+
+export const EmployeeDirectorySyncStatus = {
+  RUNNING: 'RUNNING',
+  SUCCESS: 'SUCCESS',
+  PARTIAL: 'PARTIAL',
+  FAILED: 'FAILED'
+} as const
+
+export type EmployeeDirectorySyncStatus = (typeof EmployeeDirectorySyncStatus)[keyof typeof EmployeeDirectorySyncStatus]
+
+
+export const EmployeeDirectorySyncTrigger = {
+  MANUAL: 'MANUAL',
+  SCHEDULED: 'SCHEDULED'
+} as const
+
+export type EmployeeDirectorySyncTrigger = (typeof EmployeeDirectorySyncTrigger)[keyof typeof EmployeeDirectorySyncTrigger]
+
+
+export const EmployeeDirectoryMatchStatus = {
+  MATCHED: 'MATCHED',
+  UNMATCHED: 'UNMATCHED',
+  AMBIGUOUS: 'AMBIGUOUS',
+  DUPLICATE_EXTERNAL_ID: 'DUPLICATE_EXTERNAL_ID'
+} as const
+
+export type EmployeeDirectoryMatchStatus = (typeof EmployeeDirectoryMatchStatus)[keyof typeof EmployeeDirectoryMatchStatus]
+
+
+export const EmployeeDirectoryMatchMethod = {
+  UNIQUE_EMAIL: 'UNIQUE_EMAIL',
+  EXPLICIT: 'EXPLICIT'
+} as const
+
+export type EmployeeDirectoryMatchMethod = (typeof EmployeeDirectoryMatchMethod)[keyof typeof EmployeeDirectoryMatchMethod]
+
+
 export const LendingOfferStatus = {
   ACTIVE: 'ACTIVE',
   PAUSED: 'PAUSED',
@@ -76,7 +143,9 @@ export const AuditEventType = {
   EMPLOYEE_BORROWING_SUSPENDED: 'EMPLOYEE_BORROWING_SUSPENDED',
   EMPLOYEE_BORROWING_ENABLED: 'EMPLOYEE_BORROWING_ENABLED',
   EMPLOYEE_LENDING_SUSPENDED: 'EMPLOYEE_LENDING_SUSPENDED',
-  EMPLOYEE_LENDING_ENABLED: 'EMPLOYEE_LENDING_ENABLED'
+  EMPLOYEE_LENDING_ENABLED: 'EMPLOYEE_LENDING_ENABLED',
+  EMPLOYEE_DIRECTORY_SYNC_COMPLETED: 'EMPLOYEE_DIRECTORY_SYNC_COMPLETED',
+  EMPLOYEE_DIRECTORY_SYNC_FAILED: 'EMPLOYEE_DIRECTORY_SYNC_FAILED'
 } as const
 
 export type AuditEventType = (typeof AuditEventType)[keyof typeof AuditEventType]
@@ -90,6 +159,60 @@ export const RepaymentStatus = {
 } as const
 
 export type RepaymentStatus = (typeof RepaymentStatus)[keyof typeof RepaymentStatus]
+
+
+export const LoanDecisionClassification = {
+  HEALTHY: 'HEALTHY',
+  DUE_SOON: 'DUE_SOON',
+  OVERDUE: 'OVERDUE',
+  DEFAULT_CANDIDATE: 'DEFAULT_CANDIDATE'
+} as const
+
+export type LoanDecisionClassification = (typeof LoanDecisionClassification)[keyof typeof LoanDecisionClassification]
+
+
+export const LoanDecisionAction = {
+  NONE: 'NONE',
+  REMIND: 'REMIND',
+  FLAG_FOR_REVIEW: 'FLAG_FOR_REVIEW',
+  EMPLOYER_REVIEW: 'EMPLOYER_REVIEW'
+} as const
+
+export type LoanDecisionAction = (typeof LoanDecisionAction)[keyof typeof LoanDecisionAction]
+
+
+export const LoanDecisionSource = {
+  RULES: 'RULES',
+  MODEL: 'MODEL'
+} as const
+
+export type LoanDecisionSource = (typeof LoanDecisionSource)[keyof typeof LoanDecisionSource]
+
+
+export const EmployerActionType = {
+  MARK_REVIEWED: 'MARK_REVIEWED',
+  REQUEST_EMPLOYEE_CONTACT: 'REQUEST_EMPLOYEE_CONTACT',
+  REQUEST_HR_FOLLOW_UP: 'REQUEST_HR_FOLLOW_UP'
+} as const
+
+export type EmployerActionType = (typeof EmployerActionType)[keyof typeof EmployerActionType]
+
+
+export const EmployerActionStatus = {
+  PENDING: 'PENDING',
+  COMPLETED: 'COMPLETED',
+  REJECTED: 'REJECTED',
+  FAILED: 'FAILED'
+} as const
+
+export type EmployerActionStatus = (typeof EmployerActionStatus)[keyof typeof EmployerActionStatus]
+
+
+export const EmployerActionProvider = {
+  MOCK: 'MOCK'
+} as const
+
+export type EmployerActionProvider = (typeof EmployerActionProvider)[keyof typeof EmployerActionProvider]
 
 
 export const LedgerAccountType = {

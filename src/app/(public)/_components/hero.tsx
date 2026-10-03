@@ -96,7 +96,7 @@ export function Hero() {
                   One trusted company network
                 </p>
               </div>
-              <span className="flex size-9 items-center justify-center rounded-full bg-slate-950 text-white">
+              <span className="flex size-9 items-center justify-center rounded-full bg-slate-950 !text-white">
                 <LandingIcon className="size-4" name="building" />
               </span>
             </div>
@@ -117,7 +117,7 @@ export function Hero() {
               />
             </div>
 
-            <div className="mt-4 rounded-2xl bg-slate-950 p-5 text-white">
+            <div className="mt-4 rounded-2xl bg-slate-950 p-5 !text-white">
               <div className="flex items-start gap-4">
                 <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-teal-300">
                   <LandingIcon name="people" />

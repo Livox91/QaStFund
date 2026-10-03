@@ -96,7 +96,7 @@ export function AudienceSections() {
       </section>
 
       <section
-        className="bg-slate-950 py-20 text-white sm:py-24"
+        className="bg-slate-950 py-20 !text-white sm:py-24"
         id="employers"
       >
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.2fr_0.8fr] lg:px-8">
@@ -109,7 +109,7 @@ export function AudienceSections() {
                 <span className="flex size-10 items-center justify-center rounded-xl bg-teal-400/10 text-teal-300">
                   <LandingIcon name={benefit.icon} />
                 </span>
-                <h3 className="mt-4 font-semibold text-white">
+                <h3 className="mt-4 font-semibold !text-white">
                   {benefit.title}
                 </h3>
                 <p className="mt-2 text-sm leading-6 text-slate-400">
@@ -122,7 +122,7 @@ export function AudienceSections() {
             <p className="text-sm font-semibold tracking-wide text-teal-300 uppercase">
               For employers
             </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-[-0.025em] text-white sm:text-4xl">
+            <h2 className="mt-3 text-3xl font-semibold tracking-[-0.025em] !text-white sm:text-4xl">
               Support employees within a program you can govern
             </h2>
             <p className="mt-4 text-base leading-7 text-slate-300 sm:text-lg">

@@ -4,6 +4,7 @@ import { toArcWalletResponse } from "@/modules/arc-wallet/api/arc-wallet-respons
 import { completeArcWalletChallengeForActor } from "@/modules/arc-wallet/index.server";
 import { completeArcWalletChallengeSchema } from "@/modules/arc-wallet/schemas/arc-wallet.schema";
 import { apiError, apiSuccess } from "@/shared/api/responses";
+import { assertTrustedRequestOrigin } from "@/shared/api/request-origin";
 import { ApplicationError } from "@/shared/errors/application-error";
 
 export const dynamic = "force-dynamic";
@@ -11,6 +12,7 @@ export const runtime = "nodejs";
 
 export async function POST(request: Request): Promise<Response> {
   try {
+    assertTrustedRequestOrigin(request);
     const input = completeArcWalletChallengeSchema.parse(await request.json());
     const wallet = await completeArcWalletChallengeForActor(
       await getCurrentActor(),

@@ -5,11 +5,13 @@ import { getEmployeeDashboard } from "@/modules/employees/application/get-employ
 import { getEmployeeIdentity } from "@/modules/employees/application/get-employee-identity";
 import { prismaEmployeeDashboardRepository } from "@/modules/employees/infrastructure/prisma-employee-dashboard-repository";
 import { prismaEmployeeIdentityRepository } from "@/modules/employees/infrastructure/prisma-employee-identity-repository";
+import { evaluateEmployeeLoansForActor } from "@/modules/loan-decisions/index.server";
 
-export function getEmployeeDashboardForActor(
+export async function getEmployeeDashboardForActor(
   actor: AuthenticatedActor,
   now = new Date(),
 ) {
+  await evaluateEmployeeLoansForActor(actor);
   return getEmployeeDashboard(actor, prismaEmployeeDashboardRepository, now);
 }
 

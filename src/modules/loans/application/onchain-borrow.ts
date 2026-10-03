@@ -21,7 +21,9 @@ import {
   getConfiguredEscrowAddress,
 } from "@/integrations/arc/employee-lending-escrow";
 import type { AuthenticatedActor } from "@/modules/auth/domain/actor";
+import { borrowRequestIdToAuthorizationId } from "@/modules/loans/domain/borrow-authorization";
 import { calculateOnChainRepaymentBaseUnits } from "@/modules/loans/domain/onchain-borrow";
+import { signBorrowAuthorization } from "@/modules/loans/infrastructure/borrow-authorization-signer";
 import {
   policySnapshot,
   validateBorrowAgainstPolicy,
@@ -37,6 +39,22 @@ const client = createPublicClient({
   chain: arcTestnet,
   transport: http(ARC_TESTNET_RPC_URL),
 });
+
+const BORROW_AUTHORIZATION_TTL_SECONDS = 5n * 60n;
+
+type PrepareOnChainBorrowDependencies = Readonly<{
+  contractAddress?: `0x${string}`;
+  database?: typeof prisma;
+  now?: () => Date;
+  signAuthorization?: typeof signBorrowAuthorization;
+}>;
+
+type ConfirmOnChainBorrowDependencies = Readonly<{
+  contractAddress?: `0x${string}`;
+  database?: typeof prisma;
+  getTransactionReceipt?: typeof client.getTransactionReceipt;
+  now?: () => Date;
+}>;
 
 function unavailableError() {
   return new ApplicationError(
@@ -62,11 +80,14 @@ export async function prepareOnChainBorrow(
   actor: AuthenticatedActor,
   offerId: string,
   requestId: string,
+  dependencies: PrepareOnChainBorrowDependencies = {},
 ) {
-  const configuredContract = getConfiguredEscrowAddress();
+  const database = dependencies.database ?? prisma;
+  const configuredContract =
+    dependencies.contractAddress ?? getConfiguredEscrowAddress();
   if (!configuredContract) throw configurationError();
 
-  const existing = await prisma.loan.findUnique({
+  const existing = await database.loan.findUnique({
     where: { borrowRequestId: requestId },
     select: {
       id: true,
@@ -93,15 +114,10 @@ export async function prepareOnChainBorrow(
       );
     }
     if (existing.status !== "REQUESTED") throw unavailableError();
-    return {
-      loanId: existing.id,
-      contractAddress: getAddress(existing.contractAddress),
-      chainOfferId: existing.chainOfferId,
-    };
   }
 
-  const now = new Date();
-  const context = await prisma.$transaction(async (transaction) => {
+  const now = dependencies.now?.() ?? new Date();
+  const context = await database.$transaction(async (transaction) => {
     const membership = await transaction.organizationMembership.findUnique({
       where: {
         organizationId_userId: {
@@ -246,6 +262,36 @@ export async function prepareOnChainBorrow(
     throw unavailableError();
   }
 
+  const authorizationExpiry =
+    BigInt(Math.floor(now.getTime() / 1_000)) +
+    BORROW_AUTHORIZATION_TTL_SECONDS;
+  const authorization = await (
+    dependencies.signAuthorization ?? signBorrowAuthorization
+  )(
+    {
+      offerId: BigInt(chainOfferId),
+      borrower: getAddress(borrowerWalletAddress),
+      expiry: authorizationExpiry,
+      authorizationId: borrowRequestIdToAuthorizationId(requestId),
+    },
+    configuredContract,
+  );
+  const configuredAuthorizationSigner = await client.readContract({
+    address: configuredContract,
+    abi: employeeLendingEscrowAbi,
+    functionName: "authorizationSigner",
+  });
+  if (
+    configuredAuthorizationSigner.toLowerCase() !==
+    authorization.signerAddress.toLowerCase()
+  ) {
+    throw new ApplicationError(
+      "BORROW_AUTHORIZER_MISMATCH",
+      "Borrowing authorization is not configured for this contract.",
+      503,
+    );
+  }
+
   const repaymentBaseUnits = calculateOnChainRepaymentBaseUnits(
     principalBaseUnits,
     context.offer.feeRateBasisPoints,
@@ -260,39 +306,44 @@ export async function prepareOnChainBorrow(
     now.getTime() + context.offer.durationDays * 86_400_000,
   );
 
-  const loan = await prisma.loan.create({
-    data: {
-      organizationId: actor.organizationId,
-      lenderMembershipId: context.offer.lenderMembershipId,
-      borrowerMembershipId: context.membership.id,
-      lendingOfferId: context.offer.id,
-      borrowRequestId: requestId,
-      chainOfferId,
-      contractAddress: configuredContract.toLowerCase(),
-      lenderWalletAddress: lenderWalletAddress.toLowerCase(),
-      borrowerWalletAddress: borrowerWalletAddress.toLowerCase(),
-      principalBaseUnits,
-      repaymentBaseUnits,
-      principalAmountMinorUnits: context.offer.amountMinorUnits,
-      feeAmountMinorUnits: feeMinorUnits,
-      outstandingPrincipalMinorUnits: context.offer.amountMinorUnits,
-      currency: context.offer.currency,
-      durationDays: context.offer.durationDays,
-      feeRateBasisPoints: context.offer.feeRateBasisPoints,
-      status: "REQUESTED",
-      requestedAt: now,
-      startedAt: now,
-      repaymentDueAt: estimatedDueAt,
-      policyVersion: context.policy.policyVersion,
-      policySnapshot: policySnapshot(context.policy),
-    },
-    select: { id: true },
-  });
+  const loan = existing
+    ? existing
+    : await database.loan.create({
+        data: {
+          organizationId: actor.organizationId,
+          lenderMembershipId: context.offer.lenderMembershipId,
+          borrowerMembershipId: context.membership.id,
+          lendingOfferId: context.offer.id,
+          borrowRequestId: requestId,
+          chainOfferId,
+          contractAddress: configuredContract.toLowerCase(),
+          lenderWalletAddress: lenderWalletAddress.toLowerCase(),
+          borrowerWalletAddress: borrowerWalletAddress.toLowerCase(),
+          principalBaseUnits,
+          repaymentBaseUnits,
+          principalAmountMinorUnits: context.offer.amountMinorUnits,
+          feeAmountMinorUnits: feeMinorUnits,
+          outstandingPrincipalMinorUnits: context.offer.amountMinorUnits,
+          currency: context.offer.currency,
+          durationDays: context.offer.durationDays,
+          feeRateBasisPoints: context.offer.feeRateBasisPoints,
+          status: "REQUESTED",
+          requestedAt: now,
+          startedAt: now,
+          repaymentDueAt: estimatedDueAt,
+          policyVersion: context.policy.policyVersion,
+          policySnapshot: policySnapshot(context.policy),
+        },
+        select: { id: true },
+      });
 
   return {
     loanId: loan.id,
     contractAddress: configuredContract,
     chainOfferId,
+    authorizationExpiry: authorization.expiry.toString(),
+    authorizationId: authorization.authorizationId,
+    authorizationSignature: authorization.signature,
   };
 }
 
@@ -300,10 +351,13 @@ export async function confirmOnChainBorrow(
   actor: AuthenticatedActor,
   loanId: string,
   transactionHash: Hex,
+  dependencies: ConfirmOnChainBorrowDependencies = {},
 ) {
-  const configuredContract = getConfiguredEscrowAddress();
+  const database = dependencies.database ?? prisma;
+  const configuredContract =
+    dependencies.contractAddress ?? getConfiguredEscrowAddress();
   if (!configuredContract) throw configurationError();
-  const pending = await prisma.loan.findFirst({
+  const pending = await database.loan.findFirst({
     where: {
       id: loanId,
       organizationId: actor.organizationId,
@@ -347,7 +401,9 @@ export async function confirmOnChainBorrow(
 
   let receipt;
   try {
-    receipt = await client.getTransactionReceipt({ hash: transactionHash });
+    receipt = await (
+      dependencies.getTransactionReceipt ?? client.getTransactionReceipt
+    )({ hash: transactionHash });
   } catch (error) {
     logger.error("Arc loan receipt is not available yet", error, { loanId });
     throw new ApplicationError(
@@ -357,9 +413,12 @@ export async function confirmOnChainBorrow(
     );
   }
   if (receipt.status !== "success") {
-    await prisma.loan.updateMany({
+    await database.loan.updateMany({
       where: { id: pending.id, status: "REQUESTED" },
-      data: { status: "CANCELLED", closedAt: new Date() },
+      data: {
+        status: "CANCELLED",
+        closedAt: dependencies.now?.() ?? new Date(),
+      },
     });
     throw unavailableError();
   }
@@ -433,7 +492,7 @@ export async function confirmOnChainBorrow(
 
   const startedAt = new Date(Number(event.startTime) * 1_000);
   const dueAt = new Date(Number(event.dueTime) * 1_000);
-  await prisma.$transaction(async (transaction) => {
+  await database.$transaction(async (transaction) => {
     const updated = await transaction.loan.updateMany({
       where: { id: pending.id, status: "REQUESTED" },
       data: {

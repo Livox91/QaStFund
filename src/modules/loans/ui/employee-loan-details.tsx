@@ -1,6 +1,10 @@
 import Link from "next/link";
 
 import { RepaymentForm } from "@/app/(employee)/app/loans/[loanId]/repayment-form";
+import {
+  calculateDaysOverdue,
+  type LoanDecision,
+} from "@/modules/loan-decisions/domain/loan-decision";
 import { formatBasisPointsAsPercent } from "@/modules/lending/domain/lending-offer";
 import type { EmployeeBorrowedLoanDetails as EmployeeLoanDetailsView } from "@/modules/loans/domain/employee-loan";
 import { RepaymentProgress } from "@/modules/loans/ui/repayment-progress";
@@ -44,12 +48,22 @@ function Detail({ label, value }: { label: string; value: React.ReactNode }) {
 }
 
 export function EmployeeLoanDetails({
+  decision,
   loan,
   repaymentRecorded,
 }: {
+  decision?: LoanDecision | null;
   loan: EmployeeLoanDetailsView;
   repaymentRecorded: boolean;
 }) {
+  const isOverdue =
+    loan.status !== "REPAID" &&
+    (decision?.classification === "overdue" ||
+      decision?.classification === "default_candidate");
+  const daysOverdue = decision
+    ? calculateDaysOverdue(loan.repaymentDueAt, decision.evaluatedAt)
+    : 0;
+
   return (
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
       <Link
@@ -65,11 +79,24 @@ export function EmployeeLoanDetails({
       </Link>
 
       <PageHeader
-        actions={<StatusDisplay status={loan.status} />}
+        actions={<StatusDisplay status={isOverdue ? "OVERDUE" : loan.status} />}
         description={`Borrowed from ${loan.lenderName}.`}
         eyebrow="Borrowed loan"
-        title={loan.status === "REPAID" ? "Loan Repaid ✓" : "Active Loan"}
+        title={
+          loan.status === "REPAID"
+            ? "Loan Repaid ✓"
+            : isOverdue
+              ? "Payment Overdue"
+              : "Active Loan"
+        }
       />
+
+      {isOverdue ? (
+        <p className="mt-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800">
+          This payment is {daysOverdue} {daysOverdue === 1 ? "day" : "days"}
+          overdue. You can still repay the full amount normally.
+        </p>
+      ) : null}
 
       {repaymentRecorded ? (
         <p

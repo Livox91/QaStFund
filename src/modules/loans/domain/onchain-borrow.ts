@@ -20,5 +20,14 @@ export function friendlyBorrowTransactionError(error: unknown): string {
   if (message.includes("reject") || message.includes("cancel")) {
     return "Wallet authorization was cancelled. No funds were received.";
   }
+  if (message.includes("authorizationexpired")) {
+    return "Your borrowing authorization expired. Try again to request a new one.";
+  }
+  if (message.includes("authorizationalreadyused")) {
+    return "This borrowing authorization has already been used. Refresh your loans before trying again.";
+  }
+  if (message.includes("invalidauthorization")) {
+    return "This wallet is not authorized to accept the offer.";
+  }
   return "This offer is no longer available. Choose another lending offer.";
 }

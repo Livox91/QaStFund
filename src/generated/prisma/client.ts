@@ -67,6 +67,21 @@ export type ArcWalletChallenge = Prisma.ArcWalletChallengeModel
  */
 export type OrganizationMembership = Prisma.OrganizationMembershipModel
 /**
+ * Model EmployeeDirectoryIntegration
+ * 
+ */
+export type EmployeeDirectoryIntegration = Prisma.EmployeeDirectoryIntegrationModel
+/**
+ * Model EmployeeDirectoryMapping
+ * 
+ */
+export type EmployeeDirectoryMapping = Prisma.EmployeeDirectoryMappingModel
+/**
+ * Model EmployeeDirectorySyncRun
+ * 
+ */
+export type EmployeeDirectorySyncRun = Prisma.EmployeeDirectorySyncRunModel
+/**
  * Model LendingOffer
  * 
  */
@@ -81,6 +96,21 @@ export type EmployeeBalance = Prisma.EmployeeBalanceModel
  * 
  */
 export type Loan = Prisma.LoanModel
+/**
+ * Model LoanDecisionEvaluation
+ * 
+ */
+export type LoanDecisionEvaluation = Prisma.LoanDecisionEvaluationModel
+/**
+ * Model LoanDecisionReview
+ * 
+ */
+export type LoanDecisionReview = Prisma.LoanDecisionReviewModel
+/**
+ * Model EmployerActionAttempt
+ * 
+ */
+export type EmployerActionAttempt = Prisma.EmployerActionAttemptModel
 /**
  * Model LedgerAccount
  * 

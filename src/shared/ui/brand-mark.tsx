@@ -12,7 +12,7 @@ export function BrandMark({ className }: { className?: string }) {
       )}
     >
       <span className="absolute -top-2 -right-2 size-6 rounded-full bg-teal-400" />
-      <span className="relative text-sm font-bold tracking-tight text-white">
+      <span className="relative text-sm font-bold tracking-tight !text-white">
         EL
       </span>
     </span>

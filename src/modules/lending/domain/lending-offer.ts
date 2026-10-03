@@ -1,6 +1,35 @@
 export type LendingOfferDisplayStatus =
   "ACTIVE" | "PAUSED" | "CLOSED" | "EXHAUSTED" | "EXPIRED";
 
+export type FundedOfferEventTerms = Readonly<{
+  lender: string;
+  principal: bigint;
+  interestBasisPoints: bigint;
+  durationSeconds: bigint;
+  requestId: string;
+}>;
+
+export type ExpectedFundedOfferTerms = Readonly<{
+  lenderWalletAddress: string;
+  principalBaseUnits: bigint;
+  feeRateBasisPoints: number;
+  durationDays: number;
+  requestId: string;
+}>;
+
+export function matchesFundedOfferEvent(
+  event: FundedOfferEventTerms,
+  expected: ExpectedFundedOfferTerms,
+): boolean {
+  return (
+    event.lender.toLowerCase() === expected.lenderWalletAddress.toLowerCase() &&
+    event.principal === expected.principalBaseUnits &&
+    event.interestBasisPoints === BigInt(expected.feeRateBasisPoints) &&
+    event.durationSeconds === BigInt(expected.durationDays) * 86_400n &&
+    event.requestId.toLowerCase() === expected.requestId.toLowerCase()
+  );
+}
+
 export type LendingOfferView = Readonly<{
   id: string;
   lender: Readonly<{ id: string; name: string }>;

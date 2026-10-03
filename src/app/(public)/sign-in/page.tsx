@@ -38,7 +38,7 @@ export default async function SignInPage({
       <Card className="relative w-full max-w-md shadow-xl shadow-slate-200/60">
         <CardContent className="p-7 sm:p-9">
           <div className="mb-8">
-            <div className="mb-6 flex size-11 items-center justify-center rounded-xl bg-slate-950 text-sm font-bold text-white shadow-sm">
+            <div className="mb-6 flex size-11 items-center justify-center rounded-xl bg-slate-950 text-sm font-bold !text-white shadow-sm">
               EL
             </div>
             <p className="text-sm font-semibold text-teal-700">

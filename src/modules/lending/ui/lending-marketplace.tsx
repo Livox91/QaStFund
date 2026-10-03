@@ -176,13 +176,13 @@ export function LendingMarketplaceView({
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="rounded-xl bg-slate-950 p-4 text-white">
+                  <div className="rounded-xl bg-slate-950 p-4 !text-white">
                     <p className="text-xs font-medium text-slate-300">
                       Amount available
                     </p>
                     <CurrencyDisplay
                       amountMinorUnits={offer.availableAmountMinorUnits}
-                      className="mt-2 block text-2xl font-semibold text-white"
+                      className="mt-2 block text-2xl font-semibold !text-white"
                       currency={offer.currency}
                     />
                   </div>

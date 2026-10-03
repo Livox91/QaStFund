@@ -81,6 +81,12 @@ function createRepository(): EmployeeLoanRepository {
 }
 
 describe("manual repayment domain rules", () => {
+  it("keeps an overdue on-chain loan repayable", () => {
+    expect(
+      toEmployeeBorrowedLoanDetails({ ...loan, status: "OVERDUE" }).canRepay,
+    ).toBe(true);
+  });
+
   it("derives remaining agreed amount from immutable terms and history", () => {
     expect(toEmployeeBorrowedLoanDetails(loan)).toMatchObject({
       totalAgreedAmountMinorUnits: 84_000n,

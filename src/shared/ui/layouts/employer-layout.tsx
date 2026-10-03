@@ -6,6 +6,7 @@ const employerNavigation: ReadonlyArray<NavigationItem> = [
   { href: "/employer", icon: "dashboard", label: "Overview", exact: true },
   { href: "/employer/employees", icon: "employees", label: "Employees" },
   { href: "/employer/loans", icon: "loans", label: "Loans" },
+  { href: "/employer/monitoring", icon: "reports", label: "Monitoring" },
   { href: "/employer/policies", icon: "policies", label: "Policies" },
   { href: "/employer/reports", icon: "reports", label: "Reports" },
   {

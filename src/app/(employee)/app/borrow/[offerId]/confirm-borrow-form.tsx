@@ -57,6 +57,9 @@ export function ConfirmBorrowForm({ offerId }: { offerId: string }) {
           loanId: string;
           contractAddress: Address;
           chainOfferId: string;
+          authorizationExpiry: string;
+          authorizationId: `0x${string}`;
+          authorizationSignature: `0x${string}`;
         };
       };
 
@@ -70,7 +73,12 @@ export function ConfirmBorrowForm({ offerId }: { offerId: string }) {
             data: encodeFunctionData({
               abi: employeeLendingEscrowAbi,
               functionName: "acceptOffer",
-              args: [BigInt(intent.chainOfferId)],
+              args: [
+                BigInt(intent.chainOfferId),
+                BigInt(intent.authorizationExpiry),
+                intent.authorizationId,
+                intent.authorizationSignature,
+              ],
             }),
           },
         ]);

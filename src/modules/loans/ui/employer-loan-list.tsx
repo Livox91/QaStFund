@@ -73,7 +73,7 @@ export function EmployerLoanList({
                 className={cn(
                   "rounded-lg px-3.5 py-2 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600",
                   active
-                    ? "bg-slate-950 text-white shadow-sm"
+                    ? "bg-slate-950 !text-white shadow-sm"
                     : "text-slate-500 hover:bg-slate-50 hover:text-slate-950",
                 )}
                 href={href}

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { formatCurrencyFromMinorUnits } from "@/shared/ui/currency-display";
+import { buttonStyles } from "@/shared/ui/button";
 import { formatStatusLabel, getStatusTone } from "@/shared/ui/status-display";
 
 describe("currency display", () => {
@@ -40,4 +41,13 @@ describe("status display", () => {
     expect(getStatusTone("completed")).toBe("success");
     expect(getStatusTone("unknown_status")).toBe("neutral");
   });
+});
+
+describe("inverse controls", () => {
+  it.each(["primary", "secondary", "danger"] as const)(
+    "keeps %s button text visible on a dark background",
+    (variant) => {
+      expect(buttonStyles({ variant })).toContain("!text-white");
+    },
+  );
 });

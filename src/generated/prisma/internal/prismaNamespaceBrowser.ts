@@ -56,9 +56,15 @@ export const ModelName = {
   ArcWallet: 'ArcWallet',
   ArcWalletChallenge: 'ArcWalletChallenge',
   OrganizationMembership: 'OrganizationMembership',
+  EmployeeDirectoryIntegration: 'EmployeeDirectoryIntegration',
+  EmployeeDirectoryMapping: 'EmployeeDirectoryMapping',
+  EmployeeDirectorySyncRun: 'EmployeeDirectorySyncRun',
   LendingOffer: 'LendingOffer',
   EmployeeBalance: 'EmployeeBalance',
   Loan: 'Loan',
+  LoanDecisionEvaluation: 'LoanDecisionEvaluation',
+  LoanDecisionReview: 'LoanDecisionReview',
+  EmployerActionAttempt: 'EmployerActionAttempt',
   LedgerAccount: 'LedgerAccount',
   LedgerTransaction: 'LedgerTransaction',
   LedgerEntry: 'LedgerEntry',
@@ -145,6 +151,8 @@ export const OrganizationMembershipScalarFieldEnum = {
   userId: 'userId',
   role: 'role',
   employmentStatus: 'employmentStatus',
+  employmentStatusSource: 'employmentStatusSource',
+  employmentStatusSyncedAt: 'employmentStatusSyncedAt',
   isActive: 'isActive',
   canBorrow: 'canBorrow',
   canLend: 'canLend',
@@ -153,6 +161,83 @@ export const OrganizationMembershipScalarFieldEnum = {
 } as const
 
 export type OrganizationMembershipScalarFieldEnum = (typeof OrganizationMembershipScalarFieldEnum)[keyof typeof OrganizationMembershipScalarFieldEnum]
+
+
+export const EmployeeDirectoryIntegrationScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  provider: 'provider',
+  baseUrl: 'baseUrl',
+  apiPath: 'apiPath',
+  apiVersion: 'apiVersion',
+  authMethod: 'authMethod',
+  credentialReference: 'credentialReference',
+  timeoutMs: 'timeoutMs',
+  statusMapping: 'statusMapping',
+  connectionStatus: 'connectionStatus',
+  lastConnectionCode: 'lastConnectionCode',
+  lastTestedAt: 'lastTestedAt',
+  lastSuccessfulSyncAt: 'lastSuccessfulSyncAt',
+  lastSyncStatus: 'lastSyncStatus',
+  lastSyncErrorCode: 'lastSyncErrorCode',
+  scheduledSyncPausedAt: 'scheduledSyncPausedAt',
+  schedulePauseCode: 'schedulePauseCode',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeDirectoryIntegrationScalarFieldEnum = (typeof EmployeeDirectoryIntegrationScalarFieldEnum)[keyof typeof EmployeeDirectoryIntegrationScalarFieldEnum]
+
+
+export const EmployeeDirectoryMappingScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  integrationId: 'integrationId',
+  externalEmployeeId: 'externalEmployeeId',
+  employeeCode: 'employeeCode',
+  fullName: 'fullName',
+  email: 'email',
+  externalStatus: 'externalStatus',
+  normalizedStatus: 'normalizedStatus',
+  matchStatus: 'matchStatus',
+  matchMethod: 'matchMethod',
+  matchedMembershipId: 'matchedMembershipId',
+  lastSynchronizedAt: 'lastSynchronizedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeDirectoryMappingScalarFieldEnum = (typeof EmployeeDirectoryMappingScalarFieldEnum)[keyof typeof EmployeeDirectoryMappingScalarFieldEnum]
+
+
+export const EmployeeDirectorySyncRunScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  integrationId: 'integrationId',
+  requestedByMembershipId: 'requestedByMembershipId',
+  trigger: 'trigger',
+  status: 'status',
+  processedCount: 'processedCount',
+  createdCount: 'createdCount',
+  updatedCount: 'updatedCount',
+  unchangedCount: 'unchangedCount',
+  reviewCount: 'reviewCount',
+  retrievedCount: 'retrievedCount',
+  matchedCount: 'matchedCount',
+  unmatchedCount: 'unmatchedCount',
+  ambiguousCount: 'ambiguousCount',
+  statusChangeCount: 'statusChangeCount',
+  errorCount: 'errorCount',
+  safeErrorCode: 'safeErrorCode',
+  safeErrorSummary: 'safeErrorSummary',
+  correlationId: 'correlationId',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  durationMs: 'durationMs',
+  createdAt: 'createdAt'
+} as const
+
+export type EmployeeDirectorySyncRunScalarFieldEnum = (typeof EmployeeDirectorySyncRunScalarFieldEnum)[keyof typeof EmployeeDirectorySyncRunScalarFieldEnum]
 
 
 export const LendingOfferScalarFieldEnum = {
@@ -235,6 +320,56 @@ export const LoanScalarFieldEnum = {
 } as const
 
 export type LoanScalarFieldEnum = (typeof LoanScalarFieldEnum)[keyof typeof LoanScalarFieldEnum]
+
+
+export const LoanDecisionEvaluationScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  loanId: 'loanId',
+  classification: 'classification',
+  recommendedAction: 'recommendedAction',
+  reasonCodes: 'reasonCodes',
+  source: 'source',
+  modelVersion: 'modelVersion',
+  evaluatedAt: 'evaluatedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type LoanDecisionEvaluationScalarFieldEnum = (typeof LoanDecisionEvaluationScalarFieldEnum)[keyof typeof LoanDecisionEvaluationScalarFieldEnum]
+
+
+export const LoanDecisionReviewScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  loanId: 'loanId',
+  evaluationId: 'evaluationId',
+  reviewedByMembershipId: 'reviewedByMembershipId',
+  reviewedAt: 'reviewedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type LoanDecisionReviewScalarFieldEnum = (typeof LoanDecisionReviewScalarFieldEnum)[keyof typeof LoanDecisionReviewScalarFieldEnum]
+
+
+export const EmployerActionAttemptScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  loanId: 'loanId',
+  evaluationId: 'evaluationId',
+  requestedByMembershipId: 'requestedByMembershipId',
+  action: 'action',
+  status: 'status',
+  provider: 'provider',
+  idempotencyKey: 'idempotencyKey',
+  adapterActionId: 'adapterActionId',
+  messageCode: 'messageCode',
+  requestedAt: 'requestedAt',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployerActionAttemptScalarFieldEnum = (typeof EmployerActionAttemptScalarFieldEnum)[keyof typeof EmployerActionAttemptScalarFieldEnum]
 
 
 export const LedgerAccountScalarFieldEnum = {
@@ -354,6 +489,13 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const NullableJsonNullValueInput = {

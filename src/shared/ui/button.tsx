@@ -4,15 +4,15 @@ import { cn } from "@/shared/utils/class-names";
 
 const variantStyles = {
   primary:
-    "bg-slate-950 text-white shadow-sm hover:bg-slate-800 focus-visible:outline-slate-950",
+    "bg-slate-950 !text-white shadow-sm hover:bg-slate-800 focus-visible:outline-slate-950",
   secondary:
-    "bg-teal-600 text-white shadow-sm hover:bg-teal-700 focus-visible:outline-teal-600",
+    "bg-teal-600 !text-white shadow-sm hover:bg-teal-700 focus-visible:outline-teal-600",
   outline:
     "border border-slate-300 bg-white text-slate-700 shadow-sm hover:border-slate-400 hover:bg-slate-50 focus-visible:outline-slate-600",
   ghost:
     "text-slate-600 hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-slate-600",
   danger:
-    "bg-rose-600 text-white shadow-sm hover:bg-rose-700 focus-visible:outline-rose-600",
+    "bg-rose-600 !text-white shadow-sm hover:bg-rose-700 focus-visible:outline-rose-600",
 } as const;
 
 const sizeStyles = {

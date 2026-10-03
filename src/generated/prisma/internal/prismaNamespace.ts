@@ -402,9 +402,15 @@ export const ModelName = {
   ArcWallet: 'ArcWallet',
   ArcWalletChallenge: 'ArcWalletChallenge',
   OrganizationMembership: 'OrganizationMembership',
+  EmployeeDirectoryIntegration: 'EmployeeDirectoryIntegration',
+  EmployeeDirectoryMapping: 'EmployeeDirectoryMapping',
+  EmployeeDirectorySyncRun: 'EmployeeDirectorySyncRun',
   LendingOffer: 'LendingOffer',
   EmployeeBalance: 'EmployeeBalance',
   Loan: 'Loan',
+  LoanDecisionEvaluation: 'LoanDecisionEvaluation',
+  LoanDecisionReview: 'LoanDecisionReview',
+  EmployerActionAttempt: 'EmployerActionAttempt',
   LedgerAccount: 'LedgerAccount',
   LedgerTransaction: 'LedgerTransaction',
   LedgerEntry: 'LedgerEntry',
@@ -427,7 +433,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "organization" | "arcWallet" | "arcWalletChallenge" | "organizationMembership" | "lendingOffer" | "employeeBalance" | "loan" | "ledgerAccount" | "ledgerTransaction" | "ledgerEntry" | "loanRepayment" | "auditEvent" | "organizationLendingPolicy" | "session"
+    modelProps: "user" | "organization" | "arcWallet" | "arcWalletChallenge" | "organizationMembership" | "employeeDirectoryIntegration" | "employeeDirectoryMapping" | "employeeDirectorySyncRun" | "lendingOffer" | "employeeBalance" | "loan" | "loanDecisionEvaluation" | "loanDecisionReview" | "employerActionAttempt" | "ledgerAccount" | "ledgerTransaction" | "ledgerEntry" | "loanRepayment" | "auditEvent" | "organizationLendingPolicy" | "session"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -801,6 +807,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    EmployeeDirectoryIntegration: {
+      payload: Prisma.$EmployeeDirectoryIntegrationPayload<ExtArgs>
+      fields: Prisma.EmployeeDirectoryIntegrationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EmployeeDirectoryIntegrationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryIntegrationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EmployeeDirectoryIntegrationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryIntegrationPayload>
+        }
+        findFirst: {
+          args: Prisma.EmployeeDirectoryIntegrationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryIntegrationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EmployeeDirectoryIntegrationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryIntegrationPayload>
+        }
+        findMany: {
+          args: Prisma.EmployeeDirectoryIntegrationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryIntegrationPayload>[]
+        }
+        create: {
+          args: Prisma.EmployeeDirectoryIntegrationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryIntegrationPayload>
+        }
+        createMany: {
+          args: Prisma.EmployeeDirectoryIntegrationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EmployeeDirectoryIntegrationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryIntegrationPayload>[]
+        }
+        delete: {
+          args: Prisma.EmployeeDirectoryIntegrationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryIntegrationPayload>
+        }
+        update: {
+          args: Prisma.EmployeeDirectoryIntegrationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryIntegrationPayload>
+        }
+        deleteMany: {
+          args: Prisma.EmployeeDirectoryIntegrationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EmployeeDirectoryIntegrationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EmployeeDirectoryIntegrationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryIntegrationPayload>[]
+        }
+        upsert: {
+          args: Prisma.EmployeeDirectoryIntegrationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryIntegrationPayload>
+        }
+        aggregate: {
+          args: Prisma.EmployeeDirectoryIntegrationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmployeeDirectoryIntegration>
+        }
+        groupBy: {
+          args: Prisma.EmployeeDirectoryIntegrationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeDirectoryIntegrationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EmployeeDirectoryIntegrationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeDirectoryIntegrationCountAggregateOutputType> | number
+        }
+      }
+    }
+    EmployeeDirectoryMapping: {
+      payload: Prisma.$EmployeeDirectoryMappingPayload<ExtArgs>
+      fields: Prisma.EmployeeDirectoryMappingFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EmployeeDirectoryMappingFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryMappingPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EmployeeDirectoryMappingFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryMappingPayload>
+        }
+        findFirst: {
+          args: Prisma.EmployeeDirectoryMappingFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryMappingPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EmployeeDirectoryMappingFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryMappingPayload>
+        }
+        findMany: {
+          args: Prisma.EmployeeDirectoryMappingFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryMappingPayload>[]
+        }
+        create: {
+          args: Prisma.EmployeeDirectoryMappingCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryMappingPayload>
+        }
+        createMany: {
+          args: Prisma.EmployeeDirectoryMappingCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EmployeeDirectoryMappingCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryMappingPayload>[]
+        }
+        delete: {
+          args: Prisma.EmployeeDirectoryMappingDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryMappingPayload>
+        }
+        update: {
+          args: Prisma.EmployeeDirectoryMappingUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryMappingPayload>
+        }
+        deleteMany: {
+          args: Prisma.EmployeeDirectoryMappingDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EmployeeDirectoryMappingUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EmployeeDirectoryMappingUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryMappingPayload>[]
+        }
+        upsert: {
+          args: Prisma.EmployeeDirectoryMappingUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryMappingPayload>
+        }
+        aggregate: {
+          args: Prisma.EmployeeDirectoryMappingAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmployeeDirectoryMapping>
+        }
+        groupBy: {
+          args: Prisma.EmployeeDirectoryMappingGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeDirectoryMappingGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EmployeeDirectoryMappingCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeDirectoryMappingCountAggregateOutputType> | number
+        }
+      }
+    }
+    EmployeeDirectorySyncRun: {
+      payload: Prisma.$EmployeeDirectorySyncRunPayload<ExtArgs>
+      fields: Prisma.EmployeeDirectorySyncRunFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EmployeeDirectorySyncRunFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectorySyncRunPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EmployeeDirectorySyncRunFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectorySyncRunPayload>
+        }
+        findFirst: {
+          args: Prisma.EmployeeDirectorySyncRunFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectorySyncRunPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EmployeeDirectorySyncRunFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectorySyncRunPayload>
+        }
+        findMany: {
+          args: Prisma.EmployeeDirectorySyncRunFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectorySyncRunPayload>[]
+        }
+        create: {
+          args: Prisma.EmployeeDirectorySyncRunCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectorySyncRunPayload>
+        }
+        createMany: {
+          args: Prisma.EmployeeDirectorySyncRunCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EmployeeDirectorySyncRunCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectorySyncRunPayload>[]
+        }
+        delete: {
+          args: Prisma.EmployeeDirectorySyncRunDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectorySyncRunPayload>
+        }
+        update: {
+          args: Prisma.EmployeeDirectorySyncRunUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectorySyncRunPayload>
+        }
+        deleteMany: {
+          args: Prisma.EmployeeDirectorySyncRunDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EmployeeDirectorySyncRunUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EmployeeDirectorySyncRunUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectorySyncRunPayload>[]
+        }
+        upsert: {
+          args: Prisma.EmployeeDirectorySyncRunUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectorySyncRunPayload>
+        }
+        aggregate: {
+          args: Prisma.EmployeeDirectorySyncRunAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmployeeDirectorySyncRun>
+        }
+        groupBy: {
+          args: Prisma.EmployeeDirectorySyncRunGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeDirectorySyncRunGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EmployeeDirectorySyncRunCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeDirectorySyncRunCountAggregateOutputType> | number
+        }
+      }
+    }
     LendingOffer: {
       payload: Prisma.$LendingOfferPayload<ExtArgs>
       fields: Prisma.LendingOfferFieldRefs
@@ -1020,6 +1248,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.LoanCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.LoanCountAggregateOutputType> | number
+        }
+      }
+    }
+    LoanDecisionEvaluation: {
+      payload: Prisma.$LoanDecisionEvaluationPayload<ExtArgs>
+      fields: Prisma.LoanDecisionEvaluationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LoanDecisionEvaluationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanDecisionEvaluationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LoanDecisionEvaluationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanDecisionEvaluationPayload>
+        }
+        findFirst: {
+          args: Prisma.LoanDecisionEvaluationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanDecisionEvaluationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LoanDecisionEvaluationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanDecisionEvaluationPayload>
+        }
+        findMany: {
+          args: Prisma.LoanDecisionEvaluationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanDecisionEvaluationPayload>[]
+        }
+        create: {
+          args: Prisma.LoanDecisionEvaluationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanDecisionEvaluationPayload>
+        }
+        createMany: {
+          args: Prisma.LoanDecisionEvaluationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LoanDecisionEvaluationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanDecisionEvaluationPayload>[]
+        }
+        delete: {
+          args: Prisma.LoanDecisionEvaluationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanDecisionEvaluationPayload>
+        }
+        update: {
+          args: Prisma.LoanDecisionEvaluationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanDecisionEvaluationPayload>
+        }
+        deleteMany: {
+          args: Prisma.LoanDecisionEvaluationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LoanDecisionEvaluationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LoanDecisionEvaluationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanDecisionEvaluationPayload>[]
+        }
+        upsert: {
+          args: Prisma.LoanDecisionEvaluationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanDecisionEvaluationPayload>
+        }
+        aggregate: {
+          args: Prisma.LoanDecisionEvaluationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLoanDecisionEvaluation>
+        }
+        groupBy: {
+          args: Prisma.LoanDecisionEvaluationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LoanDecisionEvaluationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LoanDecisionEvaluationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LoanDecisionEvaluationCountAggregateOutputType> | number
+        }
+      }
+    }
+    LoanDecisionReview: {
+      payload: Prisma.$LoanDecisionReviewPayload<ExtArgs>
+      fields: Prisma.LoanDecisionReviewFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LoanDecisionReviewFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanDecisionReviewPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LoanDecisionReviewFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanDecisionReviewPayload>
+        }
+        findFirst: {
+          args: Prisma.LoanDecisionReviewFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanDecisionReviewPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LoanDecisionReviewFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanDecisionReviewPayload>
+        }
+        findMany: {
+          args: Prisma.LoanDecisionReviewFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanDecisionReviewPayload>[]
+        }
+        create: {
+          args: Prisma.LoanDecisionReviewCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanDecisionReviewPayload>
+        }
+        createMany: {
+          args: Prisma.LoanDecisionReviewCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LoanDecisionReviewCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanDecisionReviewPayload>[]
+        }
+        delete: {
+          args: Prisma.LoanDecisionReviewDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanDecisionReviewPayload>
+        }
+        update: {
+          args: Prisma.LoanDecisionReviewUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanDecisionReviewPayload>
+        }
+        deleteMany: {
+          args: Prisma.LoanDecisionReviewDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LoanDecisionReviewUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LoanDecisionReviewUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanDecisionReviewPayload>[]
+        }
+        upsert: {
+          args: Prisma.LoanDecisionReviewUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanDecisionReviewPayload>
+        }
+        aggregate: {
+          args: Prisma.LoanDecisionReviewAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLoanDecisionReview>
+        }
+        groupBy: {
+          args: Prisma.LoanDecisionReviewGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LoanDecisionReviewGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LoanDecisionReviewCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LoanDecisionReviewCountAggregateOutputType> | number
+        }
+      }
+    }
+    EmployerActionAttempt: {
+      payload: Prisma.$EmployerActionAttemptPayload<ExtArgs>
+      fields: Prisma.EmployerActionAttemptFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EmployerActionAttemptFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployerActionAttemptPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EmployerActionAttemptFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployerActionAttemptPayload>
+        }
+        findFirst: {
+          args: Prisma.EmployerActionAttemptFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployerActionAttemptPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EmployerActionAttemptFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployerActionAttemptPayload>
+        }
+        findMany: {
+          args: Prisma.EmployerActionAttemptFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployerActionAttemptPayload>[]
+        }
+        create: {
+          args: Prisma.EmployerActionAttemptCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployerActionAttemptPayload>
+        }
+        createMany: {
+          args: Prisma.EmployerActionAttemptCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EmployerActionAttemptCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployerActionAttemptPayload>[]
+        }
+        delete: {
+          args: Prisma.EmployerActionAttemptDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployerActionAttemptPayload>
+        }
+        update: {
+          args: Prisma.EmployerActionAttemptUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployerActionAttemptPayload>
+        }
+        deleteMany: {
+          args: Prisma.EmployerActionAttemptDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EmployerActionAttemptUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EmployerActionAttemptUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployerActionAttemptPayload>[]
+        }
+        upsert: {
+          args: Prisma.EmployerActionAttemptUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployerActionAttemptPayload>
+        }
+        aggregate: {
+          args: Prisma.EmployerActionAttemptAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmployerActionAttempt>
+        }
+        groupBy: {
+          args: Prisma.EmployerActionAttemptGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployerActionAttemptGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EmployerActionAttemptCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployerActionAttemptCountAggregateOutputType> | number
         }
       }
     }
@@ -1641,6 +2091,8 @@ export const OrganizationMembershipScalarFieldEnum = {
   userId: 'userId',
   role: 'role',
   employmentStatus: 'employmentStatus',
+  employmentStatusSource: 'employmentStatusSource',
+  employmentStatusSyncedAt: 'employmentStatusSyncedAt',
   isActive: 'isActive',
   canBorrow: 'canBorrow',
   canLend: 'canLend',
@@ -1649,6 +2101,83 @@ export const OrganizationMembershipScalarFieldEnum = {
 } as const
 
 export type OrganizationMembershipScalarFieldEnum = (typeof OrganizationMembershipScalarFieldEnum)[keyof typeof OrganizationMembershipScalarFieldEnum]
+
+
+export const EmployeeDirectoryIntegrationScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  provider: 'provider',
+  baseUrl: 'baseUrl',
+  apiPath: 'apiPath',
+  apiVersion: 'apiVersion',
+  authMethod: 'authMethod',
+  credentialReference: 'credentialReference',
+  timeoutMs: 'timeoutMs',
+  statusMapping: 'statusMapping',
+  connectionStatus: 'connectionStatus',
+  lastConnectionCode: 'lastConnectionCode',
+  lastTestedAt: 'lastTestedAt',
+  lastSuccessfulSyncAt: 'lastSuccessfulSyncAt',
+  lastSyncStatus: 'lastSyncStatus',
+  lastSyncErrorCode: 'lastSyncErrorCode',
+  scheduledSyncPausedAt: 'scheduledSyncPausedAt',
+  schedulePauseCode: 'schedulePauseCode',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeDirectoryIntegrationScalarFieldEnum = (typeof EmployeeDirectoryIntegrationScalarFieldEnum)[keyof typeof EmployeeDirectoryIntegrationScalarFieldEnum]
+
+
+export const EmployeeDirectoryMappingScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  integrationId: 'integrationId',
+  externalEmployeeId: 'externalEmployeeId',
+  employeeCode: 'employeeCode',
+  fullName: 'fullName',
+  email: 'email',
+  externalStatus: 'externalStatus',
+  normalizedStatus: 'normalizedStatus',
+  matchStatus: 'matchStatus',
+  matchMethod: 'matchMethod',
+  matchedMembershipId: 'matchedMembershipId',
+  lastSynchronizedAt: 'lastSynchronizedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeDirectoryMappingScalarFieldEnum = (typeof EmployeeDirectoryMappingScalarFieldEnum)[keyof typeof EmployeeDirectoryMappingScalarFieldEnum]
+
+
+export const EmployeeDirectorySyncRunScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  integrationId: 'integrationId',
+  requestedByMembershipId: 'requestedByMembershipId',
+  trigger: 'trigger',
+  status: 'status',
+  processedCount: 'processedCount',
+  createdCount: 'createdCount',
+  updatedCount: 'updatedCount',
+  unchangedCount: 'unchangedCount',
+  reviewCount: 'reviewCount',
+  retrievedCount: 'retrievedCount',
+  matchedCount: 'matchedCount',
+  unmatchedCount: 'unmatchedCount',
+  ambiguousCount: 'ambiguousCount',
+  statusChangeCount: 'statusChangeCount',
+  errorCount: 'errorCount',
+  safeErrorCode: 'safeErrorCode',
+  safeErrorSummary: 'safeErrorSummary',
+  correlationId: 'correlationId',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  durationMs: 'durationMs',
+  createdAt: 'createdAt'
+} as const
+
+export type EmployeeDirectorySyncRunScalarFieldEnum = (typeof EmployeeDirectorySyncRunScalarFieldEnum)[keyof typeof EmployeeDirectorySyncRunScalarFieldEnum]
 
 
 export const LendingOfferScalarFieldEnum = {
@@ -1731,6 +2260,56 @@ export const LoanScalarFieldEnum = {
 } as const
 
 export type LoanScalarFieldEnum = (typeof LoanScalarFieldEnum)[keyof typeof LoanScalarFieldEnum]
+
+
+export const LoanDecisionEvaluationScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  loanId: 'loanId',
+  classification: 'classification',
+  recommendedAction: 'recommendedAction',
+  reasonCodes: 'reasonCodes',
+  source: 'source',
+  modelVersion: 'modelVersion',
+  evaluatedAt: 'evaluatedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type LoanDecisionEvaluationScalarFieldEnum = (typeof LoanDecisionEvaluationScalarFieldEnum)[keyof typeof LoanDecisionEvaluationScalarFieldEnum]
+
+
+export const LoanDecisionReviewScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  loanId: 'loanId',
+  evaluationId: 'evaluationId',
+  reviewedByMembershipId: 'reviewedByMembershipId',
+  reviewedAt: 'reviewedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type LoanDecisionReviewScalarFieldEnum = (typeof LoanDecisionReviewScalarFieldEnum)[keyof typeof LoanDecisionReviewScalarFieldEnum]
+
+
+export const EmployerActionAttemptScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  loanId: 'loanId',
+  evaluationId: 'evaluationId',
+  requestedByMembershipId: 'requestedByMembershipId',
+  action: 'action',
+  status: 'status',
+  provider: 'provider',
+  idempotencyKey: 'idempotencyKey',
+  adapterActionId: 'adapterActionId',
+  messageCode: 'messageCode',
+  requestedAt: 'requestedAt',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployerActionAttemptScalarFieldEnum = (typeof EmployerActionAttemptScalarFieldEnum)[keyof typeof EmployerActionAttemptScalarFieldEnum]
 
 
 export const LedgerAccountScalarFieldEnum = {
@@ -1850,6 +2429,13 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const NullableJsonNullValueInput = {
@@ -2018,9 +2604,135 @@ export type ListEnumEmploymentStatusFieldRefInput<$PrismaModel> = FieldRefInputT
 
 
 /**
+ * Reference to a field of type 'EmploymentStatusSource'
+ */
+export type EnumEmploymentStatusSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmploymentStatusSource'>
+    
+
+
+/**
+ * Reference to a field of type 'EmploymentStatusSource[]'
+ */
+export type ListEnumEmploymentStatusSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmploymentStatusSource[]'>
+    
+
+
+/**
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
+ * Reference to a field of type 'EmployeeDirectoryProvider'
+ */
+export type EnumEmployeeDirectoryProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployeeDirectoryProvider'>
+    
+
+
+/**
+ * Reference to a field of type 'EmployeeDirectoryProvider[]'
+ */
+export type ListEnumEmployeeDirectoryProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployeeDirectoryProvider[]'>
+    
+
+
+/**
+ * Reference to a field of type 'EmployeeDirectoryAuthMethod'
+ */
+export type EnumEmployeeDirectoryAuthMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployeeDirectoryAuthMethod'>
+    
+
+
+/**
+ * Reference to a field of type 'EmployeeDirectoryAuthMethod[]'
+ */
+export type ListEnumEmployeeDirectoryAuthMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployeeDirectoryAuthMethod[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'EmployeeDirectoryConnectionStatus'
+ */
+export type EnumEmployeeDirectoryConnectionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployeeDirectoryConnectionStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'EmployeeDirectoryConnectionStatus[]'
+ */
+export type ListEnumEmployeeDirectoryConnectionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployeeDirectoryConnectionStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'EmployeeDirectorySyncStatus'
+ */
+export type EnumEmployeeDirectorySyncStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployeeDirectorySyncStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'EmployeeDirectorySyncStatus[]'
+ */
+export type ListEnumEmployeeDirectorySyncStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployeeDirectorySyncStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'EmployeeDirectoryMatchStatus'
+ */
+export type EnumEmployeeDirectoryMatchStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployeeDirectoryMatchStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'EmployeeDirectoryMatchStatus[]'
+ */
+export type ListEnumEmployeeDirectoryMatchStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployeeDirectoryMatchStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'EmployeeDirectoryMatchMethod'
+ */
+export type EnumEmployeeDirectoryMatchMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployeeDirectoryMatchMethod'>
+    
+
+
+/**
+ * Reference to a field of type 'EmployeeDirectoryMatchMethod[]'
+ */
+export type ListEnumEmployeeDirectoryMatchMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployeeDirectoryMatchMethod[]'>
+    
+
+
+/**
+ * Reference to a field of type 'EmployeeDirectorySyncTrigger'
+ */
+export type EnumEmployeeDirectorySyncTriggerFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployeeDirectorySyncTrigger'>
+    
+
+
+/**
+ * Reference to a field of type 'EmployeeDirectorySyncTrigger[]'
+ */
+export type ListEnumEmployeeDirectorySyncTriggerFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployeeDirectorySyncTrigger[]'>
     
 
 
@@ -2081,16 +2793,86 @@ export type ListEnumLoanStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$P
 
 
 /**
- * Reference to a field of type 'Json'
+ * Reference to a field of type 'LoanDecisionClassification'
  */
-export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+export type EnumLoanDecisionClassificationFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LoanDecisionClassification'>
     
 
 
 /**
- * Reference to a field of type 'QueryMode'
+ * Reference to a field of type 'LoanDecisionClassification[]'
  */
-export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+export type ListEnumLoanDecisionClassificationFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LoanDecisionClassification[]'>
+    
+
+
+/**
+ * Reference to a field of type 'LoanDecisionAction'
+ */
+export type EnumLoanDecisionActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LoanDecisionAction'>
+    
+
+
+/**
+ * Reference to a field of type 'LoanDecisionAction[]'
+ */
+export type ListEnumLoanDecisionActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LoanDecisionAction[]'>
+    
+
+
+/**
+ * Reference to a field of type 'LoanDecisionSource'
+ */
+export type EnumLoanDecisionSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LoanDecisionSource'>
+    
+
+
+/**
+ * Reference to a field of type 'LoanDecisionSource[]'
+ */
+export type ListEnumLoanDecisionSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LoanDecisionSource[]'>
+    
+
+
+/**
+ * Reference to a field of type 'EmployerActionType'
+ */
+export type EnumEmployerActionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployerActionType'>
+    
+
+
+/**
+ * Reference to a field of type 'EmployerActionType[]'
+ */
+export type ListEnumEmployerActionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployerActionType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'EmployerActionStatus'
+ */
+export type EnumEmployerActionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployerActionStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'EmployerActionStatus[]'
+ */
+export type ListEnumEmployerActionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployerActionStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'EmployerActionProvider'
+ */
+export type EnumEmployerActionProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployerActionProvider'>
+    
+
+
+/**
+ * Reference to a field of type 'EmployerActionProvider[]'
+ */
+export type ListEnumEmployerActionProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployerActionProvider[]'>
     
 
 
@@ -2361,9 +3143,15 @@ export type GlobalOmitConfig = {
   arcWallet?: Prisma.ArcWalletOmit
   arcWalletChallenge?: Prisma.ArcWalletChallengeOmit
   organizationMembership?: Prisma.OrganizationMembershipOmit
+  employeeDirectoryIntegration?: Prisma.EmployeeDirectoryIntegrationOmit
+  employeeDirectoryMapping?: Prisma.EmployeeDirectoryMappingOmit
+  employeeDirectorySyncRun?: Prisma.EmployeeDirectorySyncRunOmit
   lendingOffer?: Prisma.LendingOfferOmit
   employeeBalance?: Prisma.EmployeeBalanceOmit
   loan?: Prisma.LoanOmit
+  loanDecisionEvaluation?: Prisma.LoanDecisionEvaluationOmit
+  loanDecisionReview?: Prisma.LoanDecisionReviewOmit
+  employerActionAttempt?: Prisma.EmployerActionAttemptOmit
   ledgerAccount?: Prisma.LedgerAccountOmit
   ledgerTransaction?: Prisma.LedgerTransactionOmit
   ledgerEntry?: Prisma.LedgerEntryOmit

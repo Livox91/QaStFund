@@ -104,7 +104,9 @@ try {
   });
   const createdCount = results.filter(({ kind }) => kind === "CREATED").length;
   const rejectedCount = results.filter(
-    ({ kind }) => kind === "INSUFFICIENT_LIQUIDITY",
+    ({ kind }) =>
+      kind === "INSUFFICIENT_LIQUIDITY" ||
+      kind === "INSUFFICIENT_LENDER_BALANCE",
   ).length;
 
   if (
@@ -126,7 +128,17 @@ try {
     auditEvent?.currency !== "USD" ||
     !auditEvent.actorMembershipId
   ) {
-    throw new Error("Concurrent capital reservation verification failed.");
+    throw new Error(
+      `Concurrent capital reservation verification failed: ${JSON.stringify({
+        resultKinds: results.map(({ kind }) => kind),
+        loanCount: loans.length,
+        availableAmountMinorUnits:
+          updatedOffer.availableAmountMinorUnits.toString(),
+        offerStatus: updatedOffer.status,
+        retryKind: retry.kind,
+        auditEventPresent: Boolean(auditEvent),
+      })}`,
+    );
   }
 
   const rollbackOffer = await prisma.lendingOffer.create({

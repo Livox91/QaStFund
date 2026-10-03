@@ -101,7 +101,7 @@ export async function prepareOnChainRepayment(
     where: {
       id: loanId,
       organizationId: actor.organizationId,
-      status: "ACTIVE",
+      status: { in: ["ACTIVE", "OVERDUE"] },
       borrowerMembership: {
         userId: actor.userId,
         isActive: true,
@@ -278,7 +278,7 @@ export async function confirmOnChainRepayment(
   }
   if (
     pending.status !== "PENDING" ||
-    pending.loan.status !== "ACTIVE" ||
+    (pending.loan.status !== "ACTIVE" && pending.loan.status !== "OVERDUE") ||
     !pending.loan.chainLoanId ||
     pending.loan.contractAddress?.toLowerCase() !==
       configuredContract.toLowerCase() ||
@@ -381,7 +381,7 @@ export async function confirmOnChainRepayment(
   const repaidAt = new Date(Number(event.repaidAt) * 1_000);
   await prisma.$transaction(async (transaction) => {
     const updated = await transaction.loan.updateMany({
-      where: { id: loanId, status: "ACTIVE" },
+      where: { id: loanId, status: { in: ["ACTIVE", "OVERDUE"] } },
       data: {
         status: "REPAID",
         outstandingPrincipalMinorUnits: 0n,

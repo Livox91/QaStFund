@@ -6,18 +6,86 @@ import { keccak256, stringToHex } from "viem";
 
 describe("EmployeeLendingEscrow", async () => {
   const { viem } = await network.create();
-  const [alice, bob] = await viem.getWalletClients();
+  const [alice, bob, authorizer, mallory] = await viem.getWalletClients();
+  const publicClient = await viem.getPublicClient();
+  const chainId = await publicClient.getChainId();
   const principal = 100_000_000n;
   const requestId = keccak256(stringToHex("alice-offer-1"));
+  let authorizationSequence = 0;
 
   let usdc: Awaited<ReturnType<typeof viem.deployContract>>;
   let escrow: Awaited<ReturnType<typeof viem.deployContract>>;
 
   beforeEach(async () => {
+    authorizationSequence = 0;
     usdc = await viem.deployContract("MockUSDC");
-    escrow = await viem.deployContract("EmployeeLendingEscrow", [usdc.address]);
+    escrow = await viem.deployContract("EmployeeLendingEscrow", [
+      usdc.address,
+      authorizer.account.address,
+    ]);
     await usdc.write.mint([alice.account.address, 500_000_000n]);
   });
+
+  async function borrowAuthorization(
+    input: {
+      borrower?: typeof bob;
+      signer?: typeof authorizer;
+      offerId?: bigint;
+      expiry?: bigint;
+      authorizationId?: `0x${string}`;
+      domainChainId?: number;
+      verifyingContract?: `0x${string}`;
+    } = {},
+  ) {
+    const borrower = input.borrower ?? bob;
+    const signer = input.signer ?? authorizer;
+    const offerId = input.offerId ?? 1n;
+    const expiry =
+      input.expiry ?? BigInt(Math.floor(Date.now() / 1_000) + 3_600);
+    const authorizationId =
+      input.authorizationId ??
+      keccak256(stringToHex(`accept-${authorizationSequence++}`));
+    const signature = await signer.signTypedData({
+      account: signer.account,
+      domain: {
+        name: "EmployeeLendingEscrow",
+        version: "1",
+        chainId: input.domainChainId ?? chainId,
+        verifyingContract: input.verifyingContract ?? escrow.address,
+      },
+      types: {
+        BorrowAuthorization: [
+          { name: "offerId", type: "uint256" },
+          { name: "borrower", type: "address" },
+          { name: "expiry", type: "uint256" },
+          { name: "authorizationId", type: "bytes32" },
+        ],
+      },
+      primaryType: "BorrowAuthorization",
+      message: {
+        offerId,
+        borrower: borrower.account.address,
+        expiry,
+        authorizationId,
+      },
+    });
+    return { borrower, offerId, expiry, authorizationId, signature };
+  }
+
+  async function acceptOffer(
+    input: Parameters<typeof borrowAuthorization>[0] = {},
+  ) {
+    const authorization = await borrowAuthorization(input);
+    return escrow.write.acceptOffer(
+      [
+        authorization.offerId,
+        authorization.expiry,
+        authorization.authorizationId,
+        authorization.signature,
+      ],
+      { account: authorization.borrower.account },
+    );
+  }
 
   async function createAliceOffer() {
     await usdc.write.approve([escrow.address, principal], {
@@ -31,7 +99,7 @@ describe("EmployeeLendingEscrow", async () => {
 
   async function createActiveLoan() {
     await createAliceOffer();
-    await escrow.write.acceptOffer([1n], { account: bob.account });
+    await acceptOffer();
   }
 
   it("creates a funded offer and reserves Alice's exact principal", async () => {
@@ -153,7 +221,7 @@ describe("EmployeeLendingEscrow", async () => {
     await createAliceOffer();
     await usdc.write.mint([bob.account.address, 10_000_000n]);
 
-    await escrow.write.acceptOffer([1n], { account: bob.account });
+    await acceptOffer();
 
     assert.equal(
       await usdc.read.balanceOf([bob.account.address]),
@@ -176,16 +244,133 @@ describe("EmployeeLendingEscrow", async () => {
     assert.equal(await escrow.read.offerLoanIds([1n]), 1n);
   });
 
+  it("rejects a signature from an unauthorized external signer", async () => {
+    await createAliceOffer();
+    await viem.assertions.revertWithCustomError(
+      acceptOffer({ signer: mallory }),
+      escrow,
+      "InvalidAuthorization",
+    );
+    assert.equal((await escrow.read.offers([1n]))[5], true);
+  });
+
+  it("rejects a valid authorization submitted by the wrong borrower", async () => {
+    await createAliceOffer();
+    const authorization = await borrowAuthorization({ borrower: bob });
+    await viem.assertions.revertWithCustomError(
+      escrow.write.acceptOffer(
+        [
+          authorization.offerId,
+          authorization.expiry,
+          authorization.authorizationId,
+          authorization.signature,
+        ],
+        { account: mallory.account },
+      ),
+      escrow,
+      "InvalidAuthorization",
+    );
+  });
+
+  it("rejects an authorization signed for a different offer", async () => {
+    await createAliceOffer();
+    const authorization = await borrowAuthorization({ offerId: 2n });
+    await viem.assertions.revertWithCustomError(
+      escrow.write.acceptOffer(
+        [
+          1n,
+          authorization.expiry,
+          authorization.authorizationId,
+          authorization.signature,
+        ],
+        { account: bob.account },
+      ),
+      escrow,
+      "InvalidAuthorization",
+    );
+  });
+
+  it("rejects expired authorizations", async () => {
+    await createAliceOffer();
+    await viem.assertions.revertWithCustomError(
+      acceptOffer({ expiry: 1n }),
+      escrow,
+      "AuthorizationExpired",
+    );
+  });
+
+  it("rejects replay of a consumed authorization", async () => {
+    await createAliceOffer();
+    const authorization = await borrowAuthorization();
+    const args = [
+      authorization.offerId,
+      authorization.expiry,
+      authorization.authorizationId,
+      authorization.signature,
+    ] as const;
+    await escrow.write.acceptOffer(args, { account: bob.account });
+    await viem.assertions.revertWithCustomError(
+      escrow.write.acceptOffer(args, { account: bob.account }),
+      escrow,
+      "AuthorizationAlreadyUsed",
+    );
+  });
+
+  it("rejects authorizations for another chain or contract domain", async () => {
+    await createAliceOffer();
+    await viem.assertions.revertWithCustomError(
+      acceptOffer({ domainChainId: chainId + 1 }),
+      escrow,
+      "InvalidAuthorization",
+    );
+    await viem.assertions.revertWithCustomError(
+      acceptOffer({ verifyingContract: usdc.address }),
+      escrow,
+      "InvalidAuthorization",
+    );
+  });
+
+  it("allows only one of two authorized borrowers to accept an offer", async () => {
+    await createAliceOffer();
+    const bobAuthorization = await borrowAuthorization({ borrower: bob });
+    const malloryAuthorization = await borrowAuthorization({
+      borrower: mallory,
+    });
+    await escrow.write.acceptOffer(
+      [
+        bobAuthorization.offerId,
+        bobAuthorization.expiry,
+        bobAuthorization.authorizationId,
+        bobAuthorization.signature,
+      ],
+      { account: bob.account },
+    );
+    await viem.assertions.revertWithCustomError(
+      escrow.write.acceptOffer(
+        [
+          malloryAuthorization.offerId,
+          malloryAuthorization.expiry,
+          malloryAuthorization.authorizationId,
+          malloryAuthorization.signature,
+        ],
+        { account: mallory.account },
+      ),
+      escrow,
+      "OfferNotActive",
+    );
+    assert.equal(await escrow.read.nextLoanId(), 2n);
+  });
+
   it("prevents double acceptance and self-borrowing", async () => {
     await createAliceOffer();
     await viem.assertions.revertWithCustomError(
-      escrow.write.acceptOffer([1n], { account: alice.account }),
+      acceptOffer({ borrower: alice }),
       escrow,
       "SelfBorrowingNotAllowed",
     );
-    await escrow.write.acceptOffer([1n], { account: bob.account });
+    await acceptOffer();
     await viem.assertions.revertWithCustomError(
-      escrow.write.acceptOffer([1n], { account: alice.account }),
+      acceptOffer({ borrower: alice }),
       escrow,
       "OfferNotActive",
     );
@@ -196,12 +381,12 @@ describe("EmployeeLendingEscrow", async () => {
     await createAliceOffer();
     await escrow.write.cancelOffer([1n], { account: alice.account });
     await viem.assertions.revertWithCustomError(
-      escrow.write.acceptOffer([1n], { account: bob.account }),
+      acceptOffer(),
       escrow,
       "OfferNotActive",
     );
     await viem.assertions.revertWithCustomError(
-      escrow.write.acceptOffer([99n], { account: bob.account }),
+      acceptOffer({ offerId: 99n }),
       escrow,
       "OfferNotActive",
     );
@@ -210,9 +395,18 @@ describe("EmployeeLendingEscrow", async () => {
   it("rolls back the loan and offer state when the USDC transfer fails", async () => {
     await createAliceOffer();
     await usdc.write.burn([escrow.address, principal]);
+    const authorization = await borrowAuthorization();
 
     await viem.assertions.revertWithCustomError(
-      escrow.write.acceptOffer([1n], { account: bob.account }),
+      escrow.write.acceptOffer(
+        [
+          authorization.offerId,
+          authorization.expiry,
+          authorization.authorizationId,
+          authorization.signature,
+        ],
+        { account: authorization.borrower.account },
+      ),
       usdc,
       "ERC20InsufficientBalance",
     );
@@ -221,6 +415,12 @@ describe("EmployeeLendingEscrow", async () => {
     assert.equal(await escrow.read.nextLoanId(), 1n);
     assert.equal(await escrow.read.totalReserved(), principal);
     assert.equal(await escrow.read.offerLoanIds([1n]), 0n);
+    assert.equal(
+      await escrow.read.usedBorrowAuthorizations([
+        authorization.authorizationId,
+      ]),
+      false,
+    );
   });
 
   it("rounds repayment interest up to the nearest base unit", async () => {
@@ -230,7 +430,7 @@ describe("EmployeeLendingEscrow", async () => {
     await escrow.write.createOffer([10_000n, 1n, 86_400n, requestId], {
       account: alice.account,
     });
-    await escrow.write.acceptOffer([1n], { account: bob.account });
+    await acceptOffer();
     assert.equal((await escrow.read.loans([1n]))[6], 10_001n);
   });
 
@@ -328,5 +528,52 @@ describe("EmployeeLendingEscrow", async () => {
     const loan = await escrow.read.loans([1n]);
     assert.equal(loan[9], 0);
     assert.equal(loan[10], 0n);
+  });
+
+  it("completes the funded Alice-to-Bob lifecycle with consistent final state", async () => {
+    const aliceStartingBalance = await usdc.read.balanceOf([
+      alice.account.address,
+    ]);
+    await createAliceOffer();
+
+    const activeOffer = await escrow.read.offers([1n]);
+    assert.equal(
+      activeOffer[1].toLowerCase(),
+      alice.account.address.toLowerCase(),
+    );
+    assert.equal(activeOffer[2], principal);
+    assert.equal(activeOffer[5], true);
+
+    await acceptOffer();
+    const activeLoan = await escrow.read.loans([1n]);
+    assert.equal(
+      activeLoan[2].toLowerCase(),
+      alice.account.address.toLowerCase(),
+    );
+    assert.equal(
+      activeLoan[3].toLowerCase(),
+      bob.account.address.toLowerCase(),
+    );
+    assert.equal(activeLoan[4], principal);
+    assert.equal(activeLoan[6], 105_000_000n);
+    assert.equal(activeLoan[9], 0);
+
+    await usdc.write.mint([bob.account.address, 5_000_000n]);
+    await usdc.write.approve([escrow.address, activeLoan[6]], {
+      account: bob.account,
+    });
+    await escrow.write.repayLoan([1n], { account: bob.account });
+
+    const finalLoan = await escrow.read.loans([1n]);
+    assert.equal(finalLoan[9], 1);
+    assert.ok(finalLoan[10] > 0n);
+    assert.equal((await escrow.read.offers([1n]))[5], false);
+    assert.equal(await escrow.read.totalReserved(), 0n);
+    assert.equal(await usdc.read.balanceOf([escrow.address]), 0n);
+    assert.equal(
+      await usdc.read.balanceOf([alice.account.address]),
+      aliceStartingBalance + 5_000_000n,
+    );
+    assert.equal(await usdc.read.balanceOf([bob.account.address]), 0n);
   });
 });

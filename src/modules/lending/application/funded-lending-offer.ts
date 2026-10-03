@@ -24,6 +24,7 @@ import {
   getConfiguredEscrowAddress,
 } from "@/integrations/arc/employee-lending-escrow";
 import type { AuthenticatedActor } from "@/modules/auth/domain/actor";
+import { matchesFundedOfferEvent } from "@/modules/lending/domain/lending-offer";
 import { ensureOrganizationPolicy } from "@/modules/policies/infrastructure/policy-data";
 import { validateOfferAgainstPolicy } from "@/modules/policies/domain/lending-policy";
 import { ApplicationError } from "@/shared/errors/application-error";
@@ -290,11 +291,22 @@ export async function confirmFundedLendingOffer(
       });
       if (
         decoded.eventName === "OfferCreated" &&
-        decoded.args.lender.toLowerCase() === offer.lenderWalletAddress &&
-        decoded.args.principal === offer.principalBaseUnits &&
-        decoded.args.interestBps === offer.feeRateBasisPoints &&
-        decoded.args.duration === offer.durationDays * 86_400 &&
-        decoded.args.requestId.toLowerCase() === expectedRequestId.toLowerCase()
+        matchesFundedOfferEvent(
+          {
+            lender: decoded.args.lender,
+            principal: decoded.args.principal,
+            interestBasisPoints: decoded.args.interestBps,
+            durationSeconds: decoded.args.duration,
+            requestId: decoded.args.requestId,
+          },
+          {
+            lenderWalletAddress: offer.lenderWalletAddress,
+            principalBaseUnits: offer.principalBaseUnits,
+            feeRateBasisPoints: offer.feeRateBasisPoints,
+            durationDays: offer.durationDays,
+            requestId: expectedRequestId,
+          },
+        )
       ) {
         chainOfferId = decoded.args.offerId;
         break;

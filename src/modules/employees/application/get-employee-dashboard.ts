@@ -35,6 +35,7 @@ function toDashboardLoan(
     progressBasisPoints: progress.progressBasisPoints,
     currency: loan.currency,
     status: loan.status,
+    riskClassification: loan.riskClassification,
     repaymentDueAt: loan.repaymentDueAt,
   };
 }

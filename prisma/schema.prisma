@@ -18,6 +18,49 @@ enum EmploymentStatus {
   TERMINATED
 }
 
+enum EmploymentStatusSource {
+  ERPNEXT
+}
+
+enum EmployeeDirectoryProvider {
+  ERPNEXT
+}
+
+enum EmployeeDirectoryAuthMethod {
+  TOKEN
+  OAUTH_BEARER
+}
+
+enum EmployeeDirectoryConnectionStatus {
+  NOT_TESTED
+  CONNECTED
+  FAILED
+}
+
+enum EmployeeDirectorySyncStatus {
+  RUNNING
+  SUCCESS
+  PARTIAL
+  FAILED
+}
+
+enum EmployeeDirectorySyncTrigger {
+  MANUAL
+  SCHEDULED
+}
+
+enum EmployeeDirectoryMatchStatus {
+  MATCHED
+  UNMATCHED
+  AMBIGUOUS
+  DUPLICATE_EXTERNAL_ID
+}
+
+enum EmployeeDirectoryMatchMethod {
+  UNIQUE_EMAIL
+  EXPLICIT
+}
+
 enum LendingOfferStatus {
   ACTIVE
   PAUSED
@@ -60,6 +103,8 @@ enum AuditEventType {
   EMPLOYEE_BORROWING_ENABLED
   EMPLOYEE_LENDING_SUSPENDED
   EMPLOYEE_LENDING_ENABLED
+  EMPLOYEE_DIRECTORY_SYNC_COMPLETED
+  EMPLOYEE_DIRECTORY_SYNC_FAILED
 }
 
 enum RepaymentStatus {
@@ -67,6 +112,42 @@ enum RepaymentStatus {
   COMPLETED
   FAILED
   CANCELLED
+}
+
+enum LoanDecisionClassification {
+  HEALTHY
+  DUE_SOON
+  OVERDUE
+  DEFAULT_CANDIDATE
+}
+
+enum LoanDecisionAction {
+  NONE
+  REMIND
+  FLAG_FOR_REVIEW
+  EMPLOYER_REVIEW
+}
+
+enum LoanDecisionSource {
+  RULES
+  MODEL
+}
+
+enum EmployerActionType {
+  MARK_REVIEWED
+  REQUEST_EMPLOYEE_CONTACT
+  REQUEST_HR_FOLLOW_UP
+}
+
+enum EmployerActionStatus {
+  PENDING
+  COMPLETED
+  REJECTED
+  FAILED
+}
+
+enum EmployerActionProvider {
+  MOCK
 }
 
 enum LedgerAccountType {
@@ -136,24 +217,30 @@ model User {
 }
 
 model Organization {
-  id                  String                     @id @default(uuid()) @db.Uuid
-  name                String
-  slug                String                     @unique
-  currency            String                     @default("USD") @db.VarChar(3)
-  createdAt           DateTime                   @default(now())
-  updatedAt           DateTime                   @updatedAt
-  memberships         OrganizationMembership[]
-  lendingOffers       LendingOffer[]
-  loans               Loan[]
-  repayments          LoanRepayment[]
-  auditEvents         AuditEvent[]
-  balances            EmployeeBalance[]
-  ledgerAccounts      LedgerAccount[]
-  ledgerTransactions  LedgerTransaction[]
-  ledgerEntries       LedgerEntry[]
-  lendingPolicy       OrganizationLendingPolicy?
-  arcWallets          ArcWallet[]
-  arcWalletChallenges ArcWalletChallenge[]
+  id                           String                        @id @default(uuid()) @db.Uuid
+  name                         String
+  slug                         String                        @unique
+  currency                     String                        @default("USD") @db.VarChar(3)
+  createdAt                    DateTime                      @default(now())
+  updatedAt                    DateTime                      @updatedAt
+  memberships                  OrganizationMembership[]
+  lendingOffers                LendingOffer[]
+  loans                        Loan[]
+  repayments                   LoanRepayment[]
+  auditEvents                  AuditEvent[]
+  balances                     EmployeeBalance[]
+  ledgerAccounts               LedgerAccount[]
+  ledgerTransactions           LedgerTransaction[]
+  ledgerEntries                LedgerEntry[]
+  lendingPolicy                OrganizationLendingPolicy?
+  arcWallets                   ArcWallet[]
+  arcWalletChallenges          ArcWalletChallenge[]
+  loanDecisionEvaluations      LoanDecisionEvaluation[]
+  loanDecisionReviews          LoanDecisionReview[]
+  employerActionAttempts       EmployerActionAttempt[]
+  employeeDirectoryIntegration EmployeeDirectoryIntegration?
+  employeeDirectoryMappings    EmployeeDirectoryMapping[]
+  employeeDirectorySyncRuns    EmployeeDirectorySyncRun[]
 }
 
 model ArcWallet {
@@ -192,30 +279,123 @@ model ArcWalletChallenge {
 }
 
 model OrganizationMembership {
-  id                  String           @id @default(uuid()) @db.Uuid
-  organizationId      String           @db.Uuid
-  userId              String           @db.Uuid
-  role                MembershipRole
-  employmentStatus    EmploymentStatus @default(ACTIVE)
-  isActive            Boolean          @default(true)
-  canBorrow           Boolean          @default(true)
-  canLend             Boolean          @default(true)
-  createdAt           DateTime         @default(now())
-  updatedAt           DateTime         @updatedAt
-  organization        Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  user                User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  sessions            Session[]
-  lendingOffers       LendingOffer[]   @relation("MembershipLendingOffers")
-  balance             EmployeeBalance?
-  loansAsLender       Loan[]           @relation("LoansAsLender")
-  loansAsBorrower     Loan[]           @relation("LoansAsBorrower")
-  ledgerAccounts      LedgerAccount[]
-  auditEventsActed    AuditEvent[]     @relation("AuditEventActor")
-  auditEventsTargeted AuditEvent[]     @relation("AuditEventTarget")
+  id                        String                     @id @default(uuid()) @db.Uuid
+  organizationId            String                     @db.Uuid
+  userId                    String                     @db.Uuid
+  role                      MembershipRole
+  employmentStatus          EmploymentStatus           @default(ACTIVE)
+  employmentStatusSource    EmploymentStatusSource?
+  employmentStatusSyncedAt  DateTime?
+  isActive                  Boolean                    @default(true)
+  canBorrow                 Boolean                    @default(true)
+  canLend                   Boolean                    @default(true)
+  createdAt                 DateTime                   @default(now())
+  updatedAt                 DateTime                   @updatedAt
+  organization              Organization               @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user                      User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessions                  Session[]
+  lendingOffers             LendingOffer[]             @relation("MembershipLendingOffers")
+  balance                   EmployeeBalance?
+  loansAsLender             Loan[]                     @relation("LoansAsLender")
+  loansAsBorrower           Loan[]                     @relation("LoansAsBorrower")
+  ledgerAccounts            LedgerAccount[]
+  auditEventsActed          AuditEvent[]               @relation("AuditEventActor")
+  auditEventsTargeted       AuditEvent[]               @relation("AuditEventTarget")
+  loanDecisionReviews       LoanDecisionReview[]       @relation("DecisionReviewsBy")
+  employerActionAttempts    EmployerActionAttempt[]    @relation("EmployerActionsRequestedBy")
+  employeeDirectoryMappings EmployeeDirectoryMapping[] @relation("EmployeeDirectoryMatchedMembership")
+  employeeDirectorySyncRuns EmployeeDirectorySyncRun[] @relation("EmployeeDirectorySyncRequestedBy")
 
   @@unique([organizationId, userId])
   @@unique([organizationId, id])
   @@index([organizationId, role])
+}
+
+model EmployeeDirectoryIntegration {
+  id                    String                            @id @default(uuid()) @db.Uuid
+  organizationId        String                            @unique @db.Uuid
+  provider              EmployeeDirectoryProvider         @default(ERPNEXT)
+  baseUrl               String                            @db.VarChar(512)
+  apiPath               String                            @default("/api/resource") @db.VarChar(128)
+  apiVersion            String                            @default("v1") @db.VarChar(16)
+  authMethod            EmployeeDirectoryAuthMethod
+  credentialReference   String                            @db.VarChar(128)
+  timeoutMs             Int                               @default(5000)
+  statusMapping         Json
+  connectionStatus      EmployeeDirectoryConnectionStatus @default(NOT_TESTED)
+  lastConnectionCode    String?                           @db.VarChar(64)
+  lastTestedAt          DateTime?
+  lastSuccessfulSyncAt  DateTime?
+  lastSyncStatus        EmployeeDirectorySyncStatus?
+  lastSyncErrorCode     String?                           @db.VarChar(64)
+  scheduledSyncPausedAt DateTime?
+  schedulePauseCode     String?                           @db.VarChar(64)
+  createdAt             DateTime                          @default(now())
+  updatedAt             DateTime                          @updatedAt
+  organization          Organization                      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  mappings              EmployeeDirectoryMapping[]
+  syncRuns              EmployeeDirectorySyncRun[]
+
+  @@unique([organizationId, id])
+}
+
+model EmployeeDirectoryMapping {
+  id                  String                        @id @default(uuid()) @db.Uuid
+  organizationId      String                        @db.Uuid
+  integrationId       String                        @db.Uuid
+  externalEmployeeId  String                        @db.VarChar(140)
+  employeeCode        String?                       @db.VarChar(140)
+  fullName            String                        @db.VarChar(280)
+  email               String?                       @db.VarChar(320)
+  externalStatus      String                        @db.VarChar(128)
+  normalizedStatus    EmploymentStatus?
+  matchStatus         EmployeeDirectoryMatchStatus
+  matchMethod         EmployeeDirectoryMatchMethod?
+  matchedMembershipId String?                       @db.Uuid
+  lastSynchronizedAt  DateTime
+  createdAt           DateTime                      @default(now())
+  updatedAt           DateTime                      @updatedAt
+  organization        Organization                  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  integration         EmployeeDirectoryIntegration  @relation(fields: [organizationId, integrationId], references: [organizationId, id], onDelete: Cascade)
+  matchedMembership   OrganizationMembership?       @relation("EmployeeDirectoryMatchedMembership", fields: [organizationId, matchedMembershipId], references: [organizationId, id], onDelete: Restrict)
+
+  @@unique([organizationId, integrationId, externalEmployeeId])
+  @@unique([organizationId, integrationId, matchedMembershipId])
+  @@index([organizationId, matchStatus])
+}
+
+model EmployeeDirectorySyncRun {
+  id                      String                       @id @default(uuid()) @db.Uuid
+  organizationId          String                       @db.Uuid
+  integrationId           String                       @db.Uuid
+  requestedByMembershipId String?                      @db.Uuid
+  trigger                 EmployeeDirectorySyncTrigger @default(MANUAL)
+  status                  EmployeeDirectorySyncStatus  @default(RUNNING)
+  processedCount          Int                          @default(0)
+  createdCount            Int                          @default(0)
+  updatedCount            Int                          @default(0)
+  unchangedCount          Int                          @default(0)
+  reviewCount             Int                          @default(0)
+  retrievedCount          Int                          @default(0)
+  matchedCount            Int                          @default(0)
+  unmatchedCount          Int                          @default(0)
+  ambiguousCount          Int                          @default(0)
+  statusChangeCount       Int                          @default(0)
+  errorCount              Int                          @default(0)
+  safeErrorCode           String?                      @db.VarChar(64)
+  safeErrorSummary        String?                      @db.VarChar(240)
+  correlationId           String                       @db.Uuid
+  startedAt               DateTime
+  completedAt             DateTime?
+  durationMs              Int?
+  createdAt               DateTime                     @default(now())
+  organization            Organization                 @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  integration             EmployeeDirectoryIntegration @relation(fields: [organizationId, integrationId], references: [organizationId, id], onDelete: Cascade)
+  requestedByMembership   OrganizationMembership?      @relation("EmployeeDirectorySyncRequestedBy", fields: [organizationId, requestedByMembershipId], references: [organizationId, id], onDelete: Restrict)
+
+  @@unique([organizationId, id])
+  @@index([organizationId, startedAt])
+  @@index([organizationId, trigger, startedAt])
 }
 
 model LendingOffer {
@@ -269,47 +449,50 @@ model EmployeeBalance {
 }
 
 model Loan {
-  id                             String                 @id @default(uuid()) @db.Uuid
-  organizationId                 String                 @db.Uuid
-  lenderMembershipId             String                 @db.Uuid
-  borrowerMembershipId           String                 @db.Uuid
-  lendingOfferId                 String?                @db.Uuid
-  borrowRequestId                String?                @unique @db.Uuid
-  chainLoanId                    String?                @db.VarChar(78)
-  chainOfferId                   String?                @db.VarChar(78)
-  contractAddress                String?                @db.VarChar(42)
-  lenderWalletAddress            String?                @db.VarChar(42)
-  borrowerWalletAddress          String?                @db.VarChar(42)
+  id                             String                   @id @default(uuid()) @db.Uuid
+  organizationId                 String                   @db.Uuid
+  lenderMembershipId             String                   @db.Uuid
+  borrowerMembershipId           String                   @db.Uuid
+  lendingOfferId                 String?                  @db.Uuid
+  borrowRequestId                String?                  @unique @db.Uuid
+  chainLoanId                    String?                  @db.VarChar(78)
+  chainOfferId                   String?                  @db.VarChar(78)
+  contractAddress                String?                  @db.VarChar(42)
+  lenderWalletAddress            String?                  @db.VarChar(42)
+  borrowerWalletAddress          String?                  @db.VarChar(42)
   principalBaseUnits             BigInt?
   repaymentBaseUnits             BigInt?
-  acceptanceTransactionHash      String?                @unique @db.VarChar(66)
-  repaymentTransactionHash       String?                @unique @db.VarChar(66)
+  acceptanceTransactionHash      String?                  @unique @db.VarChar(66)
+  repaymentTransactionHash       String?                  @unique @db.VarChar(66)
   onChainStartedAt               DateTime?
   onChainDueAt                   DateTime?
   onChainRepaidAt                DateTime?
   principalAmountMinorUnits      BigInt
-  feeAmountMinorUnits            BigInt                 @default(0)
+  feeAmountMinorUnits            BigInt                   @default(0)
   outstandingPrincipalMinorUnits BigInt
-  currency                       String                 @db.VarChar(3)
+  currency                       String                   @db.VarChar(3)
   durationDays                   Int
   feeRateBasisPoints             Int
   status                         LoanStatus
-  requestedAt                    DateTime               @default(now())
+  requestedAt                    DateTime                 @default(now())
   approvedAt                     DateTime?
   activatedAt                    DateTime?
   closedAt                       DateTime?
-  startedAt                      DateTime               @default(now())
+  startedAt                      DateTime                 @default(now())
   repaymentDueAt                 DateTime
-  createdAt                      DateTime               @default(now())
-  updatedAt                      DateTime               @updatedAt
+  createdAt                      DateTime                 @default(now())
+  updatedAt                      DateTime                 @updatedAt
   policyVersion                  Int?
   policySnapshot                 Json?
-  organization                   Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  lenderMembership               OrganizationMembership @relation("LoansAsLender", fields: [organizationId, lenderMembershipId], references: [organizationId, id], onDelete: Restrict)
-  borrowerMembership             OrganizationMembership @relation("LoansAsBorrower", fields: [organizationId, borrowerMembershipId], references: [organizationId, id], onDelete: Restrict)
-  lendingOffer                   LendingOffer?          @relation(fields: [organizationId, lendingOfferId], references: [organizationId, id], onDelete: Restrict)
+  organization                   Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  lenderMembership               OrganizationMembership   @relation("LoansAsLender", fields: [organizationId, lenderMembershipId], references: [organizationId, id], onDelete: Restrict)
+  borrowerMembership             OrganizationMembership   @relation("LoansAsBorrower", fields: [organizationId, borrowerMembershipId], references: [organizationId, id], onDelete: Restrict)
+  lendingOffer                   LendingOffer?            @relation(fields: [organizationId, lendingOfferId], references: [organizationId, id], onDelete: Restrict)
   repayments                     LoanRepayment[]
   auditEvents                    AuditEvent[]
+  decisionEvaluations            LoanDecisionEvaluation[]
+  decisionReviews                LoanDecisionReview[]
+  employerActionAttempts         EmployerActionAttempt[]
 
   @@unique([organizationId, id])
   @@unique([contractAddress, chainLoanId])
@@ -320,6 +503,71 @@ model Loan {
   @@index([organizationId, lenderMembershipId, status])
   @@index([organizationId, borrowerMembershipId, status])
   @@index([organizationId, chainOfferId])
+}
+
+model LoanDecisionEvaluation {
+  id                     String                     @id @default(uuid()) @db.Uuid
+  organizationId         String                     @db.Uuid
+  loanId                 String                     @db.Uuid
+  classification         LoanDecisionClassification
+  recommendedAction      LoanDecisionAction
+  reasonCodes            String[]
+  source                 LoanDecisionSource
+  modelVersion           String?                    @db.VarChar(64)
+  evaluatedAt            DateTime
+  createdAt              DateTime                   @default(now())
+  organization           Organization               @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  loan                   Loan                       @relation(fields: [organizationId, loanId], references: [organizationId, id], onDelete: Restrict)
+  reviews                LoanDecisionReview[]
+  employerActionAttempts EmployerActionAttempt[]
+
+  @@unique([organizationId, id])
+  @@index([organizationId, loanId, evaluatedAt])
+  @@index([organizationId, classification, evaluatedAt])
+}
+
+model LoanDecisionReview {
+  id                     String                 @id @default(uuid()) @db.Uuid
+  organizationId         String                 @db.Uuid
+  loanId                 String                 @db.Uuid
+  evaluationId           String                 @db.Uuid
+  reviewedByMembershipId String                 @db.Uuid
+  reviewedAt             DateTime
+  createdAt              DateTime               @default(now())
+  organization           Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  loan                   Loan                   @relation(fields: [organizationId, loanId], references: [organizationId, id], onDelete: Restrict)
+  evaluation             LoanDecisionEvaluation @relation(fields: [organizationId, evaluationId], references: [organizationId, id], onDelete: Restrict)
+  reviewedByMembership   OrganizationMembership @relation("DecisionReviewsBy", fields: [organizationId, reviewedByMembershipId], references: [organizationId, id], onDelete: Restrict)
+
+  @@unique([evaluationId, reviewedByMembershipId])
+  @@index([organizationId, loanId, reviewedAt])
+}
+
+model EmployerActionAttempt {
+  id                      String                 @id @default(uuid()) @db.Uuid
+  organizationId          String                 @db.Uuid
+  loanId                  String                 @db.Uuid
+  evaluationId            String                 @db.Uuid
+  requestedByMembershipId String                 @db.Uuid
+  action                  EmployerActionType
+  status                  EmployerActionStatus   @default(PENDING)
+  provider                EmployerActionProvider
+  idempotencyKey          String                 @db.VarChar(128)
+  adapterActionId         String?                @db.VarChar(64)
+  messageCode             String                 @db.VarChar(64)
+  requestedAt             DateTime
+  completedAt             DateTime?
+  createdAt               DateTime               @default(now())
+  updatedAt               DateTime               @updatedAt
+  organization            Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  loan                    Loan                   @relation(fields: [organizationId, loanId], references: [organizationId, id], onDelete: Restrict)
+  evaluation              LoanDecisionEvaluation @relation(fields: [organizationId, evaluationId], references: [organizationId, id], onDelete: Restrict)
+  requestedByMembership   OrganizationMembership @relation("EmployerActionsRequestedBy", fields: [organizationId, requestedByMembershipId], references: [organizationId, id], onDelete: Restrict)
+
+  @@unique([organizationId, id])
+  @@unique([organizationId, idempotencyKey])
+  @@index([organizationId, loanId, requestedAt])
+  @@index([organizationId, requestedByMembershipId, requestedAt])
 }
 
 model LedgerAccount {
