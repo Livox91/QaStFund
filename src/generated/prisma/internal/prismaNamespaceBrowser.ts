@@ -110,6 +110,7 @@ export const OrganizationScalarFieldEnum = {
   name: 'name',
   slug: 'slug',
   currency: 'currency',
+  erpNextEnabled: 'erpNextEnabled',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -230,6 +231,7 @@ export const EmployeeDirectorySyncRunScalarFieldEnum = {
   unmatchedCount: 'unmatchedCount',
   ambiguousCount: 'ambiguousCount',
   statusChangeCount: 'statusChangeCount',
+  deactivatedCount: 'deactivatedCount',
   errorCount: 'errorCount',
   safeErrorCode: 'safeErrorCode',
   safeErrorSummary: 'safeErrorSummary',

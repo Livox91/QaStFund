@@ -4,6 +4,7 @@ import type { NavigationItem } from "@/shared/ui/navigation";
 
 const employerNavigation: ReadonlyArray<NavigationItem> = [
   { href: "/employer", icon: "dashboard", label: "Overview", exact: true },
+  { href: "/employer/onboarding", icon: "settings", label: "Setup" },
   { href: "/employer/employees", icon: "employees", label: "Employees" },
   { href: "/employer/loans", icon: "loans", label: "Loans" },
   { href: "/employer/monitoring", icon: "reports", label: "Monitoring" },

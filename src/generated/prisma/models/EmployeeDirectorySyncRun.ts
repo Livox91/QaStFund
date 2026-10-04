@@ -37,6 +37,7 @@ export type EmployeeDirectorySyncRunAvgAggregateOutputType = {
   unmatchedCount: number | null
   ambiguousCount: number | null
   statusChangeCount: number | null
+  deactivatedCount: number | null
   errorCount: number | null
   durationMs: number | null
 }
@@ -52,6 +53,7 @@ export type EmployeeDirectorySyncRunSumAggregateOutputType = {
   unmatchedCount: number | null
   ambiguousCount: number | null
   statusChangeCount: number | null
+  deactivatedCount: number | null
   errorCount: number | null
   durationMs: number | null
 }
@@ -73,6 +75,7 @@ export type EmployeeDirectorySyncRunMinAggregateOutputType = {
   unmatchedCount: number | null
   ambiguousCount: number | null
   statusChangeCount: number | null
+  deactivatedCount: number | null
   errorCount: number | null
   safeErrorCode: string | null
   safeErrorSummary: string | null
@@ -100,6 +103,7 @@ export type EmployeeDirectorySyncRunMaxAggregateOutputType = {
   unmatchedCount: number | null
   ambiguousCount: number | null
   statusChangeCount: number | null
+  deactivatedCount: number | null
   errorCount: number | null
   safeErrorCode: string | null
   safeErrorSummary: string | null
@@ -127,6 +131,7 @@ export type EmployeeDirectorySyncRunCountAggregateOutputType = {
   unmatchedCount: number
   ambiguousCount: number
   statusChangeCount: number
+  deactivatedCount: number
   errorCount: number
   safeErrorCode: number
   safeErrorSummary: number
@@ -150,6 +155,7 @@ export type EmployeeDirectorySyncRunAvgAggregateInputType = {
   unmatchedCount?: true
   ambiguousCount?: true
   statusChangeCount?: true
+  deactivatedCount?: true
   errorCount?: true
   durationMs?: true
 }
@@ -165,6 +171,7 @@ export type EmployeeDirectorySyncRunSumAggregateInputType = {
   unmatchedCount?: true
   ambiguousCount?: true
   statusChangeCount?: true
+  deactivatedCount?: true
   errorCount?: true
   durationMs?: true
 }
@@ -186,6 +193,7 @@ export type EmployeeDirectorySyncRunMinAggregateInputType = {
   unmatchedCount?: true
   ambiguousCount?: true
   statusChangeCount?: true
+  deactivatedCount?: true
   errorCount?: true
   safeErrorCode?: true
   safeErrorSummary?: true
@@ -213,6 +221,7 @@ export type EmployeeDirectorySyncRunMaxAggregateInputType = {
   unmatchedCount?: true
   ambiguousCount?: true
   statusChangeCount?: true
+  deactivatedCount?: true
   errorCount?: true
   safeErrorCode?: true
   safeErrorSummary?: true
@@ -240,6 +249,7 @@ export type EmployeeDirectorySyncRunCountAggregateInputType = {
   unmatchedCount?: true
   ambiguousCount?: true
   statusChangeCount?: true
+  deactivatedCount?: true
   errorCount?: true
   safeErrorCode?: true
   safeErrorSummary?: true
@@ -354,6 +364,7 @@ export type EmployeeDirectorySyncRunGroupByOutputType = {
   unmatchedCount: number
   ambiguousCount: number
   statusChangeCount: number
+  deactivatedCount: number
   errorCount: number
   safeErrorCode: string | null
   safeErrorSummary: string | null
@@ -404,6 +415,7 @@ export type EmployeeDirectorySyncRunWhereInput = {
   unmatchedCount?: Prisma.IntFilter<"EmployeeDirectorySyncRun"> | number
   ambiguousCount?: Prisma.IntFilter<"EmployeeDirectorySyncRun"> | number
   statusChangeCount?: Prisma.IntFilter<"EmployeeDirectorySyncRun"> | number
+  deactivatedCount?: Prisma.IntFilter<"EmployeeDirectorySyncRun"> | number
   errorCount?: Prisma.IntFilter<"EmployeeDirectorySyncRun"> | number
   safeErrorCode?: Prisma.StringNullableFilter<"EmployeeDirectorySyncRun"> | string | null
   safeErrorSummary?: Prisma.StringNullableFilter<"EmployeeDirectorySyncRun"> | string | null
@@ -434,6 +446,7 @@ export type EmployeeDirectorySyncRunOrderByWithRelationInput = {
   unmatchedCount?: Prisma.SortOrder
   ambiguousCount?: Prisma.SortOrder
   statusChangeCount?: Prisma.SortOrder
+  deactivatedCount?: Prisma.SortOrder
   errorCount?: Prisma.SortOrder
   safeErrorCode?: Prisma.SortOrderInput | Prisma.SortOrder
   safeErrorSummary?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -468,6 +481,7 @@ export type EmployeeDirectorySyncRunWhereUniqueInput = Prisma.AtLeast<{
   unmatchedCount?: Prisma.IntFilter<"EmployeeDirectorySyncRun"> | number
   ambiguousCount?: Prisma.IntFilter<"EmployeeDirectorySyncRun"> | number
   statusChangeCount?: Prisma.IntFilter<"EmployeeDirectorySyncRun"> | number
+  deactivatedCount?: Prisma.IntFilter<"EmployeeDirectorySyncRun"> | number
   errorCount?: Prisma.IntFilter<"EmployeeDirectorySyncRun"> | number
   safeErrorCode?: Prisma.StringNullableFilter<"EmployeeDirectorySyncRun"> | string | null
   safeErrorSummary?: Prisma.StringNullableFilter<"EmployeeDirectorySyncRun"> | string | null
@@ -498,6 +512,7 @@ export type EmployeeDirectorySyncRunOrderByWithAggregationInput = {
   unmatchedCount?: Prisma.SortOrder
   ambiguousCount?: Prisma.SortOrder
   statusChangeCount?: Prisma.SortOrder
+  deactivatedCount?: Prisma.SortOrder
   errorCount?: Prisma.SortOrder
   safeErrorCode?: Prisma.SortOrderInput | Prisma.SortOrder
   safeErrorSummary?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -533,6 +548,7 @@ export type EmployeeDirectorySyncRunScalarWhereWithAggregatesInput = {
   unmatchedCount?: Prisma.IntWithAggregatesFilter<"EmployeeDirectorySyncRun"> | number
   ambiguousCount?: Prisma.IntWithAggregatesFilter<"EmployeeDirectorySyncRun"> | number
   statusChangeCount?: Prisma.IntWithAggregatesFilter<"EmployeeDirectorySyncRun"> | number
+  deactivatedCount?: Prisma.IntWithAggregatesFilter<"EmployeeDirectorySyncRun"> | number
   errorCount?: Prisma.IntWithAggregatesFilter<"EmployeeDirectorySyncRun"> | number
   safeErrorCode?: Prisma.StringNullableWithAggregatesFilter<"EmployeeDirectorySyncRun"> | string | null
   safeErrorSummary?: Prisma.StringNullableWithAggregatesFilter<"EmployeeDirectorySyncRun"> | string | null
@@ -557,6 +573,7 @@ export type EmployeeDirectorySyncRunCreateInput = {
   unmatchedCount?: number
   ambiguousCount?: number
   statusChangeCount?: number
+  deactivatedCount?: number
   errorCount?: number
   safeErrorCode?: string | null
   safeErrorSummary?: string | null
@@ -587,6 +604,7 @@ export type EmployeeDirectorySyncRunUncheckedCreateInput = {
   unmatchedCount?: number
   ambiguousCount?: number
   statusChangeCount?: number
+  deactivatedCount?: number
   errorCount?: number
   safeErrorCode?: string | null
   safeErrorSummary?: string | null
@@ -611,6 +629,7 @@ export type EmployeeDirectorySyncRunUpdateInput = {
   unmatchedCount?: Prisma.IntFieldUpdateOperationsInput | number
   ambiguousCount?: Prisma.IntFieldUpdateOperationsInput | number
   statusChangeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deactivatedCount?: Prisma.IntFieldUpdateOperationsInput | number
   errorCount?: Prisma.IntFieldUpdateOperationsInput | number
   safeErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   safeErrorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -641,6 +660,7 @@ export type EmployeeDirectorySyncRunUncheckedUpdateInput = {
   unmatchedCount?: Prisma.IntFieldUpdateOperationsInput | number
   ambiguousCount?: Prisma.IntFieldUpdateOperationsInput | number
   statusChangeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deactivatedCount?: Prisma.IntFieldUpdateOperationsInput | number
   errorCount?: Prisma.IntFieldUpdateOperationsInput | number
   safeErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   safeErrorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -668,6 +688,7 @@ export type EmployeeDirectorySyncRunCreateManyInput = {
   unmatchedCount?: number
   ambiguousCount?: number
   statusChangeCount?: number
+  deactivatedCount?: number
   errorCount?: number
   safeErrorCode?: string | null
   safeErrorSummary?: string | null
@@ -692,6 +713,7 @@ export type EmployeeDirectorySyncRunUpdateManyMutationInput = {
   unmatchedCount?: Prisma.IntFieldUpdateOperationsInput | number
   ambiguousCount?: Prisma.IntFieldUpdateOperationsInput | number
   statusChangeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deactivatedCount?: Prisma.IntFieldUpdateOperationsInput | number
   errorCount?: Prisma.IntFieldUpdateOperationsInput | number
   safeErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   safeErrorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -719,6 +741,7 @@ export type EmployeeDirectorySyncRunUncheckedUpdateManyInput = {
   unmatchedCount?: Prisma.IntFieldUpdateOperationsInput | number
   ambiguousCount?: Prisma.IntFieldUpdateOperationsInput | number
   statusChangeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deactivatedCount?: Prisma.IntFieldUpdateOperationsInput | number
   errorCount?: Prisma.IntFieldUpdateOperationsInput | number
   safeErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   safeErrorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -761,6 +784,7 @@ export type EmployeeDirectorySyncRunCountOrderByAggregateInput = {
   unmatchedCount?: Prisma.SortOrder
   ambiguousCount?: Prisma.SortOrder
   statusChangeCount?: Prisma.SortOrder
+  deactivatedCount?: Prisma.SortOrder
   errorCount?: Prisma.SortOrder
   safeErrorCode?: Prisma.SortOrder
   safeErrorSummary?: Prisma.SortOrder
@@ -782,6 +806,7 @@ export type EmployeeDirectorySyncRunAvgOrderByAggregateInput = {
   unmatchedCount?: Prisma.SortOrder
   ambiguousCount?: Prisma.SortOrder
   statusChangeCount?: Prisma.SortOrder
+  deactivatedCount?: Prisma.SortOrder
   errorCount?: Prisma.SortOrder
   durationMs?: Prisma.SortOrder
 }
@@ -803,6 +828,7 @@ export type EmployeeDirectorySyncRunMaxOrderByAggregateInput = {
   unmatchedCount?: Prisma.SortOrder
   ambiguousCount?: Prisma.SortOrder
   statusChangeCount?: Prisma.SortOrder
+  deactivatedCount?: Prisma.SortOrder
   errorCount?: Prisma.SortOrder
   safeErrorCode?: Prisma.SortOrder
   safeErrorSummary?: Prisma.SortOrder
@@ -830,6 +856,7 @@ export type EmployeeDirectorySyncRunMinOrderByAggregateInput = {
   unmatchedCount?: Prisma.SortOrder
   ambiguousCount?: Prisma.SortOrder
   statusChangeCount?: Prisma.SortOrder
+  deactivatedCount?: Prisma.SortOrder
   errorCount?: Prisma.SortOrder
   safeErrorCode?: Prisma.SortOrder
   safeErrorSummary?: Prisma.SortOrder
@@ -851,6 +878,7 @@ export type EmployeeDirectorySyncRunSumOrderByAggregateInput = {
   unmatchedCount?: Prisma.SortOrder
   ambiguousCount?: Prisma.SortOrder
   statusChangeCount?: Prisma.SortOrder
+  deactivatedCount?: Prisma.SortOrder
   errorCount?: Prisma.SortOrder
   durationMs?: Prisma.SortOrder
 }
@@ -1011,6 +1039,7 @@ export type EmployeeDirectorySyncRunCreateWithoutOrganizationInput = {
   unmatchedCount?: number
   ambiguousCount?: number
   statusChangeCount?: number
+  deactivatedCount?: number
   errorCount?: number
   safeErrorCode?: string | null
   safeErrorSummary?: string | null
@@ -1039,6 +1068,7 @@ export type EmployeeDirectorySyncRunUncheckedCreateWithoutOrganizationInput = {
   unmatchedCount?: number
   ambiguousCount?: number
   statusChangeCount?: number
+  deactivatedCount?: number
   errorCount?: number
   safeErrorCode?: string | null
   safeErrorSummary?: string | null
@@ -1095,6 +1125,7 @@ export type EmployeeDirectorySyncRunScalarWhereInput = {
   unmatchedCount?: Prisma.IntFilter<"EmployeeDirectorySyncRun"> | number
   ambiguousCount?: Prisma.IntFilter<"EmployeeDirectorySyncRun"> | number
   statusChangeCount?: Prisma.IntFilter<"EmployeeDirectorySyncRun"> | number
+  deactivatedCount?: Prisma.IntFilter<"EmployeeDirectorySyncRun"> | number
   errorCount?: Prisma.IntFilter<"EmployeeDirectorySyncRun"> | number
   safeErrorCode?: Prisma.StringNullableFilter<"EmployeeDirectorySyncRun"> | string | null
   safeErrorSummary?: Prisma.StringNullableFilter<"EmployeeDirectorySyncRun"> | string | null
@@ -1119,6 +1150,7 @@ export type EmployeeDirectorySyncRunCreateWithoutRequestedByMembershipInput = {
   unmatchedCount?: number
   ambiguousCount?: number
   statusChangeCount?: number
+  deactivatedCount?: number
   errorCount?: number
   safeErrorCode?: string | null
   safeErrorSummary?: string | null
@@ -1146,6 +1178,7 @@ export type EmployeeDirectorySyncRunUncheckedCreateWithoutRequestedByMembershipI
   unmatchedCount?: number
   ambiguousCount?: number
   statusChangeCount?: number
+  deactivatedCount?: number
   errorCount?: number
   safeErrorCode?: string | null
   safeErrorSummary?: string | null
@@ -1196,6 +1229,7 @@ export type EmployeeDirectorySyncRunCreateWithoutIntegrationInput = {
   unmatchedCount?: number
   ambiguousCount?: number
   statusChangeCount?: number
+  deactivatedCount?: number
   errorCount?: number
   safeErrorCode?: string | null
   safeErrorSummary?: string | null
@@ -1223,6 +1257,7 @@ export type EmployeeDirectorySyncRunUncheckedCreateWithoutIntegrationInput = {
   unmatchedCount?: number
   ambiguousCount?: number
   statusChangeCount?: number
+  deactivatedCount?: number
   errorCount?: number
   safeErrorCode?: string | null
   safeErrorSummary?: string | null
@@ -1275,6 +1310,7 @@ export type EmployeeDirectorySyncRunCreateManyOrganizationInput = {
   unmatchedCount?: number
   ambiguousCount?: number
   statusChangeCount?: number
+  deactivatedCount?: number
   errorCount?: number
   safeErrorCode?: string | null
   safeErrorSummary?: string | null
@@ -1299,6 +1335,7 @@ export type EmployeeDirectorySyncRunUpdateWithoutOrganizationInput = {
   unmatchedCount?: Prisma.IntFieldUpdateOperationsInput | number
   ambiguousCount?: Prisma.IntFieldUpdateOperationsInput | number
   statusChangeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deactivatedCount?: Prisma.IntFieldUpdateOperationsInput | number
   errorCount?: Prisma.IntFieldUpdateOperationsInput | number
   safeErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   safeErrorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1327,6 +1364,7 @@ export type EmployeeDirectorySyncRunUncheckedUpdateWithoutOrganizationInput = {
   unmatchedCount?: Prisma.IntFieldUpdateOperationsInput | number
   ambiguousCount?: Prisma.IntFieldUpdateOperationsInput | number
   statusChangeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deactivatedCount?: Prisma.IntFieldUpdateOperationsInput | number
   errorCount?: Prisma.IntFieldUpdateOperationsInput | number
   safeErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   safeErrorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1353,6 +1391,7 @@ export type EmployeeDirectorySyncRunUncheckedUpdateManyWithoutOrganizationInput 
   unmatchedCount?: Prisma.IntFieldUpdateOperationsInput | number
   ambiguousCount?: Prisma.IntFieldUpdateOperationsInput | number
   statusChangeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deactivatedCount?: Prisma.IntFieldUpdateOperationsInput | number
   errorCount?: Prisma.IntFieldUpdateOperationsInput | number
   safeErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   safeErrorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1378,6 +1417,7 @@ export type EmployeeDirectorySyncRunCreateManyRequestedByMembershipInput = {
   unmatchedCount?: number
   ambiguousCount?: number
   statusChangeCount?: number
+  deactivatedCount?: number
   errorCount?: number
   safeErrorCode?: string | null
   safeErrorSummary?: string | null
@@ -1402,6 +1442,7 @@ export type EmployeeDirectorySyncRunUpdateWithoutRequestedByMembershipInput = {
   unmatchedCount?: Prisma.IntFieldUpdateOperationsInput | number
   ambiguousCount?: Prisma.IntFieldUpdateOperationsInput | number
   statusChangeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deactivatedCount?: Prisma.IntFieldUpdateOperationsInput | number
   errorCount?: Prisma.IntFieldUpdateOperationsInput | number
   safeErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   safeErrorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1429,6 +1470,7 @@ export type EmployeeDirectorySyncRunUncheckedUpdateWithoutRequestedByMembershipI
   unmatchedCount?: Prisma.IntFieldUpdateOperationsInput | number
   ambiguousCount?: Prisma.IntFieldUpdateOperationsInput | number
   statusChangeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deactivatedCount?: Prisma.IntFieldUpdateOperationsInput | number
   errorCount?: Prisma.IntFieldUpdateOperationsInput | number
   safeErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   safeErrorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1454,6 +1496,7 @@ export type EmployeeDirectorySyncRunUncheckedUpdateManyWithoutRequestedByMembers
   unmatchedCount?: Prisma.IntFieldUpdateOperationsInput | number
   ambiguousCount?: Prisma.IntFieldUpdateOperationsInput | number
   statusChangeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deactivatedCount?: Prisma.IntFieldUpdateOperationsInput | number
   errorCount?: Prisma.IntFieldUpdateOperationsInput | number
   safeErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   safeErrorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1479,6 +1522,7 @@ export type EmployeeDirectorySyncRunCreateManyIntegrationInput = {
   unmatchedCount?: number
   ambiguousCount?: number
   statusChangeCount?: number
+  deactivatedCount?: number
   errorCount?: number
   safeErrorCode?: string | null
   safeErrorSummary?: string | null
@@ -1503,6 +1547,7 @@ export type EmployeeDirectorySyncRunUpdateWithoutIntegrationInput = {
   unmatchedCount?: Prisma.IntFieldUpdateOperationsInput | number
   ambiguousCount?: Prisma.IntFieldUpdateOperationsInput | number
   statusChangeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deactivatedCount?: Prisma.IntFieldUpdateOperationsInput | number
   errorCount?: Prisma.IntFieldUpdateOperationsInput | number
   safeErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   safeErrorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1530,6 +1575,7 @@ export type EmployeeDirectorySyncRunUncheckedUpdateWithoutIntegrationInput = {
   unmatchedCount?: Prisma.IntFieldUpdateOperationsInput | number
   ambiguousCount?: Prisma.IntFieldUpdateOperationsInput | number
   statusChangeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deactivatedCount?: Prisma.IntFieldUpdateOperationsInput | number
   errorCount?: Prisma.IntFieldUpdateOperationsInput | number
   safeErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   safeErrorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1555,6 +1601,7 @@ export type EmployeeDirectorySyncRunUncheckedUpdateManyWithoutIntegrationInput =
   unmatchedCount?: Prisma.IntFieldUpdateOperationsInput | number
   ambiguousCount?: Prisma.IntFieldUpdateOperationsInput | number
   statusChangeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deactivatedCount?: Prisma.IntFieldUpdateOperationsInput | number
   errorCount?: Prisma.IntFieldUpdateOperationsInput | number
   safeErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   safeErrorSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1584,6 +1631,7 @@ export type EmployeeDirectorySyncRunSelect<ExtArgs extends runtime.Types.Extensi
   unmatchedCount?: boolean
   ambiguousCount?: boolean
   statusChangeCount?: boolean
+  deactivatedCount?: boolean
   errorCount?: boolean
   safeErrorCode?: boolean
   safeErrorSummary?: boolean
@@ -1614,6 +1662,7 @@ export type EmployeeDirectorySyncRunSelectCreateManyAndReturn<ExtArgs extends ru
   unmatchedCount?: boolean
   ambiguousCount?: boolean
   statusChangeCount?: boolean
+  deactivatedCount?: boolean
   errorCount?: boolean
   safeErrorCode?: boolean
   safeErrorSummary?: boolean
@@ -1644,6 +1693,7 @@ export type EmployeeDirectorySyncRunSelectUpdateManyAndReturn<ExtArgs extends ru
   unmatchedCount?: boolean
   ambiguousCount?: boolean
   statusChangeCount?: boolean
+  deactivatedCount?: boolean
   errorCount?: boolean
   safeErrorCode?: boolean
   safeErrorSummary?: boolean
@@ -1674,6 +1724,7 @@ export type EmployeeDirectorySyncRunSelectScalar = {
   unmatchedCount?: boolean
   ambiguousCount?: boolean
   statusChangeCount?: boolean
+  deactivatedCount?: boolean
   errorCount?: boolean
   safeErrorCode?: boolean
   safeErrorSummary?: boolean
@@ -1684,7 +1735,7 @@ export type EmployeeDirectorySyncRunSelectScalar = {
   createdAt?: boolean
 }
 
-export type EmployeeDirectorySyncRunOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "integrationId" | "requestedByMembershipId" | "trigger" | "status" | "processedCount" | "createdCount" | "updatedCount" | "unchangedCount" | "reviewCount" | "retrievedCount" | "matchedCount" | "unmatchedCount" | "ambiguousCount" | "statusChangeCount" | "errorCount" | "safeErrorCode" | "safeErrorSummary" | "correlationId" | "startedAt" | "completedAt" | "durationMs" | "createdAt", ExtArgs["result"]["employeeDirectorySyncRun"]>
+export type EmployeeDirectorySyncRunOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "integrationId" | "requestedByMembershipId" | "trigger" | "status" | "processedCount" | "createdCount" | "updatedCount" | "unchangedCount" | "reviewCount" | "retrievedCount" | "matchedCount" | "unmatchedCount" | "ambiguousCount" | "statusChangeCount" | "deactivatedCount" | "errorCount" | "safeErrorCode" | "safeErrorSummary" | "correlationId" | "startedAt" | "completedAt" | "durationMs" | "createdAt", ExtArgs["result"]["employeeDirectorySyncRun"]>
 export type EmployeeDirectorySyncRunInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   integration?: boolean | Prisma.EmployeeDirectoryIntegrationDefaultArgs<ExtArgs>
@@ -1725,6 +1776,7 @@ export type $EmployeeDirectorySyncRunPayload<ExtArgs extends runtime.Types.Exten
     unmatchedCount: number
     ambiguousCount: number
     statusChangeCount: number
+    deactivatedCount: number
     errorCount: number
     safeErrorCode: string | null
     safeErrorSummary: string | null
@@ -2175,6 +2227,7 @@ export interface EmployeeDirectorySyncRunFieldRefs {
   readonly unmatchedCount: Prisma.FieldRef<"EmployeeDirectorySyncRun", 'Int'>
   readonly ambiguousCount: Prisma.FieldRef<"EmployeeDirectorySyncRun", 'Int'>
   readonly statusChangeCount: Prisma.FieldRef<"EmployeeDirectorySyncRun", 'Int'>
+  readonly deactivatedCount: Prisma.FieldRef<"EmployeeDirectorySyncRun", 'Int'>
   readonly errorCount: Prisma.FieldRef<"EmployeeDirectorySyncRun", 'Int'>
   readonly safeErrorCode: Prisma.FieldRef<"EmployeeDirectorySyncRun", 'String'>
   readonly safeErrorSummary: Prisma.FieldRef<"EmployeeDirectorySyncRun", 'String'>

@@ -88,6 +88,7 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
         select: {
           id: true,
           isActive: true,
+          employmentStatus: true,
           role: true,
           canLend: true,
           organization: { select: { currency: true } },
@@ -96,6 +97,7 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
 
       if (
         !membership?.isActive ||
+        membership.employmentStatus !== "ACTIVE" ||
         membership.role !== MembershipRole.EMPLOYEE
       ) {
         return { kind: "MEMBERSHIP_NOT_FOUND" } as const;

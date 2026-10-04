@@ -13,7 +13,11 @@ import {
 } from "@/infrastructure/observability/operational-signals";
 
 export async function runScheduledEmployeeDirectorySyncs(
-  input: { intervalMinutes: number; staleAfterMinutes: number },
+  input: {
+    intervalMinutes: number;
+    staleAfterMinutes: number;
+    maxPages?: number;
+  },
   repository: EmployeeDirectoryRepository,
   createAdapter: EmployeeDirectoryAdapterFactory,
   clock: Clock,
@@ -33,6 +37,7 @@ export async function runScheduledEmployeeDirectorySyncs(
           organizationId,
           trigger: "scheduled",
           staleAfterMs: input.staleAfterMinutes * 60_000,
+          maxPages: input.maxPages,
         },
         repository,
         createAdapter,

@@ -68,7 +68,15 @@ export interface EmployeeDirectoryRepository {
     }>;
     mappings: ReadonlyArray<{
       externalEmployeeId: string;
-      matchedMembershipId: string;
+      employeeCode: string | null;
+      fullName: string;
+      email: string | null;
+      externalStatus: string;
+      normalizedStatus: EmploymentStatus | null;
+      matchStatus:
+        "matched" | "unmatched" | "ambiguous" | "duplicate_external_id";
+      matchMethod: "unique_email" | "explicit" | null;
+      matchedMembershipId: string | null;
     }>;
   }>;
   completeSync(input: {
@@ -82,6 +90,7 @@ export interface EmployeeDirectoryRepository {
     unchangedCount: number;
     reviewCount: number;
     statusChangeCount: number;
+    deactivatedCount: number;
     errorCount: number;
     status: "success" | "partial";
     safeErrorCode?: string;
@@ -105,6 +114,7 @@ export interface EmployeeDirectoryRepository {
 
 export type EmployeeDirectoryDashboard = {
   configured: boolean;
+  erpNextEnabled: boolean;
   integration: null | {
     baseUrl: string;
     apiPath: string;
@@ -136,6 +146,7 @@ export type EmployeeDirectoryDashboard = {
     unmatchedCount: number;
     ambiguousCount: number;
     statusChangeCount: number;
+    deactivatedCount: number;
     errorCount: number;
     safeErrorCode: string | null;
     safeErrorSummary: string | null;
@@ -157,6 +168,7 @@ export type EmployeeDirectoryDashboard = {
     matchedCount: number;
     unmatchedCount: number;
     ambiguousCount: number;
+    deactivatedCount: number;
     errorCount: number;
     startedAt: Date;
     durationMs: number | null;

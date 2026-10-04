@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 
-import type { EmploymentStatus } from "@/generated/prisma/client";
+import { EmploymentStatus } from "@/generated/prisma/client";
 import { requireEmployerAdmin } from "@/modules/auth/application/authorization";
 import type { AuthenticatedActor } from "@/modules/auth/domain/actor";
 import type {
@@ -26,6 +26,7 @@ type SyncRequest = {
   requestedByUserId?: string;
   trigger: EmployeeDirectorySyncTrigger;
   staleAfterMs: number;
+  maxPages?: number;
 };
 
 function normalizeStatus(
@@ -47,7 +48,7 @@ export async function synchronizeEmployees(
   repository: EmployeeDirectoryRepository,
   createAdapter: EmployeeDirectoryAdapterFactory,
   clock: Clock,
-  options: { staleAfterMs?: number } = {},
+  options: { staleAfterMs?: number; maxPages?: number } = {},
 ) {
   const employer = requireEmployerAdmin(actor);
   return await synchronizeOrganizationEmployees(
@@ -56,6 +57,7 @@ export async function synchronizeEmployees(
       requestedByUserId: employer.userId,
       trigger: "manual",
       staleAfterMs: options.staleAfterMs ?? 30 * 60_000,
+      maxPages: options.maxPages,
     },
     repository,
     createAdapter,
@@ -87,24 +89,19 @@ export async function synchronizeOrganizationEmployees(
 
   const records: ExternalEmployee[] = [];
   let cursor: string | undefined;
-  let pageError: EmployeeDirectoryError | undefined;
   try {
     const adapter = createAdapter(claim.integration);
+    let pageCount = 0;
     do {
-      try {
-        const page = await adapter.listEmployees(cursor);
-        records.push(...page.employees);
-        cursor = page.nextCursor;
-      } catch (error) {
-        pageError =
-          error instanceof EmployeeDirectoryError
-            ? error
-            : new EmployeeDirectoryError("UNEXPECTED_ERROR");
-        break;
+      if (pageCount >= (request.maxPages ?? 100)) {
+        throw new EmployeeDirectoryError("SYNC_LIMIT_EXCEEDED");
       }
+      const page = await adapter.listEmployees(cursor);
+      records.push(...page.employees);
+      cursor = page.nextCursor;
+      pageCount += 1;
     } while (cursor);
 
-    if (records.length === 0 && pageError) throw pageError;
     const context = await repository.getMatchContext(request.organizationId);
     const employeesByEmail = new Map<string, typeof context.employees>();
     for (const employee of context.employees) {
@@ -114,11 +111,8 @@ export async function synchronizeOrganizationEmployees(
         employee,
       ]);
     }
-    const existingMappings = new Map(
-      context.mappings.map((mapping) => [
-        mapping.externalEmployeeId,
-        mapping.matchedMembershipId,
-      ]),
+    const mappingsByExternalId = new Map(
+      context.mappings.map((mapping) => [mapping.externalEmployeeId, mapping]),
     );
     const duplicateIds = new Set<string>();
     const seenIds = new Set<string>();
@@ -144,7 +138,10 @@ export async function synchronizeOrganizationEmployees(
       if (duplicateIds.has(record.externalId)) {
         return { ...base, matchStatus: "duplicate_external_id" };
       }
-      const mappedMembershipId = existingMappings.get(record.externalId);
+      const mappedMembershipId = mappingsByExternalId.get(
+        record.externalId,
+      )?.matchedMembershipId;
+      const existingMapping = mappingsByExternalId.get(record.externalId);
       const candidates = record.email
         ? (employeesByEmail.get(record.email.trim().toLowerCase()) ?? [])
         : [];
@@ -157,7 +154,7 @@ export async function synchronizeOrganizationEmployees(
         return {
           ...base,
           matchStatus: "matched",
-          matchMethod: "explicit",
+          matchMethod: existingMapping?.matchMethod ?? "explicit",
           matchedMembershipId: mappedEmployee.membershipId,
         };
       }
@@ -201,6 +198,39 @@ export async function synchronizeOrganizationEmployees(
           }
         : decision,
     );
+    decisions = [
+      ...new Map(
+        decisions.map((decision) => [decision.externalEmployeeId, decision]),
+      ).values(),
+    ];
+    const missingDecisions: DirectorySyncDecision[] = context.mappings
+      .filter(
+        (mapping) =>
+          mapping.matchedMembershipId &&
+          !seenIds.has(mapping.externalEmployeeId),
+      )
+      .map((mapping) => {
+        const currentStatus = context.employees.find(
+          (employee) => employee.membershipId === mapping.matchedMembershipId,
+        )?.status;
+        return {
+          externalEmployeeId: mapping.externalEmployeeId,
+          ...(mapping.employeeCode
+            ? { employeeCode: mapping.employeeCode }
+            : {}),
+          fullName: mapping.fullName,
+          ...(mapping.email ? { email: mapping.email } : {}),
+          externalStatus: "Missing from ERPNext",
+          normalizedStatus:
+            currentStatus === EmploymentStatus.TERMINATED
+              ? EmploymentStatus.TERMINATED
+              : EmploymentStatus.SUSPENDED,
+          matchStatus: "matched" as const,
+          matchMethod: "explicit" as const,
+          matchedMembershipId: mapping.matchedMembershipId!,
+        };
+      });
+    decisions.push(...missingDecisions);
     const statusChangeCount = decisions.reduce((count, decision) => {
       if (!decision.matchedMembershipId || !decision.normalizedStatus)
         return count;
@@ -209,26 +239,40 @@ export async function synchronizeOrganizationEmployees(
       );
       return count + (employee?.status !== decision.normalizedStatus ? 1 : 0);
     }, 0);
+    const deactivatedCount = missingDecisions.reduce((count, decision) => {
+      const employee = context.employees.find(
+        (candidate) => candidate.membershipId === decision.matchedMembershipId,
+      );
+      return count + (employee?.status === EmploymentStatus.ACTIVE ? 1 : 0);
+    }, 0);
     const reviewCount = decisions.filter(
       (decision) =>
         decision.matchStatus !== "matched" || !decision.normalizedStatus,
     ).length;
-    const unchangedCount = decisions.filter((decision) => {
-      if (
-        decision.matchStatus !== "matched" ||
-        !decision.matchedMembershipId ||
-        !decision.normalizedStatus
-      ) {
-        return false;
-      }
-      return context.employees.some(
-        (employee) =>
-          employee.membershipId === decision.matchedMembershipId &&
-          employee.status === decision.normalizedStatus,
+    const changed = (decision: DirectorySyncDecision) => {
+      const previous = mappingsByExternalId.get(decision.externalEmployeeId);
+      return (
+        !previous ||
+        previous.employeeCode !== (decision.employeeCode ?? null) ||
+        previous.fullName !== decision.fullName ||
+        previous.email !== (decision.email ?? null) ||
+        previous.externalStatus !== decision.externalStatus ||
+        previous.normalizedStatus !== (decision.normalizedStatus ?? null) ||
+        previous.matchStatus !== decision.matchStatus ||
+        previous.matchMethod !== (decision.matchMethod ?? null) ||
+        previous.matchedMembershipId !== (decision.matchedMembershipId ?? null)
       );
-    }).length;
-    const errorCount =
-      unknownStatusCount + duplicateIds.size + (pageError ? 1 : 0);
+    };
+    const createdCount = decisions.filter(
+      (decision) => !mappingsByExternalId.has(decision.externalEmployeeId),
+    ).length;
+    const updatedCount = decisions.filter(
+      (decision) =>
+        mappingsByExternalId.has(decision.externalEmployeeId) &&
+        changed(decision),
+    ).length;
+    const unchangedCount = decisions.length - createdCount - updatedCount;
+    const errorCount = unknownStatusCount + duplicateIds.size;
     const status = errorCount > 0 ? "partial" : "success";
     const completedAt = clock.now();
     await repository.completeSync({
@@ -237,11 +281,12 @@ export async function synchronizeOrganizationEmployees(
       decisions,
       retrievedCount: records.length,
       processedCount: records.length,
-      createdCount: 0,
-      updatedCount: statusChangeCount,
+      createdCount,
+      updatedCount,
       unchangedCount,
       reviewCount,
       statusChangeCount,
+      deactivatedCount,
       errorCount,
       status,
       ...(status === "partial"
@@ -257,7 +302,9 @@ export async function synchronizeOrganizationEmployees(
       status,
       processedCount: records.length,
       reviewCount,
-      updatedCount: statusChangeCount,
+      createdCount,
+      updatedCount,
+      deactivatedCount,
     };
   } catch (error) {
     const safeErrorCode =

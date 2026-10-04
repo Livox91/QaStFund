@@ -139,6 +139,13 @@ integration is used. Timing, local-HTTP development, reconciliation, decision
 engine, and employer-action options are documented with safe defaults in
 `.env.example`.
 
+The employee mapping, scheduler, restart/failure behavior, operator procedure,
+and tested commands are documented in
+[`ERPNEXT_EMPLOYEE_SYNC.md`](./ERPNEXT_EMPLOYEE_SYNC.md).
+Employer organization initialization, readiness, tenant isolation, and setup
+verification are documented in
+[`EMPLOYER_ONBOARDING.md`](./EMPLOYER_ONBOARDING.md).
+
 Optional configuration is grouped by feature:
 
 - Arc reconciliation: `ARC_RECONCILIATION_ENABLED`, its RPC/range/finality

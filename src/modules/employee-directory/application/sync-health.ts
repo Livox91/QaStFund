@@ -15,6 +15,8 @@ const summaries: Record<EmployeeDirectoryErrorCode, string> = {
   REMOTE_RESPONSE_INVALID: "ERPNext returned an unsupported response.",
   REMOTE_NOT_FOUND: "The ERPNext Employee resource was not found.",
   CONCURRENT_SYNC: "Another synchronization is already running.",
+  SYNC_LIMIT_EXCEEDED:
+    "ERPNext returned more employee pages than the configured safety limit.",
   PARTIAL_SYNC: "Some records were synchronized; others require review.",
   UNEXPECTED_ERROR: "Synchronization failed unexpectedly.",
 };
@@ -33,5 +35,6 @@ export function isPermanentScheduledSyncError(
     "AUTHENTICATION_FAILED",
     "PERMISSION_DENIED",
     "REMOTE_NOT_FOUND",
+    "SYNC_LIMIT_EXCEEDED",
   ].includes(code);
 }

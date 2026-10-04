@@ -17,8 +17,10 @@ const secretProvider = new EnvironmentEmployeeDirectorySecretProvider();
 function adapterFactory(
   config: ConstructorParameters<typeof ErpNextEmployeeDirectoryAdapter>[0],
 ) {
+  const environment = validateEnvironment();
   return new ErpNextEmployeeDirectoryAdapter(config, secretProvider, {
     allowLocalDevelopment: process.env.ERP_NEXT_ALLOW_LOCAL_HTTP === "true",
+    pageSize: environment.ERP_NEXT_SYNC_PAGE_SIZE,
   });
 }
 
@@ -56,6 +58,7 @@ export function synchronizeEmployeesForActor(actor: AuthenticatedActor | null) {
     systemClock,
     {
       staleAfterMs: environment.ERP_NEXT_SYNC_STALE_AFTER_MINUTES * 60_000,
+      maxPages: environment.ERP_NEXT_SYNC_MAX_PAGES,
     },
   );
 }
@@ -78,10 +81,11 @@ export async function getEmployeeDirectoryDashboardForActor(
   return {
     ...dashboard,
     schedule: {
-      enabled: environment.ERP_NEXT_SYNC_ENABLED,
+      enabled: environment.ERP_NEXT_SYNC_ENABLED && dashboard.erpNextEnabled,
       intervalMinutes: environment.ERP_NEXT_SYNC_INTERVAL_MINUTES,
       nextScheduledSyncAt:
         environment.ERP_NEXT_SYNC_ENABLED &&
+        dashboard.erpNextEnabled &&
         dashboard.configured &&
         !dashboard.integration?.scheduledSyncPausedAt
           ? calculatedNext
@@ -106,6 +110,7 @@ export function runConfiguredScheduledEmployeeDirectorySyncs() {
     {
       intervalMinutes: environment.ERP_NEXT_SYNC_INTERVAL_MINUTES,
       staleAfterMinutes: environment.ERP_NEXT_SYNC_STALE_AFTER_MINUTES,
+      maxPages: environment.ERP_NEXT_SYNC_MAX_PAGES,
     },
     prismaEmployeeDirectoryRepository,
     adapterFactory,

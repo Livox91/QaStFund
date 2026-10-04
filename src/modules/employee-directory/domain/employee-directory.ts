@@ -38,6 +38,7 @@ export type EmployeeDirectoryErrorCode =
   | "REMOTE_RESPONSE_INVALID"
   | "REMOTE_NOT_FOUND"
   | "CONCURRENT_SYNC"
+  | "SYNC_LIMIT_EXCEEDED"
   | "PARTIAL_SYNC"
   | "UNEXPECTED_ERROR";
 

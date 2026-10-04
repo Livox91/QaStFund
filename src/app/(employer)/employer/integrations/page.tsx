@@ -89,10 +89,14 @@ export default async function EmployerIntegrationsPage() {
           <h2 className="text-lg font-semibold text-slate-950">
             Latest synchronization
           </h2>
-          <div className="mt-4 grid gap-4 sm:grid-cols-3 lg:grid-cols-6">
+          <div className="mt-4 grid gap-4 sm:grid-cols-3 lg:grid-cols-7">
             <Metric label="Processed" value={String(latest.processedCount)} />
             <Metric label="Created" value={String(latest.createdCount)} />
             <Metric label="Updated" value={String(latest.updatedCount)} />
+            <Metric
+              label="Deactivated"
+              value={String(latest.deactivatedCount)}
+            />
             <Metric label="Unchanged" value={String(latest.unchangedCount)} />
             <Metric label="Needs review" value={String(latest.reviewCount)} />
             <Metric

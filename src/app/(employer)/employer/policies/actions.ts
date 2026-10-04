@@ -32,5 +32,6 @@ export async function updateLendingPolicyAction(formData: FormData) {
     maxTermDays: parsed.maxTermDays,
   });
   revalidatePath("/employer/policies");
+  revalidatePath("/employer/onboarding");
   revalidatePath("/app");
 }

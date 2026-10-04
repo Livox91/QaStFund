@@ -2,7 +2,6 @@ import type {
   AuthRepository,
   AuthenticationUser,
 } from "@/modules/auth/application/ports/auth-repository";
-import { EmploymentStatus } from "@/generated/prisma/client";
 import type { AuthenticatedActor } from "@/modules/auth/domain/actor";
 import {
   ApplicationRole,
@@ -28,7 +27,6 @@ export const prismaAuthRepository: AuthRepository = {
         memberships: {
           where: {
             isActive: true,
-            employmentStatus: EmploymentStatus.ACTIVE,
           },
           orderBy: { createdAt: "asc" },
           include: { organization: true },
@@ -74,12 +72,7 @@ export const prismaAuthRepository: AuthRepository = {
       },
     });
 
-    if (
-      !session ||
-      session.expiresAt <= now ||
-      !session.membership.isActive ||
-      session.membership.employmentStatus !== EmploymentStatus.ACTIVE
-    ) {
+    if (!session || session.expiresAt <= now || !session.membership.isActive) {
       return null;
     }
 

@@ -139,6 +139,7 @@ export const prismaBorrowLoanRepository: BorrowLoanRepository = {
         select: {
           id: true,
           isActive: true,
+          employmentStatus: true,
           role: true,
           canBorrow: true,
           user: { select: { name: true } },
@@ -147,6 +148,7 @@ export const prismaBorrowLoanRepository: BorrowLoanRepository = {
 
       if (
         !membership?.isActive ||
+        membership.employmentStatus !== "ACTIVE" ||
         membership.role !== MembershipRole.EMPLOYEE
       ) {
         return { kind: "OFFER_NOT_AVAILABLE" } as const;
@@ -161,10 +163,16 @@ export const prismaBorrowLoanRepository: BorrowLoanRepository = {
       const borrowerAccess =
         await transaction.organizationMembership.findUnique({
           where: { id: membership.id },
-          select: { isActive: true, role: true, canBorrow: true },
+          select: {
+            isActive: true,
+            employmentStatus: true,
+            role: true,
+            canBorrow: true,
+          },
         });
       if (
         !borrowerAccess?.isActive ||
+        borrowerAccess.employmentStatus !== "ACTIVE" ||
         borrowerAccess.role !== MembershipRole.EMPLOYEE
       ) {
         return { kind: "OFFER_NOT_AVAILABLE" } as const;
@@ -204,6 +212,7 @@ export const prismaBorrowLoanRepository: BorrowLoanRepository = {
           expiresAt: { gt: now },
           lenderMembership: {
             isActive: true,
+            employmentStatus: "ACTIVE",
             role: MembershipRole.EMPLOYEE,
             canLend: true,
           },
@@ -221,9 +230,13 @@ export const prismaBorrowLoanRepository: BorrowLoanRepository = {
       `;
       const lenderAccess = await transaction.organizationMembership.findUnique({
         where: { id: offer.lenderMembershipId },
-        select: { isActive: true, canLend: true },
+        select: { isActive: true, employmentStatus: true, canLend: true },
       });
-      if (!lenderAccess?.isActive || !lenderAccess.canLend) {
+      if (
+        !lenderAccess?.isActive ||
+        lenderAccess.employmentStatus !== "ACTIVE" ||
+        !lenderAccess.canLend
+      ) {
         return { kind: "OFFER_NOT_AVAILABLE" } as const;
       }
 

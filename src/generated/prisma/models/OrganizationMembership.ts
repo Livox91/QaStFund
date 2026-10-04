@@ -675,10 +675,6 @@ export type NullableEnumEmploymentStatusSourceFieldUpdateOperationsInput = {
   set?: $Enums.EmploymentStatusSource | null
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type OrganizationMembershipCreateNestedOneWithoutEmployeeDirectoryMappingsInput = {
   create?: Prisma.XOR<Prisma.OrganizationMembershipCreateWithoutEmployeeDirectoryMappingsInput, Prisma.OrganizationMembershipUncheckedCreateWithoutEmployeeDirectoryMappingsInput>
   connectOrCreate?: Prisma.OrganizationMembershipCreateOrConnectWithoutEmployeeDirectoryMappingsInput

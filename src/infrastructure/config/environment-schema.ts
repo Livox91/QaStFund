@@ -177,6 +177,18 @@ const environmentSchema = z
       .min(5)
       .max(1440)
       .default(30),
+    ERP_NEXT_SYNC_PAGE_SIZE: z.coerce
+      .number()
+      .int()
+      .min(10)
+      .max(1000)
+      .default(100),
+    ERP_NEXT_SYNC_MAX_PAGES: z.coerce
+      .number()
+      .int()
+      .min(1)
+      .max(1000)
+      .default(100),
     ERP_NEXT_SYNC_CRON_SECRET: z.preprocess(
       (value) => (value === "" ? undefined : value),
       z.string().min(32).optional(),
@@ -291,6 +303,8 @@ export function parseEnvironment(
     ERP_NEXT_SYNC_ENABLED?: NodeJS.ProcessEnv[string];
     ERP_NEXT_SYNC_INTERVAL_MINUTES?: NodeJS.ProcessEnv[string];
     ERP_NEXT_SYNC_STALE_AFTER_MINUTES?: NodeJS.ProcessEnv[string];
+    ERP_NEXT_SYNC_PAGE_SIZE?: NodeJS.ProcessEnv[string];
+    ERP_NEXT_SYNC_MAX_PAGES?: NodeJS.ProcessEnv[string];
     ERP_NEXT_SYNC_CRON_SECRET?: NodeJS.ProcessEnv[string];
     ERP_NEXT_CREDENTIALS_JSON?: NodeJS.ProcessEnv[string];
     ARC_RECONCILIATION_ENABLED?: NodeJS.ProcessEnv[string];

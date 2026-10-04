@@ -71,6 +71,7 @@ export async function configureIntegrationAction(
       },
     });
     revalidatePath("/employer/integrations");
+    revalidatePath("/employer/onboarding");
     return { status: "success", message: "Integration configuration saved." };
   } catch (error) {
     return { status: "error", message: safeMessage(error) };
@@ -83,6 +84,7 @@ export async function testIntegrationAction(): Promise<IntegrationActionState> {
     await enforceUserRateLimit(actor, "employer.integration.test", "expensive");
     const result = await testEmployeeDirectoryConnectionForActor(actor);
     revalidatePath("/employer/integrations");
+    revalidatePath("/employer/onboarding");
     return {
       status: result.ok ? "success" : "error",
       message: result.messageCode,
@@ -98,6 +100,7 @@ export async function syncEmployeesAction(): Promise<IntegrationActionState> {
     await enforceUserRateLimit(actor, "employer.integration.sync", "expensive");
     const result = await synchronizeEmployeesForActor(actor);
     revalidatePath("/employer/integrations");
+    revalidatePath("/employer/onboarding");
     return {
       status: result.status === "partial" ? "partial" : "success",
       message:
@@ -107,6 +110,7 @@ export async function syncEmployeesAction(): Promise<IntegrationActionState> {
     };
   } catch (error) {
     revalidatePath("/employer/integrations");
+    revalidatePath("/employer/onboarding");
     return { status: "error", message: safeMessage(error) };
   }
 }

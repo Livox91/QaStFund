@@ -235,6 +235,7 @@ model Organization {
   name                         String
   slug                         String                        @unique
   currency                     String                        @default("USD") @db.VarChar(3)
+  erpNextEnabled               Boolean                       @default(false)
   createdAt                    DateTime                      @default(now())
   updatedAt                    DateTime                      @updatedAt
   memberships                  OrganizationMembership[]
@@ -395,6 +396,7 @@ model EmployeeDirectorySyncRun {
   unmatchedCount          Int                          @default(0)
   ambiguousCount          Int                          @default(0)
   statusChangeCount       Int                          @default(0)
+  deactivatedCount        Int                          @default(0)
   errorCount              Int                          @default(0)
   safeErrorCode           String?                      @db.VarChar(64)
   safeErrorSummary        String?                      @db.VarChar(240)

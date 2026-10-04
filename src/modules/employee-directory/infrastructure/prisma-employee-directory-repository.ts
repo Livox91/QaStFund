@@ -231,6 +231,7 @@ export const prismaEmployeeDirectoryRepository: EmployeeDirectoryRepository = {
     const integrations = await prisma.employeeDirectoryIntegration.findMany({
       where: {
         scheduledSyncPausedAt: null,
+        organization: { erpNextEnabled: true },
         OR: [
           { syncRuns: { none: {} } },
           { syncRuns: { none: { startedAt: { gt: input.dueBefore } } } },
@@ -252,12 +253,18 @@ export const prismaEmployeeDirectoryRepository: EmployeeDirectoryRepository = {
         },
       }),
       prisma.employeeDirectoryMapping.findMany({
-        where: {
-          organizationId,
-          matchStatus: "MATCHED",
-          matchedMembershipId: { not: null },
+        where: { organizationId },
+        select: {
+          externalEmployeeId: true,
+          employeeCode: true,
+          fullName: true,
+          email: true,
+          externalStatus: true,
+          normalizedStatus: true,
+          matchStatus: true,
+          matchMethod: true,
+          matchedMembershipId: true,
         },
-        select: { externalEmployeeId: true, matchedMembershipId: true },
       }),
     ]);
     return {
@@ -266,11 +273,15 @@ export const prismaEmployeeDirectoryRepository: EmployeeDirectoryRepository = {
         email: employee.user.email,
         status: employee.employmentStatus,
       })),
-      mappings: mappings.flatMap((mapping) =>
-        mapping.matchedMembershipId
-          ? [{ ...mapping, matchedMembershipId: mapping.matchedMembershipId }]
-          : [],
-      ),
+      mappings: mappings.map((mapping) => ({
+        ...mapping,
+        matchStatus: lower<
+          "matched" | "unmatched" | "ambiguous" | "duplicate_external_id"
+        >(mapping.matchStatus),
+        matchMethod: mapping.matchMethod
+          ? lower<"unique_email" | "explicit">(mapping.matchMethod)
+          : null,
+      })),
     };
   },
 
@@ -360,6 +371,7 @@ export const prismaEmployeeDirectoryRepository: EmployeeDirectoryRepository = {
           retrievedCount: input.retrievedCount,
           ...counts,
           statusChangeCount: input.statusChangeCount,
+          deactivatedCount: input.deactivatedCount,
           errorCount: input.errorCount,
           safeErrorCode: input.safeErrorCode,
           safeErrorSummary: input.safeErrorSummary,
@@ -398,6 +410,7 @@ export const prismaEmployeeDirectoryRepository: EmployeeDirectoryRepository = {
             retrievedCount: input.retrievedCount,
             ...counts,
             statusChangeCount: input.statusChangeCount,
+            deactivatedCount: input.deactivatedCount,
             errorCount: input.errorCount,
             safeErrorCode: input.safeErrorCode ?? null,
           },
@@ -456,61 +469,69 @@ export const prismaEmployeeDirectoryRepository: EmployeeDirectoryRepository = {
   },
 
   async getDashboard(organizationId): Promise<EmployeeDirectoryDashboard> {
-    const integration = await prisma.employeeDirectoryIntegration.findUnique({
-      where: { organizationId },
-      select: {
-        ...integrationSelection,
-        syncRuns: {
-          orderBy: { startedAt: "desc" },
-          take: 10,
-          select: {
-            id: true,
-            trigger: true,
-            status: true,
-            processedCount: true,
-            createdCount: true,
-            updatedCount: true,
-            unchangedCount: true,
-            reviewCount: true,
-            retrievedCount: true,
-            matchedCount: true,
-            unmatchedCount: true,
-            ambiguousCount: true,
-            statusChangeCount: true,
-            errorCount: true,
-            safeErrorCode: true,
-            safeErrorSummary: true,
-            correlationId: true,
-            startedAt: true,
-            completedAt: true,
-            durationMs: true,
+    const [organization, integration] = await Promise.all([
+      prisma.organization.findUnique({
+        where: { id: organizationId },
+        select: { erpNextEnabled: true },
+      }),
+      prisma.employeeDirectoryIntegration.findUnique({
+        where: { organizationId },
+        select: {
+          ...integrationSelection,
+          syncRuns: {
+            orderBy: { startedAt: "desc" },
+            take: 10,
+            select: {
+              id: true,
+              trigger: true,
+              status: true,
+              processedCount: true,
+              createdCount: true,
+              updatedCount: true,
+              unchangedCount: true,
+              reviewCount: true,
+              retrievedCount: true,
+              matchedCount: true,
+              unmatchedCount: true,
+              ambiguousCount: true,
+              statusChangeCount: true,
+              deactivatedCount: true,
+              errorCount: true,
+              safeErrorCode: true,
+              safeErrorSummary: true,
+              correlationId: true,
+              startedAt: true,
+              completedAt: true,
+              durationMs: true,
+            },
+          },
+          mappings: {
+            where: {
+              OR: [
+                { matchStatus: { not: "MATCHED" } },
+                { normalizedStatus: null },
+              ],
+            },
+            orderBy: { lastSynchronizedAt: "desc" },
+            take: 100,
+            select: {
+              externalEmployeeId: true,
+              employeeCode: true,
+              fullName: true,
+              email: true,
+              externalStatus: true,
+              normalizedStatus: true,
+              matchStatus: true,
+              lastSynchronizedAt: true,
+            },
           },
         },
-        mappings: {
-          where: {
-            OR: [
-              { matchStatus: { not: "MATCHED" } },
-              { normalizedStatus: null },
-            ],
-          },
-          orderBy: { lastSynchronizedAt: "desc" },
-          take: 100,
-          select: {
-            externalEmployeeId: true,
-            employeeCode: true,
-            fullName: true,
-            email: true,
-            externalStatus: true,
-            normalizedStatus: true,
-            matchStatus: true,
-            lastSynchronizedAt: true,
-          },
-        },
-      },
-    });
+      }),
+    ]);
     if (!integration) {
       return {
         configured: false,
+        erpNextEnabled: organization?.erpNextEnabled ?? false,
         integration: null,
         latestRun: null,
         history: [],
@@ -524,6 +545,7 @@ export const prismaEmployeeDirectoryRepository: EmployeeDirectoryRepository = {
     }));
     return {
       configured: true,
+      erpNextEnabled: organization?.erpNextEnabled ?? false,
       integration: {
         baseUrl: integration.baseUrl,
         apiPath: integration.apiPath,
@@ -560,6 +582,7 @@ export const prismaEmployeeDirectoryRepository: EmployeeDirectoryRepository = {
           matchedCount,
           unmatchedCount,
           ambiguousCount,
+          deactivatedCount,
           errorCount,
           startedAt,
           durationMs,
@@ -576,6 +599,7 @@ export const prismaEmployeeDirectoryRepository: EmployeeDirectoryRepository = {
           matchedCount,
           unmatchedCount,
           ambiguousCount,
+          deactivatedCount,
           errorCount,
           startedAt,
           durationMs,

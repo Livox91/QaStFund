@@ -251,12 +251,17 @@ function createRepository() {
                 status: employeeStatus,
               },
             ],
-            mappings: decisions
-              .filter((item) => item.matchedMembershipId)
-              .map((item) => ({
-                externalEmployeeId: item.externalEmployeeId,
-                matchedMembershipId: item.matchedMembershipId!,
-              })),
+            mappings: decisions.map((item) => ({
+              externalEmployeeId: item.externalEmployeeId,
+              employeeCode: item.employeeCode ?? null,
+              fullName: item.fullName,
+              email: item.email ?? null,
+              externalStatus: item.externalStatus,
+              normalizedStatus: item.normalizedStatus ?? null,
+              matchStatus: item.matchStatus,
+              matchMethod: item.matchMethod ?? null,
+              matchedMembershipId: item.matchedMembershipId ?? null,
+            })),
           }
         : { employees: [], mappings: [] },
     ),
@@ -277,6 +282,7 @@ function createRepository() {
     failSync: vi.fn(async () => {}),
     getDashboard: vi.fn(async () => ({
       configured: false,
+      erpNextEnabled: false,
       integration: null,
       latestRun: null,
       history: [],
@@ -343,7 +349,7 @@ describe("employee synchronization policy", () => {
     expect(state.decisions).toHaveLength(1);
     expect(state.decisions[0]).toMatchObject({
       matchStatus: "matched",
-      matchMethod: "explicit",
+      matchMethod: "unique_email",
       normalizedStatus: "TERMINATED",
     });
     expect(state.employeeStatus).toBe(EmploymentStatus.TERMINATED);
@@ -351,6 +357,93 @@ describe("employee synchronization policy", () => {
       status: "ACTIVE",
       outstanding: 5000n,
     });
+    expect(state.repository.completeSync).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        createdCount: 0,
+        updatedCount: 0,
+        unchangedCount: 1,
+      }),
+    );
+  });
+
+  it("suspends an employee missing from a complete snapshot without deleting identity or finance", async () => {
+    const state = createRepository();
+    const loan = { id: "loan-1", status: "ACTIVE" };
+    await synchronizeEmployees(
+      admin,
+      state.repository,
+      () =>
+        pages([
+          {
+            externalId: "EMP-1",
+            fullName: "Employee",
+            email: "employee@example.test",
+            employmentStatus: "Active",
+          },
+        ]),
+      clock,
+    );
+
+    await synchronizeEmployees(admin, state.repository, () => pages([]), clock);
+
+    expect(state.employeeStatus).toBe(EmploymentStatus.SUSPENDED);
+    expect(state.decisions[0]).toMatchObject({
+      externalEmployeeId: "EMP-1",
+      externalStatus: "Missing from ERPNext",
+      normalizedStatus: EmploymentStatus.SUSPENDED,
+    });
+    expect(state.repository.completeSync).toHaveBeenLastCalledWith(
+      expect.objectContaining({ deactivatedCount: 1, processedCount: 0 }),
+    );
+    expect(loan).toEqual({ id: "loan-1", status: "ACTIVE" });
+  });
+
+  it("updates changed employee fields without creating a duplicate mapping", async () => {
+    const state = createRepository();
+    const base = {
+      externalId: "EMP-1",
+      fullName: "Original Name",
+      email: "employee@example.test",
+      employmentStatus: "Active",
+    };
+    await synchronizeEmployees(
+      admin,
+      state.repository,
+      () => pages([base]),
+      clock,
+    );
+    await synchronizeEmployees(
+      admin,
+      state.repository,
+      () => pages([{ ...base, fullName: "Updated Name" }]),
+      clock,
+    );
+
+    expect(state.decisions).toHaveLength(1);
+    expect(state.decisions[0].fullName).toBe("Updated Name");
+    expect(state.repository.completeSync).toHaveBeenLastCalledWith(
+      expect.objectContaining({ createdCount: 0, updatedCount: 1 }),
+    );
+  });
+
+  it("fails safely when ERPNext pagination exceeds the configured bound", async () => {
+    const state = createRepository();
+    const endless = pages(
+      [
+        {
+          externalId: "EMP-1",
+          fullName: "Employee",
+          employmentStatus: "Active",
+        },
+      ],
+      true,
+    );
+    await expect(
+      synchronizeEmployees(admin, state.repository, () => endless, clock, {
+        maxPages: 1,
+      }),
+    ).rejects.toMatchObject({ code: "SYNC_LIMIT_EXCEEDED" });
+    expect(state.repository.completeSync).not.toHaveBeenCalled();
   });
 
   it("sends ambiguous emails, duplicate external IDs, and unknown statuses to safe review", async () => {
@@ -410,7 +503,7 @@ describe("employee synchronization policy", () => {
     ).toBe("ambiguous");
   });
 
-  it("persists a partial result when a later page fails", async () => {
+  it("does not mutate the directory when a later page fails", async () => {
     const state = createRepository();
     const record = {
       externalId: "EMP-1",
@@ -425,18 +518,12 @@ describe("employee synchronization policy", () => {
         () => pages([record], true),
         clock,
       ),
-    ).resolves.toEqual({
-      status: "partial",
-      processedCount: 1,
-      reviewCount: 0,
-      updatedCount: 0,
-    });
-    expect(state.repository.completeSync).toHaveBeenCalledWith(
-      expect.objectContaining({
-        status: "partial",
-        safeErrorCode: "PARTIAL_SYNC",
-      }),
+    ).rejects.toMatchObject({ code: "REMOTE_SERVER_ERROR" });
+    expect(state.repository.completeSync).not.toHaveBeenCalled();
+    expect(state.repository.failSync).toHaveBeenCalledWith(
+      expect.objectContaining({ safeErrorCode: "REMOTE_SERVER_ERROR" }),
     );
+    expect(state.decisions).toEqual([]);
   });
 
   it("uses the actor organization for every lookup and rejects concurrent sync", async () => {
@@ -569,10 +656,11 @@ describe("scheduled synchronization and health", () => {
     expect(state.repository.completeSync).toHaveBeenCalledWith(
       expect.objectContaining({
         processedCount: 2,
-        createdCount: 0,
-        updatedCount: 1,
+        createdCount: 2,
+        updatedCount: 0,
         unchangedCount: 0,
         reviewCount: 1,
+        deactivatedCount: 0,
         durationMs: 0,
       }),
     );
@@ -641,4 +729,28 @@ describe("scheduled synchronization and health", () => {
     expect(state.repository.failSync).toHaveBeenCalledTimes(1);
     expect(state.repository.completeSync).toHaveBeenCalledTimes(1);
   });
+
+  it.each(["AUTHENTICATION_FAILED", "REMOTE_RESPONSE_INVALID"] as const)(
+    "records %s without applying a partial directory update",
+    async (code) => {
+      const state = createRepository();
+      await expect(
+        synchronizeEmployees(
+          admin,
+          state.repository,
+          () => ({
+            ...pages([]),
+            listEmployees: vi.fn(async () => {
+              throw new EmployeeDirectoryError(code);
+            }),
+          }),
+          clock,
+        ),
+      ).rejects.toMatchObject({ code });
+      expect(state.repository.completeSync).not.toHaveBeenCalled();
+      expect(state.repository.failSync).toHaveBeenCalledWith(
+        expect.objectContaining({ safeErrorCode: code }),
+      );
+    },
+  );
 });

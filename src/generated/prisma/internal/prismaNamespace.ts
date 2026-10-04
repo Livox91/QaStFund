@@ -2272,6 +2272,7 @@ export const OrganizationScalarFieldEnum = {
   name: 'name',
   slug: 'slug',
   currency: 'currency',
+  erpNextEnabled: 'erpNextEnabled',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -2392,6 +2393,7 @@ export const EmployeeDirectorySyncRunScalarFieldEnum = {
   unmatchedCount: 'unmatchedCount',
   ambiguousCount: 'ambiguousCount',
   statusChangeCount: 'statusChangeCount',
+  deactivatedCount: 'deactivatedCount',
   errorCount: 'errorCount',
   safeErrorCode: 'safeErrorCode',
   safeErrorSummary: 'safeErrorSummary',
@@ -2790,6 +2792,13 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+
+
+
+/**
  * Reference to a field of type 'ArcWalletNetwork'
  */
 export type EnumArcWalletNetworkFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ArcWalletNetwork'>
@@ -2898,13 +2907,6 @@ export type EnumEmploymentStatusSourceFieldRefInput<$PrismaModel> = FieldRefInpu
  * Reference to a field of type 'EmploymentStatusSource[]'
  */
 export type ListEnumEmploymentStatusSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmploymentStatusSource[]'>
-    
-
-
-/**
- * Reference to a field of type 'Boolean'
- */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -3536,4 +3538,3 @@ export type PrismaAction =
  * `PrismaClient` proxy available in interactive transactions.
  */
 export type TransactionClient = Omit<DefaultPrismaClient, runtime.ITXClientDenyList>
-
