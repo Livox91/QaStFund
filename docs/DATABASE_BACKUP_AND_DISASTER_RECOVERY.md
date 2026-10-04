@@ -59,6 +59,17 @@ $env:DATABASE_ADMIN_URL = '<loaded from the test secret manager>'
 npm run dr:verify
 ```
 
+For local development without native PostgreSQL client binaries, the verifier can use the existing Compose service's PostgreSQL 17 tools:
+
+```powershell
+docker compose up -d postgres
+$env:POSTGRES_TOOLS_DOCKER_SERVICE = 'postgres'
+$env:DATABASE_ADMIN_URL = '<loaded from the test secret manager>'
+npm run dr:verify
+```
+
+Only environment variable names—not their values—are passed in Docker command arguments.
+
 The verifier performs these checks:
 
 1. Creates an empty source database and applies every Prisma migration.
@@ -158,6 +169,13 @@ The following checks were actually run in the repository workspace:
 - `node --check scripts/database/postgres-tools.mjs` and the three entry scripts: passed.
 - `npm test -- --run tests/database-recovery-tools.test.mjs tests/disaster-recovery-database.test.ts tests/blockchain-reconciliation.test.ts`: 14 passed; the real restored-database test was skipped because verification mode was not enabled.
 - `npm run typecheck`, `npm run lint`, `npm run format:check`, `npm run prisma:validate`, and `npm run build`: passed.
-- `node --env-file=.env scripts/database/verify-disaster-recovery.mjs`: stopped safely at `verify psql availability could not start (ENOENT)` because this workstation has no PostgreSQL client tools. Docker's service was also unavailable and could not be started without elevated permissions.
+- Initial `node --env-file=.env scripts/database/verify-disaster-recovery.mjs`: stopped safely at `verify psql availability could not start (ENOENT)` because this workstation had no native PostgreSQL client tools.
+- After Docker became available, the final proof was run with the existing Compose PostgreSQL service:
 
-No local backup restore was completed on this date, so this execution is **not** restore proof. The first successful CI or operator execution of `npm run dr:verify` must be appended here with its application revision, PostgreSQL version, duration, and output summary.
+  ```powershell
+  docker compose up -d postgres
+  $env:POSTGRES_TOOLS_DOCKER_SERVICE = 'postgres'
+  node --env-file=.env scripts/database/verify-disaster-recovery.mjs
+  ```
+
+The final proof passed against PostgreSQL 17.11 in 86.7 seconds. It applied all 28 migrations to an empty source database, confirmed migration status, created and checksum-validated a 123,453-byte custom-format backup, restored it into a separate disposable database, verified the exact reconciliation cursor, and ran two restored-database reconciliation tests. Both tests passed, including cursor resume and duplicate-event financial idempotency. Both disposable databases were dropped afterward.

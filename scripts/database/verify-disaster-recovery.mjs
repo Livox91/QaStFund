@@ -20,18 +20,20 @@ const sourceName = `dr_${baseName.slice(0, 42)}_source`;
 const restoreName = `dr_${baseName.slice(0, 41)}_restore`;
 const sourceUrl = databaseUrlWithName(adminUrl, sourceName);
 const restoreUrl = databaseUrlWithName(adminUrl, restoreName);
-const npmCommand = process.platform === "win32" ? "npm.cmd" : "npm";
+const npmCommand =
+  process.platform === "win32" ? (process.env.ComSpec ?? "cmd.exe") : "npm";
+const npmPrefix = process.platform === "win32" ? ["/d", "/s", "/c", "npm"] : [];
 const nodeCommand = process.execPath;
 
-await runCommand("psql", ["--version"], {
+await runPostgresTool("psql", ["--version"], adminUrl, {
   displayName: "verify psql availability",
   echoOutput: true,
 });
-await runCommand("pg_dump", ["--version"], {
+await runPostgresTool("pg_dump", ["--version"], adminUrl, {
   displayName: "verify pg_dump availability",
   echoOutput: true,
 });
-await runCommand("pg_restore", ["--version"], {
+await runPostgresTool("pg_restore", ["--version"], adminUrl, {
   displayName: "verify pg_restore availability",
   echoOutput: true,
 });
@@ -48,7 +50,9 @@ async function recreateDatabase(databaseName) {
       "--set",
       "ON_ERROR_STOP=1",
       "--command",
-      `SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${databaseName}' AND pid <> pg_backend_pid(); DROP DATABASE IF EXISTS ${identifier};`,
+      `SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${databaseName}' AND pid <> pg_backend_pid();`,
+      "--command",
+      `DROP DATABASE IF EXISTS ${identifier};`,
       "--command",
       `CREATE DATABASE ${identifier} TEMPLATE template0;`,
     ],
@@ -66,7 +70,9 @@ async function dropDatabase(databaseName) {
       "--set",
       "ON_ERROR_STOP=1",
       "--command",
-      `SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${databaseName}' AND pid <> pg_backend_pid(); DROP DATABASE IF EXISTS ${identifier};`,
+      `SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${databaseName}' AND pid <> pg_backend_pid();`,
+      "--command",
+      `DROP DATABASE IF EXISTS ${identifier};`,
     ],
     adminUrl,
     { displayName: `drop disposable database ${databaseName}` },
@@ -75,13 +81,13 @@ async function dropDatabase(databaseName) {
 
 try {
   await recreateDatabase(sourceName);
-  await runCommand(npmCommand, ["run", "prisma:deploy"], {
+  await runCommand(npmCommand, [...npmPrefix, "run", "prisma:deploy"], {
     cwd: repositoryRoot,
     env: { DATABASE_URL: sourceUrl },
     displayName: "apply all migrations to fresh source database",
     echoOutput: true,
   });
-  await runCommand(npmCommand, ["run", "prisma:status"], {
+  await runCommand(npmCommand, [...npmPrefix, "run", "prisma:status"], {
     cwd: repositoryRoot,
     env: { DATABASE_URL: sourceUrl },
     displayName: "verify fresh source migration status",
@@ -119,7 +125,7 @@ try {
     displayName: "restore logical backup into disposable database",
     echoOutput: true,
   });
-  await runCommand(npmCommand, ["run", "prisma:status"], {
+  await runCommand(npmCommand, [...npmPrefix, "run", "prisma:status"], {
     cwd: repositoryRoot,
     env: { DATABASE_URL: restoreUrl },
     displayName: "verify restored migration status",
@@ -149,6 +155,7 @@ try {
   await runCommand(
     npmCommand,
     [
+      ...npmPrefix,
       "test",
       "--",
       "--run",

@@ -40,7 +40,7 @@ export async function runCommand(command, args, options = {}) {
     const child = spawn(command, args, {
       cwd: options.cwd,
       env: { ...process.env, ...options.env },
-      shell: false,
+      shell: options.shell ?? false,
       stdio: ["ignore", "pipe", "pipe"],
     });
     let stdout = "";
@@ -85,6 +85,29 @@ export function runPostgresTool(tool, args, databaseUrl, options = {}) {
   for (const parameter of ["sslmode", "sslrootcert", "sslcert", "sslkey"]) {
     const value = parsed.searchParams.get(parameter);
     if (value) connectionEnvironment[`PG${parameter.toUpperCase()}`] = value;
+  }
+  const dockerService = process.env.POSTGRES_TOOLS_DOCKER_SERVICE;
+  if (dockerService) {
+    const environmentArguments = Object.keys(connectionEnvironment).flatMap(
+      (key) => ["--env", key],
+    );
+    return runCommand(
+      "docker",
+      [
+        "compose",
+        "exec",
+        "--no-TTY",
+        ...environmentArguments,
+        dockerService,
+        tool,
+        ...args,
+      ],
+      {
+        ...options,
+        displayName: options.displayName ?? `${tool} via Docker Compose`,
+        env: { ...options.env, ...connectionEnvironment },
+      },
+    );
   }
   return runCommand(tool, args, {
     ...options,

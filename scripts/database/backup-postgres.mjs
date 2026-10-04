@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { runPostgresTool } from "./postgres-tools.mjs";
+import { runCommand, runPostgresTool } from "./postgres-tools.mjs";
 
 const databaseUrl = process.env.DATABASE_URL;
 const configuredBackupFile = process.env.BACKUP_FILE;
@@ -12,27 +12,57 @@ if (!configuredBackupFile) throw new Error("BACKUP_FILE is required.");
 
 const backupFile = path.resolve(configuredBackupFile);
 await mkdir(path.dirname(backupFile), { recursive: true });
+const dockerService = process.env.POSTGRES_TOOLS_DOCKER_SERVICE;
+const toolBackupFile = dockerService
+  ? `/tmp/employee-p2p-backup-${process.pid}.dump`
+  : backupFile;
 
-await runPostgresTool(
-  "pg_dump",
-  [
-    "--format=custom",
-    "--compress=9",
-    "--serializable-deferrable",
-    "--no-owner",
-    "--no-acl",
-    "--file",
-    backupFile,
-  ],
-  databaseUrl,
-  { displayName: "pg_dump (credentials hidden)" },
-);
+try {
+  await runPostgresTool(
+    "pg_dump",
+    [
+      "--format=custom",
+      "--compress=9",
+      "--serializable-deferrable",
+      "--no-owner",
+      "--no-acl",
+      "--file",
+      toolBackupFile,
+    ],
+    databaseUrl,
+    { displayName: "pg_dump (credentials hidden)" },
+  );
+
+  await runPostgresTool("pg_restore", ["--list", toolBackupFile], databaseUrl, {
+    displayName: "pg_restore --list",
+  });
+  if (dockerService) {
+    await runCommand(
+      "docker",
+      ["compose", "cp", `${dockerService}:${toolBackupFile}`, backupFile],
+      { displayName: "copy verified backup from Docker Compose" },
+    );
+  }
+} finally {
+  if (dockerService) {
+    await runCommand(
+      "docker",
+      [
+        "compose",
+        "exec",
+        "--no-TTY",
+        dockerService,
+        "rm",
+        "-f",
+        toolBackupFile,
+      ],
+      { displayName: "remove temporary container backup" },
+    ).catch(() => undefined);
+  }
+}
 
 const details = await stat(backupFile);
 if (details.size === 0) throw new Error("pg_dump created an empty backup.");
-await runPostgresTool("pg_restore", ["--list", backupFile], databaseUrl, {
-  displayName: "pg_restore --list",
-});
 
 const digest = createHash("sha256")
   .update(await readFile(backupFile))

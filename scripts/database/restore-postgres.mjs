@@ -2,7 +2,11 @@ import { createHash } from "node:crypto";
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 
-import { databaseNameFromUrl, runPostgresTool } from "./postgres-tools.mjs";
+import {
+  databaseNameFromUrl,
+  runCommand,
+  runPostgresTool,
+} from "./postgres-tools.mjs";
 
 const restoreUrl = process.env.RESTORE_DATABASE_URL;
 const configuredBackupFile = process.env.BACKUP_FILE;
@@ -35,32 +39,62 @@ try {
   throw error;
 }
 
-await runPostgresTool(
-  "psql",
-  [
-    "--no-psqlrc",
-    "--set",
-    "ON_ERROR_STOP=1",
-    "--command",
-    "DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;",
-  ],
-  restoreUrl,
-  { displayName: "clear confirmed restore target" },
-);
-await runPostgresTool(
-  "pg_restore",
-  [
-    "--exit-on-error",
-    "--single-transaction",
-    "--no-owner",
-    "--no-acl",
-    "--dbname",
-    databaseName,
-    backupFile,
-  ],
-  restoreUrl,
-  { displayName: "pg_restore (credentials hidden)" },
-);
+const dockerService = process.env.POSTGRES_TOOLS_DOCKER_SERVICE;
+const toolBackupFile = dockerService
+  ? `/tmp/employee-p2p-restore-${process.pid}.dump`
+  : backupFile;
+if (dockerService) {
+  await runCommand(
+    "docker",
+    ["compose", "cp", backupFile, `${dockerService}:${toolBackupFile}`],
+    { displayName: "copy backup into Docker Compose" },
+  );
+}
+
+try {
+  await runPostgresTool(
+    "psql",
+    [
+      "--no-psqlrc",
+      "--set",
+      "ON_ERROR_STOP=1",
+      "--command",
+      "DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;",
+    ],
+    restoreUrl,
+    { displayName: "clear confirmed restore target" },
+  );
+  await runPostgresTool(
+    "pg_restore",
+    [
+      "--exit-on-error",
+      "--single-transaction",
+      "--no-owner",
+      "--no-acl",
+      "--dbname",
+      databaseName,
+      toolBackupFile,
+    ],
+    restoreUrl,
+    { displayName: "pg_restore (credentials hidden)" },
+  );
+} finally {
+  if (dockerService) {
+    await runCommand(
+      "docker",
+      [
+        "compose",
+        "exec",
+        "--no-TTY",
+        dockerService,
+        "rm",
+        "-f",
+        toolBackupFile,
+      ],
+      { displayName: "remove temporary container restore file" },
+    ).catch(() => undefined);
+  }
+}
 
 process.stdout.write(
   `Restore completed for confirmed database ${databaseName}.\n`,
