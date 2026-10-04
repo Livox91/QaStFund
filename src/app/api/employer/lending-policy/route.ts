@@ -1,4 +1,6 @@
 import type { NextRequest } from "next/server";
+import { enforceUserRateLimit } from "@/infrastructure/rate-limit/rate-limit";
+import { requireEmployerAdmin } from "@/modules/auth/application/authorization";
 import { getCurrentActor } from "@/modules/auth/infrastructure/auth-guard";
 import { toPolicyResponse } from "@/modules/policies/api/policy-response";
 import {
@@ -28,12 +30,18 @@ export async function GET() {
 export async function PATCH(request: NextRequest) {
   try {
     assertTrustedRequestOrigin(request);
+    const actor = requireEmployerAdmin(await getCurrentActor());
+    await enforceUserRateLimit(
+      actor,
+      "employer.policy.update",
+      "administrative",
+    );
     const parsed = lendingPolicySchema.safeParse(
       await request.json().catch(() => null),
     );
     if (!parsed.success) throw new InvalidLendingPolicyError();
     const data = parsed.data;
-    const policy = await updatePolicyForActor(await getCurrentActor(), {
+    const policy = await updatePolicyForActor(actor, {
       lendingEnabled: data.lendingEnabled,
       borrowingEnabled: data.borrowingEnabled,
       maxLoanAmountMinorUnits: data.maxLoanAmount,

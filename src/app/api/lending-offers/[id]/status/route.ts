@@ -1,6 +1,7 @@
 import type { NextRequest } from "next/server";
 
 import { logger } from "@/infrastructure/logging/logger";
+import { enforceUserRateLimit } from "@/infrastructure/rate-limit/rate-limit";
 import { requireAuthenticatedUser } from "@/modules/auth/application/authorization";
 import { getCurrentActor } from "@/modules/auth/infrastructure/auth-guard";
 import {
@@ -26,6 +27,7 @@ export async function PATCH(
   try {
     assertTrustedRequestOrigin(request);
     const actor = requireAuthenticatedUser(await getCurrentActor());
+    await enforceUserRateLimit(actor, "lending.offer.status", "sensitive");
     const parsedId = lendingOfferIdSchema.safeParse((await params).id);
     if (!parsedId.success) throw new LendingOfferNotFoundError();
 

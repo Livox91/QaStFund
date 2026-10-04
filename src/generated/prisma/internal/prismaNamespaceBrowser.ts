@@ -73,7 +73,8 @@ export const ModelName = {
   OrganizationLendingPolicy: 'OrganizationLendingPolicy',
   Session: 'Session',
   BlockchainReconciliationCursor: 'BlockchainReconciliationCursor',
-  BlockchainEvent: 'BlockchainEvent'
+  BlockchainEvent: 'BlockchainEvent',
+  RateLimitBucket: 'RateLimitBucket'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -493,6 +494,10 @@ export const BlockchainReconciliationCursorScalarFieldEnum = {
   finalizedThrough: 'finalizedThrough',
   leaseOwner: 'leaseOwner',
   leaseExpiresAt: 'leaseExpiresAt',
+  latestObservedBlock: 'latestObservedBlock',
+  lastSuccessfulAt: 'lastSuccessfulAt',
+  lastFailureAt: 'lastFailureAt',
+  consecutiveFailures: 'consecutiveFailures',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -524,6 +529,20 @@ export const BlockchainEventScalarFieldEnum = {
 } as const
 
 export type BlockchainEventScalarFieldEnum = (typeof BlockchainEventScalarFieldEnum)[keyof typeof BlockchainEventScalarFieldEnum]
+
+
+export const RateLimitBucketScalarFieldEnum = {
+  id: 'id',
+  identityHash: 'identityHash',
+  action: 'action',
+  windowStart: 'windowStart',
+  requestCount: 'requestCount',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RateLimitBucketScalarFieldEnum = (typeof RateLimitBucketScalarFieldEnum)[keyof typeof RateLimitBucketScalarFieldEnum]
 
 
 export const SortOrder = {

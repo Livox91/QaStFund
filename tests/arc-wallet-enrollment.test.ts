@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { parseEnvironment } from "@/infrastructure/config/environment";
+import { parsePublicTestnetEnvironment } from "@/infrastructure/config/environment-schema";
 import {
   buildArcWalletChallengeMessage,
   completeArcWalletChallenge,
@@ -196,12 +196,12 @@ describe("Arc wallet enrollment", () => {
 
   it("rejects missing Circle configuration cleanly", () => {
     expect(() =>
-      parseEnvironment({
-        DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test",
-        APP_URL: "http://localhost:3000",
+      parsePublicTestnetEnvironment({
         NEXT_PUBLIC_CIRCLE_CLIENT_KEY: "",
         NEXT_PUBLIC_CIRCLE_CLIENT_URL:
           "https://modular-sdk.circle.com/v1/rpc/w3s/buidl",
+        NEXT_PUBLIC_ARC_LENDING_CONTRACT_ADDRESS:
+          "0x1111111111111111111111111111111111111111",
       }),
     ).toThrow("NEXT_PUBLIC_CIRCLE_CLIENT_KEY is required");
   });

@@ -1,6 +1,7 @@
 import type { NextRequest } from "next/server";
 
 import { logger } from "@/infrastructure/logging/logger";
+import { enforceUserRateLimit } from "@/infrastructure/rate-limit/rate-limit";
 import { requireEmployee } from "@/modules/auth/application/authorization";
 import { getCurrentActor } from "@/modules/auth/infrastructure/auth-guard";
 import { prepareFundedLendingOffer } from "@/modules/lending/application/funded-lending-offer";
@@ -16,6 +17,7 @@ export async function POST(request: NextRequest): Promise<Response> {
   try {
     assertTrustedRequestOrigin(request);
     const actor = requireEmployee(await getCurrentActor());
+    await enforceUserRateLimit(actor, "lending.offer.create", "sensitive");
     const parsed = fundedLendingOfferSchema.safeParse(await request.json());
     if (!parsed.success) {
       throw new ApplicationError(

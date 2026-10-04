@@ -10,6 +10,11 @@ import {
 } from "@/integrations/arc/arc-testnet";
 import { ArcWalletProviderError } from "@/modules/arc-wallet/application/errors";
 import { erc20UsdcAbi } from "@/integrations/arc/employee-lending-escrow";
+import {
+  operationalFailureAlertThreshold,
+  recordOperationalFailure,
+  recordOperationalSuccess,
+} from "@/infrastructure/observability/operational-signals";
 
 function createArcClient() {
   return createPublicClient({
@@ -24,8 +29,13 @@ export async function verifyCircleArcWalletSignature(input: {
   signature: Hex;
 }): Promise<boolean> {
   try {
-    return await createArcClient().verifyMessage(input);
+    const verified = await createArcClient().verifyMessage(input);
+    recordOperationalSuccess("circle");
+    return verified;
   } catch (error) {
+    recordOperationalFailure("circle", {
+      alertThreshold: operationalFailureAlertThreshold(),
+    });
     throw new ArcWalletProviderError(error);
   }
 }
@@ -40,8 +50,12 @@ export async function getArcNativeUsdcBalance(
       functionName: "balanceOf",
       args: [address],
     });
+    recordOperationalSuccess("circle");
     return formatUnits(balance, ARC_USDC_DECIMALS);
   } catch (error) {
+    recordOperationalFailure("circle", {
+      alertThreshold: operationalFailureAlertThreshold(),
+    });
     throw new ArcWalletProviderError(error);
   }
 }

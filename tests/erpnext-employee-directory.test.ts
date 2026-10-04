@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { EmploymentStatus } from "@/generated/prisma/client";
-import { parseEnvironment } from "@/infrastructure/config/environment";
+import { parseEnvironment } from "@/infrastructure/config/environment-schema";
 import { ForbiddenError } from "@/modules/auth/application/errors/auth-errors";
 import type { AuthenticatedActor } from "@/modules/auth/domain/actor";
 import { ApplicationRole } from "@/modules/auth/domain/application-role";
@@ -482,8 +482,6 @@ describe("scheduled synchronization and health", () => {
     const baseEnvironment = {
       DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test",
       APP_URL: "http://localhost:3000",
-      NEXT_PUBLIC_CIRCLE_CLIENT_KEY: "test-client-key",
-      NEXT_PUBLIC_CIRCLE_CLIENT_URL: "https://example.test/rpc",
     };
     expect(
       parseEnvironment({
@@ -492,6 +490,8 @@ describe("scheduled synchronization and health", () => {
         ERP_NEXT_SYNC_INTERVAL_MINUTES: "15",
         ERP_NEXT_SYNC_CRON_SECRET:
           "a-secure-scheduler-secret-over-32-characters",
+        ERP_NEXT_CREDENTIALS_JSON:
+          '{"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa":{"primary":{"apiKey":"test-key","apiSecret":"test-secret"}}}',
       }),
     ).toMatchObject({
       ERP_NEXT_SYNC_ENABLED: true,

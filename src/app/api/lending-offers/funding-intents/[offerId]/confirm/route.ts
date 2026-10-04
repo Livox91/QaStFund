@@ -3,6 +3,7 @@ import type { Hex } from "viem";
 import { z } from "zod";
 
 import { logger } from "@/infrastructure/logging/logger";
+import { enforceUserRateLimit } from "@/infrastructure/rate-limit/rate-limit";
 import { requireEmployee } from "@/modules/auth/application/authorization";
 import { getCurrentActor } from "@/modules/auth/infrastructure/auth-guard";
 import { confirmFundedLendingOffer } from "@/modules/lending/application/funded-lending-offer";
@@ -21,6 +22,11 @@ export async function POST(
   try {
     assertTrustedRequestOrigin(request);
     const actor = requireEmployee(await getCurrentActor());
+    await enforceUserRateLimit(
+      actor,
+      "lending.offer.funding.confirm",
+      "sensitive",
+    );
     const { offerId } = await context.params;
     if (!z.uuid().safeParse(offerId).success) {
       throw new ApplicationError("OFFER_NOT_FOUND", "Offer not found.", 404);

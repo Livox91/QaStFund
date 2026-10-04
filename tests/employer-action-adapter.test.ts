@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { parseEnvironment } from "@/infrastructure/config/environment";
+import { parseEnvironment } from "@/infrastructure/config/environment-schema";
 import { ForbiddenError } from "@/modules/auth/application/errors/auth-errors";
 import type { AuthenticatedActor } from "@/modules/auth/domain/actor";
 import { ApplicationRole } from "@/modules/auth/domain/application-role";
@@ -294,8 +294,6 @@ describe("mock employer action adapter", () => {
     const environment = {
       DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test",
       APP_URL: "http://localhost:3000",
-      NEXT_PUBLIC_CIRCLE_CLIENT_KEY: "test-client-key",
-      NEXT_PUBLIC_CIRCLE_CLIENT_URL: "https://example.test/rpc",
     };
     expect(parseEnvironment(environment).EMPLOYER_ACTION_PROVIDER).toBe("mock");
     expect(() =>

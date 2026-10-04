@@ -42,4 +42,18 @@ describe("security logging", () => {
     );
     consoleError.mockRestore();
   });
+
+  it("redacts secrets nested inside structured operational context", () => {
+    const consoleWarn = vi
+      .spyOn(console, "warn")
+      .mockImplementation(() => undefined);
+    logger.warn("Dependency failed", {
+      dependency: { credential: "nested-secret", endpoint: "safe-name" },
+    });
+    expect(JSON.stringify(consoleWarn.mock.calls)).not.toContain(
+      "nested-secret",
+    );
+    expect(JSON.stringify(consoleWarn.mock.calls)).toContain("[REDACTED]");
+    consoleWarn.mockRestore();
+  });
 });

@@ -1,11 +1,14 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { enforceUserRateLimit } from "@/infrastructure/rate-limit/rate-limit";
 import { requireEmployerAdminPage } from "@/modules/auth/infrastructure/auth-guard";
 import { updatePolicyForActor } from "@/modules/policies/index.server";
 import { lendingPolicySchema } from "@/modules/policies/schemas/lending-policy.schema";
 
 export async function updateLendingPolicyAction(formData: FormData) {
+  const actor = await requireEmployerAdminPage();
+  await enforceUserRateLimit(actor, "employer.policy.update", "administrative");
   const parsed = lendingPolicySchema.parse({
     lendingEnabled: formData.get("lendingEnabled") === "on",
     borrowingEnabled: formData.get("borrowingEnabled") === "on",
@@ -17,7 +20,7 @@ export async function updateLendingPolicyAction(formData: FormData) {
     minTermDays: Number(formData.get("minTermDays")),
     maxTermDays: Number(formData.get("maxTermDays")),
   });
-  await updatePolicyForActor(await requireEmployerAdminPage(), {
+  await updatePolicyForActor(actor, {
     lendingEnabled: parsed.lendingEnabled,
     borrowingEnabled: parsed.borrowingEnabled,
     maxLoanAmountMinorUnits: parsed.maxLoanAmount,

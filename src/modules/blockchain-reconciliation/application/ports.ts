@@ -57,6 +57,17 @@ export interface ReconciliationRepository {
     note: string,
     now: Date,
   ): Promise<void>;
+  recordRunSuccess?(input: {
+    chainId: number;
+    contractAddress: string;
+    latestObservedBlock: bigint;
+    occurredAt: Date;
+  }): Promise<void>;
+  recordRunFailure?(input: {
+    chainId: number;
+    contractAddress: string;
+    occurredAt: Date;
+  }): Promise<void>;
   releaseLease(input: {
     chainId: number;
     contractAddress: string;

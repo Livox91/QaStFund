@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
+import { enforceUserRateLimit } from "@/infrastructure/rate-limit/rate-limit";
 import { requireEmployerAdminPage } from "@/modules/auth/infrastructure/auth-guard";
 import { EmployeeDirectoryError } from "@/modules/employee-directory/domain/employee-directory";
 import { safeSyncErrorSummary } from "@/modules/employee-directory/application/sync-health";
@@ -46,10 +47,16 @@ export async function configureIntegrationAction(
   formData: FormData,
 ): Promise<IntegrationActionState> {
   try {
+    const actor = await requireEmployerAdminPage();
+    await enforceUserRateLimit(
+      actor,
+      "employer.integration.configure",
+      "administrative",
+    );
     const input = configSchema.parse(Object.fromEntries(formData));
     const status = (value: typeof input.activeStatus) =>
       value === "IGNORE" ? null : value;
-    await configureEmployeeDirectoryForActor(await requireEmployerAdminPage(), {
+    await configureEmployeeDirectoryForActor(actor, {
       baseUrl: input.baseUrl,
       apiPath: input.apiPath,
       apiVersion: input.apiVersion,
@@ -72,9 +79,9 @@ export async function configureIntegrationAction(
 
 export async function testIntegrationAction(): Promise<IntegrationActionState> {
   try {
-    const result = await testEmployeeDirectoryConnectionForActor(
-      await requireEmployerAdminPage(),
-    );
+    const actor = await requireEmployerAdminPage();
+    await enforceUserRateLimit(actor, "employer.integration.test", "expensive");
+    const result = await testEmployeeDirectoryConnectionForActor(actor);
     revalidatePath("/employer/integrations");
     return {
       status: result.ok ? "success" : "error",
@@ -87,9 +94,9 @@ export async function testIntegrationAction(): Promise<IntegrationActionState> {
 
 export async function syncEmployeesAction(): Promise<IntegrationActionState> {
   try {
-    const result = await synchronizeEmployeesForActor(
-      await requireEmployerAdminPage(),
-    );
+    const actor = await requireEmployerAdminPage();
+    await enforceUserRateLimit(actor, "employer.integration.sync", "expensive");
+    const result = await synchronizeEmployeesForActor(actor);
     revalidatePath("/employer/integrations");
     return {
       status: result.status === "partial" ? "partial" : "success",

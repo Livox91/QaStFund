@@ -13,17 +13,30 @@ export function redactLogValue(value: string): string {
     .replace(/\b(https?:\/\/)[^\s/@:]+:[^\s/@]+@/gi, "$1[REDACTED]@");
 }
 
+function sanitizeValue(key: string, value: unknown): unknown {
+  if (sensitiveKey.test(key)) return "[REDACTED]";
+  if (typeof value === "string") return redactLogValue(value);
+  if (Array.isArray(value)) {
+    return value.map((item) => sanitizeValue("item", item));
+  }
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([nestedKey, nestedValue]) => [
+        nestedKey,
+        sanitizeValue(nestedKey, nestedValue),
+      ]),
+    );
+  }
+  return value;
+}
+
 function sanitizeContext(context?: LogContext): LogContext | undefined {
   if (!context) return undefined;
 
   return Object.fromEntries(
     Object.entries(context).map(([key, value]) => [
       key,
-      sensitiveKey.test(key)
-        ? "[REDACTED]"
-        : typeof value === "string"
-          ? redactLogValue(value)
-          : value,
+      sanitizeValue(key, value),
     ]),
   );
 }

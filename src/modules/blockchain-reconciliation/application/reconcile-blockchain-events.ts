@@ -1,6 +1,14 @@
 import { randomUUID } from "node:crypto";
 
 import { logger } from "@/infrastructure/logging/logger";
+import {
+  incrementOperationalCounter,
+  logTransactionLifecycle,
+  recordOperationalFailure,
+  recordOperationalSuccess,
+  recordReconciliationFailure,
+  recordReconciliationSuccess,
+} from "@/infrastructure/observability/operational-signals";
 import type {
   ReconciliationEventSource,
   ReconciliationRepository,
@@ -18,6 +26,8 @@ export type ReconciliationConfig = Readonly<{
   rpcMaxRetries: number;
   retryBaseDelayMs: number;
   leaseDurationMs: number;
+  failureAlertThreshold?: number;
+  unmatchedEventAlertThreshold?: number;
 }>;
 
 type Clock = Readonly<{
@@ -35,6 +45,7 @@ async function retryRpc<T>(
   operation: string,
   attempts: number,
   baseDelayMs: number,
+  alertThreshold: number,
   clock: Clock,
   run: () => Promise<T>,
 ): Promise<T> {
@@ -44,6 +55,12 @@ async function retryRpc<T>(
       return await run();
     } catch (error) {
       lastError = error;
+      incrementOperationalCounter("blockchain_rpc_failures_total");
+      recordOperationalFailure("arc_rpc", {
+        alertThreshold,
+        context: { operation },
+        occurredAt: clock.now(),
+      });
       logger.warn("Arc reconciliation RPC attempt failed", {
         operation,
         attempt,
@@ -67,6 +84,7 @@ export async function reconcileBlockchainEvents(
     "get-chain-id",
     config.rpcMaxRetries,
     config.retryBaseDelayMs,
+    config.failureAlertThreshold ?? 3,
     clock,
     () => source.getChainId(),
   );
@@ -75,6 +93,7 @@ export async function reconcileBlockchainEvents(
       `Arc reconciliation chain mismatch: expected ${config.chainId}, received ${actualChainId}`,
     );
   }
+  recordOperationalSuccess("arc_rpc", clock.now());
 
   const leaseOwner = randomUUID();
   const lease = await repository.acquireLease({
@@ -106,9 +125,11 @@ export async function reconcileBlockchainEvents(
       "get-latest-block",
       config.rpcMaxRetries,
       config.retryBaseDelayMs,
+      config.failureAlertThreshold ?? 3,
       clock,
       () => source.getLatestBlockNumber(),
     );
+    recordOperationalSuccess("arc_rpc", clock.now());
     const confirmationDepth = BigInt(config.confirmationDepth);
     const finalizedThrough =
       latestBlock > confirmationDepth ? latestBlock - confirmationDepth : 0n;
@@ -126,6 +147,7 @@ export async function reconcileBlockchainEvents(
         "get-events",
         config.rpcMaxRetries,
         config.retryBaseDelayMs,
+        config.failureAlertThreshold ?? 3,
         clock,
         () => source.getEvents(fromBlock, toBlock),
       );
@@ -168,6 +190,7 @@ export async function reconcileBlockchainEvents(
         `verify-${event.name.toLowerCase()}`,
         config.rpcMaxRetries,
         config.retryBaseDelayMs,
+        config.failureAlertThreshold ?? 3,
         clock,
         () => source.verifyEvent(event),
       );
@@ -185,6 +208,22 @@ export async function reconcileBlockchainEvents(
       if (result.kind === "APPLIED") appliedEvents += 1;
       if (result.kind === "UNMATCHED") unmatchedEvents += 1;
       if (result.kind === "CONFLICT") conflictEvents += 1;
+      if (result.kind === "APPLIED") {
+        logTransactionLifecycle("missed_confirmation_recovered", {
+          operationId: event.id,
+          transactionHash: event.transactionHash,
+          chainId: config.chainId,
+          contractAddress: config.contractAddress,
+        });
+      } else if (result.kind === "UNMATCHED") {
+        incrementOperationalCounter("unmatched_blockchain_events_total");
+        logTransactionLifecycle("unmatched_blockchain_event", {
+          operationId: event.id,
+          transactionHash: event.transactionHash,
+          chainId: config.chainId,
+          contractAddress: config.contractAddress,
+        });
+      }
       logger.info("Arc reconciliation processed event", {
         eventId: event.id,
         eventName: event.name,
@@ -193,6 +232,25 @@ export async function reconcileBlockchainEvents(
       });
     }
 
+    recordReconciliationSuccess({
+      latestObservedBlock: latestBlock,
+      occurredAt: clock.now(),
+    });
+    await repository.recordRunSuccess?.({
+      chainId: config.chainId,
+      contractAddress: config.contractAddress,
+      latestObservedBlock: latestBlock,
+      occurredAt: clock.now(),
+    });
+    if (unmatchedEvents >= (config.unmatchedEventAlertThreshold ?? 10)) {
+      logger.warn("Operational alert triggered", {
+        alert: "unmatched_blockchain_events",
+        unmatchedEvents,
+        threshold: config.unmatchedEventAlertThreshold ?? 10,
+        chainId: config.chainId,
+        contractAddress: config.contractAddress,
+      });
+    }
     return {
       status: "COMPLETED" as const,
       scannedRanges,
@@ -202,6 +260,21 @@ export async function reconcileBlockchainEvents(
       conflictEvents,
     };
   } catch (error) {
+    incrementOperationalCounter("reconciliation_failures_total");
+    recordReconciliationFailure(clock.now());
+    recordOperationalFailure("reconciliation", {
+      alertThreshold: config.failureAlertThreshold ?? 3,
+      context: {
+        chainId: config.chainId,
+        contractAddress: config.contractAddress,
+      },
+      occurredAt: clock.now(),
+    });
+    await repository.recordRunFailure?.({
+      chainId: config.chainId,
+      contractAddress: config.contractAddress,
+      occurredAt: clock.now(),
+    });
     logger.error("Arc reconciliation failed", error, {
       chainId: config.chainId,
       contractAddress: config.contractAddress,

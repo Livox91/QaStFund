@@ -1,6 +1,8 @@
 import type { NextRequest } from "next/server";
 
 import { logger } from "@/infrastructure/logging/logger";
+import { enforceUserRateLimit } from "@/infrastructure/rate-limit/rate-limit";
+import { requireEmployee } from "@/modules/auth/application/authorization";
 import { getCurrentActor } from "@/modules/auth/infrastructure/auth-guard";
 import { fundWalletForActor } from "@/modules/ledger/index.server";
 import { InvalidFundingAmountError } from "@/modules/ledger/application/errors/ledger-errors";
@@ -19,6 +21,8 @@ export async function POST(request: NextRequest): Promise<Response> {
     return new Response(null, { status: 404 });
   try {
     assertTrustedRequestOrigin(request);
+    const actor = requireEmployee(await getCurrentActor());
+    await enforceUserRateLimit(actor, "development.wallet.fund", "sensitive");
     const key = fundWalletIdempotencyKeySchema.safeParse(
       request.headers.get("idempotency-key"),
     );
@@ -26,7 +30,7 @@ export async function POST(request: NextRequest): Promise<Response> {
       await request.json().catch(() => null),
     );
     if (!key.success || !body.success) throw new InvalidFundingAmountError();
-    const result = await fundWalletForActor(await getCurrentActor(), {
+    const result = await fundWalletForActor(actor, {
       amountMinorUnits: body.data.amount,
       requestId: key.data,
     });

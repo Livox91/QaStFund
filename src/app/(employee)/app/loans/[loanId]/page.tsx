@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { enforceUserRateLimit } from "@/infrastructure/rate-limit/rate-limit";
 import { requireEmployeePage } from "@/modules/auth/infrastructure/auth-guard";
 import { EmployeeLoanNotFoundError } from "@/modules/loans/application/errors/repay-loan-errors";
 import { evaluateBorrowerLoanForActor } from "@/modules/loan-decisions/index.server";
@@ -28,6 +29,7 @@ export default async function EmployeeLoanDetailsPage({
   }
 
   const query = await searchParams;
+  await enforceUserRateLimit(actor, "loan.borrower.evaluate", "expensive");
   const decision = await evaluateBorrowerLoanForActor(actor, parsedLoanId.data);
 
   return (

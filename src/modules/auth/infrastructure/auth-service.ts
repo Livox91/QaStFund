@@ -8,6 +8,8 @@ import { prismaAuthRepository } from "@/modules/auth/infrastructure/prisma-auth-
 import { prismaRegistrationRepository } from "@/modules/auth/infrastructure/prisma-registration-repository";
 import { scryptPasswordHasher } from "@/modules/auth/infrastructure/scrypt-password-hasher";
 import { secureSessionTokenService } from "@/modules/auth/infrastructure/secure-session-token-service";
+import { incrementOperationalCounter } from "@/infrastructure/observability/operational-signals";
+import { InvalidCredentialsError } from "@/modules/auth/application/errors/auth-errors";
 
 const authenticationDependencies = {
   authRepository: prismaAuthRepository,
@@ -20,8 +22,18 @@ const sessionDependencies = {
   sessionTokenService: secureSessionTokenService,
 };
 
-export function signInWithPassword(input: { email: string; password: string }) {
-  return authenticateUser(input, authenticationDependencies);
+export async function signInWithPassword(input: {
+  email: string;
+  password: string;
+}) {
+  try {
+    return await authenticateUser(input, authenticationDependencies);
+  } catch (error) {
+    if (error instanceof InvalidCredentialsError) {
+      incrementOperationalCounter("authentication_failures_total");
+    }
+    throw error;
+  }
 }
 
 export function registerOrganization(input: {

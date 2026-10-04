@@ -1,6 +1,7 @@
 import type { NextRequest } from "next/server";
 
 import { logger } from "@/infrastructure/logging/logger";
+import { enforcePublicRateLimit } from "@/infrastructure/rate-limit/rate-limit";
 import { InvalidAuthenticationInputError } from "@/modules/auth/application/errors/auth-errors";
 import { toCurrentSession } from "@/modules/auth/domain/current-session";
 import { AUTH_SESSION_COOKIE } from "@/modules/auth/domain/session";
@@ -19,6 +20,11 @@ export const runtime = "nodejs";
 export async function POST(request: NextRequest): Promise<Response> {
   try {
     assertTrustedRequestOrigin(request);
+    await enforcePublicRateLimit(
+      request,
+      "auth.registration",
+      "authentication",
+    );
 
     let body: unknown;
     try {

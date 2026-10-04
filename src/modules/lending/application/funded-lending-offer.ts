@@ -11,6 +11,12 @@ import {
 import { prisma } from "@/infrastructure/database/prisma";
 import { logger } from "@/infrastructure/logging/logger";
 import {
+  logTransactionLifecycle,
+  operationalFailureAlertThreshold,
+  recordOperationalFailure,
+  recordOperationalSuccess,
+} from "@/infrastructure/observability/operational-signals";
+import {
   ARC_TESTNET_CHAIN_ID,
   ARC_TESTNET_NETWORK,
   ARC_TESTNET_RPC_URL,
@@ -215,8 +221,15 @@ export async function confirmFundedLendingOffer(
   offerId: string,
   transactionHash: Hex,
 ) {
+  const confirmationStartedAt = Date.now();
   const contractAddress = getConfiguredEscrowAddress();
   if (!contractAddress) throw configurationError();
+  logTransactionLifecycle("offer_submitted", {
+    operationId: offerId,
+    transactionHash,
+    chainId: ARC_TESTNET_CHAIN_ID,
+    contractAddress,
+  });
   const offer = await prisma.lendingOffer.findFirst({
     where: {
       id: offerId,
@@ -262,6 +275,16 @@ export async function confirmFundedLendingOffer(
   try {
     receipt = await client.getTransactionReceipt({ hash: transactionHash });
   } catch (error) {
+    logTransactionLifecycle("transaction_pending", {
+      operationId: offerId,
+      transactionHash,
+      chainId: ARC_TESTNET_CHAIN_ID,
+      contractAddress,
+    });
+    recordOperationalFailure("transaction_confirmation", {
+      alertThreshold: operationalFailureAlertThreshold(),
+      context: { operationId: offerId, eventType: "offer" },
+    });
     logger.error("Arc funding receipt is not available yet", error, {
       offerId,
     });
@@ -275,6 +298,16 @@ export async function confirmFundedLendingOffer(
     await prisma.lendingOffer.updateMany({
       where: { id: offer.id, fundingStatus: "PENDING" },
       data: { fundingStatus: "FAILED", status: "CLOSED" },
+    });
+    logTransactionLifecycle("offer_reverted", {
+      operationId: offerId,
+      transactionHash,
+      chainId: ARC_TESTNET_CHAIN_ID,
+      contractAddress,
+    });
+    recordOperationalFailure("transaction_confirmation", {
+      alertThreshold: operationalFailureAlertThreshold(),
+      context: { operationId: offerId, eventType: "offer" },
     });
     throw invalidOffer("The Arc funding transaction failed.");
   }
@@ -316,6 +349,12 @@ export async function confirmFundedLendingOffer(
     }
   }
   if (chainOfferId === null) {
+    logTransactionLifecycle("transaction_unknown", {
+      operationId: offerId,
+      transactionHash,
+      chainId: ARC_TESTNET_CHAIN_ID,
+      contractAddress,
+    });
     throw invalidOffer(
       "The transaction does not contain this offer's funding event.",
     );
@@ -338,5 +377,13 @@ export async function confirmFundedLendingOffer(
       409,
     );
   }
+  recordOperationalSuccess("transaction_confirmation");
+  logTransactionLifecycle("offer_confirmed", {
+    operationId: offerId,
+    transactionHash,
+    chainId: ARC_TESTNET_CHAIN_ID,
+    contractAddress,
+    latencyMs: Date.now() - confirmationStartedAt,
+  });
   return { offerId: offer.id, status: "FUNDED" as const };
 }

@@ -1,4 +1,6 @@
 import { logger } from "@/infrastructure/logging/logger";
+import { enforceUserRateLimit } from "@/infrastructure/rate-limit/rate-limit";
+import { requireEmployee } from "@/modules/auth/application/authorization";
 import { getCurrentActor } from "@/modules/auth/infrastructure/auth-guard";
 import { markArcWalletRegistrationCompleteForActor } from "@/modules/arc-wallet/index.server";
 import { apiError, apiSuccess } from "@/shared/api/responses";
@@ -11,7 +13,13 @@ export const runtime = "nodejs";
 export async function POST(request: Request): Promise<Response> {
   try {
     assertTrustedRequestOrigin(request);
-    await markArcWalletRegistrationCompleteForActor(await getCurrentActor());
+    const actor = requireEmployee(await getCurrentActor());
+    await enforceUserRateLimit(
+      actor,
+      "wallet.enrollment.registered",
+      "sensitive",
+    );
+    await markArcWalletRegistrationCompleteForActor(actor);
     return apiSuccess({ status: "REGISTERED" as const });
   } catch (error) {
     if (!(error instanceof ApplicationError))

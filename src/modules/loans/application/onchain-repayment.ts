@@ -11,6 +11,12 @@ import {
 import { prisma } from "@/infrastructure/database/prisma";
 import { logger } from "@/infrastructure/logging/logger";
 import {
+  logTransactionLifecycle,
+  operationalFailureAlertThreshold,
+  recordOperationalFailure,
+  recordOperationalSuccess,
+} from "@/infrastructure/observability/operational-signals";
+import {
   ARC_TESTNET_CHAIN_ID,
   ARC_TESTNET_NETWORK,
   ARC_TESTNET_RPC_URL,
@@ -379,8 +385,15 @@ export async function confirmOnChainRepayment(
   repaymentId: string,
   transactionHash: Hex,
 ) {
+  const confirmationStartedAt = Date.now();
   const configuredContract = getConfiguredEscrowAddress();
   if (!configuredContract) throw configurationError();
+  logTransactionLifecycle("repayment_submitted", {
+    operationId: repaymentId,
+    transactionHash,
+    chainId: ARC_TESTNET_CHAIN_ID,
+    contractAddress: configuredContract,
+  });
 
   const pending = await prisma.loanRepayment.findFirst({
     where: {
@@ -435,6 +448,16 @@ export async function confirmOnChainRepayment(
   try {
     receipt = await client.getTransactionReceipt({ hash: transactionHash });
   } catch (error) {
+    logTransactionLifecycle("transaction_pending", {
+      operationId: repaymentId,
+      transactionHash,
+      chainId: ARC_TESTNET_CHAIN_ID,
+      contractAddress: configuredContract,
+    });
+    recordOperationalFailure("transaction_confirmation", {
+      alertThreshold: operationalFailureAlertThreshold(),
+      context: { operationId: repaymentId, eventType: "repayment" },
+    });
     logger.error("Arc repayment receipt is not available yet", error, {
       loanId,
       repaymentId,
@@ -449,6 +472,16 @@ export async function confirmOnChainRepayment(
     await prisma.loanRepayment.updateMany({
       where: { id: repaymentId, status: "PENDING" },
       data: { status: "FAILED" },
+    });
+    logTransactionLifecycle("repayment_reverted", {
+      operationId: repaymentId,
+      transactionHash,
+      chainId: ARC_TESTNET_CHAIN_ID,
+      contractAddress: configuredContract,
+    });
+    recordOperationalFailure("transaction_confirmation", {
+      alertThreshold: operationalFailureAlertThreshold(),
+      context: { operationId: repaymentId, eventType: "repayment" },
     });
     throw new ApplicationError(
       "REPAYMENT_FAILED",
@@ -492,6 +525,12 @@ export async function confirmOnChainRepayment(
     event.lender.toLowerCase() !== pending.loan.lenderWalletAddress ||
     event.amount !== pending.loan.repaymentBaseUnits
   ) {
+    logTransactionLifecycle("transaction_unknown", {
+      operationId: repaymentId,
+      transactionHash,
+      chainId: ARC_TESTNET_CHAIN_ID,
+      contractAddress: configuredContract,
+    });
     throw new ApplicationError(
       "INVALID_REPAYMENT_CONFIRMATION",
       "The confirmed transaction does not match this loan repayment.",
@@ -576,5 +615,13 @@ export async function confirmOnChainRepayment(
     });
   });
 
+  recordOperationalSuccess("transaction_confirmation");
+  logTransactionLifecycle("repayment_confirmed", {
+    operationId: repaymentId,
+    transactionHash,
+    chainId: ARC_TESTNET_CHAIN_ID,
+    contractAddress: configuredContract,
+    latencyMs: Date.now() - confirmationStartedAt,
+  });
   return { loanId, status: "REPAID" as const };
 }

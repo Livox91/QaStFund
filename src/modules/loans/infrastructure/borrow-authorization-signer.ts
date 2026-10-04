@@ -3,7 +3,7 @@ import "server-only";
 import type { Address, Hex } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 
-import { validateEnvironment } from "@/infrastructure/config/environment";
+import { validateTestnetEnvironment } from "@/infrastructure/config/environment";
 import {
   borrowAuthorizationTypedData,
   type BorrowAuthorization,
@@ -20,12 +20,16 @@ export async function signBorrowAuthorization(
   authorization: BorrowAuthorization,
   contractAddress: Address,
 ): Promise<SignedBorrowAuthorization> {
-  const privateKey = validateEnvironment().ARC_BORROW_AUTHORIZER_PRIVATE_KEY;
-  if (!privateKey) {
+  let privateKey: `0x${string}`;
+  try {
+    privateKey = validateTestnetEnvironment()
+      .ARC_BORROW_AUTHORIZER_PRIVATE_KEY as `0x${string}`;
+  } catch (error) {
     throw new ApplicationError(
       "BORROW_AUTHORIZER_NOT_CONFIGURED",
       "Borrowing authorization is not configured.",
       503,
+      { cause: error },
     );
   }
   const account = privateKeyToAccount(privateKey as Hex);

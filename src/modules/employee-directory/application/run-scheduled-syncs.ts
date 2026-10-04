@@ -5,6 +5,12 @@ import {
 } from "@/modules/employee-directory/application/synchronize-employees";
 import { EmployeeDirectoryError } from "@/modules/employee-directory/domain/employee-directory";
 import type { Clock } from "@/shared/time/clock";
+import {
+  incrementOperationalCounter,
+  operationalFailureAlertThreshold,
+  recordOperationalFailure,
+  recordOperationalSuccess,
+} from "@/infrastructure/observability/operational-signals";
 
 export async function runScheduledEmployeeDirectorySyncs(
   input: { intervalMinutes: number; staleAfterMinutes: number },
@@ -34,6 +40,16 @@ export async function runScheduledEmployeeDirectorySyncs(
       );
       if (result.status === "partial") partial += 1;
       else succeeded += 1;
+      if (result.status === "partial") {
+        incrementOperationalCounter("erpnext_sync_failures_total");
+        recordOperationalFailure("erpnext", {
+          alertThreshold: operationalFailureAlertThreshold(),
+          context: { organizationId, result: "partial" },
+          occurredAt: clock.now(),
+        });
+      } else {
+        recordOperationalSuccess("erpnext", clock.now());
+      }
     } catch (error) {
       if (
         error instanceof EmployeeDirectoryError &&
@@ -42,6 +58,12 @@ export async function runScheduledEmployeeDirectorySyncs(
         skipped += 1;
       } else {
         failed += 1;
+        incrementOperationalCounter("erpnext_sync_failures_total");
+        recordOperationalFailure("erpnext", {
+          alertThreshold: operationalFailureAlertThreshold(),
+          context: { organizationId, result: "failed" },
+          occurredAt: clock.now(),
+        });
       }
     }
   }

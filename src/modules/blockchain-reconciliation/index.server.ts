@@ -29,6 +29,9 @@ export async function runConfiguredArcReconciliation() {
       rpcMaxRetries: environment.ARC_RECONCILIATION_RPC_RETRIES,
       retryBaseDelayMs: 250,
       leaseDurationMs: 5 * 60_000,
+      failureAlertThreshold: environment.OBSERVABILITY_FAILURE_ALERT_THRESHOLD,
+      unmatchedEventAlertThreshold:
+        environment.OBSERVABILITY_UNMATCHED_EVENT_ALERT_THRESHOLD,
     },
     prismaReconciliationRepository,
     createViemArcEventSource({

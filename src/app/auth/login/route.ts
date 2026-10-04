@@ -1,6 +1,10 @@
 import type { NextRequest } from "next/server";
 
 import { logger } from "@/infrastructure/logging/logger";
+import {
+  enforceLoginAccountRateLimit,
+  enforcePublicRateLimit,
+} from "@/infrastructure/rate-limit/rate-limit";
 import { InvalidAuthenticationInputError } from "@/modules/auth/application/errors/auth-errors";
 import { toCurrentSession } from "@/modules/auth/domain/current-session";
 import { AUTH_SESSION_COOKIE } from "@/modules/auth/domain/session";
@@ -19,6 +23,7 @@ export const runtime = "nodejs";
 export async function POST(request: NextRequest): Promise<Response> {
   try {
     assertTrustedRequestOrigin(request);
+    await enforcePublicRateLimit(request, "auth.login.ip");
 
     let body: unknown;
     try {
@@ -30,6 +35,7 @@ export async function POST(request: NextRequest): Promise<Response> {
     const parsed = signInSchema.safeParse(body);
     if (!parsed.success) throw new InvalidAuthenticationInputError();
 
+    await enforceLoginAccountRateLimit(parsed.data.email);
     const authentication = await signInWithPassword(parsed.data);
     await signOutSession(request.cookies.get(AUTH_SESSION_COOKIE)?.value);
 

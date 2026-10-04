@@ -3,6 +3,7 @@ import type { Hex } from "viem";
 import { z } from "zod";
 
 import { logger } from "@/infrastructure/logging/logger";
+import { enforceUserRateLimit } from "@/infrastructure/rate-limit/rate-limit";
 import { requireEmployee } from "@/modules/auth/application/authorization";
 import { getCurrentActor } from "@/modules/auth/infrastructure/auth-guard";
 import { confirmOnChainRepayment } from "@/modules/loans/application/onchain-repayment";
@@ -21,6 +22,7 @@ export async function POST(
   try {
     assertTrustedRequestOrigin(request);
     const actor = requireEmployee(await getCurrentActor());
+    await enforceUserRateLimit(actor, "loan.repayment.confirm", "sensitive");
     const { id: loanId, repaymentId } = await context.params;
     if (
       !z.uuid().safeParse(loanId).success ||

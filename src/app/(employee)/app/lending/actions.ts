@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { logger } from "@/infrastructure/logging/logger";
+import { enforceUserRateLimit } from "@/infrastructure/rate-limit/rate-limit";
 import { requireEmployeePage } from "@/modules/auth/infrastructure/auth-guard";
 import { ApplicationError } from "@/shared/errors/application-error";
 import { updateLendingOfferStatusForActor } from "@/modules/lending/index.server";
@@ -16,6 +17,7 @@ export async function updateLendingOfferStatusAction(
   formData: FormData,
 ): Promise<void> {
   const actor = await requireEmployeePage();
+  await enforceUserRateLimit(actor, "lending.offer.status", "sensitive");
   const parsedId = lendingOfferIdSchema.safeParse(formData.get("offerId"));
   const parsedStatus = updateLendingOfferStatusSchema.safeParse({
     status: formData.get("status"),

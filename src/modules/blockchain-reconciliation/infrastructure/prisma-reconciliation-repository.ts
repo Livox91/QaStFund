@@ -844,6 +844,33 @@ export const prismaReconciliationRepository: ReconciliationRepository = {
     });
   },
 
+  async recordRunSuccess(input) {
+    await prisma.blockchainReconciliationCursor.updateMany({
+      where: {
+        chainId: input.chainId,
+        contractAddress: input.contractAddress.toLowerCase(),
+      },
+      data: {
+        latestObservedBlock: input.latestObservedBlock,
+        lastSuccessfulAt: input.occurredAt,
+        consecutiveFailures: 0,
+      },
+    });
+  },
+
+  async recordRunFailure(input) {
+    await prisma.blockchainReconciliationCursor.updateMany({
+      where: {
+        chainId: input.chainId,
+        contractAddress: input.contractAddress.toLowerCase(),
+      },
+      data: {
+        lastFailureAt: input.occurredAt,
+        consecutiveFailures: { increment: 1 },
+      },
+    });
+  },
+
   async releaseLease(input) {
     await prisma.blockchainReconciliationCursor.updateMany({
       where: {

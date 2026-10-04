@@ -2,6 +2,10 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 import { logger } from "@/infrastructure/logging/logger";
+import {
+  enforceLoginAccountRateLimit,
+  enforcePublicRateLimit,
+} from "@/infrastructure/rate-limit/rate-limit";
 import { InvalidCredentialsError } from "@/modules/auth/application/errors/auth-errors";
 import { getRoleHome } from "@/modules/auth/domain/application-role";
 import { AUTH_SESSION_COOKIE } from "@/modules/auth/domain/session";
@@ -11,6 +15,8 @@ import {
 } from "@/modules/auth/infrastructure/auth-service";
 import { signInSchema } from "@/modules/auth/schemas/sign-in.schema";
 import { assertTrustedRequestOrigin } from "@/shared/api/request-origin";
+import { apiError } from "@/shared/api/responses";
+import { RateLimitExceededError } from "@/shared/errors/rate-limit-error";
 
 export const runtime = "nodejs";
 
@@ -27,6 +33,7 @@ function signInRedirect(request: Request, error?: string): URL {
 export async function POST(request: NextRequest): Promise<Response> {
   try {
     assertTrustedRequestOrigin(request);
+    await enforcePublicRateLimit(request, "auth.login.ip");
 
     const formData = await request.formData();
     const parsedInput = signInSchema.safeParse({
@@ -40,6 +47,8 @@ export async function POST(request: NextRequest): Promise<Response> {
         303,
       );
     }
+
+    await enforceLoginAccountRateLimit(parsedInput.data.email);
 
     const existingSessionToken =
       request.cookies.get(AUTH_SESSION_COOKIE)?.value;
@@ -62,6 +71,9 @@ export async function POST(request: NextRequest): Promise<Response> {
 
     return response;
   } catch (error) {
+    if (error instanceof RateLimitExceededError) {
+      return apiError(error);
+    }
     if (error instanceof InvalidCredentialsError) {
       return NextResponse.redirect(
         signInRedirect(request, "invalid_credentials"),

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { parseEnvironment } from "@/infrastructure/config/environment";
+import { parseEnvironment } from "@/infrastructure/config/environment-schema";
 import type { AuthenticatedActor } from "@/modules/auth/domain/actor";
 import { ApplicationRole } from "@/modules/auth/domain/application-role";
 import {
@@ -9,6 +9,7 @@ import {
 } from "@/modules/loan-decisions/application/evaluate-loan";
 import {
   getLoanReview,
+  getLoanMonitoring,
   markLoanDecisionReviewed,
 } from "@/modules/loan-decisions/application/loan-monitoring";
 import type {
@@ -186,8 +187,6 @@ describe("decision provider and evaluation boundary", () => {
   const validEnvironment = {
     DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test",
     APP_URL: "http://localhost:3000",
-    NEXT_PUBLIC_CIRCLE_CLIENT_KEY: "test-client-key",
-    NEXT_PUBLIC_CIRCLE_CLIENT_URL: "https://example.test/rpc",
   };
 
   it("defaults provider configuration to rules and rejects unknown providers", () => {
@@ -309,11 +308,30 @@ describe("decision provider and evaluation boundary", () => {
         clock("2026-10-09T00:00:00.000Z"),
       ),
     ).resolves.toBeNull();
-    expect(repository.findCandidate).toHaveBeenCalledWith({
+    expect(repository.findMonitoring).toHaveBeenCalledWith({
       organizationId: "organization-b",
       loanId: candidate.loanId,
     });
-    expect(repository.findMonitoring).not.toHaveBeenCalled();
+    expect(repository.findCandidate).not.toHaveBeenCalled();
+    expect(repository.saveEvaluation).not.toHaveBeenCalled();
+  });
+
+  it("keeps monitoring reads free of decision side effects", async () => {
+    const repository = createRepository();
+    const engine = new RuleBasedDecisionAdapter();
+
+    await expect(
+      getLoanMonitoring(
+        admin,
+        engine,
+        repository,
+        clock("2026-10-09T00:00:00.000Z"),
+      ),
+    ).resolves.toHaveLength(1);
+
+    expect(repository.listMonitoring).toHaveBeenCalledWith("organization-a");
+    expect(repository.listCandidates).not.toHaveBeenCalled();
+    expect(repository.saveEvaluation).not.toHaveBeenCalled();
   });
 
   it("evaluates only loans in the employee's participant scope", async () => {

@@ -1,4 +1,6 @@
 import type { NextRequest } from "next/server";
+import { enforceUserRateLimit } from "@/infrastructure/rate-limit/rate-limit";
+import { requireEmployerAdmin } from "@/modules/auth/application/authorization";
 import { getCurrentActor } from "@/modules/auth/infrastructure/auth-guard";
 import { updateEmployeeAccessForActor } from "@/modules/policies/index.server";
 import {
@@ -16,14 +18,16 @@ export async function PATCH(
 ) {
   try {
     assertTrustedRequestOrigin(request);
+    const actor = requireEmployerAdmin(await getCurrentActor());
+    await enforceUserRateLimit(
+      actor,
+      "employer.employee-access.update",
+      "administrative",
+    );
     const employeeId = employeeIdSchema.parse((await params).employeeId);
     const access = lendingAccessSchema.parse(await request.json());
     return apiSuccess(
-      await updateEmployeeAccessForActor(
-        await getCurrentActor(),
-        employeeId,
-        access,
-      ),
+      await updateEmployeeAccessForActor(actor, employeeId, access),
     );
   } catch (error) {
     return apiError(error);

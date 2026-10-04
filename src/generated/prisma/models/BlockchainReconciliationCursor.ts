@@ -30,12 +30,16 @@ export type BlockchainReconciliationCursorAvgAggregateOutputType = {
   chainId: number | null
   nextBlock: number | null
   finalizedThrough: number | null
+  latestObservedBlock: number | null
+  consecutiveFailures: number | null
 }
 
 export type BlockchainReconciliationCursorSumAggregateOutputType = {
   chainId: number | null
   nextBlock: bigint | null
   finalizedThrough: bigint | null
+  latestObservedBlock: bigint | null
+  consecutiveFailures: number | null
 }
 
 export type BlockchainReconciliationCursorMinAggregateOutputType = {
@@ -46,6 +50,10 @@ export type BlockchainReconciliationCursorMinAggregateOutputType = {
   finalizedThrough: bigint | null
   leaseOwner: string | null
   leaseExpiresAt: Date | null
+  latestObservedBlock: bigint | null
+  lastSuccessfulAt: Date | null
+  lastFailureAt: Date | null
+  consecutiveFailures: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -58,6 +66,10 @@ export type BlockchainReconciliationCursorMaxAggregateOutputType = {
   finalizedThrough: bigint | null
   leaseOwner: string | null
   leaseExpiresAt: Date | null
+  latestObservedBlock: bigint | null
+  lastSuccessfulAt: Date | null
+  lastFailureAt: Date | null
+  consecutiveFailures: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -70,6 +82,10 @@ export type BlockchainReconciliationCursorCountAggregateOutputType = {
   finalizedThrough: number
   leaseOwner: number
   leaseExpiresAt: number
+  latestObservedBlock: number
+  lastSuccessfulAt: number
+  lastFailureAt: number
+  consecutiveFailures: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -80,12 +96,16 @@ export type BlockchainReconciliationCursorAvgAggregateInputType = {
   chainId?: true
   nextBlock?: true
   finalizedThrough?: true
+  latestObservedBlock?: true
+  consecutiveFailures?: true
 }
 
 export type BlockchainReconciliationCursorSumAggregateInputType = {
   chainId?: true
   nextBlock?: true
   finalizedThrough?: true
+  latestObservedBlock?: true
+  consecutiveFailures?: true
 }
 
 export type BlockchainReconciliationCursorMinAggregateInputType = {
@@ -96,6 +116,10 @@ export type BlockchainReconciliationCursorMinAggregateInputType = {
   finalizedThrough?: true
   leaseOwner?: true
   leaseExpiresAt?: true
+  latestObservedBlock?: true
+  lastSuccessfulAt?: true
+  lastFailureAt?: true
+  consecutiveFailures?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -108,6 +132,10 @@ export type BlockchainReconciliationCursorMaxAggregateInputType = {
   finalizedThrough?: true
   leaseOwner?: true
   leaseExpiresAt?: true
+  latestObservedBlock?: true
+  lastSuccessfulAt?: true
+  lastFailureAt?: true
+  consecutiveFailures?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -120,6 +148,10 @@ export type BlockchainReconciliationCursorCountAggregateInputType = {
   finalizedThrough?: true
   leaseOwner?: true
   leaseExpiresAt?: true
+  latestObservedBlock?: true
+  lastSuccessfulAt?: true
+  lastFailureAt?: true
+  consecutiveFailures?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -219,6 +251,10 @@ export type BlockchainReconciliationCursorGroupByOutputType = {
   finalizedThrough: bigint
   leaseOwner: string | null
   leaseExpiresAt: Date | null
+  latestObservedBlock: bigint | null
+  lastSuccessfulAt: Date | null
+  lastFailureAt: Date | null
+  consecutiveFailures: number
   createdAt: Date
   updatedAt: Date
   _count: BlockchainReconciliationCursorCountAggregateOutputType | null
@@ -254,6 +290,10 @@ export type BlockchainReconciliationCursorWhereInput = {
   finalizedThrough?: Prisma.BigIntFilter<"BlockchainReconciliationCursor"> | bigint | number
   leaseOwner?: Prisma.UuidNullableFilter<"BlockchainReconciliationCursor"> | string | null
   leaseExpiresAt?: Prisma.DateTimeNullableFilter<"BlockchainReconciliationCursor"> | Date | string | null
+  latestObservedBlock?: Prisma.BigIntNullableFilter<"BlockchainReconciliationCursor"> | bigint | number | null
+  lastSuccessfulAt?: Prisma.DateTimeNullableFilter<"BlockchainReconciliationCursor"> | Date | string | null
+  lastFailureAt?: Prisma.DateTimeNullableFilter<"BlockchainReconciliationCursor"> | Date | string | null
+  consecutiveFailures?: Prisma.IntFilter<"BlockchainReconciliationCursor"> | number
   createdAt?: Prisma.DateTimeFilter<"BlockchainReconciliationCursor"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BlockchainReconciliationCursor"> | Date | string
 }
@@ -266,6 +306,10 @@ export type BlockchainReconciliationCursorOrderByWithRelationInput = {
   finalizedThrough?: Prisma.SortOrder
   leaseOwner?: Prisma.SortOrderInput | Prisma.SortOrder
   leaseExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  latestObservedBlock?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastSuccessfulAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastFailureAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  consecutiveFailures?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -282,6 +326,10 @@ export type BlockchainReconciliationCursorWhereUniqueInput = Prisma.AtLeast<{
   finalizedThrough?: Prisma.BigIntFilter<"BlockchainReconciliationCursor"> | bigint | number
   leaseOwner?: Prisma.UuidNullableFilter<"BlockchainReconciliationCursor"> | string | null
   leaseExpiresAt?: Prisma.DateTimeNullableFilter<"BlockchainReconciliationCursor"> | Date | string | null
+  latestObservedBlock?: Prisma.BigIntNullableFilter<"BlockchainReconciliationCursor"> | bigint | number | null
+  lastSuccessfulAt?: Prisma.DateTimeNullableFilter<"BlockchainReconciliationCursor"> | Date | string | null
+  lastFailureAt?: Prisma.DateTimeNullableFilter<"BlockchainReconciliationCursor"> | Date | string | null
+  consecutiveFailures?: Prisma.IntFilter<"BlockchainReconciliationCursor"> | number
   createdAt?: Prisma.DateTimeFilter<"BlockchainReconciliationCursor"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BlockchainReconciliationCursor"> | Date | string
 }, "id" | "chainId_contractAddress">
@@ -294,6 +342,10 @@ export type BlockchainReconciliationCursorOrderByWithAggregationInput = {
   finalizedThrough?: Prisma.SortOrder
   leaseOwner?: Prisma.SortOrderInput | Prisma.SortOrder
   leaseExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  latestObservedBlock?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastSuccessfulAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastFailureAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  consecutiveFailures?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.BlockchainReconciliationCursorCountOrderByAggregateInput
@@ -314,6 +366,10 @@ export type BlockchainReconciliationCursorScalarWhereWithAggregatesInput = {
   finalizedThrough?: Prisma.BigIntWithAggregatesFilter<"BlockchainReconciliationCursor"> | bigint | number
   leaseOwner?: Prisma.UuidNullableWithAggregatesFilter<"BlockchainReconciliationCursor"> | string | null
   leaseExpiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"BlockchainReconciliationCursor"> | Date | string | null
+  latestObservedBlock?: Prisma.BigIntNullableWithAggregatesFilter<"BlockchainReconciliationCursor"> | bigint | number | null
+  lastSuccessfulAt?: Prisma.DateTimeNullableWithAggregatesFilter<"BlockchainReconciliationCursor"> | Date | string | null
+  lastFailureAt?: Prisma.DateTimeNullableWithAggregatesFilter<"BlockchainReconciliationCursor"> | Date | string | null
+  consecutiveFailures?: Prisma.IntWithAggregatesFilter<"BlockchainReconciliationCursor"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"BlockchainReconciliationCursor"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"BlockchainReconciliationCursor"> | Date | string
 }
@@ -326,6 +382,10 @@ export type BlockchainReconciliationCursorCreateInput = {
   finalizedThrough: bigint | number
   leaseOwner?: string | null
   leaseExpiresAt?: Date | string | null
+  latestObservedBlock?: bigint | number | null
+  lastSuccessfulAt?: Date | string | null
+  lastFailureAt?: Date | string | null
+  consecutiveFailures?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -338,6 +398,10 @@ export type BlockchainReconciliationCursorUncheckedCreateInput = {
   finalizedThrough: bigint | number
   leaseOwner?: string | null
   leaseExpiresAt?: Date | string | null
+  latestObservedBlock?: bigint | number | null
+  lastSuccessfulAt?: Date | string | null
+  lastFailureAt?: Date | string | null
+  consecutiveFailures?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -350,6 +414,10 @@ export type BlockchainReconciliationCursorUpdateInput = {
   finalizedThrough?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   leaseOwner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   leaseExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  latestObservedBlock?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  lastSuccessfulAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailureAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consecutiveFailures?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -362,6 +430,10 @@ export type BlockchainReconciliationCursorUncheckedUpdateInput = {
   finalizedThrough?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   leaseOwner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   leaseExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  latestObservedBlock?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  lastSuccessfulAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailureAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consecutiveFailures?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -374,6 +446,10 @@ export type BlockchainReconciliationCursorCreateManyInput = {
   finalizedThrough: bigint | number
   leaseOwner?: string | null
   leaseExpiresAt?: Date | string | null
+  latestObservedBlock?: bigint | number | null
+  lastSuccessfulAt?: Date | string | null
+  lastFailureAt?: Date | string | null
+  consecutiveFailures?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -386,6 +462,10 @@ export type BlockchainReconciliationCursorUpdateManyMutationInput = {
   finalizedThrough?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   leaseOwner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   leaseExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  latestObservedBlock?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  lastSuccessfulAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailureAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consecutiveFailures?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -398,6 +478,10 @@ export type BlockchainReconciliationCursorUncheckedUpdateManyInput = {
   finalizedThrough?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   leaseOwner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   leaseExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  latestObservedBlock?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  lastSuccessfulAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastFailureAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  consecutiveFailures?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -415,6 +499,10 @@ export type BlockchainReconciliationCursorCountOrderByAggregateInput = {
   finalizedThrough?: Prisma.SortOrder
   leaseOwner?: Prisma.SortOrder
   leaseExpiresAt?: Prisma.SortOrder
+  latestObservedBlock?: Prisma.SortOrder
+  lastSuccessfulAt?: Prisma.SortOrder
+  lastFailureAt?: Prisma.SortOrder
+  consecutiveFailures?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -423,6 +511,8 @@ export type BlockchainReconciliationCursorAvgOrderByAggregateInput = {
   chainId?: Prisma.SortOrder
   nextBlock?: Prisma.SortOrder
   finalizedThrough?: Prisma.SortOrder
+  latestObservedBlock?: Prisma.SortOrder
+  consecutiveFailures?: Prisma.SortOrder
 }
 
 export type BlockchainReconciliationCursorMaxOrderByAggregateInput = {
@@ -433,6 +523,10 @@ export type BlockchainReconciliationCursorMaxOrderByAggregateInput = {
   finalizedThrough?: Prisma.SortOrder
   leaseOwner?: Prisma.SortOrder
   leaseExpiresAt?: Prisma.SortOrder
+  latestObservedBlock?: Prisma.SortOrder
+  lastSuccessfulAt?: Prisma.SortOrder
+  lastFailureAt?: Prisma.SortOrder
+  consecutiveFailures?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -445,6 +539,10 @@ export type BlockchainReconciliationCursorMinOrderByAggregateInput = {
   finalizedThrough?: Prisma.SortOrder
   leaseOwner?: Prisma.SortOrder
   leaseExpiresAt?: Prisma.SortOrder
+  latestObservedBlock?: Prisma.SortOrder
+  lastSuccessfulAt?: Prisma.SortOrder
+  lastFailureAt?: Prisma.SortOrder
+  consecutiveFailures?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -453,6 +551,8 @@ export type BlockchainReconciliationCursorSumOrderByAggregateInput = {
   chainId?: Prisma.SortOrder
   nextBlock?: Prisma.SortOrder
   finalizedThrough?: Prisma.SortOrder
+  latestObservedBlock?: Prisma.SortOrder
+  consecutiveFailures?: Prisma.SortOrder
 }
 
 
@@ -465,6 +565,10 @@ export type BlockchainReconciliationCursorSelect<ExtArgs extends runtime.Types.E
   finalizedThrough?: boolean
   leaseOwner?: boolean
   leaseExpiresAt?: boolean
+  latestObservedBlock?: boolean
+  lastSuccessfulAt?: boolean
+  lastFailureAt?: boolean
+  consecutiveFailures?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["blockchainReconciliationCursor"]>
@@ -477,6 +581,10 @@ export type BlockchainReconciliationCursorSelectCreateManyAndReturn<ExtArgs exte
   finalizedThrough?: boolean
   leaseOwner?: boolean
   leaseExpiresAt?: boolean
+  latestObservedBlock?: boolean
+  lastSuccessfulAt?: boolean
+  lastFailureAt?: boolean
+  consecutiveFailures?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["blockchainReconciliationCursor"]>
@@ -489,6 +597,10 @@ export type BlockchainReconciliationCursorSelectUpdateManyAndReturn<ExtArgs exte
   finalizedThrough?: boolean
   leaseOwner?: boolean
   leaseExpiresAt?: boolean
+  latestObservedBlock?: boolean
+  lastSuccessfulAt?: boolean
+  lastFailureAt?: boolean
+  consecutiveFailures?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["blockchainReconciliationCursor"]>
@@ -501,11 +613,15 @@ export type BlockchainReconciliationCursorSelectScalar = {
   finalizedThrough?: boolean
   leaseOwner?: boolean
   leaseExpiresAt?: boolean
+  latestObservedBlock?: boolean
+  lastSuccessfulAt?: boolean
+  lastFailureAt?: boolean
+  consecutiveFailures?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type BlockchainReconciliationCursorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "chainId" | "contractAddress" | "nextBlock" | "finalizedThrough" | "leaseOwner" | "leaseExpiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["blockchainReconciliationCursor"]>
+export type BlockchainReconciliationCursorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "chainId" | "contractAddress" | "nextBlock" | "finalizedThrough" | "leaseOwner" | "leaseExpiresAt" | "latestObservedBlock" | "lastSuccessfulAt" | "lastFailureAt" | "consecutiveFailures" | "createdAt" | "updatedAt", ExtArgs["result"]["blockchainReconciliationCursor"]>
 
 export type $BlockchainReconciliationCursorPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "BlockchainReconciliationCursor"
@@ -518,6 +634,10 @@ export type $BlockchainReconciliationCursorPayload<ExtArgs extends runtime.Types
     finalizedThrough: bigint
     leaseOwner: string | null
     leaseExpiresAt: Date | null
+    latestObservedBlock: bigint | null
+    lastSuccessfulAt: Date | null
+    lastFailureAt: Date | null
+    consecutiveFailures: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["blockchainReconciliationCursor"]>
@@ -950,6 +1070,10 @@ export interface BlockchainReconciliationCursorFieldRefs {
   readonly finalizedThrough: Prisma.FieldRef<"BlockchainReconciliationCursor", 'BigInt'>
   readonly leaseOwner: Prisma.FieldRef<"BlockchainReconciliationCursor", 'String'>
   readonly leaseExpiresAt: Prisma.FieldRef<"BlockchainReconciliationCursor", 'DateTime'>
+  readonly latestObservedBlock: Prisma.FieldRef<"BlockchainReconciliationCursor", 'BigInt'>
+  readonly lastSuccessfulAt: Prisma.FieldRef<"BlockchainReconciliationCursor", 'DateTime'>
+  readonly lastFailureAt: Prisma.FieldRef<"BlockchainReconciliationCursor", 'DateTime'>
+  readonly consecutiveFailures: Prisma.FieldRef<"BlockchainReconciliationCursor", 'Int'>
   readonly createdAt: Prisma.FieldRef<"BlockchainReconciliationCursor", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"BlockchainReconciliationCursor", 'DateTime'>
 }

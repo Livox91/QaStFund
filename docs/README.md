@@ -43,18 +43,23 @@ Open:
 - `http://localhost:3000/employer` — database-backed employer overview
 - `http://localhost:3000/employer/loans` — organization-scoped loan reporting
 - `http://localhost:3000/profile` — authenticated profile
-- `http://localhost:3000/api/health` — API and database health
+- `http://localhost:3000/api/health/live` — process liveness
+- `http://localhost:3000/api/health/ready` — configuration and database readiness
+- `http://localhost:3000/api/health/dependencies` — sanitized dependency and worker health
 
 Verify the health endpoint from another terminal:
 
 ```bash
-curl http://localhost:3000/api/health
+curl http://localhost:3000/api/health/ready
 ```
 
 Expected response:
 
 ```json
-{ "status": "ok", "database": "connected" }
+{
+  "status": "ready",
+  "checks": { "configuration": "healthy", "database": "healthy" }
+}
 ```
 
 ## Demo authentication
@@ -103,21 +108,52 @@ macOS/Linux:
 cp .env.example .env
 ```
 
-Required variables:
+Required for local application startup:
 
 ```dotenv
 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/employee_lending?schema=public"
 APP_URL="http://localhost:3000"
 ```
 
-All `.env*` files except `.env.example` are ignored by Git. Server startup validates both required variables with Zod and reports field-level configuration errors without printing secrets.
+All `.env*` files except `.env.example` are ignored by Git. Server startup
+validates both required variables with Zod and reports field-level configuration
+errors without printing values.
 
 `APP_URL` must match the browser origin, including its port. Authentication POST routes reject requests from other origins.
 
-Arc borrowing additionally requires a deployed authorization-enabled escrow
-and the server-only `ARC_BORROW_AUTHORIZER_PRIVATE_KEY`. See
+Arc Testnet functionality is validated separately when that feature is used. It
+requires `ARC_CHAIN_ID=5042002`, `ARC_RPC_URL`, `ARC_USDC_ADDRESS`,
+`NEXT_PUBLIC_ARC_LENDING_CONTRACT_ADDRESS`, `NEXT_PUBLIC_CIRCLE_CLIENT_KEY`,
+`NEXT_PUBLIC_CIRCLE_CLIENT_URL`, and the server-only
+`ARC_BORROW_AUTHORIZER_PRIVATE_KEY`. Only variables prefixed with
+`NEXT_PUBLIC_` are browser-visible. See
 [`BORROW_AUTHORIZATION.md`](./BORROW_AUTHORIZATION.md) for the trust model,
 deployment steps, and incompatibility with offers from the previous contract.
+
+ERPNext is optional. `ERP_NEXT_SYNC_ENABLED` defaults to `false`; when it is
+`true`, `ERP_NEXT_SYNC_CRON_SECRET` and `ERP_NEXT_CREDENTIALS_JSON` are required.
+Manual ERPNext operations resolve credentials only when the configured
+integration is used. Timing, local-HTTP development, reconciliation, decision
+engine, and employer-action options are documented with safe defaults in
+`.env.example`.
+
+Optional configuration is grouped by feature:
+
+- Arc reconciliation: `ARC_RECONCILIATION_ENABLED`, its RPC/range/finality
+  settings, and `ARC_RECONCILIATION_CRON_SECRET` when enabled.
+- ERPNext: `ERP_NEXT_ALLOW_LOCAL_HTTP`, `ERP_NEXT_SYNC_ENABLED`, interval and
+  stale-run settings, plus credentials and the cron secret when enabled.
+- Internal adapters: `LOAN_DECISION_PROVIDER` and `EMPLOYER_ACTION_PROVIDER`.
+- Deployment only: `ARC_BORROW_AUTHORIZER_ADDRESS` and
+  `ARC_DEPLOYER_PRIVATE_KEY`; neither is needed for application startup.
+
+Never put real credentials in `.env.example`, CI workflow files, or variables
+whose names start with `NEXT_PUBLIC_`. Validation errors list variable names and
+the affected feature, never their values.
+
+Sensitive APIs use the shared PostgreSQL-backed abuse-protection layer. Internal
+operators can review protected categories, pilot tuning, proxy trust, and safe
+investigation guidance in [`RATE_LIMITING.md`](./RATE_LIMITING.md).
 
 ## PostgreSQL setup without Docker
 
@@ -163,21 +199,35 @@ For deployment environments, apply committed migrations with:
 npm run prisma:deploy
 ```
 
-The health route executes `SELECT 1` through the repository and Prisma layers. It returns `{"status":"ok","database":"connected"}` only when PostgreSQL is reachable. Failures use the shared API error envelope and do not expose database internals.
+The readiness route executes `SELECT 1` through the repository and Prisma layers. Liveness does not consult external services, while optional integrations are reported separately and do not make the application unready. See [Operational health](./OPERATIONAL_HEALTH.md) for endpoints, signals, thresholds, and deployment notes.
 
 ## Quality checks
 
+CI runs on every pull request and push to `master`. To run the same checks
+locally against a disposable PostgreSQL database, set `DATABASE_URL` to that
+database (never production), then run:
+
 ```bash
-npm run build
+npm ci
+npm run prisma:generate
 npm run typecheck
 npm run lint
 npm run format:check
+npm run prisma:validate
+npm run prisma:deploy
+npm run prisma:status
 npm test
-npm run verify:borrowing # database-backed transactional/idempotency check
-npm run verify:repayment # partial/full repayment and ledger integration check
+npm run test:contracts
+npm run build
 ```
 
-Use `npm run test:watch` during active development.
+`prisma:deploy` must apply every committed migration cleanly before the
+database-backed tests run. GitHub Actions supplies a fresh PostgreSQL 17 service
+database named `employee_lending_ci`; it never uses developer or production
+credentials. Use `npm run test:watch` during active development. The optional
+database-backed scenario scripts remain available as `npm run
+verify:borrowing`, `npm run verify:repayment`, `npm run verify:ledger`, and `npm
+run verify:policy`.
 
 ## Project structure
 

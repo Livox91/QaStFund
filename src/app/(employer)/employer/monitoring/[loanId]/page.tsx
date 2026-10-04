@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { z } from "zod";
 
+import { enforceUserRateLimit } from "@/infrastructure/rate-limit/rate-limit";
 import { requireEmployerAdminPage } from "@/modules/auth/infrastructure/auth-guard";
 import { listEmployerActionsForActor } from "@/modules/employer-actions/index.server";
 import { getLoanReviewForActor } from "@/modules/loan-decisions/index.server";
@@ -17,6 +18,7 @@ export default async function LoanReviewPage({
   const actor = await requireEmployerAdminPage();
   const parsedLoanId = z.uuid().safeParse((await params).loanId);
   if (!parsedLoanId.success) notFound();
+  await enforceUserRateLimit(actor, "loan.review.read", "administrative");
   const loan = await getLoanReviewForActor(actor, parsedLoanId.data);
   if (!loan) notFound();
   const actions = await listEmployerActionsForActor(actor, parsedLoanId.data);

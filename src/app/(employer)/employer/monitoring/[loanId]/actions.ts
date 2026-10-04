@@ -4,12 +4,14 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
+import { enforceUserRateLimit } from "@/infrastructure/rate-limit/rate-limit";
 import { requireEmployerAdminPage } from "@/modules/auth/infrastructure/auth-guard";
 import { executeEmployerActionForActor } from "@/modules/employer-actions/index.server";
 import { employerActionRequestSchema } from "@/modules/employer-actions/schemas/employer-action.schema";
 
 export async function executeEmployerActionAction(formData: FormData) {
   const actor = await requireEmployerAdminPage();
+  await enforceUserRateLimit(actor, "employer.loan.action", "administrative");
   const parsed = employerActionRequestSchema.safeParse({
     loanId: formData.get("loanId"),
     action: formData.get("action"),

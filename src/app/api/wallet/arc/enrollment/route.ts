@@ -1,4 +1,6 @@
 import { logger } from "@/infrastructure/logging/logger";
+import { enforceUserRateLimit } from "@/infrastructure/rate-limit/rate-limit";
+import { requireEmployee } from "@/modules/auth/application/authorization";
 import { getCurrentActor } from "@/modules/auth/infrastructure/auth-guard";
 import { beginArcWalletEnrollmentForActor } from "@/modules/arc-wallet/index.server";
 import { beginArcWalletEnrollmentSchema } from "@/modules/arc-wallet/schemas/arc-wallet-enrollment.schema";
@@ -12,12 +14,11 @@ export const runtime = "nodejs";
 export async function POST(request: Request): Promise<Response> {
   try {
     assertTrustedRequestOrigin(request);
+    const actor = requireEmployee(await getCurrentActor());
+    await enforceUserRateLimit(actor, "wallet.enrollment.start", "sensitive");
     const input = beginArcWalletEnrollmentSchema.parse(await request.json());
     return apiSuccess(
-      await beginArcWalletEnrollmentForActor(
-        await getCurrentActor(),
-        input.intent,
-      ),
+      await beginArcWalletEnrollmentForActor(actor, input.intent),
     );
   } catch (error) {
     if (!(error instanceof ApplicationError))

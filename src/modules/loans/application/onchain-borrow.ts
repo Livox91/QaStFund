@@ -11,6 +11,12 @@ import {
 import { prisma } from "@/infrastructure/database/prisma";
 import { logger } from "@/infrastructure/logging/logger";
 import {
+  logTransactionLifecycle,
+  operationalFailureAlertThreshold,
+  recordOperationalFailure,
+  recordOperationalSuccess,
+} from "@/infrastructure/observability/operational-signals";
+import {
   ARC_TESTNET_CHAIN_ID,
   ARC_TESTNET_NETWORK,
   ARC_TESTNET_RPC_URL,
@@ -481,10 +487,17 @@ export async function confirmOnChainBorrow(
   transactionHash: Hex,
   dependencies: ConfirmOnChainBorrowDependencies = {},
 ) {
+  const confirmationStartedAt = Date.now();
   const database = dependencies.database ?? prisma;
   const configuredContract =
     dependencies.contractAddress ?? getConfiguredEscrowAddress();
   if (!configuredContract) throw configurationError();
+  logTransactionLifecycle("acceptance_submitted", {
+    operationId: loanId,
+    transactionHash,
+    chainId: ARC_TESTNET_CHAIN_ID,
+    contractAddress: configuredContract,
+  });
   const pending = await database.loan.findFirst({
     where: {
       id: loanId,
@@ -533,6 +546,16 @@ export async function confirmOnChainBorrow(
       dependencies.getTransactionReceipt ?? client.getTransactionReceipt
     )({ hash: transactionHash });
   } catch (error) {
+    logTransactionLifecycle("transaction_pending", {
+      operationId: loanId,
+      transactionHash,
+      chainId: ARC_TESTNET_CHAIN_ID,
+      contractAddress: configuredContract,
+    });
+    recordOperationalFailure("transaction_confirmation", {
+      alertThreshold: operationalFailureAlertThreshold(),
+      context: { operationId: loanId, eventType: "acceptance" },
+    });
     logger.error("Arc loan receipt is not available yet", error, { loanId });
     throw new ApplicationError(
       "LOAN_CONFIRMATION_PENDING",
@@ -547,6 +570,16 @@ export async function confirmOnChainBorrow(
         status: "CANCELLED",
         closedAt: dependencies.now?.() ?? new Date(),
       },
+    });
+    logTransactionLifecycle("acceptance_reverted", {
+      operationId: loanId,
+      transactionHash,
+      chainId: ARC_TESTNET_CHAIN_ID,
+      contractAddress: configuredContract,
+    });
+    recordOperationalFailure("transaction_confirmation", {
+      alertThreshold: operationalFailureAlertThreshold(),
+      context: { operationId: loanId, eventType: "acceptance" },
     });
     throw unavailableError();
   }
@@ -591,6 +624,12 @@ export async function confirmOnChainBorrow(
     event.repaymentAmount !== pending.repaymentBaseUnits ||
     event.dueTime - event.startTime !== BigInt(pending.durationDays * 86_400)
   ) {
+    logTransactionLifecycle("transaction_unknown", {
+      operationId: loanId,
+      transactionHash,
+      chainId: ARC_TESTNET_CHAIN_ID,
+      contractAddress: configuredContract,
+    });
     throw new ApplicationError(
       "INVALID_LOAN_CONFIRMATION",
       "The confirmed transaction does not match this loan.",
@@ -659,5 +698,13 @@ export async function confirmOnChainBorrow(
     });
   });
 
+  recordOperationalSuccess("transaction_confirmation");
+  logTransactionLifecycle("acceptance_confirmed", {
+    operationId: loanId,
+    transactionHash,
+    chainId: ARC_TESTNET_CHAIN_ID,
+    contractAddress: configuredContract,
+    latencyMs: Date.now() - confirmationStartedAt,
+  });
   return { loanId: pending.id, status: "ACTIVE" as const };
 }
