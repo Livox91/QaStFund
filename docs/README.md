@@ -2,6 +2,8 @@
 
 A production-oriented foundation for an employee peer-to-peer lending application. Local authentication, organization membership, employer reporting, employee dashboards, lending offers, marketplace discovery, Arc Testnet escrow funding and borrowing, full on-chain repayment, loan monitoring, and read-only ERPNext employee synchronization are implemented. Payroll writes and production settlement are intentionally not implemented.
 
+Operations documentation: [database backup and disaster recovery](./DATABASE_BACKUP_AND_DISASTER_RECOVERY.md) and [operational health](./OPERATIONAL_HEALTH.md).
+
 ## Prerequisites
 
 - Node.js 20.19 or newer
