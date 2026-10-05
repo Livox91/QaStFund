@@ -49,6 +49,29 @@ const client = createPublicClient({
   transport: http(ARC_TESTNET_RPC_URL),
 });
 
+async function readUsdcBalance(walletAddress: `0x${string}`) {
+  return client.readContract({
+    address: ARC_USDC_ADDRESS,
+    abi: erc20UsdcAbi,
+    functionName: "balanceOf",
+    args: [walletAddress],
+  });
+}
+
+type PrepareFundedLendingOfferDependencies = Readonly<{
+  contractAddress?: `0x${string}`;
+  database?: typeof prisma;
+  now?: () => Date;
+  readBalance?: typeof readUsdcBalance;
+}>;
+
+type ConfirmFundedLendingOfferDependencies = Readonly<{
+  contractAddress?: `0x${string}`;
+  database?: typeof prisma;
+  getTransactionReceipt?: typeof client.getTransactionReceipt;
+  now?: () => Date;
+}>;
+
 function configurationError(): ApplicationError {
   return new ApplicationError(
     "LENDING_ESCROW_NOT_CONFIGURED",
@@ -64,11 +87,14 @@ function invalidOffer(message = "The lending offer could not be funded.") {
 export async function prepareFundedLendingOffer(
   actor: AuthenticatedActor,
   terms: FundedOfferTerms,
+  dependencies: PrepareFundedLendingOfferDependencies = {},
 ) {
-  const contractAddress = getConfiguredEscrowAddress();
+  const database = dependencies.database ?? prisma;
+  const contractAddress =
+    dependencies.contractAddress ?? getConfiguredEscrowAddress();
   if (!contractAddress) throw configurationError();
 
-  const existing = await prisma.lendingOffer.findUnique({
+  const existing = await database.lendingOffer.findUnique({
     where: { fundingRequestId: terms.requestId },
     select: {
       id: true,
@@ -97,7 +123,7 @@ export async function prepareFundedLendingOffer(
     return toIntent(existing.id, terms, contractAddress);
   }
 
-  const membership = await prisma.organizationMembership.findUnique({
+  const membership = await database.organizationMembership.findUnique({
     where: {
       organizationId_userId: {
         organizationId: actor.organizationId,
@@ -128,7 +154,7 @@ export async function prepareFundedLendingOffer(
     throw invalidOffer("This organization is not configured for USDC offers.");
   }
 
-  const wallet = await prisma.arcWallet.findUnique({
+  const wallet = await database.arcWallet.findUnique({
     where: {
       userId_network: { userId: actor.userId, network: ARC_TESTNET_NETWORK },
     },
@@ -152,7 +178,7 @@ export async function prepareFundedLendingOffer(
     );
   }
 
-  const policy = await prisma.$transaction((transaction) =>
+  const policy = await database.$transaction((transaction) =>
     ensureOrganizationPolicy(transaction, actor.organizationId),
   );
   const violation = validateOfferAgainstPolicy(policy, membership, terms);
@@ -160,12 +186,9 @@ export async function prepareFundedLendingOffer(
     throw invalidOffer(`The offer violates organization policy: ${violation}.`);
   }
 
-  const balance = await client.readContract({
-    address: ARC_USDC_ADDRESS,
-    abi: erc20UsdcAbi,
-    functionName: "balanceOf",
-    args: [getAddress(wallet.address)],
-  });
+  const balance = await (dependencies.readBalance ?? readUsdcBalance)(
+    getAddress(wallet.address),
+  );
   if (balance < terms.principalBaseUnits) {
     throw new ApplicationError(
       "INSUFFICIENT_USDC_BALANCE",
@@ -174,9 +197,9 @@ export async function prepareFundedLendingOffer(
     );
   }
 
-  const expiresAt = new Date();
+  const expiresAt = dependencies.now?.() ?? new Date();
   expiresAt.setUTCDate(expiresAt.getUTCDate() + 30);
-  const offer = await prisma.lendingOffer.create({
+  const offer = await database.lendingOffer.create({
     data: {
       organizationId: actor.organizationId,
       lenderMembershipId: membership.id,
@@ -220,9 +243,12 @@ export async function confirmFundedLendingOffer(
   actor: AuthenticatedActor,
   offerId: string,
   transactionHash: Hex,
+  dependencies: ConfirmFundedLendingOfferDependencies = {},
 ) {
   const confirmationStartedAt = Date.now();
-  const contractAddress = getConfiguredEscrowAddress();
+  const database = dependencies.database ?? prisma;
+  const contractAddress =
+    dependencies.contractAddress ?? getConfiguredEscrowAddress();
   if (!contractAddress) throw configurationError();
   logTransactionLifecycle("offer_submitted", {
     operationId: offerId,
@@ -230,7 +256,7 @@ export async function confirmFundedLendingOffer(
     chainId: ARC_TESTNET_CHAIN_ID,
     contractAddress,
   });
-  const offer = await prisma.lendingOffer.findFirst({
+  const offer = await database.lendingOffer.findFirst({
     where: {
       id: offerId,
       organizationId: actor.organizationId,
@@ -273,7 +299,9 @@ export async function confirmFundedLendingOffer(
 
   let receipt;
   try {
-    receipt = await client.getTransactionReceipt({ hash: transactionHash });
+    receipt = await (
+      dependencies.getTransactionReceipt ?? client.getTransactionReceipt
+    )({ hash: transactionHash });
   } catch (error) {
     logTransactionLifecycle("transaction_pending", {
       operationId: offerId,
@@ -295,7 +323,7 @@ export async function confirmFundedLendingOffer(
     );
   }
   if (receipt.status !== "success") {
-    await prisma.lendingOffer.updateMany({
+    await database.lendingOffer.updateMany({
       where: { id: offer.id, fundingStatus: "PENDING" },
       data: { fundingStatus: "FAILED", status: "CLOSED" },
     });
@@ -360,14 +388,14 @@ export async function confirmFundedLendingOffer(
     );
   }
 
-  const updated = await prisma.lendingOffer.updateMany({
+  const updated = await database.lendingOffer.updateMany({
     where: { id: offer.id, fundingStatus: "PENDING" },
     data: {
       fundingStatus: "FUNDED",
       status: "ACTIVE",
       chainOfferId: chainOfferId.toString(),
       fundingTransactionHash: transactionHash.toLowerCase(),
-      fundedAt: new Date(),
+      fundedAt: dependencies.now?.() ?? new Date(),
     },
   });
   if (updated.count !== 1) {

@@ -6,6 +6,8 @@ const summaries: Record<EmployeeDirectoryErrorCode, string> = {
     "The configured ERPNext address did not pass security validation.",
   MISSING_CREDENTIALS:
     "The configured server-side credential could not be found.",
+  CREDENTIAL_STORAGE_UNAVAILABLE:
+    "Secure ERPNext credential storage is not configured on the server.",
   AUTHENTICATION_FAILED: "ERPNext rejected the integration credentials.",
   PERMISSION_DENIED:
     "The ERPNext integration user lacks Employee read permission.",
@@ -32,6 +34,7 @@ export function isPermanentScheduledSyncError(
     "INVALID_CONFIGURATION",
     "UNSAFE_URL",
     "MISSING_CREDENTIALS",
+    "CREDENTIAL_STORAGE_UNAVAILABLE",
     "AUTHENTICATION_FAILED",
     "PERMISSION_DENIED",
     "REMOTE_NOT_FOUND",

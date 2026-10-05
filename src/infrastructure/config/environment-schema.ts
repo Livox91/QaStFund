@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 const ARC_TESTNET_CHAIN_ID = 5_042_002;
+const LOCAL_CHAIN_ID = 31_337;
 const evmAddressSchema = z
   .string()
   .regex(/^0x[0-9a-fA-F]{40}$/, "must be a 20-byte EVM address");
@@ -24,6 +25,15 @@ function formatConfigurationError(
 }
 
 const erpNextCredentialsSchema = optionalString(z.string()).optional();
+const erpNextEncryptionKeySchema = optionalString(
+  z.string().refine((value) => {
+    try {
+      return Buffer.from(value, "base64").length === 32;
+    } catch {
+      return false;
+    }
+  }, "must be a base64-encoded 32-byte key"),
+).optional();
 
 function hasValidErpNextCredentials(raw: string | undefined): boolean {
   if (!raw) return false;
@@ -194,6 +204,7 @@ const environmentSchema = z
       z.string().min(32).optional(),
     ),
     ERP_NEXT_CREDENTIALS_JSON: erpNextCredentialsSchema,
+    ERP_NEXT_CREDENTIAL_ENCRYPTION_KEY: erpNextEncryptionKeySchema,
   })
   .superRefine((environment, context) => {
     if (
@@ -209,13 +220,14 @@ const environmentSchema = z
     }
     if (
       environment.ERP_NEXT_SYNC_ENABLED &&
-      !hasValidErpNextCredentials(environment.ERP_NEXT_CREDENTIALS_JSON)
+      !hasValidErpNextCredentials(environment.ERP_NEXT_CREDENTIALS_JSON) &&
+      !environment.ERP_NEXT_CREDENTIAL_ENCRYPTION_KEY
     ) {
       context.addIssue({
         code: "custom",
         path: ["ERP_NEXT_CREDENTIALS_JSON"],
         message:
-          "ERP_NEXT_CREDENTIALS_JSON must be a non-empty JSON credentials object for scheduled ERPNext synchronization; it is only required when ERP_NEXT_SYNC_ENABLED=true",
+          "either ERP_NEXT_CREDENTIAL_ENCRYPTION_KEY or a non-empty ERP_NEXT_CREDENTIALS_JSON object is required for scheduled ERPNext synchronization",
       });
     }
     if (
@@ -279,11 +291,43 @@ const testnetEnvironmentSchema = publicTestnetEnvironmentSchema.extend({
     ),
 });
 
+const blockchainEnvironmentSchema = z
+  .object({
+    CHAIN_ENV: z.enum(["local", "testnet", "production"]),
+    RPC_URL: z.url("RPC_URL must be a valid URL"),
+    CHAIN_ID: z.coerce.number().int().positive(),
+    USDC_ADDRESS: evmAddressSchema,
+    LENDING_CONTRACT_ADDRESS: evmAddressSchema,
+  })
+  .superRefine((environment, context) => {
+    if (
+      environment.CHAIN_ENV === "local" &&
+      environment.CHAIN_ID !== LOCAL_CHAIN_ID
+    ) {
+      context.addIssue({
+        code: "custom",
+        path: ["CHAIN_ID"],
+        message: `CHAIN_ID must be ${LOCAL_CHAIN_ID} for the local Hardhat chain`,
+      });
+    }
+    if (
+      environment.CHAIN_ENV === "testnet" &&
+      environment.CHAIN_ID !== ARC_TESTNET_CHAIN_ID
+    ) {
+      context.addIssue({
+        code: "custom",
+        path: ["CHAIN_ID"],
+        message: `CHAIN_ID must be ${ARC_TESTNET_CHAIN_ID} for Arc Testnet`,
+      });
+    }
+  });
+
 export type Environment = z.infer<typeof environmentSchema>;
 export type PublicTestnetEnvironment = z.infer<
   typeof publicTestnetEnvironmentSchema
 >;
 export type TestnetEnvironment = z.infer<typeof testnetEnvironmentSchema>;
+export type BlockchainEnvironment = z.infer<typeof blockchainEnvironmentSchema>;
 
 export function parseEnvironment(
   environment: Pick<NodeJS.ProcessEnv, "DATABASE_URL" | "APP_URL"> & {
@@ -307,6 +351,7 @@ export function parseEnvironment(
     ERP_NEXT_SYNC_MAX_PAGES?: NodeJS.ProcessEnv[string];
     ERP_NEXT_SYNC_CRON_SECRET?: NodeJS.ProcessEnv[string];
     ERP_NEXT_CREDENTIALS_JSON?: NodeJS.ProcessEnv[string];
+    ERP_NEXT_CREDENTIAL_ENCRYPTION_KEY?: NodeJS.ProcessEnv[string];
     ARC_RECONCILIATION_ENABLED?: NodeJS.ProcessEnv[string];
     ARC_RECONCILIATION_RPC_URL?: NodeJS.ProcessEnv[string];
     ARC_RECONCILIATION_START_BLOCK?: NodeJS.ProcessEnv[string];
@@ -355,6 +400,20 @@ export function parseTestnetEnvironment(
   if (!result.success) {
     throw formatConfigurationError(
       "Arc testnet blockchain functionality",
+      "feature use",
+      result.error,
+    );
+  }
+  return result.data;
+}
+
+export function parseBlockchainEnvironment(
+  environment: Record<string, string | undefined>,
+): BlockchainEnvironment {
+  const result = blockchainEnvironmentSchema.safeParse(environment);
+  if (!result.success) {
+    throw formatConfigurationError(
+      "blockchain connectivity",
       "feature use",
       result.error,
     );

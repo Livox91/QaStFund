@@ -23,6 +23,21 @@ function date(value: Date | null) {
   return value ? value.toLocaleString() : "Never";
 }
 
+function reviewGuidance(code: string) {
+  switch (code) {
+    case "MISSING_EMAIL":
+      return "Add a company email to this Employee in ERPNext, then sync again.";
+    case "STATUS_NOT_MAPPED":
+      return "Map this ERPNext employment status in the configuration below.";
+    case "EMAIL_OR_ACCOUNT_CONFLICT":
+      return "This email is ambiguous or already belongs to another organization. Use the correct ERPNext tenant or a unique work email.";
+    case "DUPLICATE_EXTERNAL_ID":
+      return "Remove the duplicate Employee identifier in ERPNext, then sync again.";
+    default:
+      return "Complete the employee email and identity details in ERPNext, then sync again.";
+  }
+}
+
 export default async function EmployerIntegrationsPage() {
   const dashboard = await getEmployeeDirectoryDashboardForActor(
     await requireEmployerAdminPage(),
@@ -89,16 +104,29 @@ export default async function EmployerIntegrationsPage() {
           <h2 className="text-lg font-semibold text-slate-950">
             Latest synchronization
           </h2>
-          <div className="mt-4 grid gap-4 sm:grid-cols-3 lg:grid-cols-7">
+          <div className="mt-4 grid gap-4 sm:grid-cols-3 lg:grid-cols-8">
             <Metric label="Processed" value={String(latest.processedCount)} />
             <Metric label="Created" value={String(latest.createdCount)} />
             <Metric label="Updated" value={String(latest.updatedCount)} />
+            <Metric label="Removed" value={String(latest.deactivatedCount)} />
             <Metric
-              label="Deactivated"
-              value={String(latest.deactivatedCount)}
+              label="Reactivated"
+              value={String(latest.reactivatedCount)}
             />
             <Metric label="Unchanged" value={String(latest.unchangedCount)} />
             <Metric label="Needs review" value={String(latest.reviewCount)} />
+            <Metric
+              label="Invites created"
+              value={String(latest.invitationCreatedCount)}
+            />
+            <Metric
+              label="Invites sent"
+              value={String(latest.invitationSentCount)}
+            />
+            <Metric
+              label="Invite failures"
+              value={String(latest.invitationFailureCount)}
+            />
             <Metric
               label="Duration"
               value={
@@ -116,8 +144,9 @@ export default async function EmployerIntegrationsPage() {
       <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="text-lg font-semibold text-slate-950">Configuration</h2>
         <p className="mt-1 text-sm text-slate-600">
-          The credential value stays in server environment storage. This form
-          saves only its organization-scoped reference.
+          Credentials are encrypted on the server. Only an opaque,
+          organization-scoped reference is stored with this integration, and
+          saved credentials are never returned to the browser.
         </p>
         <div className="mt-5">
           <IntegrationConfigurationForm
@@ -128,6 +157,8 @@ export default async function EmployerIntegrationsPage() {
                     apiPath: dashboard.integration.apiPath,
                     apiVersion: dashboard.integration.apiVersion,
                     authMethod: dashboard.integration.authMethod,
+                    credentialConfigured:
+                      dashboard.integration.credentialConfigured,
                     timeoutMs: dashboard.integration.timeoutMs,
                     statusMapping: dashboard.integration.statusMapping,
                   }
@@ -150,12 +181,13 @@ export default async function EmployerIntegrationsPage() {
                 <TableHead>Email</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Reason</TableHead>
+                <TableHead>How to resolve</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {dashboard.reviewRecords.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={4}>
+                  <TableCell colSpan={5}>
                     No records currently need review.
                   </TableCell>
                 </TableRow>
@@ -176,6 +208,9 @@ export default async function EmployerIntegrationsPage() {
                         ? record.matchStatus.replaceAll("_", " ")
                         : "unmapped employment status"}
                     </TableCell>
+                    <TableCell className="max-w-sm text-sm text-slate-600">
+                      {reviewGuidance(record.reviewCode)}
+                    </TableCell>
                   </TableRow>
                 ))
               )}
@@ -194,6 +229,8 @@ export default async function EmployerIntegrationsPage() {
                 <TableHead>Result</TableHead>
                 <TableHead>Processed</TableHead>
                 <TableHead>Updated</TableHead>
+                <TableHead>Removed</TableHead>
+                <TableHead>Reactivated</TableHead>
                 <TableHead>Review</TableHead>
                 <TableHead>Duration</TableHead>
               </TableRow>
@@ -201,7 +238,7 @@ export default async function EmployerIntegrationsPage() {
             <TableBody>
               {dashboard.history.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7}>
+                  <TableCell colSpan={9}>
                     No synchronization runs yet.
                   </TableCell>
                 </TableRow>
@@ -213,6 +250,8 @@ export default async function EmployerIntegrationsPage() {
                     <TableCell>{run.status}</TableCell>
                     <TableCell>{run.processedCount}</TableCell>
                     <TableCell>{run.updatedCount}</TableCell>
+                    <TableCell>{run.deactivatedCount}</TableCell>
+                    <TableCell>{run.reactivatedCount}</TableCell>
                     <TableCell>{run.reviewCount}</TableCell>
                     <TableCell>
                       {run.durationMs === null

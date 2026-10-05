@@ -103,6 +103,10 @@ export async function getEmployeeDashboard(
     activeLending,
     upcomingRepayments,
     recentActivity: result.recentActivity,
+    pendingTransactions: result.pendingTransactions.map((transaction) => ({
+      ...transaction,
+      status: "pending" as const,
+    })),
     generatedAt: now,
   };
 }

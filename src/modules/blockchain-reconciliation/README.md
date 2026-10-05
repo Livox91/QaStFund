@@ -13,6 +13,16 @@ Run one bounded pass locally with:
 npm run reconcile:arc
 ```
 
+Run a read-only comparison of linked database records, escrow state, stale
+intents, and reconciliation journal exceptions with:
+
+```shell
+npm run audit:arc
+```
+
+The audit never writes application or chain state. It exits non-zero when it
+finds a mismatch and checks at most 500 records per category in one run.
+
 For a deployed environment, schedule an authenticated `POST` to
 `/api/internal/arc-reconciliation` with
 `Authorization: Bearer <ARC_RECONCILIATION_CRON_SECRET>`. The database lease

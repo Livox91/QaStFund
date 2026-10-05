@@ -32,9 +32,9 @@ export function EmployerCallToAction() {
                 className: "bg-white !text-slate-950 hover:bg-teal-50",
                 size: "lg",
               })}
-              href="/sign-in"
+              href="/signup"
             >
-              Access employer portal
+              Create employer account
               <LandingIcon className="size-4" name="arrow" />
             </Link>
             <Link

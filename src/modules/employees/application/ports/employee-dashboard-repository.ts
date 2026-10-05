@@ -30,6 +30,13 @@ export type EmployeeDashboardRepositoryResult = Readonly<{
   totalEarningsMinorUnits: bigint;
   currentLoans: ReadonlyArray<EmployeeDashboardLoanRecord>;
   recentActivity: ReadonlyArray<EmployeeDashboardActivityRecord>;
+  pendingTransactions: ReadonlyArray<{
+    id: string;
+    kind: "offer_funding" | "loan_acceptance" | "repayment";
+    title: string;
+    href: string;
+    startedAt: Date;
+  }>;
 }>;
 
 export interface EmployeeDashboardRepository {

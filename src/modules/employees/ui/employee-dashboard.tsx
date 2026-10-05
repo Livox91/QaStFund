@@ -5,6 +5,7 @@ import type { EmployeeDashboard as EmployeeDashboardView } from "@/modules/emplo
 import type { Employee } from "@/modules/employees/domain/employee";
 import {
   EmployeeActivityList,
+  PendingTransactionList,
   UpcomingRepaymentList,
 } from "@/modules/employees/ui/employee-dashboard-activity";
 import { EmployeeDashboardMetricCard } from "@/modules/employees/ui/employee-dashboard-metric-card";
@@ -22,6 +23,9 @@ import { PageHeader } from "@/shared/ui/page-header";
 import type { Wallet } from "@/modules/ledger/domain/ledger";
 import { WalletCard } from "@/modules/ledger/ui/wallet-card";
 import type { BorrowingCapacity } from "@/modules/policies/domain/lending-policy";
+import type { EmployeeOnboardingState } from "@/modules/employees/domain/employee-onboarding";
+import type { MarketplaceLendingOffer } from "@/modules/lending/domain/lending-offer";
+import { formatBasisPointsAsPercent } from "@/modules/lending/domain/lending-offer";
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
   day: "numeric",
@@ -36,6 +40,8 @@ export function EmployeeDashboard({
   organizationName,
   wallet,
   borrowingCapacity,
+  onboarding,
+  availableOffers,
 }: {
   dashboard: EmployeeDashboardView;
   employee: Employee;
@@ -43,6 +49,8 @@ export function EmployeeDashboard({
   organizationName: string;
   wallet: Wallet;
   borrowingCapacity: BorrowingCapacity;
+  onboarding: EmployeeOnboardingState;
+  availableOffers: ReadonlyArray<MarketplaceLendingOffer>;
 }) {
   const { metrics } = dashboard;
 
@@ -56,10 +64,14 @@ export function EmployeeDashboard({
           >
             <Link
               className={buttonStyles({ size: "lg" })}
-              href="/app/borrow"
-              title="Browse lending offers"
+              href={onboarding.readyToUse ? "/app/borrow" : "/app/onboarding"}
+              title={
+                onboarding.readyToUse
+                  ? "Browse lending offers"
+                  : "Complete setup"
+              }
             >
-              Lending Marketplace
+              {onboarding.readyToUse ? "Lending Marketplace" : "Complete setup"}
             </Link>
             <Link
               className={buttonStyles({ size: "lg", variant: "secondary" })}
@@ -80,6 +92,15 @@ export function EmployeeDashboard({
           role="status"
         >
           Funds received. Your loan is now active and its repayment date is set.
+        </p>
+      ) : null}
+      {!onboarding.readyToUse ? (
+        <p
+          className="mt-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"
+          role="status"
+        >
+          Lending setup is not complete. You can still view historical activity,
+          but wallet or eligibility setup is required for new transactions.
         </p>
       ) : null}
       <p
@@ -152,9 +173,75 @@ export function EmployeeDashboard({
         </div>
       </section>
 
+      <Card className="mt-6">
+        <CardHeader className="flex-row items-start justify-between gap-4">
+          <div>
+            <CardTitle>Available offers</CardTitle>
+            <CardDescription>
+              Funded offers you are currently eligible to review.
+            </CardDescription>
+          </div>
+          <Link
+            className={buttonStyles({ size: "sm", variant: "outline" })}
+            href="/app/borrow"
+          >
+            View all
+          </Link>
+        </CardHeader>
+        <CardContent>
+          {availableOffers.length === 0 ? (
+            <p className="text-sm text-slate-500">
+              No eligible offers are available right now.
+            </p>
+          ) : (
+            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {availableOffers.map((offer) => (
+                <li
+                  className="rounded-xl border border-slate-200 p-4"
+                  key={offer.id}
+                >
+                  <p className="font-semibold text-slate-950">
+                    {offer.lender.name}
+                  </p>
+                  <p className="mt-2 text-sm text-slate-600">
+                    <CurrencyDisplay
+                      amountMinorUnits={offer.availableAmountMinorUnits}
+                      currency={offer.currency}
+                    />{" "}
+                    · {formatBasisPointsAsPercent(offer.feeRateBasisPoints)} ·{" "}
+                    {offer.durationDays} days
+                  </p>
+                  <Link
+                    className="mt-3 inline-block text-sm font-semibold text-teal-700"
+                    href={`/app/borrow/${offer.id}`}
+                  >
+                    Review terms
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </CardContent>
+      </Card>
+
       <ArcWalletPanel employee={employee} />
 
       <WalletCard wallet={wallet} />
+
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle>Pending transactions</CardTitle>
+          <CardDescription>
+            Submitted operations remain pending until receipt verification or
+            blockchain reconciliation records the final state.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <PendingTransactionList
+            transactions={dashboard.pendingTransactions}
+          />
+        </CardContent>
+      </Card>
 
       <Card className="mt-6">
         <CardHeader>

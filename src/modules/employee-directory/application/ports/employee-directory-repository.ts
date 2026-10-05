@@ -21,11 +21,14 @@ export type DirectorySyncDecision = {
   employeeCode?: string;
   fullName: string;
   email?: string;
+  department?: string;
+  designation?: string;
   externalStatus: string;
   normalizedStatus?: EmploymentStatus;
   matchStatus: "matched" | "unmatched" | "ambiguous" | "duplicate_external_id";
   matchMethod?: "unique_email" | "explicit";
   matchedMembershipId?: string;
+  provision?: boolean;
 };
 
 export interface EmployeeDirectoryRepository {
@@ -64,13 +67,18 @@ export interface EmployeeDirectoryRepository {
     employees: ReadonlyArray<{
       membershipId: string;
       email: string;
+      name: string;
       status: EmploymentStatus;
+      isActive: boolean;
+      accountActivatedAt: Date | null;
     }>;
     mappings: ReadonlyArray<{
       externalEmployeeId: string;
       employeeCode: string | null;
       fullName: string;
       email: string | null;
+      department: string | null;
+      designation: string | null;
       externalStatus: string;
       normalizedStatus: EmploymentStatus | null;
       matchStatus:
@@ -79,6 +87,10 @@ export interface EmployeeDirectoryRepository {
       matchedMembershipId: string | null;
     }>;
   }>;
+  findProvisioningEmailConflicts(input: {
+    organizationId: string;
+    emails: ReadonlyArray<string>;
+  }): Promise<ReadonlyArray<string>>;
   completeSync(input: {
     organizationId: string;
     runId: string;
@@ -91,12 +103,20 @@ export interface EmployeeDirectoryRepository {
     reviewCount: number;
     statusChangeCount: number;
     deactivatedCount: number;
+    reactivatedCount: number;
     errorCount: number;
     status: "success" | "partial";
     safeErrorCode?: string;
     safeErrorSummary?: string;
     completedAt: Date;
     durationMs: number;
+  }): Promise<ReadonlyArray<InvitationDelivery>>;
+  markInvitationDelivery(input: {
+    organizationId: string;
+    runId: string;
+    invitationId: string;
+    sentAt?: Date;
+    failureCode?: string;
   }): Promise<void>;
   failSync(input: {
     organizationId: string;
@@ -147,6 +167,10 @@ export type EmployeeDirectoryDashboard = {
     ambiguousCount: number;
     statusChangeCount: number;
     deactivatedCount: number;
+    reactivatedCount: number;
+    invitationCreatedCount: number;
+    invitationSentCount: number;
+    invitationFailureCount: number;
     errorCount: number;
     safeErrorCode: string | null;
     safeErrorSummary: string | null;
@@ -169,6 +193,10 @@ export type EmployeeDirectoryDashboard = {
     unmatchedCount: number;
     ambiguousCount: number;
     deactivatedCount: number;
+    reactivatedCount: number;
+    invitationCreatedCount: number;
+    invitationSentCount: number;
+    invitationFailureCount: number;
     errorCount: number;
     startedAt: Date;
     durationMs: number | null;
@@ -178,10 +206,18 @@ export type EmployeeDirectoryDashboard = {
     employeeCode: string | null;
     fullName: string;
     email: string | null;
+    department: string | null;
+    designation: string | null;
     externalStatus: string;
     matchStatus:
       "matched" | "unmatched" | "ambiguous" | "duplicate_external_id";
     statusMapped: boolean;
+    reviewCode:
+      | "MISSING_EMAIL"
+      | "STATUS_NOT_MAPPED"
+      | "EMAIL_OR_ACCOUNT_CONFLICT"
+      | "DUPLICATE_EXTERNAL_ID"
+      | "NO_MATCH";
     lastSynchronizedAt: Date;
   }>;
   schedule?: {
@@ -190,4 +226,14 @@ export type EmployeeDirectoryDashboard = {
     nextScheduledSyncAt: Date | null;
     pausedCode: string | null;
   };
+};
+
+export type InvitationDelivery = {
+  runId: string;
+  invitationId: string;
+  organizationId: string;
+  organizationName: string;
+  email: string;
+  token: string;
+  expiresAt: Date;
 };

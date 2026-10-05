@@ -73,6 +73,7 @@ const repositoryResult: EmployeeDashboardRepositoryResult = {
       occurredAt: new Date("2026-09-25T00:00:00.000Z"),
     },
   ],
+  pendingTransactions: [],
 };
 
 function createRepository(
@@ -150,6 +151,31 @@ describe("getEmployeeDashboard", () => {
       remainingAgreedAmountMinorUnits: 50_000n,
       progressBasisPoints: 4_047,
     });
+  });
+
+  it("surfaces authoritative pending transaction records without treating them as confirmed", async () => {
+    const pending = {
+      ...repositoryResult,
+      pendingTransactions: [
+        {
+          id: "repayment:pending-a",
+          kind: "repayment" as const,
+          title: "Repayment awaiting confirmation",
+          href: "/app/loans/loan-a",
+          startedAt: new Date("2026-09-29T00:00:00.000Z"),
+        },
+      ],
+    };
+    const dashboard = await getEmployeeDashboard(
+      employee,
+      createRepository(pending),
+    );
+    expect(dashboard.pendingTransactions).toEqual([
+      expect.objectContaining({
+        id: "repayment:pending-a",
+        status: "pending",
+      }),
+    ]);
   });
 
   it("rejects employer admins before querying employee financial data", async () => {

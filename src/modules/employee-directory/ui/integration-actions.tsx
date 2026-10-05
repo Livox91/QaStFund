@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 
 import {
@@ -41,26 +41,10 @@ function Result({ state }: { state: IntegrationActionState }) {
 }
 
 export function IntegrationOperations({ retry }: { retry: boolean }) {
-  const [testState, testAction] = useActionState(
-    testIntegrationAction,
-    initialState,
-  );
-  const [syncState, syncAction] = useActionState(
-    syncEmployeesAction,
-    initialState,
-  );
   return (
     <div className="flex flex-wrap items-center gap-4">
-      <form action={testAction} className="flex items-center gap-3">
-        <SubmitButton>Test connection</SubmitButton>
-        <Result state={testState} />
-      </form>
-      <form action={syncAction} className="flex items-center gap-3">
-        <SubmitButton>
-          {retry ? "Retry synchronization" : "Sync employees"}
-        </SubmitButton>
-        <Result state={syncState} />
-      </form>
+      <ConnectionTestButton />
+      <EmployeeSyncButton retry={retry} />
       <a
         className={buttonStyles({ variant: "outline" })}
         href="#review-unmatched"
@@ -68,6 +52,34 @@ export function IntegrationOperations({ retry }: { retry: boolean }) {
         Review unmatched
       </a>
     </div>
+  );
+}
+
+export function ConnectionTestButton() {
+  const [testState, testAction] = useActionState(
+    testIntegrationAction,
+    initialState,
+  );
+  return (
+    <form action={testAction} className="flex flex-wrap items-center gap-3">
+      <SubmitButton>Test connection</SubmitButton>
+      <Result state={testState} />
+    </form>
+  );
+}
+
+export function EmployeeSyncButton({ retry = false }: { retry?: boolean }) {
+  const [syncState, syncAction] = useActionState(
+    syncEmployeesAction,
+    initialState,
+  );
+  return (
+    <form action={syncAction} className="flex flex-wrap items-center gap-3">
+      <SubmitButton>
+        {retry ? "Retry synchronization" : "Sync employees"}
+      </SubmitButton>
+      <Result state={syncState} />
+    </form>
   );
 }
 
@@ -79,6 +91,7 @@ export function IntegrationConfigurationForm({
     apiPath: string;
     apiVersion: string;
     authMethod: "token" | "oauth_bearer";
+    credentialConfigured: boolean;
     timeoutMs: number;
     statusMapping: Readonly<Record<string, string | null>>;
   };
@@ -87,6 +100,18 @@ export function IntegrationConfigurationForm({
     configureIntegrationAction,
     initialState,
   );
+  const [authMethod, setAuthMethod] = useState<"token" | "oauth_bearer">(
+    defaults?.authMethod ?? "token",
+  );
+  const apiKeyRef = useRef<HTMLInputElement>(null);
+  const apiSecretRef = useRef<HTMLInputElement>(null);
+  const accessTokenRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (state.status !== "success") return;
+    if (apiKeyRef.current) apiKeyRef.current.value = "";
+    if (apiSecretRef.current) apiSecretRef.current.value = "";
+    if (accessTokenRef.current) accessTokenRef.current.value = "";
+  }, [state.status]);
   const fieldClass =
     "mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm";
   return (
@@ -125,20 +150,67 @@ export function IntegrationConfigurationForm({
           className={fieldClass}
           defaultValue={defaults?.authMethod ?? "token"}
           name="authMethod"
+          onChange={(event) =>
+            setAuthMethod(event.target.value as "token" | "oauth_bearer")
+          }
         >
           <option value="token">API token</option>
           <option value="oauth_bearer">OAuth bearer token</option>
         </select>
       </label>
-      <label className="text-sm font-medium text-slate-700">
-        Organization secret reference
-        <input
-          className={fieldClass}
-          name="credentialReference"
-          placeholder="primary"
-          required
-        />
-      </label>
+      {authMethod === "token" ? (
+        <>
+          <label className="text-sm font-medium text-slate-700">
+            ERPNext API key
+            <input
+              autoComplete="off"
+              className={fieldClass}
+              name="apiKey"
+              ref={apiKeyRef}
+              required={
+                !defaults?.credentialConfigured ||
+                defaults.authMethod !== authMethod
+              }
+              type="password"
+            />
+          </label>
+          <label className="text-sm font-medium text-slate-700">
+            ERPNext API secret
+            <input
+              autoComplete="new-password"
+              className={fieldClass}
+              name="apiSecret"
+              ref={apiSecretRef}
+              required={
+                !defaults?.credentialConfigured ||
+                defaults.authMethod !== authMethod
+              }
+              type="password"
+            />
+          </label>
+        </>
+      ) : (
+        <label className="text-sm font-medium text-slate-700 md:col-span-2">
+          ERPNext OAuth access token
+          <input
+            autoComplete="new-password"
+            className={fieldClass}
+            name="accessToken"
+            ref={accessTokenRef}
+            required={
+              !defaults?.credentialConfigured ||
+              defaults.authMethod !== authMethod
+            }
+            type="password"
+          />
+        </label>
+      )}
+      {defaults?.credentialConfigured ? (
+        <p className="text-xs text-slate-500 md:col-span-2">
+          Credentials are already stored. Leave the credential fields blank to
+          keep them, or enter replacements to rotate them.
+        </p>
+      ) : null}
       <label className="text-sm font-medium text-slate-700">
         Timeout (milliseconds)
         <input
@@ -158,8 +230,11 @@ export function IntegrationConfigurationForm({
             <select
               className={fieldClass}
               defaultValue={
-                defaults?.statusMapping[external] ??
-                (external === "active" ? "ACTIVE" : "IGNORE")
+                (defaults?.statusMapping[external] ?? external === "active")
+                  ? "ACTIVE"
+                  : external === "left"
+                    ? "TERMINATED"
+                    : "SUSPENDED"
               }
               name={`${external}Status`}
             >

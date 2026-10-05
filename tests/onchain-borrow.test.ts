@@ -18,7 +18,9 @@ import {
 import {
   confirmOnChainBorrow,
   prepareOnChainBorrow,
+  resolveLifecycleStartedAt,
 } from "@/modules/loans/application/onchain-borrow";
+import { resolveLifecycleRepaidAt } from "@/modules/loans/application/onchain-repayment";
 import {
   confirmOnChainBorrowSchema,
   prepareOnChainBorrowSchema,
@@ -240,6 +242,35 @@ describe("on-chain borrowing values", () => {
     expect(calculateOnChainRepaymentBaseUnits(100_000_000n, 500)).toBe(
       105_000_000n,
     );
+  });
+
+  it("does not place second-precision chain activation before the request", () => {
+    const requestedAt = new Date("2026-10-04T12:00:00.750Z");
+    const onChainStartedAt = new Date("2026-10-04T12:00:00.000Z");
+
+    expect(resolveLifecycleStartedAt(onChainStartedAt, requestedAt)).toBe(
+      requestedAt,
+    );
+    expect(
+      resolveLifecycleStartedAt(
+        new Date("2026-10-04T12:00:01.000Z"),
+        requestedAt,
+      ),
+    ).toEqual(new Date("2026-10-04T12:00:01.000Z"));
+  });
+
+  it("keeps application repayment timestamps monotonic", () => {
+    const onChainRepaidAt = new Date("2026-10-04T12:00:00.000Z");
+    const loanStartedAt = new Date("2026-10-04T12:00:00.750Z");
+    const repaymentInitiatedAt = new Date("2026-10-04T12:00:00.900Z");
+
+    expect(
+      resolveLifecycleRepaidAt(
+        onChainRepaidAt,
+        loanStartedAt,
+        repaymentInitiatedAt,
+      ),
+    ).toEqual(repaymentInitiatedAt);
   });
 
   it("rounds positive fractional interest up to one base unit", () => {

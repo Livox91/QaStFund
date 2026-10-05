@@ -39,6 +39,7 @@ function snapshot(
       slug: "organization-a",
       erpNextEnabled: false,
     },
+    administrator: { name: admin.name, email: admin.email },
     activeEmployerAdminCount: 1,
     employeeCount: 0,
     policy: null,

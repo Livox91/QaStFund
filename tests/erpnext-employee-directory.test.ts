@@ -22,6 +22,7 @@ import {
   type EmployeeDirectorySecretProvider,
   type ExternalEmployee,
 } from "@/modules/employee-directory/domain/employee-directory";
+import { partitionEmployeesByLifecycle } from "@/modules/employee-directory/domain/employee-lifecycle";
 import {
   ErpNextEmployeeDirectoryAdapter,
   normalizeErpNextEmployee,
@@ -248,7 +249,10 @@ function createRepository() {
               {
                 membershipId: "employee-a",
                 email: "employee@example.test",
+                name: "Employee",
                 status: employeeStatus,
+                isActive: employeeStatus === EmploymentStatus.ACTIVE,
+                accountActivatedAt: now,
               },
             ],
             mappings: decisions.map((item) => ({
@@ -256,6 +260,8 @@ function createRepository() {
               employeeCode: item.employeeCode ?? null,
               fullName: item.fullName,
               email: item.email ?? null,
+              department: item.department ?? null,
+              designation: item.designation ?? null,
               externalStatus: item.externalStatus,
               normalizedStatus: item.normalizedStatus ?? null,
               matchStatus: item.matchStatus,
@@ -265,6 +271,7 @@ function createRepository() {
           }
         : { employees: [], mappings: [] },
     ),
+    findProvisioningEmailConflicts: vi.fn(async () => []),
     completeSync: vi.fn(async (input) => {
       decisions = [
         ...new Map<string, DirectorySyncDecision>(
@@ -278,7 +285,9 @@ function createRepository() {
         (item) => item.matchedMembershipId === "employee-a",
       );
       if (matched?.normalizedStatus) employeeStatus = matched.normalizedStatus;
+      return [];
     }),
+    markInvitationDelivery: vi.fn(async () => {}),
     failSync: vi.fn(async () => {}),
     getDashboard: vi.fn(async () => ({
       configured: false,
@@ -323,6 +332,20 @@ function pages(
 }
 
 describe("employee synchronization policy", () => {
+  it("places inactive synchronized memberships in the former employee section", () => {
+    expect(
+      partitionEmployeesByLifecycle([
+        { id: "active", isActive: true, employmentStatus: "ACTIVE" },
+        { id: "former", isActive: false, employmentStatus: "TERMINATED" },
+      ]),
+    ).toEqual({
+      active: [{ id: "active", isActive: true, employmentStatus: "ACTIVE" }],
+      former: [
+        { id: "former", isActive: false, employmentStatus: "TERMINATED" },
+      ],
+    });
+  });
+
   it("matches only a unique organization email, updates status idempotently, and leaves finance outside the boundary", async () => {
     const state = createRepository();
     const financialLoanState = { status: "ACTIVE", outstanding: 5000n };
@@ -366,7 +389,7 @@ describe("employee synchronization policy", () => {
     );
   });
 
-  it("suspends an employee missing from a complete snapshot without deleting identity or finance", async () => {
+  it("marks an employee missing from a complete snapshot as former without deleting identity or finance", async () => {
     const state = createRepository();
     const loan = { id: "loan-1", status: "ACTIVE" };
     await synchronizeEmployees(
@@ -386,11 +409,11 @@ describe("employee synchronization policy", () => {
 
     await synchronizeEmployees(admin, state.repository, () => pages([]), clock);
 
-    expect(state.employeeStatus).toBe(EmploymentStatus.SUSPENDED);
+    expect(state.employeeStatus).toBe(EmploymentStatus.TERMINATED);
     expect(state.decisions[0]).toMatchObject({
       externalEmployeeId: "EMP-1",
       externalStatus: "Missing from ERPNext",
-      normalizedStatus: EmploymentStatus.SUSPENDED,
+      normalizedStatus: EmploymentStatus.TERMINATED,
     });
     expect(state.repository.completeSync).toHaveBeenLastCalledWith(
       expect.objectContaining({ deactivatedCount: 1, processedCount: 0 }),
@@ -455,12 +478,18 @@ describe("employee synchronization policy", () => {
         {
           membershipId: "one",
           email: "same@test",
+          name: "One",
           status: EmploymentStatus.ACTIVE,
+          isActive: true,
+          accountActivatedAt: now,
         },
         {
           membershipId: "two",
           email: "same@test",
+          name: "Two",
           status: EmploymentStatus.ACTIVE,
+          isActive: true,
+          accountActivatedAt: now,
         },
       ],
       mappings: [],
@@ -630,7 +659,7 @@ describe("scheduled synchronization and health", () => {
     );
   });
 
-  it("records accurate safe counters and never creates employee identities", async () => {
+  it("records accurate lifecycle counters and provisions new active employees", async () => {
     const state = createRepository();
     await synchronizeEmployees(
       admin,
@@ -656,14 +685,47 @@ describe("scheduled synchronization and health", () => {
     expect(state.repository.completeSync).toHaveBeenCalledWith(
       expect.objectContaining({
         processedCount: 2,
-        createdCount: 2,
+        createdCount: 1,
         updatedCount: 0,
         unchangedCount: 0,
-        reviewCount: 1,
-        deactivatedCount: 0,
+        reviewCount: 0,
+        deactivatedCount: 1,
+        reactivatedCount: 0,
         durationMs: 0,
       }),
     );
+  });
+
+  it("does not report a cross-organization email conflict as a created employee", async () => {
+    const state = createRepository();
+    (
+      state.repository.findProvisioningEmailConflicts as ReturnType<
+        typeof vi.fn
+      >
+    ).mockResolvedValue(["existing@other-organization.test"]);
+
+    await expect(
+      synchronizeEmployees(
+        admin,
+        state.repository,
+        () =>
+          pages([
+            {
+              externalId: "EMP-CONFLICT",
+              fullName: "Existing Employee",
+              email: "existing@other-organization.test",
+              employmentStatus: "Active",
+            },
+          ]),
+        clock,
+      ),
+    ).resolves.toMatchObject({
+      status: "partial",
+      createdCount: 0,
+      reviewCount: 1,
+    });
+    expect(state.decisions[0]).toMatchObject({ matchStatus: "ambiguous" });
+    expect(state.decisions[0].provision).toBeUndefined();
   });
 
   it("bounds scheduler work to due organizations and safely reports overlap", async () => {

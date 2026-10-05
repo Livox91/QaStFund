@@ -36,6 +36,15 @@ export type EmployeeDashboardActivity = Readonly<{
   occurredAt: Date;
 }>;
 
+export type EmployeePendingTransaction = Readonly<{
+  id: string;
+  kind: "offer_funding" | "loan_acceptance" | "repayment";
+  status: "pending";
+  title: string;
+  href: string;
+  startedAt: Date;
+}>;
+
 export type EmployeeDashboardMetrics = Readonly<{
   availableBalanceMinorUnits: bigint;
   amountLentMinorUnits: bigint;
@@ -51,5 +60,6 @@ export type EmployeeDashboard = Readonly<{
   activeLending: ReadonlyArray<EmployeeDashboardLoan>;
   upcomingRepayments: ReadonlyArray<EmployeeUpcomingRepayment>;
   recentActivity: ReadonlyArray<EmployeeDashboardActivity>;
+  pendingTransactions: ReadonlyArray<EmployeePendingTransaction>;
   generatedAt: Date;
 }>;

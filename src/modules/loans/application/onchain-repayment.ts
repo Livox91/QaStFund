@@ -66,6 +66,13 @@ type PrepareOnChainRepaymentDependencies = Readonly<{
   readLoan?: typeof readChainLoan;
 }>;
 
+type ConfirmOnChainRepaymentDependencies = Readonly<{
+  contractAddress?: `0x${string}`;
+  database?: typeof prisma;
+  getTransactionReceipt?: typeof client.getTransactionReceipt;
+  readLoan?: typeof readChainLoan;
+}>;
+
 function isUniqueConstraintError(error: unknown): boolean {
   return (
     typeof error === "object" &&
@@ -101,6 +108,20 @@ function unavailableError() {
 
 function baseUnitsToMinorUnitsRoundedUp(value: bigint): bigint {
   return (value + USDC_BASE_UNITS_PER_CENT - 1n) / USDC_BASE_UNITS_PER_CENT;
+}
+
+export function resolveLifecycleRepaidAt(
+  onChainRepaidAt: Date,
+  loanStartedAt: Date,
+  repaymentInitiatedAt: Date,
+): Date {
+  return new Date(
+    Math.max(
+      onChainRepaidAt.getTime(),
+      loanStartedAt.getTime(),
+      repaymentInitiatedAt.getTime(),
+    ),
+  );
 }
 
 export async function prepareOnChainRepayment(
@@ -384,9 +405,12 @@ export async function confirmOnChainRepayment(
   loanId: string,
   repaymentId: string,
   transactionHash: Hex,
+  dependencies: ConfirmOnChainRepaymentDependencies = {},
 ) {
   const confirmationStartedAt = Date.now();
-  const configuredContract = getConfiguredEscrowAddress();
+  const database = dependencies.database ?? prisma;
+  const configuredContract =
+    dependencies.contractAddress ?? getConfiguredEscrowAddress();
   if (!configuredContract) throw configurationError();
   logTransactionLifecycle("repayment_submitted", {
     operationId: repaymentId,
@@ -395,7 +419,7 @@ export async function confirmOnChainRepayment(
     contractAddress: configuredContract,
   });
 
-  const pending = await prisma.loanRepayment.findFirst({
+  const pending = await database.loanRepayment.findFirst({
     where: {
       id: repaymentId,
       loanId,
@@ -405,6 +429,7 @@ export async function confirmOnChainRepayment(
     select: {
       id: true,
       status: true,
+      paidAt: true,
       loan: {
         select: {
           id: true,
@@ -415,6 +440,7 @@ export async function confirmOnChainRepayment(
           borrowerWalletAddress: true,
           repaymentBaseUnits: true,
           repaymentTransactionHash: true,
+          startedAt: true,
           borrowerMembershipId: true,
           lenderMembershipId: true,
           currency: true,
@@ -446,7 +472,9 @@ export async function confirmOnChainRepayment(
 
   let receipt;
   try {
-    receipt = await client.getTransactionReceipt({ hash: transactionHash });
+    receipt = await (
+      dependencies.getTransactionReceipt ?? client.getTransactionReceipt
+    )({ hash: transactionHash });
   } catch (error) {
     logTransactionLifecycle("transaction_pending", {
       operationId: repaymentId,
@@ -469,7 +497,7 @@ export async function confirmOnChainRepayment(
     );
   }
   if (receipt.status !== "success") {
-    await prisma.loanRepayment.updateMany({
+    await database.loanRepayment.updateMany({
       where: { id: repaymentId, status: "PENDING" },
       data: { status: "FAILED" },
     });
@@ -538,12 +566,10 @@ export async function confirmOnChainRepayment(
     );
   }
 
-  const chainLoan = await client.readContract({
-    address: configuredContract,
-    abi: employeeLendingEscrowAbi,
-    functionName: "loans",
-    args: [event.loanId],
-  });
+  const chainLoan = await (dependencies.readLoan ?? readChainLoan)(
+    configuredContract,
+    event.loanId,
+  );
   if (
     chainLoan[0] !== event.loanId ||
     chainLoan[2].toLowerCase() !== event.lender.toLowerCase() ||
@@ -559,15 +585,20 @@ export async function confirmOnChainRepayment(
     );
   }
 
-  const repaidAt = new Date(Number(event.repaidAt) * 1_000);
-  await prisma.$transaction(async (transaction) => {
+  const onChainRepaidAt = new Date(Number(event.repaidAt) * 1_000);
+  const repaidAt = resolveLifecycleRepaidAt(
+    onChainRepaidAt,
+    pending.loan.startedAt,
+    pending.paidAt,
+  );
+  await database.$transaction(async (transaction) => {
     const updated = await transaction.loan.updateMany({
       where: { id: loanId, status: { in: ["ACTIVE", "OVERDUE"] } },
       data: {
         status: "REPAID",
         outstandingPrincipalMinorUnits: 0n,
         closedAt: repaidAt,
-        onChainRepaidAt: repaidAt,
+        onChainRepaidAt,
         repaymentTransactionHash: transactionHash.toLowerCase(),
       },
     });

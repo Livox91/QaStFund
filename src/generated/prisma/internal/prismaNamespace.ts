@@ -402,7 +402,10 @@ export const ModelName = {
   ArcWallet: 'ArcWallet',
   ArcWalletChallenge: 'ArcWalletChallenge',
   OrganizationMembership: 'OrganizationMembership',
+  EmployeeInvitation: 'EmployeeInvitation',
+  PasswordResetToken: 'PasswordResetToken',
   EmployeeDirectoryIntegration: 'EmployeeDirectoryIntegration',
+  EmployeeDirectoryCredentialSecret: 'EmployeeDirectoryCredentialSecret',
   EmployeeDirectoryMapping: 'EmployeeDirectoryMapping',
   EmployeeDirectorySyncRun: 'EmployeeDirectorySyncRun',
   LendingOffer: 'LendingOffer',
@@ -436,7 +439,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "organization" | "arcWallet" | "arcWalletChallenge" | "organizationMembership" | "employeeDirectoryIntegration" | "employeeDirectoryMapping" | "employeeDirectorySyncRun" | "lendingOffer" | "employeeBalance" | "loan" | "loanDecisionEvaluation" | "loanDecisionReview" | "employerActionAttempt" | "ledgerAccount" | "ledgerTransaction" | "ledgerEntry" | "loanRepayment" | "auditEvent" | "organizationLendingPolicy" | "session" | "blockchainReconciliationCursor" | "blockchainEvent" | "rateLimitBucket"
+    modelProps: "user" | "organization" | "arcWallet" | "arcWalletChallenge" | "organizationMembership" | "employeeInvitation" | "passwordResetToken" | "employeeDirectoryIntegration" | "employeeDirectoryCredentialSecret" | "employeeDirectoryMapping" | "employeeDirectorySyncRun" | "lendingOffer" | "employeeBalance" | "loan" | "loanDecisionEvaluation" | "loanDecisionReview" | "employerActionAttempt" | "ledgerAccount" | "ledgerTransaction" | "ledgerEntry" | "loanRepayment" | "auditEvent" | "organizationLendingPolicy" | "session" | "blockchainReconciliationCursor" | "blockchainEvent" | "rateLimitBucket"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -810,6 +813,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    EmployeeInvitation: {
+      payload: Prisma.$EmployeeInvitationPayload<ExtArgs>
+      fields: Prisma.EmployeeInvitationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EmployeeInvitationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeInvitationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EmployeeInvitationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeInvitationPayload>
+        }
+        findFirst: {
+          args: Prisma.EmployeeInvitationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeInvitationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EmployeeInvitationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeInvitationPayload>
+        }
+        findMany: {
+          args: Prisma.EmployeeInvitationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeInvitationPayload>[]
+        }
+        create: {
+          args: Prisma.EmployeeInvitationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeInvitationPayload>
+        }
+        createMany: {
+          args: Prisma.EmployeeInvitationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EmployeeInvitationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeInvitationPayload>[]
+        }
+        delete: {
+          args: Prisma.EmployeeInvitationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeInvitationPayload>
+        }
+        update: {
+          args: Prisma.EmployeeInvitationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeInvitationPayload>
+        }
+        deleteMany: {
+          args: Prisma.EmployeeInvitationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EmployeeInvitationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EmployeeInvitationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeInvitationPayload>[]
+        }
+        upsert: {
+          args: Prisma.EmployeeInvitationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeInvitationPayload>
+        }
+        aggregate: {
+          args: Prisma.EmployeeInvitationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmployeeInvitation>
+        }
+        groupBy: {
+          args: Prisma.EmployeeInvitationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeInvitationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EmployeeInvitationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeInvitationCountAggregateOutputType> | number
+        }
+      }
+    }
+    PasswordResetToken: {
+      payload: Prisma.$PasswordResetTokenPayload<ExtArgs>
+      fields: Prisma.PasswordResetTokenFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PasswordResetTokenFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PasswordResetTokenFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+        }
+        findFirst: {
+          args: Prisma.PasswordResetTokenFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PasswordResetTokenFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+        }
+        findMany: {
+          args: Prisma.PasswordResetTokenFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>[]
+        }
+        create: {
+          args: Prisma.PasswordResetTokenCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+        }
+        createMany: {
+          args: Prisma.PasswordResetTokenCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PasswordResetTokenCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>[]
+        }
+        delete: {
+          args: Prisma.PasswordResetTokenDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+        }
+        update: {
+          args: Prisma.PasswordResetTokenUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+        }
+        deleteMany: {
+          args: Prisma.PasswordResetTokenDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PasswordResetTokenUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PasswordResetTokenUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>[]
+        }
+        upsert: {
+          args: Prisma.PasswordResetTokenUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PasswordResetTokenPayload>
+        }
+        aggregate: {
+          args: Prisma.PasswordResetTokenAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePasswordResetToken>
+        }
+        groupBy: {
+          args: Prisma.PasswordResetTokenGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PasswordResetTokenGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PasswordResetTokenCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PasswordResetTokenCountAggregateOutputType> | number
+        }
+      }
+    }
     EmployeeDirectoryIntegration: {
       payload: Prisma.$EmployeeDirectoryIntegrationPayload<ExtArgs>
       fields: Prisma.EmployeeDirectoryIntegrationFieldRefs
@@ -881,6 +1032,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.EmployeeDirectoryIntegrationCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.EmployeeDirectoryIntegrationCountAggregateOutputType> | number
+        }
+      }
+    }
+    EmployeeDirectoryCredentialSecret: {
+      payload: Prisma.$EmployeeDirectoryCredentialSecretPayload<ExtArgs>
+      fields: Prisma.EmployeeDirectoryCredentialSecretFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EmployeeDirectoryCredentialSecretFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryCredentialSecretPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EmployeeDirectoryCredentialSecretFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryCredentialSecretPayload>
+        }
+        findFirst: {
+          args: Prisma.EmployeeDirectoryCredentialSecretFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryCredentialSecretPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EmployeeDirectoryCredentialSecretFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryCredentialSecretPayload>
+        }
+        findMany: {
+          args: Prisma.EmployeeDirectoryCredentialSecretFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryCredentialSecretPayload>[]
+        }
+        create: {
+          args: Prisma.EmployeeDirectoryCredentialSecretCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryCredentialSecretPayload>
+        }
+        createMany: {
+          args: Prisma.EmployeeDirectoryCredentialSecretCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EmployeeDirectoryCredentialSecretCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryCredentialSecretPayload>[]
+        }
+        delete: {
+          args: Prisma.EmployeeDirectoryCredentialSecretDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryCredentialSecretPayload>
+        }
+        update: {
+          args: Prisma.EmployeeDirectoryCredentialSecretUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryCredentialSecretPayload>
+        }
+        deleteMany: {
+          args: Prisma.EmployeeDirectoryCredentialSecretDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EmployeeDirectoryCredentialSecretUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EmployeeDirectoryCredentialSecretUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryCredentialSecretPayload>[]
+        }
+        upsert: {
+          args: Prisma.EmployeeDirectoryCredentialSecretUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeDirectoryCredentialSecretPayload>
+        }
+        aggregate: {
+          args: Prisma.EmployeeDirectoryCredentialSecretAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmployeeDirectoryCredentialSecret>
+        }
+        groupBy: {
+          args: Prisma.EmployeeDirectoryCredentialSecretGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeDirectoryCredentialSecretGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EmployeeDirectoryCredentialSecretCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeDirectoryCredentialSecretCountAggregateOutputType> | number
         }
       }
     }
@@ -2319,6 +2544,8 @@ export const OrganizationMembershipScalarFieldEnum = {
   employmentStatus: 'employmentStatus',
   employmentStatusSource: 'employmentStatusSource',
   employmentStatusSyncedAt: 'employmentStatusSyncedAt',
+  removedAt: 'removedAt',
+  accountActivatedAt: 'accountActivatedAt',
   isActive: 'isActive',
   canBorrow: 'canBorrow',
   canLend: 'canLend',
@@ -2327,6 +2554,45 @@ export const OrganizationMembershipScalarFieldEnum = {
 } as const
 
 export type OrganizationMembershipScalarFieldEnum = (typeof OrganizationMembershipScalarFieldEnum)[keyof typeof OrganizationMembershipScalarFieldEnum]
+
+
+export const EmployeeInvitationScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  employeeMembershipId: 'employeeMembershipId',
+  email: 'email',
+  tokenHash: 'tokenHash',
+  status: 'status',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt',
+  acceptedAt: 'acceptedAt',
+  revokedAt: 'revokedAt',
+  sentAt: 'sentAt',
+  deliveryFailureCode: 'deliveryFailureCode',
+  deliveryStatus: 'deliveryStatus',
+  invitedByMembershipId: 'invitedByMembershipId'
+} as const
+
+export type EmployeeInvitationScalarFieldEnum = (typeof EmployeeInvitationScalarFieldEnum)[keyof typeof EmployeeInvitationScalarFieldEnum]
+
+
+export const PasswordResetTokenScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  membershipId: 'membershipId',
+  userId: 'userId',
+  email: 'email',
+  tokenHash: 'tokenHash',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  revokedAt: 'revokedAt',
+  sentAt: 'sentAt',
+  deliveryStatus: 'deliveryStatus',
+  deliveryFailureCode: 'deliveryFailureCode',
+  createdAt: 'createdAt'
+} as const
+
+export type PasswordResetTokenScalarFieldEnum = (typeof PasswordResetTokenScalarFieldEnum)[keyof typeof PasswordResetTokenScalarFieldEnum]
 
 
 export const EmployeeDirectoryIntegrationScalarFieldEnum = {
@@ -2355,6 +2621,18 @@ export const EmployeeDirectoryIntegrationScalarFieldEnum = {
 export type EmployeeDirectoryIntegrationScalarFieldEnum = (typeof EmployeeDirectoryIntegrationScalarFieldEnum)[keyof typeof EmployeeDirectoryIntegrationScalarFieldEnum]
 
 
+export const EmployeeDirectoryCredentialSecretScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  authMethod: 'authMethod',
+  encryptedPayload: 'encryptedPayload',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeDirectoryCredentialSecretScalarFieldEnum = (typeof EmployeeDirectoryCredentialSecretScalarFieldEnum)[keyof typeof EmployeeDirectoryCredentialSecretScalarFieldEnum]
+
+
 export const EmployeeDirectoryMappingScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
@@ -2363,6 +2641,8 @@ export const EmployeeDirectoryMappingScalarFieldEnum = {
   employeeCode: 'employeeCode',
   fullName: 'fullName',
   email: 'email',
+  department: 'department',
+  designation: 'designation',
   externalStatus: 'externalStatus',
   normalizedStatus: 'normalizedStatus',
   matchStatus: 'matchStatus',
@@ -2394,6 +2674,10 @@ export const EmployeeDirectorySyncRunScalarFieldEnum = {
   ambiguousCount: 'ambiguousCount',
   statusChangeCount: 'statusChangeCount',
   deactivatedCount: 'deactivatedCount',
+  reactivatedCount: 'reactivatedCount',
+  invitationCreatedCount: 'invitationCreatedCount',
+  invitationSentCount: 'invitationSentCount',
+  invitationFailureCount: 'invitationFailureCount',
   errorCount: 'errorCount',
   safeErrorCode: 'safeErrorCode',
   safeErrorSummary: 'safeErrorSummary',
@@ -2908,6 +3192,34 @@ export type EnumEmploymentStatusSourceFieldRefInput<$PrismaModel> = FieldRefInpu
  */
 export type ListEnumEmploymentStatusSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmploymentStatusSource[]'>
     
+
+
+/**
+ * Reference to a field of type 'InvitationStatus'
+ */
+export type EnumInvitationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InvitationStatus'>
+
+
+
+/**
+ * Reference to a field of type 'InvitationStatus[]'
+ */
+export type ListEnumInvitationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InvitationStatus[]'>
+
+
+
+/**
+ * Reference to a field of type 'EmailDeliveryStatus'
+ */
+export type EnumEmailDeliveryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmailDeliveryStatus'>
+
+
+
+/**
+ * Reference to a field of type 'EmailDeliveryStatus[]'
+ */
+export type ListEnumEmailDeliveryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmailDeliveryStatus[]'>
+
 
 
 /**
@@ -3457,7 +3769,10 @@ export type GlobalOmitConfig = {
   arcWallet?: Prisma.ArcWalletOmit
   arcWalletChallenge?: Prisma.ArcWalletChallengeOmit
   organizationMembership?: Prisma.OrganizationMembershipOmit
+  employeeInvitation?: Prisma.EmployeeInvitationOmit
+  passwordResetToken?: Prisma.PasswordResetTokenOmit
   employeeDirectoryIntegration?: Prisma.EmployeeDirectoryIntegrationOmit
+  employeeDirectoryCredentialSecret?: Prisma.EmployeeDirectoryCredentialSecretOmit
   employeeDirectoryMapping?: Prisma.EmployeeDirectoryMappingOmit
   employeeDirectorySyncRun?: Prisma.EmployeeDirectorySyncRunOmit
   lendingOffer?: Prisma.LendingOfferOmit

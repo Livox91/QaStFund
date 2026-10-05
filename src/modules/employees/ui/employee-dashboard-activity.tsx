@@ -1,10 +1,14 @@
+import Link from "next/link";
+
 import type {
   EmployeeDashboardActivity,
+  EmployeePendingTransaction,
   EmployeeUpcomingRepayment,
 } from "@/modules/employees/domain/employee-dashboard";
 import { Badge } from "@/shared/ui/badge";
 import { CurrencyDisplay } from "@/shared/ui/currency-display";
 import { EmptyState } from "@/shared/ui/empty-state";
+import { buttonStyles } from "@/shared/ui/button";
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
   day: "numeric",
@@ -107,5 +111,45 @@ export function EmployeeActivityList({
         </li>
       ))}
     </ol>
+  );
+}
+
+export function PendingTransactionList({
+  transactions,
+}: {
+  transactions: ReadonlyArray<EmployeePendingTransaction>;
+}) {
+  if (transactions.length === 0) {
+    return (
+      <p className="text-sm text-slate-500">
+        No blockchain operations are waiting for confirmation.
+      </p>
+    );
+  }
+  return (
+    <ul className="space-y-3">
+      {transactions.map((transaction) => (
+        <li
+          className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4"
+          key={transaction.id}
+        >
+          <div>
+            <p className="text-sm font-semibold text-amber-950">
+              {transaction.title}
+            </p>
+            <p className="mt-1 text-xs text-amber-800">
+              Started {dateTimeFormatter.format(transaction.startedAt)}. Final
+              state is determined by confirmation or reconciliation.
+            </p>
+          </div>
+          <Link
+            className={buttonStyles({ size: "sm", variant: "outline" })}
+            href={transaction.href}
+          >
+            Review
+          </Link>
+        </li>
+      ))}
+    </ul>
   );
 }

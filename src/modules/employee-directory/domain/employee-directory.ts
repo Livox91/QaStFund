@@ -7,6 +7,8 @@ export type ExternalEmployee = {
   employeeCode?: string;
   fullName: string;
   email?: string;
+  department?: string;
+  designation?: string;
   employmentStatus: string;
   modifiedAt?: string;
 };
@@ -30,6 +32,7 @@ export type EmployeeDirectoryErrorCode =
   | "INVALID_CONFIGURATION"
   | "UNSAFE_URL"
   | "MISSING_CREDENTIALS"
+  | "CREDENTIAL_STORAGE_UNAVAILABLE"
   | "AUTHENTICATION_FAILED"
   | "PERMISSION_DENIED"
   | "RATE_LIMITED"
@@ -61,8 +64,12 @@ export interface EmployeeDirectorySecretProvider {
     organizationId: string;
     reference: string;
     authMethod: EmployeeDirectoryAuthMethod;
-  }): EmployeeDirectorySecret;
+  }): EmployeeDirectorySecret | Promise<EmployeeDirectorySecret>;
 }
+
+export type EmployeeDirectoryCredentialInput =
+  | { method: "token"; apiKey: string; apiSecret: string }
+  | { method: "oauth_bearer"; accessToken: string };
 
 export type EmployeeDirectoryConfig = {
   organizationId: string;

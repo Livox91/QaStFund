@@ -108,6 +108,15 @@ export function ArcWalletPanel({ employee }: { employee: Employee }) {
             >
               Continue setup
             </Button>
+          ) : walletStatus === "FAILED" ? (
+            <Button
+              disabled={!wallet.isPasskeyReady}
+              isLoading={wallet.isLoading}
+              onClick={() => run(wallet.recoverWallet)}
+              variant="secondary"
+            >
+              Recover wallet
+            </Button>
           ) : walletStatus === "ACTIVE" && !wallet.isConnected ? (
             <Button
               disabled={!wallet.isPasskeyReady}

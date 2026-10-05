@@ -1,6 +1,11 @@
 import { randomUUID } from "node:crypto";
 
 import { EmploymentStatus } from "@/generated/prisma/client";
+import {
+  operationalFailureAlertThreshold,
+  recordOperationalFailure,
+  recordOperationalSuccess,
+} from "@/infrastructure/observability/operational-signals";
 import { requireEmployerAdmin } from "@/modules/auth/application/authorization";
 import type { AuthenticatedActor } from "@/modules/auth/domain/actor";
 import type {
@@ -16,6 +21,8 @@ import {
   type ExternalEmployee,
 } from "@/modules/employee-directory/domain/employee-directory";
 import type { Clock } from "@/shared/time/clock";
+import type { EmailSender } from "@/modules/notifications/domain/email";
+import { invitationEmail } from "@/modules/employee-invitations/domain/invitation-email";
 
 export type EmployeeDirectoryAdapterFactory = (
   config: StoredDirectoryIntegration,
@@ -49,6 +56,7 @@ export async function synchronizeEmployees(
   createAdapter: EmployeeDirectoryAdapterFactory,
   clock: Clock,
   options: { staleAfterMs?: number; maxPages?: number } = {},
+  email?: { sender: EmailSender; appUrl: string },
 ) {
   const employer = requireEmployerAdmin(actor);
   return await synchronizeOrganizationEmployees(
@@ -62,6 +70,7 @@ export async function synchronizeEmployees(
     repository,
     createAdapter,
     clock,
+    email,
   );
 }
 
@@ -70,6 +79,7 @@ export async function synchronizeOrganizationEmployees(
   repository: EmployeeDirectoryRepository,
   createAdapter: EmployeeDirectoryAdapterFactory,
   clock: Clock,
+  email?: { sender: EmailSender; appUrl: string },
 ) {
   const startedAt = clock.now();
   const claim = await repository.claimSync({
@@ -114,6 +124,16 @@ export async function synchronizeOrganizationEmployees(
     const mappingsByExternalId = new Map(
       context.mappings.map((mapping) => [mapping.externalEmployeeId, mapping]),
     );
+    const provisioningEmailConflicts = new Set(
+      (
+        await repository.findProvisioningEmailConflicts({
+          organizationId: request.organizationId,
+          emails: records.flatMap((record) =>
+            record.email ? [record.email.trim().toLowerCase()] : [],
+          ),
+        })
+      ).map((email) => email.toLowerCase()),
+    );
     const duplicateIds = new Set<string>();
     const seenIds = new Set<string>();
     for (const record of records) {
@@ -132,6 +152,8 @@ export async function synchronizeOrganizationEmployees(
         ...(record.employeeCode ? { employeeCode: record.employeeCode } : {}),
         fullName: record.fullName,
         ...(record.email ? { email: record.email } : {}),
+        ...(record.department ? { department: record.department } : {}),
+        ...(record.designation ? { designation: record.designation } : {}),
         externalStatus: record.employmentStatus,
         ...(normalizedStatus ? { normalizedStatus } : {}),
       };
@@ -166,6 +188,21 @@ export async function synchronizeOrganizationEmployees(
           matchedMembershipId: candidates[0].membershipId,
         };
       }
+      if (
+        candidates.length === 0 &&
+        record.email &&
+        normalizedStatus === EmploymentStatus.ACTIVE
+      ) {
+        if (provisioningEmailConflicts.has(record.email.trim().toLowerCase())) {
+          return { ...base, matchStatus: "ambiguous" };
+        }
+        return {
+          ...base,
+          matchStatus: "matched",
+          matchMethod: "explicit",
+          provision: true,
+        };
+      }
       return {
         ...base,
         matchStatus: candidates.length > 1 ? "ambiguous" : "unmatched",
@@ -190,6 +227,10 @@ export async function synchronizeOrganizationEmployees(
               : {}),
             fullName: decision.fullName,
             ...(decision.email ? { email: decision.email } : {}),
+            ...(decision.department ? { department: decision.department } : {}),
+            ...(decision.designation
+              ? { designation: decision.designation }
+              : {}),
             externalStatus: decision.externalStatus,
             ...(decision.normalizedStatus
               ? { normalizedStatus: decision.normalizedStatus }
@@ -210,9 +251,6 @@ export async function synchronizeOrganizationEmployees(
           !seenIds.has(mapping.externalEmployeeId),
       )
       .map((mapping) => {
-        const currentStatus = context.employees.find(
-          (employee) => employee.membershipId === mapping.matchedMembershipId,
-        )?.status;
         return {
           externalEmployeeId: mapping.externalEmployeeId,
           ...(mapping.employeeCode
@@ -220,11 +258,10 @@ export async function synchronizeOrganizationEmployees(
             : {}),
           fullName: mapping.fullName,
           ...(mapping.email ? { email: mapping.email } : {}),
+          ...(mapping.department ? { department: mapping.department } : {}),
+          ...(mapping.designation ? { designation: mapping.designation } : {}),
           externalStatus: "Missing from ERPNext",
-          normalizedStatus:
-            currentStatus === EmploymentStatus.TERMINATED
-              ? EmploymentStatus.TERMINATED
-              : EmploymentStatus.SUSPENDED,
+          normalizedStatus: EmploymentStatus.TERMINATED,
           matchStatus: "matched" as const,
           matchMethod: "explicit" as const,
           matchedMembershipId: mapping.matchedMembershipId!,
@@ -239,11 +276,33 @@ export async function synchronizeOrganizationEmployees(
       );
       return count + (employee?.status !== decision.normalizedStatus ? 1 : 0);
     }, 0);
-    const deactivatedCount = missingDecisions.reduce((count, decision) => {
+    const deactivatedCount = decisions.reduce((count, decision) => {
+      if (
+        !decision.matchedMembershipId ||
+        !decision.normalizedStatus ||
+        decision.normalizedStatus === EmploymentStatus.ACTIVE
+      ) {
+        return count;
+      }
       const employee = context.employees.find(
         (candidate) => candidate.membershipId === decision.matchedMembershipId,
       );
-      return count + (employee?.status === EmploymentStatus.ACTIVE ? 1 : 0);
+      return count + (employee?.isActive ? 1 : 0);
+    }, 0);
+    const reactivatedCount = decisions.reduce((count, decision) => {
+      if (
+        !decision.matchedMembershipId ||
+        decision.normalizedStatus !== EmploymentStatus.ACTIVE
+      ) {
+        return count;
+      }
+      const employee = context.employees.find(
+        (candidate) => candidate.membershipId === decision.matchedMembershipId,
+      );
+      return (
+        count +
+        (employee && employee.accountActivatedAt && !employee.isActive ? 1 : 0)
+      );
     }, 0);
     const reviewCount = decisions.filter(
       (decision) =>
@@ -256,6 +315,8 @@ export async function synchronizeOrganizationEmployees(
         previous.employeeCode !== (decision.employeeCode ?? null) ||
         previous.fullName !== decision.fullName ||
         previous.email !== (decision.email ?? null) ||
+        previous.department !== (decision.department ?? null) ||
+        previous.designation !== (decision.designation ?? null) ||
         previous.externalStatus !== decision.externalStatus ||
         previous.normalizedStatus !== (decision.normalizedStatus ?? null) ||
         previous.matchStatus !== decision.matchStatus ||
@@ -264,18 +325,34 @@ export async function synchronizeOrganizationEmployees(
       );
     };
     const createdCount = decisions.filter(
-      (decision) => !mappingsByExternalId.has(decision.externalEmployeeId),
+      (decision) => decision.provision,
     ).length;
-    const updatedCount = decisions.filter(
-      (decision) =>
-        mappingsByExternalId.has(decision.externalEmployeeId) &&
-        changed(decision),
-    ).length;
-    const unchangedCount = decisions.length - createdCount - updatedCount;
+    const updatedCount = decisions.filter((decision) => {
+      if (!decision.matchedMembershipId || decision.provision) return false;
+      const employee = context.employees.find(
+        (candidate) => candidate.membershipId === decision.matchedMembershipId,
+      );
+      const active =
+        decision.normalizedStatus === EmploymentStatus.ACTIVE &&
+        Boolean(employee?.accountActivatedAt);
+      const lifecycleChange =
+        decision.normalizedStatus !== undefined &&
+        employee !== undefined &&
+        employee.isActive !== active;
+      return !lifecycleChange && changed(decision);
+    }).length;
+    const unchangedCount = Math.max(
+      0,
+      decisions.length -
+        createdCount -
+        updatedCount -
+        deactivatedCount -
+        reactivatedCount,
+    );
     const errorCount = unknownStatusCount + duplicateIds.size;
-    const status = errorCount > 0 ? "partial" : "success";
+    const status = errorCount > 0 || reviewCount > 0 ? "partial" : "success";
     const completedAt = clock.now();
-    await repository.completeSync({
+    const invitationDeliveries = await repository.completeSync({
       organizationId: request.organizationId,
       runId: claim.runId,
       decisions,
@@ -287,6 +364,7 @@ export async function synchronizeOrganizationEmployees(
       reviewCount,
       statusChangeCount,
       deactivatedCount,
+      reactivatedCount,
       errorCount,
       status,
       ...(status === "partial"
@@ -298,13 +376,73 @@ export async function synchronizeOrganizationEmployees(
       completedAt,
       durationMs: elapsedMilliseconds(startedAt, completedAt),
     });
+    let invitationFailureCount = 0;
+    for (const delivery of invitationDeliveries ?? []) {
+      if (!email) {
+        invitationFailureCount += 1;
+        await repository.markInvitationDelivery({
+          organizationId: delivery.organizationId,
+          runId: delivery.runId,
+          invitationId: delivery.invitationId,
+          failureCode: "EMAIL_NOT_CONFIGURED",
+        });
+        recordOperationalFailure("email", {
+          alertThreshold: operationalFailureAlertThreshold(),
+          context: {
+            organizationId: delivery.organizationId,
+            operation: "invitation",
+            code: "EMAIL_NOT_CONFIGURED",
+          },
+        });
+        continue;
+      }
+      try {
+        await email.sender.send({
+          ...invitationEmail({
+            appUrl: email.appUrl,
+            token: delivery.token,
+            organizationName: delivery.organizationName,
+            email: delivery.email,
+            expiresAt: delivery.expiresAt,
+          }),
+          idempotencyKey: `employee-invitation:${delivery.invitationId}:${delivery.expiresAt.getTime()}`,
+        });
+        await repository.markInvitationDelivery({
+          organizationId: delivery.organizationId,
+          runId: delivery.runId,
+          invitationId: delivery.invitationId,
+          sentAt: clock.now(),
+        });
+        recordOperationalSuccess("email", clock.now());
+      } catch (error) {
+        const failureCode = emailFailureCode(error);
+        invitationFailureCount += 1;
+        await repository.markInvitationDelivery({
+          organizationId: delivery.organizationId,
+          runId: delivery.runId,
+          invitationId: delivery.invitationId,
+          failureCode,
+        });
+        recordOperationalFailure("email", {
+          alertThreshold: operationalFailureAlertThreshold(),
+          context: {
+            organizationId: delivery.organizationId,
+            operation: "invitation",
+            code: failureCode,
+          },
+        });
+      }
+    }
     return {
-      status,
+      status: invitationFailureCount ? "partial" : status,
       processedCount: records.length,
       reviewCount,
       createdCount,
       updatedCount,
       deactivatedCount,
+      reactivatedCount,
+      unchangedCount,
+      invitationFailureCount,
     };
   } catch (error) {
     const safeErrorCode =
@@ -320,4 +458,10 @@ export async function synchronizeOrganizationEmployees(
     });
     throw error;
   }
+}
+
+function emailFailureCode(error: unknown): string {
+  return error instanceof Error && /^[A-Z][A-Z0-9_]{2,63}$/.test(error.message)
+    ? error.message
+    : "EMAIL_DELIVERY_FAILED";
 }

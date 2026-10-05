@@ -42,6 +42,7 @@ export function registerOrganization(input: {
   password: string;
   organizationName: string;
   organizationSlug: string;
+  erpNextEnabled?: boolean;
 }) {
   return registerOrganizationAdmin(input, {
     passwordHasher: scryptPasswordHasher,

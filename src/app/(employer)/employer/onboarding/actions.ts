@@ -139,7 +139,7 @@ export async function initialEmployeeSyncAction(
     revalidateOnboarding();
     return {
       status: result.status === "success" ? "success" : "error",
-      message: `Processed ${result.processedCount} employees; created ${result.createdCount}, updated ${result.updatedCount}, deactivated ${result.deactivatedCount}.`,
+      message: `Found ${result.processedCount}; imported ${result.createdCount}, updated ${result.updatedCount}, removed ${result.deactivatedCount}, reactivated ${result.reactivatedCount}; ${result.invitationFailureCount} invitation emails need attention.`,
     };
   } catch (error) {
     revalidateOnboarding();

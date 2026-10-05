@@ -2,7 +2,9 @@
 
 A production-oriented foundation for an employee peer-to-peer lending application. Local authentication, organization membership, employer reporting, employee dashboards, lending offers, marketplace discovery, Arc Testnet escrow funding and borrowing, full on-chain repayment, loan monitoring, and read-only ERPNext employee synchronization are implemented. Payroll writes and production settlement are intentionally not implemented.
 
-Operations documentation: [database backup and disaster recovery](./DATABASE_BACKUP_AND_DISASTER_RECOVERY.md) and [operational health](./OPERATIONAL_HEALTH.md).
+Operations documentation: [database backup and disaster recovery](./DATABASE_BACKUP_AND_DISASTER_RECOVERY.md), [operational health](./OPERATIONAL_HEALTH.md), and the [employee onboarding and lending experience](./EMPLOYEE_ONBOARDING_AND_LENDING.md).
+
+Arc Testnet pilot evidence and current blockers are recorded in the [Arc Testnet pilot report](./ARC_TESTNET_PILOT_REPORT.md).
 
 ## Prerequisites
 
@@ -38,6 +40,7 @@ Open:
 - `http://localhost:3000/` — public landing page
 - `http://localhost:3000/sign-in` — sign-in page
 - `http://localhost:3000/app` — authenticated employee dashboard
+- `http://localhost:3000/app/onboarding` — employee setup and eligibility status
 - `http://localhost:3000/app/lending` — create and review personal offers
 - `http://localhost:3000/app/borrow` — organization lending marketplace
 - `http://localhost:3000/app/borrow/[offerId]` — review and confirm an eligible offer
@@ -133,15 +136,20 @@ requires `ARC_CHAIN_ID=5042002`, `ARC_RPC_URL`, `ARC_USDC_ADDRESS`,
 deployment steps, and incompatibility with offers from the previous contract.
 
 ERPNext is optional. `ERP_NEXT_SYNC_ENABLED` defaults to `false`; when it is
-`true`, `ERP_NEXT_SYNC_CRON_SECRET` and `ERP_NEXT_CREDENTIALS_JSON` are required.
-Manual ERPNext operations resolve credentials only when the configured
-integration is used. Timing, local-HTTP development, reconciliation, decision
-engine, and employer-action options are documented with safe defaults in
-`.env.example`.
+`true`, `ERP_NEXT_SYNC_CRON_SECRET` and one server-side credential source are
+required. Set `ERP_NEXT_CREDENTIAL_ENCRYPTION_KEY` to allow employer admins to
+save encrypted credentials through the integration page. The older
+operator-managed `ERP_NEXT_CREDENTIALS_JSON` map remains supported for existing
+installations. Manual ERPNext operations resolve credentials only when the
+configured integration is used. Timing, local-HTTP development,
+reconciliation, decision engine, and employer-action options are documented
+with safe defaults in `.env.example`.
 
 The employee mapping, scheduler, restart/failure behavior, operator procedure,
 and tested commands are documented in
 [`ERPNEXT_EMPLOYEE_SYNC.md`](./ERPNEXT_EMPLOYEE_SYNC.md).
+Local connection setup and an end-to-end verification procedure are in
+[`ERPNEXT_LOCAL_SETUP.md`](./ERPNEXT_LOCAL_SETUP.md).
 Employer organization initialization, readiness, tenant isolation, and setup
 verification are documented in
 [`EMPLOYER_ONBOARDING.md`](./EMPLOYER_ONBOARDING.md).
@@ -151,7 +159,7 @@ Optional configuration is grouped by feature:
 - Arc reconciliation: `ARC_RECONCILIATION_ENABLED`, its RPC/range/finality
   settings, and `ARC_RECONCILIATION_CRON_SECRET` when enabled.
 - ERPNext: `ERP_NEXT_ALLOW_LOCAL_HTTP`, `ERP_NEXT_SYNC_ENABLED`, interval and
-  stale-run settings, plus credentials and the cron secret when enabled.
+  stale-run settings, credential encryption, and the cron secret when enabled.
 - Internal adapters: `LOAN_DECISION_PROVIDER` and `EMPLOYER_ACTION_PROVIDER`.
 - Deployment only: `ARC_BORROW_AUTHORIZER_ADDRESS` and
   `ARC_DEPLOYER_PRIVATE_KEY`; neither is needed for application startup.

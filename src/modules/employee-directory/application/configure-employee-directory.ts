@@ -42,7 +42,7 @@ export async function configureEmployeeDirectory(
   if (!/^[a-zA-Z0-9._-]{1,16}$/.test(input.apiVersion)) {
     throw new Error("INVALID_API_VERSION");
   }
-  if (!/^[a-zA-Z0-9._-]{1,64}$/.test(input.credentialReference)) {
+  if (!/^[a-zA-Z0-9._:-]{1,64}$/.test(input.credentialReference)) {
     throw new Error("INVALID_CREDENTIAL_REFERENCE");
   }
   if (

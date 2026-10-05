@@ -97,7 +97,7 @@ Authentication flow:
 3. It establishes an `HttpOnly`, `Secure` in production, `SameSite=Lax` session cookie.
 4. Every protected data access resolves the session and membership from PostgreSQL. Cookie presence alone is only an optimistic routing check.
 
-Sessions are resolved server-side on every protected request. Do not store authorization state in browser-readable tokens. Login, logout, session rotation, and request-origin protection remain within the auth boundary. Registration, password reset, SSO, MFA, invitations, and multi-organization selection are deferred explicitly.
+Sessions are resolved server-side on every protected request. Do not store authorization state in browser-readable tokens. Login, logout, session rotation, request-origin protection, ERPNext employee invitations, password changes, and password resets remain within the auth boundary. Invitation and reset tokens are random bearer secrets stored only as hashes and bound to server-derived organization memberships. SSO, MFA, and multi-organization selection are deferred explicitly.
 
 ## 6. Authorization and tenancy
 

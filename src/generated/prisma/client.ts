@@ -67,10 +67,25 @@ export type ArcWalletChallenge = Prisma.ArcWalletChallengeModel
  */
 export type OrganizationMembership = Prisma.OrganizationMembershipModel
 /**
+ * Model EmployeeInvitation
+ *
+ */
+export type EmployeeInvitation = Prisma.EmployeeInvitationModel
+/**
+ * Model PasswordResetToken
+ *
+ */
+export type PasswordResetToken = Prisma.PasswordResetTokenModel
+/**
  * Model EmployeeDirectoryIntegration
  * 
  */
 export type EmployeeDirectoryIntegration = Prisma.EmployeeDirectoryIntegrationModel
+/**
+ * Model EmployeeDirectoryCredentialSecret
+ *
+ */
+export type EmployeeDirectoryCredentialSecret = Prisma.EmployeeDirectoryCredentialSecretModel
 /**
  * Model EmployeeDirectoryMapping
  * 

@@ -22,8 +22,11 @@ export const metadata: Metadata = {
   title: "Profile",
 };
 
-export default async function ProfilePage() {
+export default async function ProfilePage({
+  searchParams,
+}: PageProps<"/profile">) {
   const actor = await requireAuthenticatedPageUser();
+  const passwordResult = (await searchParams).password;
   const Layout =
     actor.role === ApplicationRole.EMPLOYER_ADMIN
       ? EmployerLayout
@@ -83,6 +86,76 @@ export default async function ProfilePage() {
                 </dd>
               </div>
             </dl>
+          </CardContent>
+        </Card>
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle>Change password</CardTitle>
+            <CardDescription>
+              Use your current password to protect this account change. Other
+              sessions will be signed out.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {passwordResult === "changed" ? (
+              <p className="mb-4 text-sm text-emerald-700">
+                Password changed successfully.
+              </p>
+            ) : passwordResult === "failed" ? (
+              <p className="mb-4 text-sm text-rose-700">
+                Password could not be changed. Check your current password and
+                requirements.
+              </p>
+            ) : null}
+            <form
+              action="/api/auth/change-password"
+              className="grid gap-4 sm:max-w-md"
+              method="post"
+            >
+              <label className="text-sm font-medium text-slate-700">
+                Current password
+                <input
+                  autoComplete="current-password"
+                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
+                  name="currentPassword"
+                  required
+                  type="password"
+                />
+              </label>
+              <label className="text-sm font-medium text-slate-700">
+                New password
+                <input
+                  autoComplete="new-password"
+                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
+                  maxLength={128}
+                  minLength={12}
+                  name="newPassword"
+                  required
+                  type="password"
+                />
+              </label>
+              <p className="text-xs text-slate-500">
+                Use 12–128 characters with uppercase, lowercase, number, and
+                symbol characters.
+              </p>
+              <label className="text-sm font-medium text-slate-700">
+                Confirm new password
+                <input
+                  autoComplete="new-password"
+                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
+                  maxLength={128}
+                  name="confirmPassword"
+                  required
+                  type="password"
+                />
+              </label>
+              <button
+                className="rounded-lg bg-slate-950 px-4 py-2 text-sm font-semibold !text-white"
+                type="submit"
+              >
+                Change password
+              </button>
+            </form>
           </CardContent>
         </Card>
       </main>

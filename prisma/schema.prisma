@@ -61,6 +61,19 @@ enum EmployeeDirectoryMatchMethod {
   EXPLICIT
 }
 
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  REVOKED
+}
+
+enum EmailDeliveryStatus {
+  CREATED
+  SENT
+  FAILED
+}
+
 enum LendingOfferStatus {
   ACTIVE
   PAUSED
@@ -105,6 +118,15 @@ enum AuditEventType {
   EMPLOYEE_LENDING_ENABLED
   EMPLOYEE_DIRECTORY_SYNC_COMPLETED
   EMPLOYEE_DIRECTORY_SYNC_FAILED
+  EMPLOYEE_DIRECTORY_EMPLOYEE_ADDED
+  EMPLOYEE_DIRECTORY_EMPLOYEE_UPDATED
+  EMPLOYEE_DIRECTORY_EMPLOYEE_REMOVED
+  EMPLOYEE_DIRECTORY_EMPLOYEE_REACTIVATED
+  EMPLOYEE_INVITATION_SENT
+  EMPLOYEE_INVITATION_ACCEPTED
+  EMPLOYEE_INVITATION_REVOKED
+  PASSWORD_CHANGED
+  PASSWORD_RESET
 }
 
 enum RepaymentStatus {
@@ -228,16 +250,17 @@ model User {
   memberships         OrganizationMembership[]
   arcWallets          ArcWallet[]
   arcWalletChallenges ArcWalletChallenge[]
+  passwordResetTokens PasswordResetToken[]
 }
 
 model Organization {
-  id                           String                        @id @default(uuid()) @db.Uuid
+  id                           String                              @id @default(uuid()) @db.Uuid
   name                         String
-  slug                         String                        @unique
-  currency                     String                        @default("USD") @db.VarChar(3)
-  erpNextEnabled               Boolean                       @default(false)
-  createdAt                    DateTime                      @default(now())
-  updatedAt                    DateTime                      @updatedAt
+  slug                         String                              @unique
+  currency                     String                              @default("USD") @db.VarChar(3)
+  erpNextEnabled               Boolean                             @default(false)
+  createdAt                    DateTime                            @default(now())
+  updatedAt                    DateTime                            @updatedAt
   memberships                  OrganizationMembership[]
   lendingOffers                LendingOffer[]
   loans                        Loan[]
@@ -254,8 +277,11 @@ model Organization {
   loanDecisionReviews          LoanDecisionReview[]
   employerActionAttempts       EmployerActionAttempt[]
   employeeDirectoryIntegration EmployeeDirectoryIntegration?
+  employeeDirectorySecrets     EmployeeDirectoryCredentialSecret[]
   employeeDirectoryMappings    EmployeeDirectoryMapping[]
   employeeDirectorySyncRuns    EmployeeDirectorySyncRun[]
+  employeeInvitations          EmployeeInvitation[]
+  passwordResetTokens          PasswordResetToken[]
 }
 
 model ArcWallet {
@@ -301,6 +327,8 @@ model OrganizationMembership {
   employmentStatus          EmploymentStatus           @default(ACTIVE)
   employmentStatusSource    EmploymentStatusSource?
   employmentStatusSyncedAt  DateTime?
+  removedAt                 DateTime?
+  accountActivatedAt        DateTime?
   isActive                  Boolean                    @default(true)
   canBorrow                 Boolean                    @default(true)
   canLend                   Boolean                    @default(true)
@@ -320,10 +348,60 @@ model OrganizationMembership {
   employerActionAttempts    EmployerActionAttempt[]    @relation("EmployerActionsRequestedBy")
   employeeDirectoryMappings EmployeeDirectoryMapping[] @relation("EmployeeDirectoryMatchedMembership")
   employeeDirectorySyncRuns EmployeeDirectorySyncRun[] @relation("EmployeeDirectorySyncRequestedBy")
+  employeeInvitations       EmployeeInvitation[]       @relation("EmployeeInvitationEmployee")
+  invitationsCreated        EmployeeInvitation[]       @relation("EmployeeInvitationInvitedBy")
+  passwordResetTokens       PasswordResetToken[]
 
   @@unique([organizationId, userId])
   @@unique([organizationId, id])
   @@index([organizationId, role])
+}
+
+model EmployeeInvitation {
+  id                    String                  @id @default(uuid()) @db.Uuid
+  organizationId        String                  @db.Uuid
+  employeeMembershipId  String                  @db.Uuid
+  email                 String                  @db.VarChar(320)
+  tokenHash             String                  @unique @db.VarChar(64)
+  status                InvitationStatus        @default(PENDING)
+  createdAt             DateTime                @default(now())
+  expiresAt             DateTime
+  acceptedAt            DateTime?
+  revokedAt             DateTime?
+  sentAt                DateTime?
+  deliveryFailureCode   String?                 @db.VarChar(64)
+  deliveryStatus        EmailDeliveryStatus     @default(CREATED)
+  invitedByMembershipId String?                 @db.Uuid
+  organization          Organization            @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  employeeMembership    OrganizationMembership  @relation("EmployeeInvitationEmployee", fields: [organizationId, employeeMembershipId], references: [organizationId, id], onDelete: Cascade)
+  invitedByMembership   OrganizationMembership? @relation("EmployeeInvitationInvitedBy", fields: [organizationId, invitedByMembershipId], references: [organizationId, id], onDelete: Restrict)
+
+  @@unique([organizationId, id])
+  @@index([organizationId, employeeMembershipId, status])
+  @@index([expiresAt, status])
+}
+
+model PasswordResetToken {
+  id                  String                 @id @default(uuid()) @db.Uuid
+  organizationId      String                 @db.Uuid
+  membershipId        String                 @db.Uuid
+  userId              String                 @db.Uuid
+  email               String                 @db.VarChar(320)
+  tokenHash           String                 @unique @db.VarChar(64)
+  expiresAt           DateTime
+  usedAt              DateTime?
+  revokedAt           DateTime?
+  sentAt              DateTime?
+  deliveryStatus      EmailDeliveryStatus    @default(CREATED)
+  deliveryFailureCode String?                @db.VarChar(64)
+  createdAt           DateTime               @default(now())
+  organization        Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  membership          OrganizationMembership @relation(fields: [organizationId, membershipId], references: [organizationId, id], onDelete: Cascade)
+  user                User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, id])
+  @@index([organizationId, membershipId, expiresAt])
+  @@index([expiresAt, usedAt, revokedAt])
 }
 
 model EmployeeDirectoryIntegration {
@@ -354,6 +432,19 @@ model EmployeeDirectoryIntegration {
   @@unique([organizationId, id])
 }
 
+model EmployeeDirectoryCredentialSecret {
+  id               String                      @id @default(uuid()) @db.Uuid
+  organizationId   String                      @db.Uuid
+  authMethod       EmployeeDirectoryAuthMethod
+  encryptedPayload String                      @db.Text
+  createdAt        DateTime                    @default(now())
+  updatedAt        DateTime                    @updatedAt
+  organization     Organization                @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, id])
+  @@index([organizationId])
+}
+
 model EmployeeDirectoryMapping {
   id                  String                        @id @default(uuid()) @db.Uuid
   organizationId      String                        @db.Uuid
@@ -362,6 +453,8 @@ model EmployeeDirectoryMapping {
   employeeCode        String?                       @db.VarChar(140)
   fullName            String                        @db.VarChar(280)
   email               String?                       @db.VarChar(320)
+  department          String?                       @db.VarChar(280)
+  designation         String?                       @db.VarChar(280)
   externalStatus      String                        @db.VarChar(128)
   normalizedStatus    EmploymentStatus?
   matchStatus         EmployeeDirectoryMatchStatus
@@ -397,6 +490,10 @@ model EmployeeDirectorySyncRun {
   ambiguousCount          Int                          @default(0)
   statusChangeCount       Int                          @default(0)
   deactivatedCount        Int                          @default(0)
+  reactivatedCount        Int                          @default(0)
+  invitationCreatedCount  Int                          @default(0)
+  invitationSentCount     Int                          @default(0)
+  invitationFailureCount  Int                          @default(0)
   errorCount              Int                          @default(0)
   safeErrorCode           String?                      @db.VarChar(64)
   safeErrorSummary        String?                      @db.VarChar(240)

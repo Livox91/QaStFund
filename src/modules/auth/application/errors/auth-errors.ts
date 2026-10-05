@@ -57,3 +57,23 @@ export class OrganizationNotFoundError extends ApplicationError {
     super("ORGANIZATION_NOT_FOUND", "Organization was not found.", 404);
   }
 }
+
+export class InvalidOrExpiredTokenError extends ApplicationError {
+  constructor() {
+    super(
+      "INVALID_OR_EXPIRED_TOKEN",
+      "This secure link is invalid or has expired.",
+      400,
+    );
+  }
+}
+
+export class PasswordChangeRejectedError extends ApplicationError {
+  constructor() {
+    super(
+      "PASSWORD_CHANGE_REJECTED",
+      "The current password is incorrect or the new password is invalid.",
+      400,
+    );
+  }
+}

@@ -4,23 +4,48 @@ import { validateEnvironment } from "@/infrastructure/config/environment";
 import { requireEmployerAdmin } from "@/modules/auth/application/authorization";
 import type { AuthenticatedActor } from "@/modules/auth/domain/actor";
 import { configureEmployeeDirectory } from "@/modules/employee-directory/application/configure-employee-directory";
+import { configureEmployeeDirectoryCredentials } from "@/modules/employee-directory/application/configure-employee-directory-credentials";
 import { runScheduledEmployeeDirectorySyncs } from "@/modules/employee-directory/application/run-scheduled-syncs";
 import { synchronizeEmployees } from "@/modules/employee-directory/application/synchronize-employees";
 import { testEmployeeDirectoryConnection } from "@/modules/employee-directory/application/test-employee-directory-connection";
 import { ErpNextEmployeeDirectoryAdapter } from "@/modules/employee-directory/infrastructure/erpnext-employee-directory-adapter";
-import { EnvironmentEmployeeDirectorySecretProvider } from "@/modules/employee-directory/infrastructure/environment-secret-provider";
+import {
+  deleteManagedEmployeeDirectorySecret,
+  PrismaEncryptedEmployeeDirectorySecretProvider,
+  storeEncryptedEmployeeDirectorySecret,
+} from "@/modules/employee-directory/infrastructure/encrypted-secret-provider";
 import { prismaEmployeeDirectoryRepository } from "@/modules/employee-directory/infrastructure/prisma-employee-directory-repository";
 import { systemClock } from "@/shared/time/clock";
-
-const secretProvider = new EnvironmentEmployeeDirectorySecretProvider();
+import { emailSender } from "@/modules/notifications/infrastructure/http-email-sender";
 
 function adapterFactory(
   config: ConstructorParameters<typeof ErpNextEmployeeDirectoryAdapter>[0],
 ) {
   const environment = validateEnvironment();
+  const secretProvider = new PrismaEncryptedEmployeeDirectorySecretProvider(
+    environment.ERP_NEXT_CREDENTIAL_ENCRYPTION_KEY,
+  );
   return new ErpNextEmployeeDirectoryAdapter(config, secretProvider, {
     allowLocalDevelopment: process.env.ERP_NEXT_ALLOW_LOCAL_HTTP === "true",
     pageSize: environment.ERP_NEXT_SYNC_PAGE_SIZE,
+  });
+}
+
+export function configureEmployeeDirectoryCredentialsForActor(
+  actor: AuthenticatedActor | null,
+  input: Parameters<typeof configureEmployeeDirectoryCredentials>[1],
+) {
+  const environment = validateEnvironment();
+  return configureEmployeeDirectoryCredentials(actor, input, {
+    repository: prismaEmployeeDirectoryRepository,
+    allowLocalDevelopment: environment.ERP_NEXT_ALLOW_LOCAL_HTTP,
+    storeSecret: ({ organizationId, secret }) =>
+      storeEncryptedEmployeeDirectorySecret({
+        organizationId,
+        secret,
+        key: environment.ERP_NEXT_CREDENTIAL_ENCRYPTION_KEY,
+      }),
+    deleteSecret: deleteManagedEmployeeDirectorySecret,
   });
 }
 
@@ -60,6 +85,7 @@ export function synchronizeEmployeesForActor(actor: AuthenticatedActor | null) {
       staleAfterMs: environment.ERP_NEXT_SYNC_STALE_AFTER_MINUTES * 60_000,
       maxPages: environment.ERP_NEXT_SYNC_MAX_PAGES,
     },
+    { sender: emailSender, appUrl: environment.APP_URL },
   );
 }
 
@@ -115,5 +141,6 @@ export function runConfiguredScheduledEmployeeDirectorySyncs() {
     prismaEmployeeDirectoryRepository,
     adapterFactory,
     systemClock,
+    { sender: emailSender, appUrl: environment.APP_URL },
   );
 }

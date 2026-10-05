@@ -36,7 +36,12 @@ export const prismaEmployerOnboardingRepository: EmployerOnboardingRepository =
           slug: true,
           erpNextEnabled: true,
           memberships: {
-            select: { role: true, isActive: true },
+            select: {
+              role: true,
+              isActive: true,
+              userId: true,
+              user: { select: { name: true, email: true } },
+            },
           },
           lendingPolicy: true,
           employeeDirectoryIntegration: {
@@ -52,6 +57,11 @@ export const prismaEmployerOnboardingRepository: EmployerOnboardingRepository =
                   createdCount: true,
                   updatedCount: true,
                   deactivatedCount: true,
+                  reactivatedCount: true,
+                  reviewCount: true,
+                  invitationCreatedCount: true,
+                  invitationSentCount: true,
+                  invitationFailureCount: true,
                   safeErrorSummary: true,
                   startedAt: true,
                 },
@@ -63,6 +73,13 @@ export const prismaEmployerOnboardingRepository: EmployerOnboardingRepository =
       if (!organization) return null;
       const integration = organization.employeeDirectoryIntegration;
       const latest = integration?.syncRuns[0];
+      const administrator = organization.memberships.find(
+        (membership) =>
+          membership.userId === input.actorUserId &&
+          membership.role === "EMPLOYER_ADMIN" &&
+          membership.isActive,
+      );
+      if (!administrator) return null;
       return {
         organization: {
           id: organization.id,
@@ -70,6 +87,7 @@ export const prismaEmployerOnboardingRepository: EmployerOnboardingRepository =
           slug: organization.slug,
           erpNextEnabled: organization.erpNextEnabled,
         },
+        administrator: administrator.user,
         activeEmployerAdminCount: organization.memberships.filter(
           (membership) =>
             membership.role === "EMPLOYER_ADMIN" && membership.isActive,

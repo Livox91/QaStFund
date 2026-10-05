@@ -29,12 +29,17 @@ export function LandingHeader() {
             </Link>
           ))}
         </nav>
-        <Link
-          className={buttonStyles({ size: "sm", variant: "outline" })}
-          href="/sign-in"
-        >
-          Sign in
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            className={buttonStyles({ size: "sm", variant: "ghost" })}
+            href="/sign-in"
+          >
+            Sign in
+          </Link>
+          <Link className={buttonStyles({ size: "sm" })} href="/signup">
+            Get started
+          </Link>
+        </div>
       </div>
     </header>
   );

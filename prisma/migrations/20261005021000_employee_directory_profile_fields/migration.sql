@@ -1,0 +1,3 @@
+ALTER TABLE "EmployeeDirectoryMapping"
+ADD COLUMN IF NOT EXISTS "department" VARCHAR(280),
+ADD COLUMN IF NOT EXISTS "designation" VARCHAR(280);

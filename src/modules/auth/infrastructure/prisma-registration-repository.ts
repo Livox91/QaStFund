@@ -20,6 +20,7 @@ export const prismaRegistrationRepository: RegistrationRepository = {
           data: {
             name: input.organizationName,
             slug: input.organizationSlug,
+            erpNextEnabled: input.erpNextEnabled ?? false,
           },
           select: { id: true, name: true, slug: true },
         });
@@ -37,6 +38,7 @@ export const prismaRegistrationRepository: RegistrationRepository = {
             organizationId: organization.id,
             userId: user.id,
             role: MembershipRole.EMPLOYER_ADMIN,
+            accountActivatedAt: new Date(),
           },
         });
         await transaction.session.create({

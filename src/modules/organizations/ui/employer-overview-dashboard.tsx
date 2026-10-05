@@ -166,9 +166,19 @@ function AttentionLoan({ loan }: { loan: EmployerOverviewAttentionLoan }) {
 }
 
 export function EmployerOverviewDashboard({
+  directorySummary,
   organizationName,
   overview,
 }: {
+  directorySummary: {
+    activeEmployees: number;
+    pendingInvitations: number;
+    formerEmployees: number;
+    connectionStatus: string;
+    lastSyncAt: Date | null;
+    lastSyncStatus: string;
+    warning: string | null;
+  };
   organizationName: string;
   overview: EmployerOverview;
 }) {
@@ -187,6 +197,65 @@ export function EmployerOverviewDashboard({
         eyebrow="Employer portal"
         title="Overview"
       />
+
+      <section aria-label="Employee directory status" className="mt-8">
+        <Card>
+          <CardHeader>
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <CardTitle>Employee directory</CardTitle>
+                <CardDescription>
+                  ERPNext connection and employee onboarding status.
+                </CardDescription>
+              </div>
+              <Badge
+                tone={
+                  directorySummary.lastSyncStatus === "success"
+                    ? "success"
+                    : directorySummary.lastSyncStatus === "partial"
+                      ? "warning"
+                      : "neutral"
+                }
+              >
+                {directorySummary.lastSyncStatus.replaceAll("_", " ")}
+              </Badge>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <MetricCard
+                helper="Accepted invitations with active access"
+                label="Active employees"
+                value={directorySummary.activeEmployees}
+              />
+              <MetricCard
+                helper="Waiting for employee acceptance"
+                label="Pending invitations"
+                value={directorySummary.pendingInvitations}
+              />
+              <MetricCard
+                helper="Access removed; history retained"
+                label="Former employees"
+                value={directorySummary.formerEmployees}
+              />
+              <MetricCard
+                helper={
+                  directorySummary.lastSyncAt
+                    ? `Last sync ${timestampFormatter.format(directorySummary.lastSyncAt)}`
+                    : "No synchronization has run"
+                }
+                label="ERPNext"
+                value={directorySummary.connectionStatus.replaceAll("_", " ")}
+              />
+            </div>
+            {directorySummary.warning ? (
+              <p className="mt-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
+                {directorySummary.warning}
+              </p>
+            ) : null}
+          </CardContent>
+        </Card>
+      </section>
 
       <section aria-label="Organization metrics" className="mt-8">
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">

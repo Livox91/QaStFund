@@ -1,12 +1,18 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { encodeFunctionData, type Address } from "viem";
 
 import { employeeLendingEscrowAbi } from "@/integrations/arc/employee-lending-escrow";
 import { useCircleWallet } from "@/modules/arc-wallet/ui/circle-wallet-provider";
 import { friendlyBorrowTransactionError } from "@/modules/loans/domain/onchain-borrow";
+import {
+  clearPendingOperation,
+  readPendingOperation,
+  writePendingOperation,
+  type BrowserPendingOperation,
+} from "@/modules/transactions/browser-pending-operation";
 import { Button } from "@/shared/ui/button";
 
 type Phase = "idle" | "preparing" | "authorizing" | "confirming" | "failed";
@@ -26,8 +32,54 @@ export function ConfirmBorrowForm({ offerId }: { offerId: string }) {
   const requestId = useRef<string | null>(null);
   const [phase, setPhase] = useState<Phase>("idle");
   const [message, setMessage] = useState<string | null>(null);
+  const [storedOperation, setStoredOperation] =
+    useState<BrowserPendingOperation | null>(null);
   const busy =
     phase === "preparing" || phase === "authorizing" || phase === "confirming";
+
+  useEffect(() => {
+    let cancelled = false;
+    queueMicrotask(() => {
+      const stored = readPendingOperation(
+        window.localStorage,
+        "loan_acceptance",
+        offerId,
+      );
+      if (!cancelled && stored) {
+        requestId.current = stored.requestId;
+        setStoredOperation(stored);
+        setMessage(
+          stored.transactionHash
+            ? "A submitted transaction is waiting for confirmation. Resume safely without submitting it again."
+            : "An interrupted borrowing attempt can be continued.",
+        );
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [offerId]);
+
+  async function confirm(loanId: string, transactionHash: `0x${string}`) {
+    setPhase("confirming");
+    setMessage("Verifying the submitted transaction…");
+    const confirmation = await fetch(
+      `/api/loans/${loanId}/acceptance/confirm`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ transactionHash }),
+      },
+    );
+    if (!confirmation.ok) throw new Error(await readApiError(confirmation));
+    clearPendingOperation(window.localStorage, "loan_acceptance", offerId);
+    setStoredOperation(null);
+    requestId.current = null;
+    await wallet.refreshWallet();
+    router.push(`/app?loanCreated=1&loanId=${loanId}`);
+    router.refresh();
+  }
 
   async function borrow() {
     if (!wallet.isConnected) {
@@ -37,7 +89,21 @@ export function ConfirmBorrowForm({ offerId }: { offerId: string }) {
     }
 
     try {
+      const recoverable = readPendingOperation(
+        window.localStorage,
+        "loan_acceptance",
+        offerId,
+      );
+      if (recoverable?.operationId && recoverable.transactionHash) {
+        await confirm(recoverable.operationId, recoverable.transactionHash);
+        return;
+      }
       requestId.current ??= crypto.randomUUID();
+      writePendingOperation(window.localStorage, {
+        kind: "loan_acceptance",
+        referenceId: offerId,
+        requestId: requestId.current,
+      });
       setPhase("preparing");
       setMessage("Checking that this offer is still available…");
       const intentResponse = await fetch(
@@ -66,12 +132,23 @@ export function ConfirmBorrowForm({ offerId }: { offerId: string }) {
             };
       };
       if (intent.state === "CONFIRMED") {
+        clearPendingOperation(window.localStorage, "loan_acceptance", offerId);
+        setStoredOperation(null);
         requestId.current = null;
         await wallet.refreshWallet();
         router.push(`/app?loanCreated=1&loanId=${intent.loanId}`);
         router.refresh();
         return;
       }
+
+      setStoredOperation(
+        writePendingOperation(window.localStorage, {
+          kind: "loan_acceptance",
+          referenceId: offerId,
+          requestId: requestId.current,
+          operationId: intent.loanId,
+        }),
+      );
 
       setPhase("authorizing");
       setMessage("Confirm with your passkey to receive the funds.");
@@ -96,23 +173,16 @@ export function ConfirmBorrowForm({ offerId }: { offerId: string }) {
         throw new Error(friendlyBorrowTransactionError(error));
       }
 
-      setPhase("confirming");
-      setMessage("Funds received. Activating your loan…");
-      const confirmation = await fetch(
-        `/api/loans/${intent.loanId}/acceptance/confirm`,
-        {
-          method: "POST",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ transactionHash }),
-        },
+      setStoredOperation(
+        writePendingOperation(window.localStorage, {
+          kind: "loan_acceptance",
+          referenceId: offerId,
+          requestId: requestId.current,
+          operationId: intent.loanId,
+          transactionHash,
+        }),
       );
-      if (!confirmation.ok) throw new Error(await readApiError(confirmation));
-
-      requestId.current = null;
-      await wallet.refreshWallet();
-      router.push(`/app?loanCreated=1&loanId=${intent.loanId}`);
-      router.refresh();
+      await confirm(intent.loanId, transactionHash);
     } catch (error) {
       setPhase("failed");
       setMessage(
@@ -157,7 +227,11 @@ export function ConfirmBorrowForm({ offerId }: { offerId: string }) {
           size="lg"
           type="button"
         >
-          Confirm borrowing
+          {storedOperation?.transactionHash
+            ? "Resume confirmation"
+            : storedOperation
+              ? "Continue borrowing"
+              : "Confirm borrowing"}
         </Button>
       )}
     </div>

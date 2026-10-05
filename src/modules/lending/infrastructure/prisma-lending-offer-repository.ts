@@ -198,7 +198,13 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
     return prisma.$transaction(async (transaction) => {
       const membership = await transaction.organizationMembership.findUnique({
         where: { organizationId_userId: { organizationId, userId } },
-        select: { id: true, isActive: true, role: true, canBorrow: true },
+        select: {
+          id: true,
+          isActive: true,
+          employmentStatus: true,
+          role: true,
+          canBorrow: true,
+        },
       });
 
       if (
@@ -219,6 +225,7 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
       if (
         !policy.lendingEnabled ||
         !policy.borrowingEnabled ||
+        membership.employmentStatus !== "ACTIVE" ||
         !membership.canBorrow
       ) {
         return { currency: organization.currency, offers: [] };
@@ -243,7 +250,12 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
           lenderMembershipId: { not: membership.id },
           expiresAt: { gt: now },
           availableAmountMinorUnits: { gt: 0n },
-          lenderMembership: { isActive: true, role: "EMPLOYEE", canLend: true },
+          lenderMembership: {
+            isActive: true,
+            employmentStatus: "ACTIVE",
+            role: "EMPLOYEE",
+            canLend: true,
+          },
           ...(filters.amountMinorUnits
             ? {
                 minimumLoanAmountMinorUnits: {
@@ -275,10 +287,20 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
   async listActiveForOrganization({ now, organizationId, userId }) {
     const membership = await prisma.organizationMembership.findUnique({
       where: { organizationId_userId: { organizationId, userId } },
-      select: { id: true, isActive: true, role: true, canBorrow: true },
+      select: {
+        id: true,
+        isActive: true,
+        employmentStatus: true,
+        role: true,
+        canBorrow: true,
+      },
     });
 
-    if (!membership?.isActive || membership.role !== MembershipRole.EMPLOYEE) {
+    if (
+      !membership?.isActive ||
+      membership.employmentStatus !== "ACTIVE" ||
+      membership.role !== MembershipRole.EMPLOYEE
+    ) {
       return null;
     }
     const policy = await prisma.$transaction((transaction) =>
@@ -301,6 +323,7 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
         availableAmountMinorUnits: { gt: 0n },
         lenderMembership: {
           isActive: true,
+          employmentStatus: "ACTIVE",
           role: MembershipRole.EMPLOYEE,
           canLend: true,
         },
@@ -315,10 +338,14 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
   async findForOrganization({ offerId, now, organizationId, userId }) {
     const membership = await prisma.organizationMembership.findUnique({
       where: { organizationId_userId: { organizationId, userId } },
-      select: { isActive: true, role: true },
+      select: { isActive: true, employmentStatus: true, role: true },
     });
 
-    if (!membership?.isActive || membership.role !== MembershipRole.EMPLOYEE) {
+    if (
+      !membership?.isActive ||
+      membership.employmentStatus !== "ACTIVE" ||
+      membership.role !== MembershipRole.EMPLOYEE
+    ) {
       return null;
     }
 

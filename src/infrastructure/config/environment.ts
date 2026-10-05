@@ -2,7 +2,9 @@ import "server-only";
 
 import {
   parseEnvironment,
+  parseBlockchainEnvironment,
   parseTestnetEnvironment,
+  type BlockchainEnvironment,
   type Environment,
   type TestnetEnvironment,
 } from "@/infrastructure/config/environment-schema";
@@ -53,6 +55,8 @@ export function validateEnvironment(): Environment {
     ERP_NEXT_SYNC_MAX_PAGES: process.env.ERP_NEXT_SYNC_MAX_PAGES,
     ERP_NEXT_SYNC_CRON_SECRET: process.env.ERP_NEXT_SYNC_CRON_SECRET,
     ERP_NEXT_CREDENTIALS_JSON: process.env.ERP_NEXT_CREDENTIALS_JSON,
+    ERP_NEXT_CREDENTIAL_ENCRYPTION_KEY:
+      process.env.ERP_NEXT_CREDENTIAL_ENCRYPTION_KEY,
   });
   return cachedEnvironment;
 }
@@ -68,5 +72,15 @@ export function validateTestnetEnvironment(): TestnetEnvironment {
     NEXT_PUBLIC_CIRCLE_CLIENT_URL: process.env.NEXT_PUBLIC_CIRCLE_CLIENT_URL,
     ARC_BORROW_AUTHORIZER_PRIVATE_KEY:
       process.env.ARC_BORROW_AUTHORIZER_PRIVATE_KEY,
+  });
+}
+
+export function validateBlockchainEnvironment(): BlockchainEnvironment {
+  return parseBlockchainEnvironment({
+    CHAIN_ENV: process.env.CHAIN_ENV,
+    RPC_URL: process.env.RPC_URL,
+    CHAIN_ID: process.env.CHAIN_ID,
+    USDC_ADDRESS: process.env.USDC_ADDRESS,
+    LENDING_CONTRACT_ADDRESS: process.env.LENDING_CONTRACT_ADDRESS,
   });
 }

@@ -68,6 +68,18 @@ async function readChainAuthorizationSigner(contractAddress: `0x${string}`) {
   });
 }
 
+async function readChainLoan(
+  contractAddress: `0x${string}`,
+  chainLoanId: bigint,
+) {
+  return client.readContract({
+    address: contractAddress,
+    abi: employeeLendingEscrowAbi,
+    functionName: "loans",
+    args: [chainLoanId],
+  });
+}
+
 type PrepareOnChainBorrowDependencies = Readonly<{
   contractAddress?: `0x${string}`;
   database?: typeof prisma;
@@ -82,6 +94,7 @@ type ConfirmOnChainBorrowDependencies = Readonly<{
   database?: typeof prisma;
   getTransactionReceipt?: typeof client.getTransactionReceipt;
   now?: () => Date;
+  readLoan?: typeof readChainLoan;
 }>;
 
 function isUniqueConstraintError(error: unknown): boolean {
@@ -119,6 +132,13 @@ function configurationError() {
 
 function baseUnitsToMinorUnitsRoundedUp(value: bigint): bigint {
   return (value + USDC_BASE_UNITS_PER_CENT - 1n) / USDC_BASE_UNITS_PER_CENT;
+}
+
+export function resolveLifecycleStartedAt(
+  onChainStartedAt: Date,
+  requestedAt: Date,
+): Date {
+  return onChainStartedAt < requestedAt ? requestedAt : onChainStartedAt;
 }
 
 export async function prepareOnChainBorrow(
@@ -516,6 +536,7 @@ export async function confirmOnChainBorrow(
       repaymentBaseUnits: true,
       feeRateBasisPoints: true,
       durationDays: true,
+      requestedAt: true,
       acceptanceTransactionHash: true,
     },
   });
@@ -637,12 +658,10 @@ export async function confirmOnChainBorrow(
     );
   }
 
-  const chainLoan = await client.readContract({
-    address: configuredContract,
-    abi: employeeLendingEscrowAbi,
-    functionName: "loans",
-    args: [event.loanId],
-  });
+  const chainLoan = await (dependencies.readLoan ?? readChainLoan)(
+    configuredContract,
+    event.loanId,
+  );
   if (
     chainLoan[0] !== event.loanId ||
     chainLoan[1] !== event.offerId ||
@@ -659,6 +678,13 @@ export async function confirmOnChainBorrow(
 
   const startedAt = new Date(Number(event.startTime) * 1_000);
   const dueAt = new Date(Number(event.dueTime) * 1_000);
+  // EVM block timestamps have second precision while PostgreSQL records the
+  // request with milliseconds. Preserve the exact chain value separately, but
+  // never make the application lifecycle appear to start before its request.
+  const lifecycleStartedAt = resolveLifecycleStartedAt(
+    startedAt,
+    pending.requestedAt,
+  );
   await database.$transaction(async (transaction) => {
     const updated = await transaction.loan.updateMany({
       where: { id: pending.id, status: "REQUESTED" },
@@ -666,9 +692,9 @@ export async function confirmOnChainBorrow(
         status: "ACTIVE",
         chainLoanId: event.loanId.toString(),
         acceptanceTransactionHash: transactionHash.toLowerCase(),
-        approvedAt: startedAt,
-        activatedAt: startedAt,
-        startedAt,
+        approvedAt: lifecycleStartedAt,
+        activatedAt: lifecycleStartedAt,
+        startedAt: lifecycleStartedAt,
         repaymentDueAt: dueAt,
         onChainStartedAt: startedAt,
         onChainDueAt: dueAt,

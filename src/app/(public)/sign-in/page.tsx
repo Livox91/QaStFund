@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 import { getRoleHome } from "@/modules/auth/domain/application-role";
 import { getCurrentActor } from "@/modules/auth/infrastructure/auth-guard";
@@ -15,6 +16,8 @@ const ERROR_MESSAGES: Record<string, string> = {
   invalid_input: "Enter a valid email address and password.",
   invalid_credentials: "Invalid email or password.",
   sign_in_failed: "Unable to sign in right now. Please try again.",
+  invitation_failed: "The invitation is invalid, expired, or unavailable.",
+  reset_failed: "The password reset link is invalid or expired.",
 };
 
 export default async function SignInPage({
@@ -87,6 +90,14 @@ export default async function SignInPage({
               Sign in
             </Button>
           </form>
+          <div className="mt-4 text-center">
+            <Link
+              className="text-sm font-medium text-teal-700 hover:text-teal-800"
+              href="/forgot-password"
+            >
+              Forgot password?
+            </Link>
+          </div>
 
           {process.env.NODE_ENV !== "production" ? (
             <div className="mt-8 border-t border-slate-200 pt-6">

@@ -6,7 +6,10 @@ import type { RegistrationRepository } from "@/modules/auth/application/ports/au
 import type { SessionTokenService } from "@/modules/auth/application/ports/session-token-service";
 import { registerOrganizationAdmin } from "@/modules/auth/application/register-organization-admin";
 import { ApplicationRole } from "@/modules/auth/domain/application-role";
-import { registerSchema } from "@/modules/auth/schemas/register.schema";
+import {
+  employerSignupSchema,
+  registerSchema,
+} from "@/modules/auth/schemas/register.schema";
 
 const input = {
   name: "Acme Admin",
@@ -60,6 +63,29 @@ describe("organization registration", () => {
     ).toBe(false);
     expect(
       registerSchema.safeParse({ ...input, password: "weak" }).success,
+    ).toBe(false);
+  });
+
+  it("validates the public employer signup password confirmation", () => {
+    const publicSignup = {
+      organizationName: input.organizationName,
+      name: input.name,
+      email: input.email,
+      password: input.password,
+      confirmPassword: input.password,
+    };
+    expect(employerSignupSchema.safeParse(publicSignup).success).toBe(true);
+    expect(
+      employerSignupSchema.safeParse({
+        ...publicSignup,
+        confirmPassword: "DifferentPassword123!",
+      }).success,
+    ).toBe(false);
+    expect(
+      employerSignupSchema.safeParse({
+        ...publicSignup,
+        organizationId: "foreign-org",
+      }).success,
     ).toBe(false);
   });
 

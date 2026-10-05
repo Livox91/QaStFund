@@ -42,33 +42,34 @@ export async function loadWallet(input: {
       organizationId: input.organizationId,
       membershipId: membership.id,
     });
-    const [availableBalanceMinorUnits, rows] = await Promise.all([
-      getCompletedAccountBalance(transaction, {
+    const availableBalanceMinorUnits = await getCompletedAccountBalance(
+      transaction,
+      {
         organizationId: input.organizationId,
         accountId: account.id,
-      }),
-      transaction.ledgerEntry.findMany({
-        where: { organizationId: input.organizationId, accountId: account.id },
-        orderBy: { createdAt: "desc" },
-        take: 50,
-        select: {
-          id: true,
-          direction: true,
-          amountMinorUnits: true,
-          transaction: {
-            select: {
-              id: true,
-              type: true,
-              status: true,
-              referenceType: true,
-              referenceId: true,
-              createdAt: true,
-              completedAt: true,
-            },
+      },
+    );
+    const rows = await transaction.ledgerEntry.findMany({
+      where: { organizationId: input.organizationId, accountId: account.id },
+      orderBy: { createdAt: "desc" },
+      take: 50,
+      select: {
+        id: true,
+        direction: true,
+        amountMinorUnits: true,
+        transaction: {
+          select: {
+            id: true,
+            type: true,
+            status: true,
+            referenceType: true,
+            referenceId: true,
+            createdAt: true,
+            completedAt: true,
           },
         },
-      }),
-    ]);
+      },
+    });
     return {
       asset: WALLET_ASSET,
       availableBalanceMinorUnits,
@@ -100,13 +101,14 @@ export async function fundEmployeeWallet(input: {
       input.userId,
     );
     if (!membership) return null;
-    const [wallet, platform] = await Promise.all([
-      ensureUserWallet(transaction, {
-        organizationId: input.organizationId,
-        membershipId: membership.id,
-      }),
-      ensurePlatformFundingAccount(transaction, input.organizationId),
-    ]);
+    const wallet = await ensureUserWallet(transaction, {
+      organizationId: input.organizationId,
+      membershipId: membership.id,
+    });
+    const platform = await ensurePlatformFundingAccount(
+      transaction,
+      input.organizationId,
+    );
     await lockLedgerAccounts(transaction, input.organizationId, [
       wallet.id,
       platform.id,

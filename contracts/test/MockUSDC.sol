@@ -3,12 +3,13 @@ pragma solidity ^0.8.28;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
+/// @notice Development-only test token. This is not canonical or production USDC.
 contract MockUSDC is ERC20 {
     bool public transfersBlocked;
 
     error MockTransferFailed();
 
-    constructor() ERC20("Mock USDC", "USDC") {}
+    constructor() ERC20("Development Mock USDC", "mUSDC") {}
 
     function decimals() public pure override returns (uint8) {
         return 6;

@@ -1,17 +1,11 @@
 import { z } from "zod";
+import { securePasswordSchema } from "@/modules/auth/schemas/password.schema";
 
 export const registerSchema = z
   .object({
     name: z.string().trim().min(2).max(100),
     email: z.string().trim().toLowerCase().pipe(z.email()),
-    password: z
-      .string()
-      .min(12)
-      .max(128)
-      .regex(/[a-z]/)
-      .regex(/[A-Z]/)
-      .regex(/[0-9]/)
-      .regex(/[^A-Za-z0-9]/),
+    password: securePasswordSchema,
     organizationName: z.string().trim().min(2).max(120),
     organizationSlug: z
       .string()
@@ -24,3 +18,17 @@ export const registerSchema = z
   .strict();
 
 export type RegisterInput = z.infer<typeof registerSchema>;
+
+export const employerSignupSchema = z
+  .object({
+    organizationName: z.string().trim().min(2).max(120),
+    name: z.string().trim().min(2).max(100),
+    email: z.string().trim().toLowerCase().pipe(z.email()),
+    password: securePasswordSchema,
+    confirmPassword: z.string(),
+  })
+  .strict()
+  .refine((value) => value.password === value.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Passwords do not match.",
+  });

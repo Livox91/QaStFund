@@ -7,6 +7,7 @@ export type EmployerOnboardingSnapshot = {
     slug: string;
     erpNextEnabled: boolean;
   };
+  administrator: { name: string; email: string };
   activeEmployerAdminCount: number;
   employeeCount: number;
   policy: LendingPolicyValues | null;
@@ -19,6 +20,11 @@ export type EmployerOnboardingSnapshot = {
       createdCount: number;
       updatedCount: number;
       deactivatedCount: number;
+      reactivatedCount: number;
+      reviewCount: number;
+      invitationCreatedCount: number;
+      invitationSentCount: number;
+      invitationFailureCount: number;
       safeErrorSummary: string | null;
       startedAt: Date;
     };

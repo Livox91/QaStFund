@@ -4,6 +4,7 @@ export type OperationalDependency =
   | "arc_rpc"
   | "circle"
   | "database"
+  | "email"
   | "erpnext"
   | "reconciliation"
   | "transaction_confirmation";

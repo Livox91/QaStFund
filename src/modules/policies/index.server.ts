@@ -16,6 +16,7 @@ import {
 } from "@/modules/policies/domain/lending-policy";
 import {
   getEmployeeBorrowingCapacity,
+  getEmployeeProfileForOrganization,
   getOrganizationPolicy,
   listEmployeesWithLendingAccess,
   updateEmployeeLendingAccess,
@@ -61,6 +62,18 @@ export function listEmployerEmployeesForActor(
 ) {
   const admin = requireEmployerAdmin(actor);
   return listEmployeesWithLendingAccess(admin.organizationId);
+}
+export async function getEmployerEmployeeProfileForActor(
+  actor: AuthenticatedActor | null,
+  employeeMembershipId: string,
+) {
+  const admin = requireEmployerAdmin(actor);
+  const employee = await getEmployeeProfileForOrganization({
+    organizationId: admin.organizationId,
+    employeeMembershipId,
+  });
+  if (!employee) throw new EmployeeLendingAccessNotFoundError();
+  return employee;
 }
 export async function updateEmployeeAccessForActor(
   actor: AuthenticatedActor | null,

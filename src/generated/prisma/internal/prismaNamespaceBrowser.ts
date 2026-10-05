@@ -56,7 +56,10 @@ export const ModelName = {
   ArcWallet: 'ArcWallet',
   ArcWalletChallenge: 'ArcWalletChallenge',
   OrganizationMembership: 'OrganizationMembership',
+  EmployeeInvitation: 'EmployeeInvitation',
+  PasswordResetToken: 'PasswordResetToken',
   EmployeeDirectoryIntegration: 'EmployeeDirectoryIntegration',
+  EmployeeDirectoryCredentialSecret: 'EmployeeDirectoryCredentialSecret',
   EmployeeDirectoryMapping: 'EmployeeDirectoryMapping',
   EmployeeDirectorySyncRun: 'EmployeeDirectorySyncRun',
   LendingOffer: 'LendingOffer',
@@ -157,6 +160,8 @@ export const OrganizationMembershipScalarFieldEnum = {
   employmentStatus: 'employmentStatus',
   employmentStatusSource: 'employmentStatusSource',
   employmentStatusSyncedAt: 'employmentStatusSyncedAt',
+  removedAt: 'removedAt',
+  accountActivatedAt: 'accountActivatedAt',
   isActive: 'isActive',
   canBorrow: 'canBorrow',
   canLend: 'canLend',
@@ -165,6 +170,45 @@ export const OrganizationMembershipScalarFieldEnum = {
 } as const
 
 export type OrganizationMembershipScalarFieldEnum = (typeof OrganizationMembershipScalarFieldEnum)[keyof typeof OrganizationMembershipScalarFieldEnum]
+
+
+export const EmployeeInvitationScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  employeeMembershipId: 'employeeMembershipId',
+  email: 'email',
+  tokenHash: 'tokenHash',
+  status: 'status',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt',
+  acceptedAt: 'acceptedAt',
+  revokedAt: 'revokedAt',
+  sentAt: 'sentAt',
+  deliveryFailureCode: 'deliveryFailureCode',
+  deliveryStatus: 'deliveryStatus',
+  invitedByMembershipId: 'invitedByMembershipId'
+} as const
+
+export type EmployeeInvitationScalarFieldEnum = (typeof EmployeeInvitationScalarFieldEnum)[keyof typeof EmployeeInvitationScalarFieldEnum]
+
+
+export const PasswordResetTokenScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  membershipId: 'membershipId',
+  userId: 'userId',
+  email: 'email',
+  tokenHash: 'tokenHash',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  revokedAt: 'revokedAt',
+  sentAt: 'sentAt',
+  deliveryStatus: 'deliveryStatus',
+  deliveryFailureCode: 'deliveryFailureCode',
+  createdAt: 'createdAt'
+} as const
+
+export type PasswordResetTokenScalarFieldEnum = (typeof PasswordResetTokenScalarFieldEnum)[keyof typeof PasswordResetTokenScalarFieldEnum]
 
 
 export const EmployeeDirectoryIntegrationScalarFieldEnum = {
@@ -193,6 +237,18 @@ export const EmployeeDirectoryIntegrationScalarFieldEnum = {
 export type EmployeeDirectoryIntegrationScalarFieldEnum = (typeof EmployeeDirectoryIntegrationScalarFieldEnum)[keyof typeof EmployeeDirectoryIntegrationScalarFieldEnum]
 
 
+export const EmployeeDirectoryCredentialSecretScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  authMethod: 'authMethod',
+  encryptedPayload: 'encryptedPayload',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeDirectoryCredentialSecretScalarFieldEnum = (typeof EmployeeDirectoryCredentialSecretScalarFieldEnum)[keyof typeof EmployeeDirectoryCredentialSecretScalarFieldEnum]
+
+
 export const EmployeeDirectoryMappingScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
@@ -201,6 +257,8 @@ export const EmployeeDirectoryMappingScalarFieldEnum = {
   employeeCode: 'employeeCode',
   fullName: 'fullName',
   email: 'email',
+  department: 'department',
+  designation: 'designation',
   externalStatus: 'externalStatus',
   normalizedStatus: 'normalizedStatus',
   matchStatus: 'matchStatus',
@@ -232,6 +290,10 @@ export const EmployeeDirectorySyncRunScalarFieldEnum = {
   ambiguousCount: 'ambiguousCount',
   statusChangeCount: 'statusChangeCount',
   deactivatedCount: 'deactivatedCount',
+  reactivatedCount: 'reactivatedCount',
+  invitationCreatedCount: 'invitationCreatedCount',
+  invitationSentCount: 'invitationSentCount',
+  invitationFailureCount: 'invitationFailureCount',
   errorCount: 'errorCount',
   safeErrorCode: 'safeErrorCode',
   safeErrorSummary: 'safeErrorSummary',

@@ -18,6 +18,8 @@ const EMPLOYEE_FIELDS = [
   "employee_name",
   "company_email",
   "personal_email",
+  "department",
+  "designation",
   "status",
   "modified",
 ] as const;
@@ -41,12 +43,16 @@ export function normalizeErpNextEmployee(
   const email =
     nonEmpty(record.company_email) ?? nonEmpty(record.personal_email);
   const employmentStatus = nonEmpty(record.status) ?? "Unknown";
+  const department = nonEmpty(record.department);
+  const designation = nonEmpty(record.designation);
   const modifiedAt = nonEmpty(record.modified);
   return {
     externalId,
     ...(employeeCode ? { employeeCode } : {}),
     fullName,
     ...(email ? { email: email.toLowerCase() } : {}),
+    ...(department ? { department } : {}),
+    ...(designation ? { designation } : {}),
     employmentStatus,
     ...(modifiedAt ? { modifiedAt } : {}),
   };
@@ -149,7 +155,7 @@ export class ErpNextEmployeeDirectoryAdapter implements EmployeeDirectoryAdapter
     for (const [key, value] of Object.entries(query)) {
       url.searchParams.set(key, value);
     }
-    const secret = this.secretProvider.getSecret({
+    const secret = await this.secretProvider.getSecret({
       organizationId: this.config.organizationId,
       reference: this.config.credentialReference,
       authMethod: this.config.authMethod,

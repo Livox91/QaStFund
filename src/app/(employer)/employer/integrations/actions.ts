@@ -8,7 +8,7 @@ import { requireEmployerAdminPage } from "@/modules/auth/infrastructure/auth-gua
 import { EmployeeDirectoryError } from "@/modules/employee-directory/domain/employee-directory";
 import { safeSyncErrorSummary } from "@/modules/employee-directory/application/sync-health";
 import {
-  configureEmployeeDirectoryForActor,
+  configureEmployeeDirectoryCredentialsForActor,
   synchronizeEmployeesForActor,
   testEmployeeDirectoryConnectionForActor,
 } from "@/modules/employee-directory/index.server";
@@ -23,7 +23,9 @@ const configSchema = z.object({
   apiPath: z.string().min(1).max(128),
   apiVersion: z.string().min(1).max(16),
   authMethod: z.enum(["token", "oauth_bearer"]),
-  credentialReference: z.string().min(1).max(64),
+  apiKey: z.string().max(256).optional(),
+  apiSecret: z.string().max(512).optional(),
+  accessToken: z.string().max(4096).optional(),
   timeoutMs: z.coerce.number().int().min(500).max(30_000),
   activeStatus: z.enum(["ACTIVE", "SUSPENDED", "TERMINATED", "IGNORE"]),
   inactiveStatus: z.enum(["ACTIVE", "SUSPENDED", "TERMINATED", "IGNORE"]),
@@ -56,12 +58,30 @@ export async function configureIntegrationAction(
     const input = configSchema.parse(Object.fromEntries(formData));
     const status = (value: typeof input.activeStatus) =>
       value === "IGNORE" ? null : value;
-    await configureEmployeeDirectoryForActor(actor, {
+    const apiKey = input.apiKey?.trim();
+    const apiSecret = input.apiSecret?.trim();
+    const accessToken = input.accessToken?.trim();
+    if (
+      input.authMethod === "token" &&
+      Boolean(apiKey) !== Boolean(apiSecret)
+    ) {
+      return {
+        status: "error",
+        message: "Enter both the ERPNext API key and API secret.",
+      };
+    }
+    const credential =
+      input.authMethod === "token" && apiKey && apiSecret
+        ? ({ method: "token", apiKey, apiSecret } as const)
+        : input.authMethod === "oauth_bearer" && accessToken
+          ? ({ method: "oauth_bearer", accessToken } as const)
+          : undefined;
+    await configureEmployeeDirectoryCredentialsForActor(actor, {
       baseUrl: input.baseUrl,
       apiPath: input.apiPath,
       apiVersion: input.apiVersion,
       authMethod: input.authMethod,
-      credentialReference: input.credentialReference,
+      ...(credential ? { credential } : {}),
       timeoutMs: input.timeoutMs,
       statusMapping: {
         active: status(input.activeStatus),
@@ -71,6 +91,8 @@ export async function configureIntegrationAction(
       },
     });
     revalidatePath("/employer/integrations");
+    revalidatePath("/employer/employees");
+    revalidatePath("/employer/employees");
     revalidatePath("/employer/onboarding");
     return { status: "success", message: "Integration configuration saved." };
   } catch (error) {
@@ -105,11 +127,12 @@ export async function syncEmployeesAction(): Promise<IntegrationActionState> {
       status: result.status === "partial" ? "partial" : "success",
       message:
         result.status === "partial"
-          ? `Partial sync: processed ${result.processedCount} employees; ${result.reviewCount} need review.`
-          : `Sync complete: processed ${result.processedCount} employees.`,
+          ? `Partial sync: added ${result.createdCount}, updated ${result.updatedCount}, reactivated ${result.reactivatedCount}, removed ${result.deactivatedCount}, unchanged ${result.unchangedCount}; ${result.reviewCount} need review and ${result.invitationFailureCount} invitation emails need retry.`
+          : `Sync complete: added ${result.createdCount}, updated ${result.updatedCount}, reactivated ${result.reactivatedCount}, removed ${result.deactivatedCount}, unchanged ${result.unchangedCount}.`,
     };
   } catch (error) {
     revalidatePath("/employer/integrations");
+    revalidatePath("/employer/employees");
     revalidatePath("/employer/onboarding");
     return { status: "error", message: safeMessage(error) };
   }

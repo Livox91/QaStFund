@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { encodeFunctionData, type Address } from "viem";
 
@@ -12,6 +12,12 @@ import { useCircleWallet } from "@/modules/arc-wallet/ui/circle-wallet-provider"
 import { formatUsdc, parseUsdc } from "@/shared/money/usdc";
 import { Button } from "@/shared/ui/button";
 import { Dialog } from "@/shared/ui/dialog";
+import {
+  clearPendingOperation,
+  readPendingOperation,
+  writePendingOperation,
+  type BrowserPendingOperation,
+} from "@/modules/transactions/browser-pending-operation";
 
 type Phase =
   "idle" | "preparing" | "authorizing" | "processing" | "confirmed" | "failed";
@@ -65,6 +71,8 @@ export function RepaymentForm({
   const [open, setOpen] = useState(false);
   const [phase, setPhase] = useState<Phase>("idle");
   const [message, setMessage] = useState<string | null>(null);
+  const [storedOperation, setStoredOperation] =
+    useState<BrowserPendingOperation | null>(null);
   const amountDue = BigInt(repaymentBaseUnits);
   const balance = useMemo(() => {
     try {
@@ -79,6 +87,52 @@ export function RepaymentForm({
   const busy =
     phase === "preparing" || phase === "authorizing" || phase === "processing";
 
+  useEffect(() => {
+    let cancelled = false;
+    queueMicrotask(() => {
+      const stored = readPendingOperation(
+        window.localStorage,
+        "repayment",
+        loanId,
+      );
+      if (!cancelled && stored) {
+        requestId.current = stored.requestId;
+        setStoredOperation(stored);
+        setMessage(
+          stored.transactionHash
+            ? "A submitted repayment is waiting for confirmation. Resume without submitting it again."
+            : "An interrupted repayment can be continued.",
+        );
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [loanId]);
+
+  async function confirm(repaymentId: string, transactionHash: `0x${string}`) {
+    setPhase("processing");
+    setMessage("Verifying the submitted repayment…");
+    const confirmation = await fetch(
+      `/api/loans/${loanId}/repayment-intents/${repaymentId}/confirm`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ transactionHash }),
+      },
+    );
+    if (!confirmation.ok) throw new Error(await readApiError(confirmation));
+    clearPendingOperation(window.localStorage, "repayment", loanId);
+    setStoredOperation(null);
+    requestId.current = null;
+    setPhase("confirmed");
+    setMessage("Confirmed. Your loan is repaid.");
+    await wallet.refreshWallet();
+    router.push(`/app/loans/${loanId}?repaid=1`);
+    router.refresh();
+  }
+
   async function repay() {
     if (!wallet.isConnected) {
       setPhase("failed");
@@ -92,7 +146,21 @@ export function RepaymentForm({
     }
 
     try {
+      const recoverable = readPendingOperation(
+        window.localStorage,
+        "repayment",
+        loanId,
+      );
+      if (recoverable?.operationId && recoverable.transactionHash) {
+        await confirm(recoverable.operationId, recoverable.transactionHash);
+        return;
+      }
       requestId.current ??= crypto.randomUUID();
+      writePendingOperation(window.localStorage, {
+        kind: "repayment",
+        referenceId: loanId,
+        requestId: requestId.current,
+      });
       setPhase("preparing");
       setMessage("Preparing repayment…");
       const intentResponse = await fetch(
@@ -119,6 +187,8 @@ export function RepaymentForm({
             };
       };
       if (intent.state === "CONFIRMED") {
+        clearPendingOperation(window.localStorage, "repayment", loanId);
+        setStoredOperation(null);
         requestId.current = null;
         setPhase("confirmed");
         setMessage("Confirmed. Your loan is repaid.");
@@ -127,6 +197,15 @@ export function RepaymentForm({
         router.refresh();
         return;
       }
+
+      setStoredOperation(
+        writePendingOperation(window.localStorage, {
+          kind: "repayment",
+          referenceId: loanId,
+          requestId: requestId.current,
+          operationId: intent.repaymentId,
+        }),
+      );
 
       setPhase("authorizing");
       setMessage("Awaiting authorization…");
@@ -154,25 +233,16 @@ export function RepaymentForm({
         throw new Error(friendlyWalletError(error));
       }
 
-      setPhase("processing");
-      setMessage("Repayment processing…");
-      const confirmation = await fetch(
-        `/api/loans/${loanId}/repayment-intents/${intent.repaymentId}/confirm`,
-        {
-          method: "POST",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ transactionHash }),
-        },
+      setStoredOperation(
+        writePendingOperation(window.localStorage, {
+          kind: "repayment",
+          referenceId: loanId,
+          requestId: requestId.current,
+          operationId: intent.repaymentId,
+          transactionHash,
+        }),
       );
-      if (!confirmation.ok) throw new Error(await readApiError(confirmation));
-
-      requestId.current = null;
-      setPhase("confirmed");
-      setMessage("Confirmed. Your loan is repaid.");
-      await wallet.refreshWallet();
-      router.push(`/app/loans/${loanId}?repaid=1`);
-      router.refresh();
+      await confirm(intent.repaymentId, transactionHash);
     } catch (error) {
       setPhase("failed");
       setMessage(
@@ -186,7 +256,9 @@ export function RepaymentForm({
   return (
     <>
       <Button onClick={() => setOpen(true)} size="lg" type="button">
-        Repay ${formatUsdc(amountDue)}
+        {storedOperation
+          ? "Resume repayment"
+          : `Repay $${formatUsdc(amountDue)}`}
       </Button>
       <Dialog
         description="Review the payment before confirming with your passkey."
@@ -207,7 +279,11 @@ export function RepaymentForm({
                 onClick={() => void repay()}
                 type="button"
               >
-                Confirm Repayment
+                {storedOperation?.transactionHash
+                  ? "Resume confirmation"
+                  : storedOperation
+                    ? "Continue repayment"
+                    : "Confirm Repayment"}
               </Button>
             ) : (
               <Button

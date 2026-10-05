@@ -5,6 +5,7 @@ import {
 } from "@/modules/employee-directory/application/synchronize-employees";
 import { EmployeeDirectoryError } from "@/modules/employee-directory/domain/employee-directory";
 import type { Clock } from "@/shared/time/clock";
+import type { EmailSender } from "@/modules/notifications/domain/email";
 import {
   incrementOperationalCounter,
   operationalFailureAlertThreshold,
@@ -21,6 +22,7 @@ export async function runScheduledEmployeeDirectorySyncs(
   repository: EmployeeDirectoryRepository,
   createAdapter: EmployeeDirectoryAdapterFactory,
   clock: Clock,
+  email?: { sender: EmailSender; appUrl: string },
 ) {
   const now = clock.now();
   const organizationIds = await repository.listScheduledOrganizations({
@@ -42,6 +44,7 @@ export async function runScheduledEmployeeDirectorySyncs(
         repository,
         createAdapter,
         clock,
+        email,
       );
       if (result.status === "partial") partial += 1;
       else succeeded += 1;

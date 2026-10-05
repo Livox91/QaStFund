@@ -1,16 +1,32 @@
 # ERPNext employee synchronization runbook
 
+For the production service-account permission checklist and live acceptance evidence, see [`ERPNEXT_PRODUCTION_VALIDATION.md`](./ERPNEXT_PRODUCTION_VALIDATION.md). Live ERPNext and real-provider validation are required before production sign-off.
+
 ## Scope and ownership
 
 The integration reads ERPNext's `Employee` resource. It never writes to ERPNext, changes payroll, makes lending decisions, moves funds, or changes blockchain state. PostgreSQL remains authoritative for application users, organization membership, access, loans, offers, repayments, and audit history. ERPNext is authoritative only for the imported employee identity (`name`), descriptive employee fields, and the configured employment-status signal.
 
 The stable key is ERPNext `Employee.name`, stored as `externalEmployeeId` together with the organization and integration IDs. Email is used only for the first, unambiguous match to an existing employee membership. A stored external-ID mapping is used thereafter. Database composite foreign keys prevent a mapping or sync run from referring to a membership or integration in another organization.
 
-An ERPNext status changes only `OrganizationMembership.employmentStatus`, its source, and its sync timestamp. It does not delete or disable the membership and does not modify financial records. A previously matched employee missing from a complete ERPNext snapshot is suspended (unless already terminated). This is reversible on a later sync. Suspended and terminated employees can still authenticate to view historical loans, offers, and repayments, while transactional repository checks require active employment for new borrowing and lending.
+An active ERPNext employee with an email and no existing P2P membership is provisioned with an unclaimed, inactive account and an expiring invitation. The invitation is delivered after the reconciliation transaction commits. Until the employee follows that organization-scoped link and creates a password, the membership has no application access. A stable external-ID mapping is written in the same transaction. Later name, email, department, designation, and status changes update that identity through the mapping instead of creating another user.
+
+Configure the outbound email gateway used for invitations and password resets:
+
+```dotenv
+EMAIL_DELIVERY_ENDPOINT="https://mail-gateway.example/send"
+EMAIL_DELIVERY_TOKEN="server-only-bearer-token"
+EMAIL_FROM="Employee Lending <no-reply@example.com>"
+```
+
+The gateway receives a JSON message containing `from`, `to`, `subject`, `text`, and `html`, plus an `Idempotency-Key` header. If delivery fails, the employee remains inactive, the invitation records an explicit `FAILED` delivery state and safe failure code, and a later sync or employer resend can retry. Successful delivery records `SENT`; invitation acceptance remains a separate lifecycle state. Tokens are never stored in plaintext or written to application logs.
+
+An inactive ERPNext status, or a previously mapped employee missing from a complete unfiltered Employee snapshot, soft-deactivates the membership, records `removedAt`, revokes pending invitations, and revokes its sessions. No user, membership, loan, offer, repayment, ledger, wallet, transaction reference, or audit record is deleted. Outstanding loans continue unchanged. If the same external employee becomes active again, the existing accepted account is reactivated and `removedAt` is cleared; an employee who never accepted is invited again but remains inactive. Financial history remains attached to the same membership in either case.
+
+Repeated syncs do not create duplicate employees or pending invitations. Before acceptance, an ERPNext email change revokes the old invitation and sends a new one to the updated official address. After acceptance, sync continues to store the new official directory email but does not silently replace the user's authentication email.
 
 ## Scheduling and configuration
 
-Configure the integration at `/employer/integrations`. Saving an organization-scoped integration makes that organization eligible for scheduling. Scheduling also requires the global worker switch and server-only credentials:
+Configure the integration at `/employer/integrations`. The employer enters the ERPNext credential there; the server encrypts it and stores only an opaque reference with the organization integration. Saving an organization-scoped integration makes that organization eligible for scheduling. Scheduling also requires the global worker switch and server-only encryption key:
 
 ```dotenv
 ERP_NEXT_SYNC_ENABLED="true"
@@ -19,10 +35,10 @@ ERP_NEXT_SYNC_STALE_AFTER_MINUTES="30"
 ERP_NEXT_SYNC_PAGE_SIZE="100"
 ERP_NEXT_SYNC_MAX_PAGES="100"
 ERP_NEXT_SYNC_CRON_SECRET="at-least-32-random-characters"
-ERP_NEXT_CREDENTIALS_JSON='{"organization-uuid":{"credential-reference":{"apiKey":"...","apiSecret":"..."}}}'
+ERP_NEXT_CREDENTIAL_ENCRYPTION_KEY="base64-encoded-32-byte-key"
 ```
 
-Do not commit the last two values or print them in logs. `ERP_NEXT_CREDENTIALS_JSON` is server-only and keyed first by organization ID, then by the reference saved in PostgreSQL. OAuth bearer credentials use `accessToken` instead of the token pair.
+Do not commit the last two values or print them in logs. The encryption key is server-only and must remain stable across restarts. Existing operator-managed integrations may continue to use `ERP_NEXT_CREDENTIALS_JSON`, keyed first by organization ID and then by their saved legacy reference. OAuth bearer credentials use `accessToken` instead of the token pair.
 
 An external scheduler invokes the lightweight in-application worker. No separate queue is required:
 
@@ -36,7 +52,7 @@ Run the trigger at least as often as `ERP_NEXT_SYNC_INTERVAL_MINUTES`. The appli
 
 ## Transaction and restart behavior
 
-The worker retrieves a complete bounded ERPNext snapshot before changing mappings or memberships. If any page times out, is malformed, fails authentication, or otherwise fails, the run is recorded as failed and no employee-directory changes are committed. Mapping, employment-status changes, counters, integration health, and the completion audit event are then committed in one PostgreSQL transaction.
+The worker retrieves a complete bounded ERPNext snapshot before changing mappings or memberships. If any page times out, is malformed, fails authentication, or otherwise fails, the run is recorded as failed and no employee-directory changes are committed. User and membership provisioning, mapping changes, lifecycle/access changes, session revocation, counters, integration health, and audit events are then committed in one PostgreSQL transaction.
 
 After a process or scheduler restart, a running job is protected from overlap until `ERP_NEXT_SYNC_STALE_AFTER_MINUTES`. The next attempt marks an older abandoned run failed and starts the full idempotent snapshot again. It does not resume mid-page because no partial page result is ever committed. `ERP_NEXT_SYNC_MAX_PAGES` fails closed if a remote cursor never terminates.
 
@@ -44,7 +60,7 @@ Authentication, permission, missing-credential, unsafe-URL, invalid-configuratio
 
 ## Operator status
 
-The employer integration page shows whether global scheduling is enabled, last attempt, last success, current/latest state, next due time, safe error text, duration, and processed/created/updated/deactivated/unchanged/review counts. The dependency-health endpoint and operational counters also report sanitized ERPNext failures. Correlation IDs link a displayed run to logs; credentials, authorization headers, and remote response bodies are never included.
+The employer integration page shows whether global scheduling is enabled, last attempt, last success, current/latest state, next due time, safe error text, duration, and processed/added/updated/removed/reactivated/unchanged/review counts. The dependency-health endpoint and operational counters also report sanitized ERPNext failures. Correlation IDs link a displayed run to logs; credentials, authorization headers, and remote response bodies are never included.
 
 ## Failure procedure
 
@@ -61,7 +77,7 @@ The employer integration page shows whether global scheduling is enabled, last a
 - A dedicated ERPNext service identity with read-only access to `Employee`.
 - Employee records with stable `name` values and usable `employee_name`, email, and `status` fields.
 - A reviewed mapping for every ERPNext status used by the pilot. Unknown statuses go to review and never silently change membership status.
-- A server-side credential entry under the correct organization UUID and saved credential reference.
+- A credential saved through the employer integration form, or a legacy server-side environment entry matching its saved reference.
 - An HTTPS ERPNext base URL resolvable to a public address in production. Local HTTP is a development-only opt-in.
 - An external HTTPS cron capable of sending the bearer-authenticated POST shown above.
 
@@ -80,6 +96,6 @@ npm run format:check
 npm run build
 ```
 
-The focused tests cover the first and repeat sync, field/status updates, complete-snapshot deactivation, transient/authentication/malformed/partial-page failures, restart recovery, overlap prevention, stable-key duplicate prevention, bounded pagination, and cross-organization database isolation.
+The focused tests cover five-run idempotency, inactive pre-acceptance access, hashed and rotated invitation tokens, backend email matching, tenant isolation, password change/reset and session revocation, stable-ID field updates, complete-snapshot removal, outstanding-loan and repayment preservation, rehire, transient/authentication/malformed/partial-page failures, restart recovery, overlap prevention, and bounded pagination.
 
-Last verified on 2026-10-04 with Docker PostgreSQL: migration deploy applied all 29 migrations; the ERPNext suites passed 30 tests; the full suite passed 267 tests in 41 files with one intentional skip; type checking, ESLint, formatting, and the Next.js production build passed. No live ERPNext instance was used or required—the adapter responses were mocked while persistence, locking, restart, duplicate, and tenant-isolation behavior ran against PostgreSQL.
+Last verified on 2026-10-05 with Docker PostgreSQL: migration deploy applied all 36 migrations; the focused ERPNext/email/security suites passed 46 tests; the full suite passed 298 tests in 47 files with one intentional skip; type checking, ESLint, formatting, and the Next.js production build passed. No live ERPNext instance was available—the adapter responses were mocked while persistence, invitation delivery state, password/token lifecycle, locking, restart, duplicate, and tenant-isolation behavior ran against PostgreSQL.

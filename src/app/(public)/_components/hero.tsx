@@ -53,9 +53,9 @@ export function Hero() {
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
               className={buttonStyles({ size: "lg", variant: "secondary" })}
-              href="/#employer-interest"
+              href="/signup"
             >
-              Explore for your company
+              Get started for your company
               <LandingIcon className="size-4" name="arrow" />
             </Link>
             <Link

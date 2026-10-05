@@ -80,7 +80,7 @@ describe("environment validation", () => {
     );
   });
 
-  it("requires ERPNext credentials only when scheduled sync is enabled", () => {
+  it("requires an ERPNext credential source only when scheduled sync is enabled", () => {
     expect(() =>
       parseEnvironment({
         ...startupEnvironment,
@@ -89,8 +89,20 @@ describe("environment validation", () => {
           "test-only-cron-secret-at-least-32-characters",
       }),
     ).toThrowError(
-      /ERP_NEXT_CREDENTIALS_JSON must be a non-empty JSON credentials object for scheduled ERPNext synchronization/,
+      /either ERP_NEXT_CREDENTIAL_ENCRYPTION_KEY or a non-empty ERP_NEXT_CREDENTIALS_JSON object is required/,
     );
+
+    expect(() =>
+      parseEnvironment({
+        ...startupEnvironment,
+        ERP_NEXT_SYNC_ENABLED: "true",
+        ERP_NEXT_SYNC_CRON_SECRET:
+          "test-only-cron-secret-at-least-32-characters",
+        ERP_NEXT_CREDENTIAL_ENCRYPTION_KEY: Buffer.alloc(32, 7).toString(
+          "base64",
+        ),
+      }),
+    ).not.toThrow();
   });
 
   it("never returns server-only values from browser configuration", () => {

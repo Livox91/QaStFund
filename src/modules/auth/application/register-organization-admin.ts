@@ -11,6 +11,7 @@ export type RegisterOrganizationAdminInput = Readonly<{
   password: string;
   organizationName: string;
   organizationSlug: string;
+  erpNextEnabled?: boolean;
 }>;
 
 type RegisterOrganizationAdminDependencies = Readonly<{
@@ -35,6 +36,7 @@ export async function registerOrganizationAdmin(
       passwordHash,
       organizationName: input.organizationName,
       organizationSlug: input.organizationSlug,
+      ...(input.erpNextEnabled ? { erpNextEnabled: true } : {}),
       sessionTokenHash: dependencies.sessionTokenService.hash(sessionToken),
       sessionExpiresAt: expiresAt,
     });

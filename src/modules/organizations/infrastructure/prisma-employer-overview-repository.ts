@@ -61,106 +61,93 @@ export const prismaEmployerOverviewRepository: EmployerOverviewRepository = {
 
       const currency = organization.currency;
       const tenantCurrency = { organizationId, currency };
-      const [
-        totalEmployees,
-        activeOfferLenders,
-        activeLoanLenders,
-        activeBorrowers,
-        availableLiquidity,
-        outstandingPrincipal,
-        repaymentsDue,
-        overdueLoans,
-        recentLoans,
-        attentionLoans,
-      ] = await Promise.all([
-        transaction.organizationMembership.count({
-          where: { organizationId, role: "EMPLOYEE", isActive: true },
-        }),
-        transaction.lendingOffer.findMany({
-          where: {
-            ...tenantCurrency,
-            status: "ACTIVE",
-            availableAmountMinorUnits: { gt: 0n },
-            lenderMembership: { isActive: true, role: "EMPLOYEE" },
-          },
-          distinct: ["lenderMembershipId"],
-          select: { lenderMembershipId: true },
-        }),
-        transaction.loan.findMany({
-          where: {
-            ...tenantCurrency,
-            status: { in: [...ACTIVE_LOAN_STATUSES] },
-            outstandingPrincipalMinorUnits: { gt: 0n },
-            lenderMembership: { isActive: true, role: "EMPLOYEE" },
-          },
-          distinct: ["lenderMembershipId"],
-          select: { lenderMembershipId: true },
-        }),
-        transaction.loan.findMany({
-          where: {
-            ...tenantCurrency,
-            status: { in: [...ACTIVE_LOAN_STATUSES] },
-            outstandingPrincipalMinorUnits: { gt: 0n },
-            borrowerMembership: { isActive: true, role: "EMPLOYEE" },
-          },
-          distinct: ["borrowerMembershipId"],
-          select: { borrowerMembershipId: true },
-        }),
-        transaction.lendingOffer.aggregate({
-          where: {
-            ...tenantCurrency,
-            status: "ACTIVE",
-            availableAmountMinorUnits: { gt: 0n },
-            lenderMembership: { isActive: true, role: "EMPLOYEE" },
-          },
-          _sum: { availableAmountMinorUnits: true },
-        }),
-        transaction.loan.aggregate({
-          where: {
-            ...tenantCurrency,
-            status: { in: [...ACTIVE_LOAN_STATUSES] },
-            outstandingPrincipalMinorUnits: { gt: 0n },
-          },
-          _sum: { outstandingPrincipalMinorUnits: true },
-        }),
-        transaction.loan.count({
-          where: {
-            ...tenantCurrency,
-            status: "ACTIVE",
-            outstandingPrincipalMinorUnits: { gt: 0n },
-            repaymentDueAt: { gte: now, lte: dueWindowEndsAt },
-          },
-        }),
-        transaction.loan.count({
-          where: {
-            ...tenantCurrency,
-            status: "OVERDUE",
-            outstandingPrincipalMinorUnits: { gt: 0n },
-          },
-        }),
-        transaction.loan.findMany({
-          where: tenantCurrency,
-          orderBy: { updatedAt: "desc" },
-          take: 6,
-          select: loanSummarySelection,
-        }),
-        transaction.loan.findMany({
-          where: {
-            ...tenantCurrency,
-            outstandingPrincipalMinorUnits: { gt: 0n },
-            OR: [
-              { status: "OVERDUE" },
-              {
-                status: "ACTIVE",
-                repaymentDueAt: { gte: now, lte: attentionWindowEndsAt },
-              },
-            ],
-          },
-          orderBy: { repaymentDueAt: "asc" },
-          take: 5,
-          select: loanSummarySelection,
-        }),
-      ]);
+      const totalEmployees = await transaction.organizationMembership.count({
+        where: { organizationId, role: "EMPLOYEE", isActive: true },
+      });
+      const activeOfferLenders = await transaction.lendingOffer.findMany({
+        where: {
+          ...tenantCurrency,
+          status: "ACTIVE",
+          availableAmountMinorUnits: { gt: 0n },
+          lenderMembership: { isActive: true, role: "EMPLOYEE" },
+        },
+        distinct: ["lenderMembershipId"],
+        select: { lenderMembershipId: true },
+      });
+      const activeLoanLenders = await transaction.loan.findMany({
+        where: {
+          ...tenantCurrency,
+          status: { in: [...ACTIVE_LOAN_STATUSES] },
+          outstandingPrincipalMinorUnits: { gt: 0n },
+          lenderMembership: { isActive: true, role: "EMPLOYEE" },
+        },
+        distinct: ["lenderMembershipId"],
+        select: { lenderMembershipId: true },
+      });
+      const activeBorrowers = await transaction.loan.findMany({
+        where: {
+          ...tenantCurrency,
+          status: { in: [...ACTIVE_LOAN_STATUSES] },
+          outstandingPrincipalMinorUnits: { gt: 0n },
+          borrowerMembership: { isActive: true, role: "EMPLOYEE" },
+        },
+        distinct: ["borrowerMembershipId"],
+        select: { borrowerMembershipId: true },
+      });
+      const availableLiquidity = await transaction.lendingOffer.aggregate({
+        where: {
+          ...tenantCurrency,
+          status: "ACTIVE",
+          availableAmountMinorUnits: { gt: 0n },
+          lenderMembership: { isActive: true, role: "EMPLOYEE" },
+        },
+        _sum: { availableAmountMinorUnits: true },
+      });
+      const outstandingPrincipal = await transaction.loan.aggregate({
+        where: {
+          ...tenantCurrency,
+          status: { in: [...ACTIVE_LOAN_STATUSES] },
+          outstandingPrincipalMinorUnits: { gt: 0n },
+        },
+        _sum: { outstandingPrincipalMinorUnits: true },
+      });
+      const repaymentsDue = await transaction.loan.count({
+        where: {
+          ...tenantCurrency,
+          status: "ACTIVE",
+          outstandingPrincipalMinorUnits: { gt: 0n },
+          repaymentDueAt: { gte: now, lte: dueWindowEndsAt },
+        },
+      });
+      const overdueLoans = await transaction.loan.count({
+        where: {
+          ...tenantCurrency,
+          status: "OVERDUE",
+          outstandingPrincipalMinorUnits: { gt: 0n },
+        },
+      });
+      const recentLoans = await transaction.loan.findMany({
+        where: tenantCurrency,
+        orderBy: { updatedAt: "desc" },
+        take: 6,
+        select: loanSummarySelection,
+      });
+      const attentionLoans = await transaction.loan.findMany({
+        where: {
+          ...tenantCurrency,
+          outstandingPrincipalMinorUnits: { gt: 0n },
+          OR: [
+            { status: "OVERDUE" },
+            {
+              status: "ACTIVE",
+              repaymentDueAt: { gte: now, lte: attentionWindowEndsAt },
+            },
+          ],
+        },
+        orderBy: { repaymentDueAt: "asc" },
+        take: 5,
+        select: loanSummarySelection,
+      });
 
       const lendingEmployeeIds = new Set([
         ...activeOfferLenders.map((offer) => offer.lenderMembershipId),

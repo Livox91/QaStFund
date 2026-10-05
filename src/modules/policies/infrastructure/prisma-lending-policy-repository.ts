@@ -74,18 +74,26 @@ export async function getEmployeeBorrowingCapacity(input: {
         role: MembershipRole.EMPLOYEE,
         isActive: true,
       },
-      select: { id: true, canBorrow: true },
+      select: { id: true, canBorrow: true, employmentStatus: true },
     });
     if (!membership) return null;
-    const [policy, obligations] = await Promise.all([
-      ensureOrganizationPolicy(transaction, input.organizationId),
-      calculateBorrowerObligations(
-        transaction,
-        input.organizationId,
-        membership.id,
-      ),
-    ]);
-    return calculateBorrowingCapacity(policy, membership, obligations);
+    const policy = await ensureOrganizationPolicy(
+      transaction,
+      input.organizationId,
+    );
+    const obligations = await calculateBorrowerObligations(
+      transaction,
+      input.organizationId,
+      membership.id,
+    );
+    return calculateBorrowingCapacity(
+      policy,
+      {
+        canBorrow:
+          membership.canBorrow && membership.employmentStatus === "ACTIVE",
+      },
+      obligations,
+    );
   });
 }
 
@@ -97,17 +105,59 @@ export async function listEmployeesWithLendingAccess(organizationId: string) {
       select: {
         id: true,
         isActive: true,
+        employmentStatus: true,
+        employmentStatusSyncedAt: true,
+        removedAt: true,
+        accountActivatedAt: true,
         canBorrow: true,
         canLend: true,
-        user: { select: { id: true, name: true } },
+        user: { select: { id: true, name: true, email: true } },
+        employeeDirectoryMappings: {
+          select: {
+            externalEmployeeId: true,
+            employeeCode: true,
+            email: true,
+            department: true,
+            designation: true,
+          },
+          take: 1,
+        },
+        employeeInvitations: {
+          orderBy: { createdAt: "desc" },
+          take: 1,
+          select: {
+            id: true,
+            status: true,
+            createdAt: true,
+            sentAt: true,
+            expiresAt: true,
+            acceptedAt: true,
+            deliveryStatus: true,
+            deliveryFailureCode: true,
+          },
+        },
       },
     });
-    return Promise.all(
-      employees.map(async (employee) => ({
+    const results = [];
+    for (const employee of employees) {
+      results.push({
         id: employee.id,
         userId: employee.user.id,
         name: employee.user.name,
+        email:
+          employee.employeeDirectoryMappings[0]?.email ?? employee.user.email,
         isActive: employee.isActive,
+        employmentStatus: employee.employmentStatus,
+        employmentStatusSyncedAt: employee.employmentStatusSyncedAt,
+        removedAt: employee.removedAt,
+        accountActivatedAt: employee.accountActivatedAt,
+        invitation: employee.employeeInvitations[0] ?? null,
+        externalEmployeeId:
+          employee.employeeDirectoryMappings[0]?.externalEmployeeId ?? null,
+        employeeCode:
+          employee.employeeDirectoryMappings[0]?.employeeCode ?? null,
+        department: employee.employeeDirectoryMappings[0]?.department ?? null,
+        designation: employee.employeeDirectoryMappings[0]?.designation ?? null,
         canBorrow: employee.canBorrow,
         canLend: employee.canLend,
         ...(await calculateBorrowerObligations(
@@ -115,8 +165,112 @@ export async function listEmployeesWithLendingAccess(organizationId: string) {
           organizationId,
           employee.id,
         )),
-      })),
-    );
+      });
+    }
+    return results;
+  });
+}
+
+export async function getEmployeeProfileForOrganization(input: {
+  organizationId: string;
+  employeeMembershipId: string;
+}) {
+  return prisma.organizationMembership.findFirst({
+    where: {
+      id: input.employeeMembershipId,
+      organizationId: input.organizationId,
+      role: MembershipRole.EMPLOYEE,
+    },
+    select: {
+      id: true,
+      isActive: true,
+      employmentStatus: true,
+      employmentStatusSyncedAt: true,
+      removedAt: true,
+      accountActivatedAt: true,
+      canBorrow: true,
+      canLend: true,
+      user: { select: { name: true, email: true } },
+      employeeDirectoryMappings: {
+        select: {
+          externalEmployeeId: true,
+          employeeCode: true,
+          email: true,
+          department: true,
+          designation: true,
+          externalStatus: true,
+          lastSynchronizedAt: true,
+        },
+        take: 1,
+      },
+      employeeInvitations: {
+        orderBy: { createdAt: "desc" },
+        select: {
+          id: true,
+          status: true,
+          createdAt: true,
+          sentAt: true,
+          expiresAt: true,
+          acceptedAt: true,
+        },
+      },
+      loansAsBorrower: {
+        orderBy: { startedAt: "desc" },
+        select: {
+          id: true,
+          status: true,
+          principalAmountMinorUnits: true,
+          outstandingPrincipalMinorUnits: true,
+          currency: true,
+          startedAt: true,
+          repaymentDueAt: true,
+          repayments: {
+            orderBy: { paidAt: "asc" },
+            select: {
+              id: true,
+              status: true,
+              amountMinorUnits: true,
+              currency: true,
+              paidAt: true,
+            },
+          },
+        },
+      },
+      loansAsLender: {
+        orderBy: { startedAt: "desc" },
+        select: {
+          id: true,
+          status: true,
+          principalAmountMinorUnits: true,
+          outstandingPrincipalMinorUnits: true,
+          currency: true,
+          startedAt: true,
+          repaymentDueAt: true,
+        },
+      },
+      lendingOffers: {
+        orderBy: { createdAt: "desc" },
+        select: {
+          id: true,
+          status: true,
+          amountMinorUnits: true,
+          availableAmountMinorUnits: true,
+          currency: true,
+          createdAt: true,
+          fundingTransactionHash: true,
+        },
+      },
+      auditEventsTargeted: {
+        orderBy: { occurredAt: "desc" },
+        take: 100,
+        select: {
+          id: true,
+          type: true,
+          title: true,
+          occurredAt: true,
+        },
+      },
+    },
   });
 }
 

@@ -136,6 +136,36 @@ describe("funded offer organization isolation", () => {
     expect(marketplace?.offers.map(({ id }) => id)).toEqual([aliceOfferId]);
   });
 
+  it("does not expose offers to an inactive employee", async () => {
+    await prisma.organizationMembership.update({
+      where: { id: bobMembershipId },
+      data: { employmentStatus: "SUSPENDED" },
+    });
+    try {
+      await expect(
+        prismaLendingOfferRepository.listMarketplace({
+          organizationId: organizationA,
+          userId: bobId,
+          now,
+          filters: { sort: LendingMarketplaceSort.LOWEST_FEE },
+        }),
+      ).resolves.toMatchObject({ offers: [] });
+      await expect(
+        prismaLendingOfferRepository.findForOrganization({
+          organizationId: organizationA,
+          userId: bobId,
+          offerId: aliceOfferId,
+          now,
+        }),
+      ).resolves.toBeNull();
+    } finally {
+      await prisma.organizationMembership.update({
+        where: { id: bobMembershipId },
+        data: { employmentStatus: "ACTIVE" },
+      });
+    }
+  });
+
   it("enforces the same scope when Bob opens an offer", async () => {
     await expect(
       prismaBorrowLoanRepository.findBorrowableOffer({
@@ -155,6 +185,45 @@ describe("funded offer organization isolation", () => {
           now,
         }),
       ).resolves.toBeNull();
+    }
+  });
+
+  it("does not expose a borrowable offer to or from a suspended employee", async () => {
+    await prisma.organizationMembership.update({
+      where: { id: bobMembershipId },
+      data: { employmentStatus: "SUSPENDED" },
+    });
+    await expect(
+      prismaBorrowLoanRepository.findBorrowableOffer({
+        organizationId: organizationA,
+        userId: bobId,
+        offerId: aliceOfferId,
+        now,
+      }),
+    ).resolves.toBeNull();
+
+    await prisma.organizationMembership.updateMany({
+      where: { id: { in: [aliceMembershipId, bobMembershipId] } },
+      data: { employmentStatus: "ACTIVE" },
+    });
+    await prisma.organizationMembership.update({
+      where: { id: aliceMembershipId },
+      data: { employmentStatus: "SUSPENDED" },
+    });
+    try {
+      await expect(
+        prismaBorrowLoanRepository.findBorrowableOffer({
+          organizationId: organizationA,
+          userId: bobId,
+          offerId: aliceOfferId,
+          now,
+        }),
+      ).resolves.toBeNull();
+    } finally {
+      await prisma.organizationMembership.updateMany({
+        where: { id: { in: [aliceMembershipId, bobMembershipId] } },
+        data: { employmentStatus: "ACTIVE" },
+      });
     }
   });
 });

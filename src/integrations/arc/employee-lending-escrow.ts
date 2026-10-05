@@ -3,6 +3,13 @@ import { getAddress, isAddress, keccak256, stringToHex } from "viem";
 export const erc20UsdcAbi = [
   {
     type: "function",
+    name: "decimals",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [{ name: "", type: "uint8" }],
+  },
+  {
+    type: "function",
     name: "approve",
     stateMutability: "nonpayable",
     inputs: [
@@ -21,6 +28,13 @@ export const erc20UsdcAbi = [
 ] as const;
 
 export const employeeLendingEscrowAbi = [
+  {
+    type: "function",
+    name: "usdc",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [{ name: "", type: "address" }],
+  },
   {
     type: "function",
     name: "createOffer",
@@ -51,6 +65,13 @@ export const employeeLendingEscrowAbi = [
     stateMutability: "view",
     inputs: [],
     outputs: [{ name: "", type: "address" }],
+  },
+  {
+    type: "function",
+    name: "nextOfferId",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }],
   },
   {
     type: "function",

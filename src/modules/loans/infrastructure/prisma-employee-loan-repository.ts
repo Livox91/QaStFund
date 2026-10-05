@@ -215,16 +215,14 @@ export const prismaEmployeeLoanRepository: EmployeeLoanRepository = {
         } as const;
       }
 
-      const [borrowerWallet, lenderWallet] = await Promise.all([
-        ensureUserWallet(transaction, {
-          organizationId,
-          membershipId: loan.borrowerMembershipId,
-        }),
-        ensureUserWallet(transaction, {
-          organizationId,
-          membershipId: loan.lenderMembershipId,
-        }),
-      ]);
+      const borrowerWallet = await ensureUserWallet(transaction, {
+        organizationId,
+        membershipId: loan.borrowerMembershipId,
+      });
+      const lenderWallet = await ensureUserWallet(transaction, {
+        organizationId,
+        membershipId: loan.lenderMembershipId,
+      });
       await lockLedgerAccounts(transaction, organizationId, [
         borrowerWallet.id,
         lenderWallet.id,

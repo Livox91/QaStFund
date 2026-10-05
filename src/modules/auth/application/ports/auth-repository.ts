@@ -42,6 +42,7 @@ export interface RegistrationRepository {
     passwordHash: string;
     organizationName: string;
     organizationSlug: string;
+    erpNextEnabled?: boolean;
     sessionTokenHash: string;
     sessionExpiresAt: Date;
   }): Promise<RegisterOrganizationAdminResult>;

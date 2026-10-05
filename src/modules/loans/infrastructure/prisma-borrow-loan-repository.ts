@@ -91,10 +91,20 @@ export const prismaBorrowLoanRepository: BorrowLoanRepository = {
   async findBorrowableOffer({ organizationId, userId, offerId, now }) {
     const membership = await prisma.organizationMembership.findUnique({
       where: { organizationId_userId: { organizationId, userId } },
-      select: { id: true, isActive: true, role: true, canBorrow: true },
+      select: {
+        id: true,
+        isActive: true,
+        employmentStatus: true,
+        role: true,
+        canBorrow: true,
+      },
     });
 
-    if (!membership?.isActive || membership.role !== MembershipRole.EMPLOYEE) {
+    if (
+      !membership?.isActive ||
+      membership.employmentStatus !== "ACTIVE" ||
+      membership.role !== MembershipRole.EMPLOYEE
+    ) {
       return null;
     }
 
@@ -112,6 +122,7 @@ export const prismaBorrowLoanRepository: BorrowLoanRepository = {
         availableAmountMinorUnits: { gt: 0n },
         lenderMembership: {
           isActive: true,
+          employmentStatus: "ACTIVE",
           role: MembershipRole.EMPLOYEE,
           canLend: true,
         },
@@ -280,16 +291,14 @@ export const prismaBorrowLoanRepository: BorrowLoanRepository = {
         return { kind: "INSUFFICIENT_LIQUIDITY" } as const;
       }
 
-      const [lenderWallet, borrowerWallet] = await Promise.all([
-        ensureUserWallet(transaction, {
-          organizationId,
-          membershipId: offer.lenderMembershipId,
-        }),
-        ensureUserWallet(transaction, {
-          organizationId,
-          membershipId: membership.id,
-        }),
-      ]);
+      const lenderWallet = await ensureUserWallet(transaction, {
+        organizationId,
+        membershipId: offer.lenderMembershipId,
+      });
+      const borrowerWallet = await ensureUserWallet(transaction, {
+        organizationId,
+        membershipId: membership.id,
+      });
       await lockLedgerAccounts(transaction, organizationId, [
         lenderWallet.id,
         borrowerWallet.id,
@@ -315,6 +324,7 @@ export const prismaBorrowLoanRepository: BorrowLoanRepository = {
           availableAmountMinorUnits: { gte: command.amountMinorUnits },
           lenderMembership: {
             isActive: true,
+            employmentStatus: "ACTIVE",
             role: MembershipRole.EMPLOYEE,
           },
         },

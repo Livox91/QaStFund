@@ -183,6 +183,63 @@ export const prismaEmployeeDashboardRepository: EmployeeDashboardRepository = {
           loan: { select: participantSelection },
         },
       });
+      const pendingBorrowing = await transaction.loan.findMany({
+        where: {
+          organizationId,
+          borrowerMembershipId: membership.id,
+          status: "REQUESTED",
+        },
+        orderBy: { updatedAt: "desc" },
+        take: 8,
+        select: { id: true, updatedAt: true },
+      });
+      const pendingRepayments = await transaction.loanRepayment.findMany({
+        where: {
+          organizationId,
+          status: "PENDING",
+          loan: { borrowerMembershipId: membership.id },
+        },
+        orderBy: { paidAt: "desc" },
+        take: 8,
+        select: { id: true, loanId: true, paidAt: true },
+      });
+      const pendingFunding = await transaction.lendingOffer.findMany({
+        where: {
+          organizationId,
+          lenderMembershipId: membership.id,
+          fundingStatus: "PENDING",
+        },
+        orderBy: { updatedAt: "desc" },
+        take: 8,
+        select: { id: true, updatedAt: true },
+      });
+      const pendingTransactions = [
+        ...pendingBorrowing.map((loan) => ({
+          id: `acceptance:${loan.id}`,
+          kind: "loan_acceptance" as const,
+          title: "Loan acceptance awaiting confirmation",
+          href: "/app/borrow",
+          startedAt: loan.updatedAt,
+        })),
+        ...pendingRepayments.map((repayment) => ({
+          id: `repayment:${repayment.id}`,
+          kind: "repayment" as const,
+          title: "Repayment awaiting confirmation",
+          href: `/app/loans/${repayment.loanId}`,
+          startedAt: repayment.paidAt,
+        })),
+        ...pendingFunding.map((offer) => ({
+          id: `funding:${offer.id}`,
+          kind: "offer_funding" as const,
+          title: "Offer funding awaiting confirmation",
+          href: "/app/lending",
+          startedAt: offer.updatedAt,
+        })),
+      ]
+        .sort(
+          (left, right) => right.startedAt.getTime() - left.startedAt.getTime(),
+        )
+        .slice(0, 8);
 
       return {
         currency: organization.currency,
@@ -194,6 +251,7 @@ export const prismaEmployeeDashboardRepository: EmployeeDashboardRepository = {
         recentActivity: (recentActivity as ActivityRow[]).map((activity) =>
           toActivityRecord(activity, membership.id),
         ),
+        pendingTransactions,
       };
     });
   },
