@@ -36,10 +36,10 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 24.21.0
           cache: npm
@@ -92,3 +92,46 @@ jobs:
 
       - name: Build production application
         run: npm run build
+
+  local-chain:
+    name: Validate local-chain integration
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: employee_lending_chain_ci
+          POSTGRES_USER: chain_ci_user
+          POSTGRES_PASSWORD: chain_ci_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U chain_ci_user -d employee_lending_chain_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql://chain_ci_user:chain_ci_password@127.0.0.1:5432/employee_lending_chain_ci?schema=public
+      APP_URL: http://localhost:3000
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24.21.0
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npm run prisma:generate
+
+      - name: Run isolated local-chain lifecycle
+        run: npm run chain:test

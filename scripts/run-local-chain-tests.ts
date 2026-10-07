@@ -1,9 +1,16 @@
 import { spawn, type ChildProcess } from "node:child_process";
+import { readFile, rm } from "node:fs/promises";
 import { createServer } from "node:net";
 import path from "node:path";
-import { readFile } from "node:fs/promises";
 
 import { createPublicClient, http } from "viem";
+
+import {
+  LOCAL_CHAIN_ID,
+  localChainEnvironment,
+  parseLocalChainDeployment,
+  validateLocalChainDeployment,
+} from "../src/integrations/blockchain/local-chain.js";
 
 const projectRoot = process.cwd();
 const hardhatCli = path.join(
@@ -19,6 +26,13 @@ const vitestCli = path.join(
   "node_modules",
   "vitest",
   "vitest.mjs",
+);
+const prismaCli = path.join(
+  projectRoot,
+  "node_modules",
+  "prisma",
+  "build",
+  "index.js",
 );
 
 async function availablePort(): Promise<number> {
@@ -61,7 +75,7 @@ async function waitForRpc(rpcUrl: string, node: ChildProcess) {
     if (node.exitCode !== null)
       throw new Error("Hardhat node exited before becoming ready.");
     try {
-      if ((await client.getChainId()) === 31_337) return;
+      if ((await client.getChainId()) === LOCAL_CHAIN_ID) return;
     } catch {
       // The child process is still starting.
     }
@@ -70,9 +84,41 @@ async function waitForRpc(rpcUrl: string, node: ChildProcess) {
   throw new Error("Timed out waiting for the local Hardhat RPC endpoint.");
 }
 
+async function getChainInstanceId(rpcUrl: string): Promise<string> {
+  const response = await fetch(rpcUrl, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      id: 1,
+      method: "hardhat_metadata",
+      params: [],
+    }),
+  });
+  const payload = (await response.json()) as {
+    result?: { instanceId?: unknown };
+  };
+  if (typeof payload.result?.instanceId !== "string") {
+    throw new Error("Hardhat RPC did not return a valid chain instance ID.");
+  }
+  return payload.result.instanceId;
+}
+
+async function terminate(node: ChildProcess) {
+  if (node.exitCode !== null) return;
+  await new Promise<void>((resolve) => {
+    const timeout = setTimeout(resolve, 5_000);
+    node.once("exit", () => {
+      clearTimeout(timeout);
+      resolve();
+    });
+    node.kill();
+  });
+}
+
 const port = await availablePort();
 const rpcUrl = `http://127.0.0.1:${port}`;
-const testDeploymentPath = path.join("cache", "local-chain-test.json");
+const testDeploymentPath = path.join("cache", `local-chain-test-${port}.json`);
 const environment = {
   ...process.env,
   LOCAL_RPC_URL: rpcUrl,
@@ -95,6 +141,7 @@ const node = spawn(
 );
 
 try {
+  await rm(testDeploymentPath, { force: true });
   await waitForRpc(rpcUrl, node);
   await run(
     process.execPath,
@@ -107,17 +154,24 @@ try {
     ],
     environment,
   );
-  const deployment = JSON.parse(await readFile(testDeploymentPath, "utf8")) as {
-    mockUsdc: string;
-    lendingContract: string;
-  };
-  await run(process.execPath, [vitestCli, "run", "tests/local-chain.test.ts"], {
-    ...environment,
-    CHAIN_ENV: "local",
-    CHAIN_ID: "31337",
-    USDC_ADDRESS: deployment.mockUsdc,
-    LENDING_CONTRACT_ADDRESS: deployment.lendingContract,
+  const deployment = parseLocalChainDeployment(
+    JSON.parse(await readFile(testDeploymentPath, "utf8")),
+  );
+  validateLocalChainDeployment(deployment, {
+    rpcUrl,
+    chainInstanceId: await getChainInstanceId(rpcUrl),
   });
+  await run(process.execPath, [prismaCli, "migrate", "deploy"], environment);
+  await run(
+    process.execPath,
+    [vitestCli, "run", "--config", "vitest.local-chain.config.mts"],
+    {
+      ...environment,
+      ...localChainEnvironment(deployment),
+      LOCAL_CHAIN_TEST_RUN: "1",
+    },
+  );
 } finally {
-  node.kill();
+  await terminate(node);
+  await rm(testDeploymentPath, { force: true });
 }

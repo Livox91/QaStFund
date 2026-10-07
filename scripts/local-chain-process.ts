@@ -5,6 +5,11 @@ import { spawn } from "node:child_process";
 
 import { createPublicClient, http } from "viem";
 
+import {
+  LOCAL_CHAIN_ID,
+  LOCAL_RPC_URL,
+} from "../src/integrations/blockchain/local-chain.js";
+
 const projectRoot = process.cwd();
 const runtimeDirectory = path.join(projectRoot, "cache", "local-chain");
 const pidPath = path.join(runtimeDirectory, "node.pid");
@@ -17,7 +22,7 @@ const hardhatCli = path.join(
   "src",
   "cli.js",
 );
-const rpcUrl = process.env.LOCAL_RPC_URL ?? "http://127.0.0.1:8545";
+const rpcUrl = process.env.LOCAL_RPC_URL ?? LOCAL_RPC_URL;
 
 async function getChainId(): Promise<number | null> {
   try {
@@ -38,7 +43,7 @@ async function readManagedPid(): Promise<number | null> {
 
 async function waitForChain(expectedReady: boolean) {
   for (let attempt = 0; attempt < 100; attempt += 1) {
-    const ready = (await getChainId()) === 31_337;
+    const ready = (await getChainId()) === LOCAL_CHAIN_ID;
     if (ready === expectedReady) return;
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
@@ -52,7 +57,7 @@ async function waitForChain(expectedReady: boolean) {
 export async function startManagedLocalChain() {
   const existingChainId = await getChainId();
   if (existingChainId !== null) {
-    if (existingChainId !== 31_337) {
+    if (existingChainId !== LOCAL_CHAIN_ID) {
       throw new Error(`${rpcUrl} is already serving chain ${existingChainId}.`);
     }
     console.log(`Local Hardhat chain is already running at ${rpcUrl}.`);

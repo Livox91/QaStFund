@@ -13,12 +13,11 @@ export default defineConfig({
   },
   test: {
     environment: "node",
-    exclude: [
-      "contracts-test/**",
-      "node_modules/**",
+    include: [
       "tests/local-chain.test.ts",
+      "tests/p2p-lending-local-e2e.test.ts",
     ],
     setupFiles: ["dotenv/config"],
-    testTimeout: 10_000,
+    testTimeout: 60_000,
   },
 });

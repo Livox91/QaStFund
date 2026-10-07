@@ -3,11 +3,16 @@ import path from "node:path";
 
 import { network } from "hardhat";
 
-export const LOCAL_CHAIN_ID = 31_337;
+import {
+  LOCAL_CHAIN_ID,
+  LOCAL_DEPLOYMENT_PATH,
+  LOCAL_RPC_URL,
+} from "../src/integrations/blockchain/local-chain.js";
+
 export const INITIAL_MOCK_USDC_BALANCE = 1_000_000n * 10n ** 6n;
 
 export async function deployLocalChain() {
-  const { networkName, viem } = await network.create();
+  const { networkName, provider, viem } = await network.create();
   if (networkName !== "localhost") {
     throw new Error("Local deployment must use --network localhost.");
   }
@@ -26,6 +31,12 @@ export async function deployLocalChain() {
     throw new Error(
       `Refusing local deployment: expected chain ${LOCAL_CHAIN_ID}, received ${chainId}.`,
     );
+  }
+  const metadata = (await provider.request({
+    method: "hardhat_metadata",
+  })) as { instanceId?: unknown };
+  if (typeof metadata.instanceId !== "string" || !metadata.instanceId) {
+    throw new Error("The local Hardhat node did not provide an instance ID.");
   }
 
   const mockUsdc = await viem.deployContract("MockUSDC");
@@ -46,7 +57,8 @@ export async function deployLocalChain() {
   const deployment = {
     environment: "local",
     chainId,
-    rpcUrl: process.env.LOCAL_RPC_URL ?? "http://127.0.0.1:8545",
+    chainInstanceId: metadata.instanceId,
+    rpcUrl: process.env.LOCAL_RPC_URL ?? LOCAL_RPC_URL,
     mockUsdc: mockUsdc.address,
     lendingContract: lendingContract.address,
     authorizationSigner: authorizer.account.address,
@@ -60,7 +72,7 @@ export async function deployLocalChain() {
   } as const;
 
   const manifestPath = path.resolve(
-    process.env.LOCAL_DEPLOYMENT_PATH ?? "deployments/local.json",
+    process.env.LOCAL_DEPLOYMENT_PATH ?? LOCAL_DEPLOYMENT_PATH,
   );
   await mkdir(path.dirname(manifestPath), { recursive: true });
   await writeFile(
