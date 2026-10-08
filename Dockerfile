@@ -26,7 +26,10 @@ ENV DATABASE_URL="postgresql://build:build@127.0.0.1:5432/build?schema=public" \
     NEXT_PUBLIC_CIRCLE_CLIENT_URL=$NEXT_PUBLIC_CIRCLE_CLIENT_URL \
     NEXT_PUBLIC_ARC_LENDING_CONTRACT_ADDRESS=$NEXT_PUBLIC_ARC_LENDING_CONTRACT_ADDRESS
 
-RUN npm run contracts:compile && npm run prisma:generate && npm run build
+RUN mkdir -p public \
+    && npm run contracts:compile \
+    && npm run prisma:generate \
+    && npm run build
 
 FROM dependencies AS migrator
 
