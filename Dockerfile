@@ -3,6 +3,10 @@ FROM node:24-bookworm-slim AS base
 ENV NEXT_TELEMETRY_DISABLED=1
 WORKDIR /app
 
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates openssl \
+    && rm -rf /var/lib/apt/lists/*
+
 FROM base AS dependencies
 
 COPY package.json package-lock.json ./
@@ -22,7 +26,7 @@ ENV DATABASE_URL="postgresql://build:build@127.0.0.1:5432/build?schema=public" \
     NEXT_PUBLIC_CIRCLE_CLIENT_URL=$NEXT_PUBLIC_CIRCLE_CLIENT_URL \
     NEXT_PUBLIC_ARC_LENDING_CONTRACT_ADDRESS=$NEXT_PUBLIC_ARC_LENDING_CONTRACT_ADDRESS
 
-RUN npm run prisma:generate && npm run build
+RUN npm run contracts:compile && npm run prisma:generate && npm run build
 
 FROM dependencies AS migrator
 
@@ -40,7 +44,10 @@ ENV NODE_ENV=production \
 
 WORKDIR /app
 
-RUN groupadd --system --gid 1001 nodejs \
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates openssl \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd --system --gid 1001 nodejs \
     && useradd --system --uid 1001 --gid nodejs nextjs
 
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
