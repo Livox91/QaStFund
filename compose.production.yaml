@@ -1,0 +1,91 @@
+name: p2p-lending
+
+services:
+  database:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+    networks:
+      - internal
+
+  migrate:
+    build:
+      context: .
+      target: migrator
+    profiles: ["tools"]
+    env_file:
+      - ${APP_ENV_FILE:-deploy/.env.production}
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}?schema=public
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - internal
+
+  app:
+    build:
+      context: .
+      target: runner
+      args:
+        NEXT_PUBLIC_CIRCLE_CLIENT_KEY: ${NEXT_PUBLIC_CIRCLE_CLIENT_KEY:-}
+        NEXT_PUBLIC_CIRCLE_CLIENT_URL: ${NEXT_PUBLIC_CIRCLE_CLIENT_URL:-}
+        NEXT_PUBLIC_ARC_LENDING_CONTRACT_ADDRESS: ${NEXT_PUBLIC_ARC_LENDING_CONTRACT_ADDRESS:-}
+    restart: unless-stopped
+    env_file:
+      - ${APP_ENV_FILE:-deploy/.env.production}
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}?schema=public
+      HOSTNAME: 0.0.0.0
+      PORT: 3000
+    depends_on:
+      database:
+        condition: service_healthy
+    stop_grace_period: 30s
+    networks:
+      - internal
+      - web
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      app:
+        condition: service_healthy
+    networks:
+      - web
+
+networks:
+  internal:
+    internal: true
+  web:
+
+volumes:
+  postgres_data:
+  caddy_data:
+  caddy_config:
