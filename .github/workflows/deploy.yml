@@ -1,0 +1,37 @@
+name: Deploy Production to EC2
+
+on:
+  push:
+    branches:
+      - master # Ensure this matches your default branch (main or master)
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/app
+            
+            # 1. Pull the latest code from the repository
+            git pull origin master
+            
+            # 2. Start the database first so it is ready for migrations
+            docker compose -f compose.production.yaml --env-file deploy/.env.production up -d database
+            
+            # 3. Run the Prisma migrations using the tools profile
+            docker compose -f compose.production.yaml --env-file deploy/.env.production --profile tools run --rm migrate
+            
+            # 4. Build and start the Next.js app, scheduler, and Caddy reverse proxy
+            docker compose -f compose.production.yaml --env-file deploy/.env.production up -d --build
+            
+            # 5. Clean up old unused Docker images to save disk space on EC2
+            docker image prune -f
