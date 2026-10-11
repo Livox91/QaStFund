@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import {
-  resendEmployeeInvitationAction,
-  revokeEmployeeInvitationAction,
-  updateEmployeeAccessAction,
-} from "@/app/(employer)/employer/employees/actions";
+import { updateEmployeeAccessAction } from "@/app/(employer)/employer/employees/actions";
+import { InvitationActions } from "@/app/(employer)/employer/employees/invitation-actions";
 import { requireEmployerAdminPage } from "@/modules/auth/infrastructure/auth-guard";
 import { partitionEmployeesByLifecycle } from "@/modules/employee-directory/domain/employee-lifecycle";
 import { getEmployeeDirectoryDashboardForActor } from "@/modules/employee-directory/index.server";
@@ -176,31 +173,13 @@ function EmployeeTable({
                           {employee.invitation.expiresAt.toLocaleString()}
                         </div>
                       ) : null}
-                      <div className="mt-2 flex gap-2">
-                        <form action={resendEmployeeInvitationAction}>
-                          <input
-                            name="employeeId"
-                            type="hidden"
-                            value={employee.id}
-                          />
-                          <Button size="sm" type="submit">
-                            Resend invitation
-                          </Button>
-                        </form>
-                        {employee.invitation?.status === "PENDING" &&
-                        employee.invitation.expiresAt > new Date() ? (
-                          <form action={revokeEmployeeInvitationAction}>
-                            <input
-                              name="employeeId"
-                              type="hidden"
-                              value={employee.id}
-                            />
-                            <Button size="sm" type="submit" variant="outline">
-                              Revoke invitation
-                            </Button>
-                          </form>
-                        ) : null}
-                      </div>
+                      <InvitationActions
+                        canRevoke={
+                          employee.invitation?.status === "PENDING" &&
+                          employee.invitation.expiresAt > new Date()
+                        }
+                        employeeId={employee.id}
+                      />
                     </TableCell>
                   ) : (
                     <>

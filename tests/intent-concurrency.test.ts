@@ -179,7 +179,6 @@ describe("on-chain intent concurrency", () => {
     });
     await prisma.arcWallet.create({
       data: {
-        organizationId,
         userId: borrowerUserId,
         address: borrowerAddress,
         status: "ACTIVE",

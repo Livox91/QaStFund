@@ -1,3 +1,5 @@
+import "dotenv/config";
+
 import { runConfiguredArcReconciliation } from "@/modules/blockchain-reconciliation/index.server";
 
 const result = await runConfiguredArcReconciliation();

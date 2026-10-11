@@ -22,7 +22,6 @@ const actor = {
 function wallet(enrollmentState: ArcWalletEnrollmentState = "REGISTERING") {
   return {
     id: "33333333-3333-4333-8333-333333333333",
-    organizationId: actor.organizationId,
     userId: actor.userId,
     address: null,
     network: "ARC_TESTNET" as const,
@@ -85,9 +84,22 @@ describe("Circle wallet identity lifecycle", () => {
     ).resolves.toEqual({ action: "LOGIN", username: null });
   });
 
-  it("uses login on retry after a persisted partial registration", async () => {
+  it("retries registration after interruption before Circle registered the passkey", async () => {
     const begin = vi.fn(async () => ({
       wallet: wallet("REGISTERING"),
+      action: "REGISTER" as const,
+    }));
+    await expect(
+      beginArcWalletEnrollment(actor, "CREATE", repository(begin)),
+    ).resolves.toEqual({
+      action: "REGISTER",
+      username: "employee_c469039de6a04dcaadbe090f84b567ce",
+    });
+  });
+
+  it("uses login after Circle registration completed", async () => {
+    const begin = vi.fn(async () => ({
+      wallet: wallet("REGISTERED"),
       action: "LOGIN" as const,
     }));
     await expect(

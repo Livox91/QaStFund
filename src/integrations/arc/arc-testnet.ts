@@ -11,7 +11,7 @@ export const ARC_USDC_ADDRESS =
   "0x3600000000000000000000000000000000000000" as const;
 export const ARC_USDC_DECIMALS = 6;
 export const ARC_MODULAR_TRANSPORT_PATH = "arcTestnet" as const;
-export const ARC_TESTNET_RPC_URL = "https://rpc.testnet.arc.network" as const;
+export const ARC_TESTNET_RPC_URL = "https://rpc.testnet.arc.io" as const;
 
 export const arcTestnet = defineChain({
   id: ARC_TESTNET_CHAIN_ID,
@@ -25,7 +25,7 @@ export const arcTestnet = defineChain({
     default: { http: [ARC_TESTNET_RPC_URL] },
   },
   blockExplorers: {
-    default: { name: "ArcScan", url: "https://testnet.arcscan.app" },
+    default: { name: "Arc Explorer", url: "https://explorer.testnet.arc.io" },
   },
   testnet: true,
 });

@@ -8,8 +8,10 @@ import { ArcWalletConflictError } from "@/modules/arc-wallet/application/errors"
 import { prismaArcWalletRepository } from "@/modules/arc-wallet/infrastructure/prisma-arc-wallet-repository";
 
 const organizationId = randomUUID();
+const nextOrganizationId = randomUUID();
 const firstUserId = randomUUID();
 const secondUserId = randomUUID();
+const returningUserId = randomUUID();
 const address = "0x2222222222222222222222222222222222222222" as const;
 const now = new Date("2026-09-29T12:00:00.000Z");
 
@@ -35,19 +37,28 @@ describe("Arc wallet database constraints", () => {
         slug: `arc-wallet-${organizationId}`,
       },
     });
+    await prisma.organization.create({
+      data: {
+        id: nextOrganizationId,
+        name: "Next Arc wallet test organization",
+        slug: `arc-wallet-${nextOrganizationId}`,
+      },
+    });
     await createEmployee(firstUserId, `${firstUserId}@example.test`);
     await createEmployee(secondUserId, `${secondUserId}@example.test`);
   });
 
   afterAll(async () => {
-    await prisma.organization.delete({ where: { id: organizationId } });
+    await prisma.organization.deleteMany({
+      where: { id: { in: [organizationId, nextOrganizationId] } },
+    });
     await prisma.user.deleteMany({
-      where: { id: { in: [firstUserId, secondUserId] } },
+      where: { id: { in: [firstUserId, secondUserId, returningUserId] } },
     });
     await prisma.$disconnect();
   });
 
-  it("associates the wallet with the employee and organization", async () => {
+  it("associates the wallet with the employee", async () => {
     const challenge = await prismaArcWalletRepository.createChallenge({
       organizationId,
       userId: firstUserId,
@@ -63,7 +74,6 @@ describe("Arc wallet database constraints", () => {
       now,
     });
     expect(wallet).toMatchObject({
-      organizationId,
       userId: firstUserId,
       address,
       network: "ARC_TESTNET",
@@ -81,11 +91,12 @@ describe("Arc wallet database constraints", () => {
       nonceHash: "b".repeat(64),
       expiresAt: new Date("2026-09-29T12:10:00.000Z"),
     });
-    expect(
-      await prisma.arcWallet.count({
+    await expect(
+      prisma.arcWallet.findMany({
         where: { userId: firstUserId, network: ArcWalletNetwork.ARC_TESTNET },
+        select: { status: true, enrollmentState: true },
       }),
-    ).toBe(1);
+    ).resolves.toEqual([{ status: "ACTIVE", enrollmentState: "ACTIVE" }]);
   });
 
   it("prevents one address from being associated with two employees", async () => {
@@ -139,5 +150,130 @@ describe("Arc wallet database constraints", () => {
         "passkeyCredential",
       ]),
     );
+  });
+
+  it("reconnects the same user-owned wallet after an organization change", async () => {
+    await prisma.organizationMembership.update({
+      where: {
+        organizationId_userId: { organizationId, userId: firstUserId },
+      },
+      data: { isActive: false, employmentStatus: "TERMINATED" },
+    });
+    await prisma.organizationMembership.create({
+      data: {
+        organizationId: nextOrganizationId,
+        userId: firstUserId,
+        role: MembershipRole.EMPLOYEE,
+      },
+    });
+
+    const enrollment = await prismaArcWalletRepository.beginEnrollment({
+      organizationId: nextOrganizationId,
+      userId: firstUserId,
+      intent: "RECOVER",
+    });
+    expect(enrollment.action).toBe("LOGIN");
+    expect(enrollment.wallet.address).toBe(address);
+
+    const challenge = await prismaArcWalletRepository.createChallenge({
+      organizationId: nextOrganizationId,
+      userId: firstUserId,
+      address,
+      nonceHash: "d".repeat(64),
+      expiresAt: new Date("2026-09-29T12:15:00.000Z"),
+    });
+    const reconnected = await prismaArcWalletRepository.activateFromChallenge({
+      challengeId: challenge.id,
+      organizationId: nextOrganizationId,
+      userId: firstUserId,
+      address,
+      now,
+    });
+
+    expect(reconnected.id).toBe(enrollment.wallet.id);
+    expect(reconnected.address).toBe(address);
+    await expect(
+      prisma.arcWallet.count({
+        where: { userId: firstUserId, network: ArcWalletNetwork.ARC_TESTNET },
+      }),
+    ).resolves.toBe(1);
+  });
+
+  it("relinks a signed wallet when the returning employee has a new account email", async () => {
+    await prisma.organizationMembership.update({
+      where: {
+        organizationId_userId: {
+          organizationId: nextOrganizationId,
+          userId: firstUserId,
+        },
+      },
+      data: { isActive: false, employmentStatus: "TERMINATED" },
+    });
+    await prisma.user.create({
+      data: {
+        id: returningUserId,
+        email: `${returningUserId}@example.test`,
+        name: "Returning employee",
+        passwordHash: "test-only",
+      },
+    });
+    await prisma.organizationMembership.create({
+      data: {
+        organizationId: nextOrganizationId,
+        userId: returningUserId,
+        role: MembershipRole.EMPLOYEE,
+      },
+    });
+    await prismaArcWalletRepository.beginEnrollment({
+      organizationId: nextOrganizationId,
+      userId: returningUserId,
+      intent: "RECOVER",
+    });
+    const challenge = await prismaArcWalletRepository.createChallenge({
+      organizationId: nextOrganizationId,
+      userId: returningUserId,
+      address,
+      nonceHash: "e".repeat(64),
+      expiresAt: new Date("2026-09-29T12:20:00.000Z"),
+    });
+    const reconnected = await prismaArcWalletRepository.activateFromChallenge({
+      challengeId: challenge.id,
+      organizationId: nextOrganizationId,
+      userId: returningUserId,
+      address,
+      now,
+    });
+
+    expect(reconnected).toMatchObject({
+      userId: returningUserId,
+      address,
+      status: "ACTIVE",
+    });
+    await expect(
+      prisma.arcWallet.findUnique({
+        where: {
+          userId_network: {
+            userId: firstUserId,
+            network: ArcWalletNetwork.ARC_TESTNET,
+          },
+        },
+      }),
+    ).resolves.toBeNull();
+  });
+
+  it("preserves a personal wallet when the former organization is deleted", async () => {
+    await prisma.organization.delete({ where: { id: organizationId } });
+
+    await expect(
+      prisma.arcWallet.findUnique({
+        where: {
+          userId_network: {
+            userId: returningUserId,
+            network: ArcWalletNetwork.ARC_TESTNET,
+          },
+        },
+        select: { address: true, status: true },
+      }),
+    ).resolves.toEqual({ address, status: "ACTIVE" });
   });
 });

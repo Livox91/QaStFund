@@ -25,7 +25,6 @@ export const prismaEmployeeIdentityRepository: EmployeeIdentityRepository = {
             updatedAt: true,
             arcWallets: {
               where: {
-                organizationId,
                 network: ArcWalletNetwork.ARC_TESTNET,
               },
               take: 1,

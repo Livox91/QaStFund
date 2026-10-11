@@ -26,7 +26,6 @@ import { ApplicationError } from "@/shared/errors/application-error";
 
 function mapWallet(row: {
   id: string;
-  organizationId: string;
   userId: string;
   address: string | null;
   status: ArcWalletStatus;
@@ -81,12 +80,20 @@ async function requireEmployeeMembership(
 
 export const prismaArcWalletRepository: ArcWalletRepository = {
   async findForEmployee(input) {
-    const row = await prisma.arcWallet.findFirst({
-      where: {
-        organizationId: input.organizationId,
-        userId: input.userId,
-        network: ArcWalletNetwork.ARC_TESTNET,
-      },
+    const row = await prisma.$transaction(async (transaction) => {
+      await requireEmployeeMembership(
+        transaction,
+        input.organizationId,
+        input.userId,
+      );
+      return transaction.arcWallet.findUnique({
+        where: {
+          userId_network: {
+            userId: input.userId,
+            network: ArcWalletNetwork.ARC_TESTNET,
+          },
+        },
+      });
     });
     return row ? mapWallet(row) : null;
   },
@@ -106,11 +113,6 @@ export const prismaArcWalletRepository: ArcWalletRepository = {
           },
         },
       });
-      if (existing && existing.organizationId !== input.organizationId) {
-        throw new ArcWalletConflictError(
-          "This employee already has an Arc wallet in another organization.",
-        );
-      }
       if (existing?.status === ArcWalletStatus.ACTIVE) {
         return { wallet: mapWallet(existing), action: "LOGIN" as const };
       }
@@ -125,11 +127,17 @@ export const prismaArcWalletRepository: ArcWalletRepository = {
                 },
               })
             : existing;
-        return { wallet: mapWallet(wallet), action: "LOGIN" as const };
+        return {
+          wallet: mapWallet(wallet),
+          action:
+            input.intent === "CREATE" &&
+            existing.enrollmentState === ArcWalletEnrollmentState.REGISTERING
+              ? ("REGISTER" as const)
+              : ("LOGIN" as const),
+        };
       }
       const wallet = await transaction.arcWallet.create({
         data: {
-          organizationId: input.organizationId,
           userId: input.userId,
           network: ArcWalletNetwork.ARC_TESTNET,
           chainId: ARC_TESTNET_CHAIN_ID,
@@ -152,14 +160,20 @@ export const prismaArcWalletRepository: ArcWalletRepository = {
   },
 
   async markRegistrationComplete(input) {
-    await prisma.arcWallet.updateMany({
-      where: {
-        organizationId: input.organizationId,
-        userId: input.userId,
-        network: ArcWalletNetwork.ARC_TESTNET,
-        status: { not: ArcWalletStatus.ACTIVE },
-      },
-      data: { enrollmentState: ArcWalletEnrollmentState.REGISTERED },
+    await prisma.$transaction(async (transaction) => {
+      await requireEmployeeMembership(
+        transaction,
+        input.organizationId,
+        input.userId,
+      );
+      await transaction.arcWallet.updateMany({
+        where: {
+          userId: input.userId,
+          network: ArcWalletNetwork.ARC_TESTNET,
+          status: { not: ArcWalletStatus.ACTIVE },
+        },
+        data: { enrollmentState: ArcWalletEnrollmentState.REGISTERED },
+      });
     });
   },
 
@@ -178,11 +192,6 @@ export const prismaArcWalletRepository: ArcWalletRepository = {
           },
         },
       });
-      if (existing && existing.organizationId !== input.organizationId) {
-        throw new ArcWalletConflictError(
-          "This employee already has an Arc wallet in another organization.",
-        );
-      }
       if (
         existing?.status === ArcWalletStatus.ACTIVE &&
         existing.address?.toLowerCase() !== input.address.toLowerCase()
@@ -194,7 +203,6 @@ export const prismaArcWalletRepository: ArcWalletRepository = {
       if (!existing) {
         await transaction.arcWallet.create({
           data: {
-            organizationId: input.organizationId,
             userId: input.userId,
             network: ArcWalletNetwork.ARC_TESTNET,
             chainId: ARC_TESTNET_CHAIN_ID,
@@ -203,7 +211,7 @@ export const prismaArcWalletRepository: ArcWalletRepository = {
             enrollmentState: ArcWalletEnrollmentState.VERIFYING,
           },
         });
-      } else {
+      } else if (existing.status !== ArcWalletStatus.ACTIVE) {
         await transaction.arcWallet.update({
           where: { id: existing.id },
           data: {
@@ -238,23 +246,75 @@ export const prismaArcWalletRepository: ArcWalletRepository = {
           data: { consumedAt: input.now },
         });
         if (consumed.count !== 1) throw new ArcWalletChallengeError();
-        const wallet = await transaction.arcWallet.update({
-          where: {
-            userId_network: {
-              userId: input.userId,
-              network: ArcWalletNetwork.ARC_TESTNET,
+        const normalizedAddress = input.address.toLowerCase();
+        const [currentWallet, addressOwner] = await Promise.all([
+          transaction.arcWallet.findUnique({
+            where: {
+              userId_network: {
+                userId: input.userId,
+                network: ArcWalletNetwork.ARC_TESTNET,
+              },
             },
-          },
+          }),
+          transaction.arcWallet.findUnique({
+            where: { address: normalizedAddress },
+            include: {
+              user: {
+                select: {
+                  memberships: {
+                    where: { isActive: true },
+                    select: { id: true },
+                    take: 1,
+                  },
+                },
+              },
+            },
+          }),
+        ]);
+        if (addressOwner && addressOwner.userId !== input.userId) {
+          if (addressOwner.user.memberships.length > 0) {
+            throw new ArcWalletConflictError(
+              "That Arc wallet is still associated with an active employee account.",
+            );
+          }
+          if (
+            currentWallet &&
+            (currentWallet.status === ArcWalletStatus.ACTIVE ||
+              currentWallet.address !== null)
+          ) {
+            throw new ArcWalletConflictError(
+              "This employee already has a different active Arc wallet.",
+            );
+          }
+          if (currentWallet) {
+            await transaction.arcWallet.delete({
+              where: { id: currentWallet.id },
+            });
+          }
+          const reassigned = await transaction.arcWallet.update({
+            where: { id: addressOwner.id },
+            data: {
+              userId: input.userId,
+              chainId: ARC_TESTNET_CHAIN_ID,
+              walletType: ArcWalletType.CIRCLE_MODULAR,
+              status: ArcWalletStatus.ACTIVE,
+              enrollmentState: ArcWalletEnrollmentState.ACTIVE,
+            },
+          });
+          return mapWallet(reassigned);
+        }
+        if (!currentWallet) throw new ArcWalletChallengeError();
+        const activated = await transaction.arcWallet.update({
+          where: { id: currentWallet.id },
           data: {
-            address: input.address.toLowerCase(),
-            organizationId: input.organizationId,
+            address: normalizedAddress,
             chainId: ARC_TESTNET_CHAIN_ID,
             walletType: ArcWalletType.CIRCLE_MODULAR,
             status: ArcWalletStatus.ACTIVE,
             enrollmentState: ArcWalletEnrollmentState.ACTIVE,
           },
         });
-        return mapWallet(wallet);
+        return mapWallet(activated);
       });
     } catch (error) {
       if (

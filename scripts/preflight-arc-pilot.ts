@@ -2,6 +2,7 @@ import "dotenv/config";
 
 import {
   createPublicClient,
+  formatUnits,
   getAddress,
   http,
   isAddress,
@@ -13,14 +14,28 @@ import { privateKeyToAccount } from "viem/accounts";
 import { validateEnvironment } from "@/infrastructure/config/environment";
 import { prisma } from "@/infrastructure/database/prisma";
 import {
+  ARC_NATIVE_USDC_DECIMALS,
   ARC_TESTNET_CHAIN_ID,
   ARC_TESTNET_RPC_URL,
   ARC_USDC_ADDRESS,
   arcTestnet,
   getArcModularClientUrl,
 } from "@/integrations/arc/arc-testnet";
-import { employeeLendingEscrowAbi } from "@/integrations/arc/employee-lending-escrow";
-import { runConfiguredArcReconciliation } from "@/modules/blockchain-reconciliation/index.server";
+import {
+  employeeLendingEscrowAbi,
+  erc20UsdcAbi,
+} from "@/integrations/arc/employee-lending-escrow";
+import {
+  inspectPilotWalletBalances,
+  inspectPilotWalletRecords,
+  MIN_PILOT_NATIVE_FEE_BALANCE,
+  MIN_PILOT_USDC_BALANCE,
+  type PilotWalletBalance,
+} from "@/modules/arc-wallet/application/arc-pilot-readiness";
+import {
+  getReconciliationCatchUpIssue,
+  getReconciliationPreflightIssues,
+} from "@/modules/blockchain-reconciliation/application/preflight-readiness";
 import { getConfiguredDependencyHealth } from "@/server/application/health/get-configured-dependency-health";
 
 type CheckResult = Readonly<{
@@ -211,32 +226,49 @@ await check("Escrow USDC binding", async () => {
 });
 
 await check("Reconciliation configuration", () => {
-  if (process.env.ARC_RECONCILIATION_ENABLED !== "true") {
-    throw new Error("ARC_RECONCILIATION_ENABLED must be explicitly true");
+  if (!deploymentBlock || !latestBlock) {
+    throw new Error("deployment block and RPC checks did not pass");
   }
-  if (required("ARC_RECONCILIATION_RPC_URL") !== ARC_TESTNET_RPC_URL) {
-    throw new Error("reconciliation RPC is not the intended Arc Testnet RPC");
-  }
-  strongSecret("ARC_RECONCILIATION_CRON_SECRET");
-  if (!deploymentBlock) throw new Error("deployment block check did not pass");
+  const cronSecret = strongSecret("ARC_RECONCILIATION_CRON_SECRET");
+  const issues = getReconciliationPreflightIssues({
+    enabled: process.env.ARC_RECONCILIATION_ENABLED === "true",
+    rpcUrl: required("ARC_RECONCILIATION_RPC_URL"),
+    expectedRpcUrl: ARC_TESTNET_RPC_URL,
+    startBlock: deploymentBlock,
+    latestBlock,
+    cronSecret,
+  });
+  if (issues.length > 0) throw new Error(issues.join("; "));
   return `enabled from block ${deploymentBlock}`;
 });
 
-await check("Reconciliation health", async () => {
-  if (!contractAddress || !deploymentBlock) {
-    throw new Error("reconciliation prerequisites did not pass");
+await check("Reconciliation health (read-only)", async () => {
+  if (!contractAddress || !deploymentBlock || !latestBlock) {
+    throw new Error(
+      "reconciliation, deployment block, and RPC checks must pass first",
+    );
   }
-  await runConfiguredArcReconciliation();
   const health = await getConfiguredDependencyHealth();
   if (health.dependencies.arc.status !== "healthy") {
     throw new Error("Arc dependency health is not healthy");
   }
   if (health.dependencies.reconciliation.status !== "healthy") {
     throw new Error(
-      `reconciliation is ${health.dependencies.reconciliation.status}`,
+      `reconciliation is ${health.dependencies.reconciliation.status}; run npm run reconcile:arc explicitly after reviewing its database-write behavior`,
     );
   }
-  return "enabled and healthy";
+  const reconciliation = health.dependencies.reconciliation;
+  const catchUpIssue = getReconciliationCatchUpIssue({
+    cursorNextBlock:
+      "reconciliationCursor" in reconciliation
+        ? (reconciliation.reconciliationCursor ?? null)
+        : null,
+    latestBlock,
+    confirmationDepth: Number(required("ARC_RECONCILIATION_CONFIRMATIONS")),
+    blockRange: Number(required("ARC_RECONCILIATION_BLOCK_RANGE")),
+  });
+  if (catchUpIssue) throw new Error(catchUpIssue);
+  return "enabled with a healthy persisted cursor; no reconciliation pass was started by preflight";
 });
 
 await check("Circle configuration", async () => {
@@ -268,38 +300,139 @@ await check("Circle configuration", async () => {
   return "credentials accepted by Circle Arc RPC";
 });
 
-await check("Circle pilot wallets", async () => {
+let pilotWalletInspection:
+  ReturnType<typeof inspectPilotWalletRecords> | undefined;
+
+await check("Distinct active Circle pilot wallets", async () => {
   const [wallets, consumedChallenges] = await Promise.all([
     prisma.arcWallet.findMany({
-      where: { status: "ACTIVE", network: "ARC_TESTNET" },
-      select: { userId: true, address: true },
+      where: { network: "ARC_TESTNET" },
+      select: {
+        userId: true,
+        address: true,
+        status: true,
+        enrollmentState: true,
+      },
     }),
     prisma.arcWalletChallenge.findMany({
       where: { consumedAt: { not: null } },
-      select: { userId: true, address: true },
+      select: {
+        organizationId: true,
+        userId: true,
+        address: true,
+        consumedAt: true,
+      },
     }),
   ]);
-  const users = new Set(wallets.map((wallet) => wallet.userId));
-  const addresses = new Set(
-    wallets.flatMap((wallet) =>
-      wallet.address ? [wallet.address.toLowerCase()] : [],
-    ),
+  pilotWalletInspection = inspectPilotWalletRecords(
+    wallets,
+    consumedChallenges,
   );
-  const verifiedUsers = new Set(
-    consumedChallenges
-      .filter(
-        (challenge) =>
-          users.has(challenge.userId) &&
-          addresses.has(challenge.address.toLowerCase()),
-      )
-      .map((challenge) => challenge.userId),
-  );
-  if (users.size < 2 || addresses.size < 2 || verifiedUsers.size < 2) {
+  if (pilotWalletInspection.duplicateAddresses.length > 0) {
     throw new Error(
-      `need two distinct ownership-verified active wallets; found ${users.size} users, ${addresses.size} addresses, and ${verifiedUsers.size} verified users`,
+      `duplicate ownership detected for ${pilotWalletInspection.duplicateAddresses.join(", ")}`,
     );
   }
-  return `${verifiedUsers.size} distinct users with ownership-verified, distinct wallet addresses`;
+  const users = new Set(
+    pilotWalletInspection.activeWallets.map((wallet) => wallet.userId),
+  );
+  const addresses = new Set(
+    pilotWalletInspection.activeWallets.map((wallet) =>
+      wallet.address.toLowerCase(),
+    ),
+  );
+  if (users.size < 2 || addresses.size < 2) {
+    throw new Error(
+      `need two distinct active wallets; found ${users.size} users and ${addresses.size} addresses`,
+    );
+  }
+  return `${users.size} distinct users and ${addresses.size} distinct active addresses`;
+});
+
+await check("Circle wallet ownership verification", () => {
+  if (!pilotWalletInspection) {
+    throw new Error("wallet records could not be inspected");
+  }
+  if (pilotWalletInspection.verifiedWallets.length < 2) {
+    throw new Error(
+      `need two exact user/address ownership proofs; found ${pilotWalletInspection.verifiedWallets.length} verified and ${pilotWalletInspection.unverifiedWallets.length} unverified active wallets`,
+    );
+  }
+  return `${pilotWalletInspection.verifiedWallets.length} active wallets have consumed, exact-match ownership challenges`;
+});
+
+let pilotWalletBalances: PilotWalletBalance[] | undefined;
+
+await check("Pilot wallet ERC-20 USDC balances", async () => {
+  if (!rpcClient || !pilotWalletInspection) {
+    throw new Error("RPC and wallet record checks must pass first");
+  }
+  if (pilotWalletInspection.verifiedWallets.length < 2) {
+    throw new Error(
+      "two ownership-verified wallets are required before balances can be checked",
+    );
+  }
+  pilotWalletBalances = await Promise.all(
+    pilotWalletInspection.verifiedWallets.map(async (wallet) => ({
+      ...wallet,
+      usdcBalance: await rpcClient!.readContract({
+        address: ARC_USDC_ADDRESS,
+        abi: erc20UsdcAbi,
+        functionName: "balanceOf",
+        args: [wallet.address],
+      }),
+      nativeFeeBalance: await rpcClient!.getBalance({
+        address: wallet.address,
+      }),
+    })),
+  );
+  const readiness = inspectPilotWalletBalances(pilotWalletBalances);
+  if (readiness.sufficientUsdc.length < 2) {
+    const observed = pilotWalletBalances
+      .map(
+        (wallet) =>
+          `${wallet.address}=${formatUnits(wallet.usdcBalance, 6)} USDC`,
+      )
+      .join(", ");
+    throw new Error(
+      `need two wallets with at least ${formatUnits(MIN_PILOT_USDC_BALANCE, 6)} ERC-20 USDC; observed ${observed}`,
+    );
+  }
+  return readiness.sufficientUsdc
+    .map(
+      (wallet) =>
+        `${wallet.address}=${formatUnits(wallet.usdcBalance, 6)} USDC`,
+    )
+    .join(", ");
+});
+
+await check("Pilot wallet native fee balances", () => {
+  if (!pilotWalletBalances) {
+    throw new Error("wallet balances could not be read");
+  }
+  const readiness = inspectPilotWalletBalances(pilotWalletBalances);
+  if (readiness.sufficientNativeFees.length < 2) {
+    const observed = pilotWalletBalances
+      .map(
+        (wallet) =>
+          `${wallet.address}=${formatUnits(wallet.nativeFeeBalance, ARC_NATIVE_USDC_DECIMALS)} native USDC`,
+      )
+      .join(", ");
+    throw new Error(
+      `need two wallets with a non-zero native fee balance (minimum ${MIN_PILOT_NATIVE_FEE_BALANCE} base unit); observed ${observed}`,
+    );
+  }
+  if (readiness.readyWallets.length < 2) {
+    throw new Error(
+      "token and native fee balances are not sufficient on the same two wallets",
+    );
+  }
+  return readiness.sufficientNativeFees
+    .map(
+      (wallet) =>
+        `${wallet.address}=${formatUnits(wallet.nativeFeeBalance, ARC_NATIVE_USDC_DECIMALS)} native USDC`,
+    )
+    .join(", ");
 });
 
 await check("ERPNext disabled", () => {

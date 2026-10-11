@@ -123,7 +123,6 @@ export type OrganizationScalarFieldEnum = (typeof OrganizationScalarFieldEnum)[k
 
 export const ArcWalletScalarFieldEnum = {
   id: 'id',
-  organizationId: 'organizationId',
   userId: 'userId',
   address: 'address',
   network: 'network',

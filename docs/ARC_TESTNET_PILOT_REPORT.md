@@ -1,131 +1,143 @@
-# Arc Testnet pilot report
+# Arc Testnet end-to-end pilot report
 
-Date: 2026-10-04  
-Repository revision: `3358f1c7110101b79dd1b2b408e4fd9aef0b61cf`  
-Pilot result: **BLOCKED AT PREFLIGHT — NOT READY FOR A CONTROLLED EMPLOYER PILOT**
+Date: 2026-10-10 (Asia/Karachi)
 
-No Arc transaction, contract deployment, wallet enrollment, or test-fund
-movement was attempted. Required Arc configuration was absent, so stopping at
-preflight was the only safe result.
+Repository revision: `dae16664818803cc4a5bd03d7153bfbc03b1800d`
 
-## Preflight
+Result: **BLOCKED ON WALLET FUNDING/RECONCILIATION FRESHNESS — NO FINANCIAL TRANSACTION SUBMITTED**
 
-| Check                        | Evidence                                                                                                                                                                                                                            | Result           |
-| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
-| CI                           | GitHub Actions run `37195239253` succeeded for the repository revision above. The current working-tree changes also passed the local CI-equivalent application, contract, lint, typecheck, format, migration, DR, and build checks. | PASS             |
-| Migrations                   | PostgreSQL reports all 30 committed migrations applied. A fresh disposable database was also rebuilt from all 30 migrations.                                                                                                        | PASS             |
-| Authorized escrow deployed   | No configured escrow address and no deployment record available to inspect.                                                                                                                                                         | BLOCKED          |
-| Application contract address | `NEXT_PUBLIC_ARC_LENDING_CONTRACT_ADDRESS` is missing.                                                                                                                                                                              | BLOCKED          |
-| Authorizer consistency       | `ARC_BORROW_AUTHORIZER_PRIVATE_KEY` and the deployment-only public authorizer address are missing, so the configured signer cannot be compared with `authorizationSigner()` on-chain.                                               | BLOCKED          |
-| Arc RPC                      | Public RPC returned chain ID `0x4cef52` (5042002).                                                                                                                                                                                  | PASS             |
-| USDC                         | The canonical testnet USDC address has deployed bytecode on the public Arc RPC, but `ARC_USDC_ADDRESS` is absent from the runtime configuration.                                                                                    | BLOCKED          |
-| Circle                       | A public Circle client key and client URL are present. Wallet enrollment could not be validated without the rest of the Arc configuration and separate pilot accounts.                                                              | BLOCKED          |
-| Reconciliation               | Dependency health reports reconciliation disabled; contract address, start block, cron secret, and enabled flag are absent.                                                                                                         | BLOCKED          |
-| ERPNext                      | Dependency health reports ERPNext disabled. It is disabled by the application default rather than an explicit local `false` value.                                                                                                  | PASS WITH ACTION |
-| Rate limiting                | Runtime default is enabled. A dedicated disposable account probe returned `303,303,303,303,303,429`; the sixth attempt was limited. The log contained only a truncated identity fingerprint.                                        | PASS             |
-| Health/monitoring            | Liveness was `alive`; readiness reported healthy configuration and database; dependency health correctly reported degraded Arc, healthy configured Circle, disabled ERPNext, and disabled reconciliation.                           | PASS             |
-| Backup/restore               | PostgreSQL 17.11 created and checksum-validated a 123,775-byte backup, restored it into a disposable database, verified the cursor, and passed cursor-resume and duplicate-event reconciliation tests.                              | PASS             |
+This run stopped at the mandatory preflight boundary. PostgreSQL is healthy,
+all migrations are current, and two distinct ownership-verified Circle wallets
+are active. Both wallets have zero ERC-20 USDC and zero native fee balance, and
+the reconciliation cursor is stale. No offer was created or funded, no loan was
+borrowed, and no repayment was submitted. Local or mocked results below are not
+presented as Arc Testnet lifecycle evidence.
 
-For a controlled deployment, configure a dedicated
-`RATE_LIMIT_HASH_SECRET` instead of relying on the documented database-URL
-fallback. Set `ERP_NEXT_SYNC_ENABLED=false` explicitly if ERPNext is not part of
-the pilot.
+## Environment and preflight
 
-## Test organization
+| Check               | Evidence                                                                                                                                                                                                                                      | Result  |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| Network             | Arc Testnet RPC `https://rpc.testnet.arc.io` returned chain ID `5042002` and block `66502473` during the latest preflight                                                                                                                     | PASS    |
+| Escrow deployment   | Contract `0x46c4a0a877e6967542078A580468b80195c466cC` has bytecode; deployment transaction `0xde944502a1c26c7a647c39665c6ed8dc973f615c7aa1f690be1d2d4dc8fdf00d` succeeded at block `66108453` and its receipt matches the configured contract | PASS    |
+| USDC                | Canonical token `0x3600000000000000000000000000000000000000` has bytecode, reports 6 decimals, and is the token bound to the escrow                                                                                                           | PASS    |
+| Borrow authorizer   | Server-derived signer, configured public signer, and `authorizationSigner()` all match `0xa9200E14C8BeA07187368232455b2b1c8F2Bc63f`                                                                                                           | PASS    |
+| Circle Arc RPC      | The configured Circle client was accepted and returned Arc Testnet chain ID                                                                                                                                                                   | PASS    |
+| Database            | PostgreSQL container is healthy and Prisma connected successfully                                                                                                                                                                             | PASS    |
+| Migrations          | Prisma found 37 migrations and reported the schema up to date                                                                                                                                                                                 | PASS    |
+| Reconciliation      | Enabled from deployment block `66108453`; the read-only preflight reported that the persisted cursor is stale and requires a separately reviewed reconciliation run                                                                           | BLOCKED |
+| Pilot wallets       | Two distinct active users and addresses have consumed exact user/address ownership challenges                                                                                                                                                 | PASS    |
+| Wallet funding/fees | Both verified wallets report 0 ERC-20 USDC and 0 native fee balance                                                                                                                                                                           | BLOCKED |
+| Test-only isolation | The configured chain and token are Arc Testnet values; no transaction was sent. Credential provenance cannot be proven from configuration alone                                                                                               | PARTIAL |
+| ERPNext             | Explicitly disabled for the pilot                                                                                                                                                                                                             | PASS    |
+| Rate-limit secret   | Present and passed the repository strength check without being printed                                                                                                                                                                        | PASS    |
 
-Test users created: **0**.
+The escrow's observed USDC balance after the halted run was `0` base units.
 
-The realistic organization was not created because contract, wallet, and
-reconciliation prerequisites failed. Creating identities before the intended
-chain deployment is known would leave misleading pilot data and would not prove
-the requested lifecycle.
+## Offer funding evidence
 
-## Lifecycle results
+- Lender public wallet: not yet designated; two verified candidate wallets are enrolled.
+- Offer/database identifier: none created.
+- Funding transaction hash and block: none; no transaction was submitted.
+- Contract/application comparison: not possible.
 
-| Scenario                           | Expected      | Actual                                | Result  | Transaction |
-| ---------------------------------- | ------------- | ------------------------------------- | ------- | ----------- |
-| Employer setup and employee import | Configured    | Not run; preflight blocked            | BLOCKED | —           |
-| Wallet enrollment                  | Ready         | Not run; Arc configuration incomplete | BLOCKED | —           |
-| Offer creation/funding             | Confirmed     | Not submitted                         | BLOCKED | —           |
-| Offer acceptance                   | Confirmed     | Not submitted                         | BLOCKED | —           |
-| Loan activation                    | Reconciled    | Not submitted                         | BLOCKED | —           |
-| Repayment                          | Confirmed     | Not submitted                         | BLOCKED | —           |
-| Ledger/balance verification        | Matches chain | No real lifecycle to compare          | BLOCKED | —           |
+## Borrowing evidence
 
-## Failure and recovery results
+- Borrower public wallet: not yet designated; two verified candidate wallets are enrolled.
+- Employer membership, eligibility, capacity, and policy: not verified.
+- EIP-712 authorization: not generated. The deployed contract's chain,
+  verifying contract, and signer bindings passed preflight, but nonce and expiry
+  were not exercised.
+- Borrow transaction hash, block, and loan identifier: none.
 
-| Scenario                              | Expected                       | Actual                                                                   | Result  | Transaction |
-| ------------------------------------- | ------------------------------ | ------------------------------------------------------------------------ | ------- | ----------- |
-| Interrupted confirmation              | Recovered                      | Automated behavior passes; real testnet scenario not run                 | BLOCKED | —           |
-| API timeout after submission          | Recovered                      | Real testnet scenario not run                                            | BLOCKED | —           |
-| RPC unavailable                       | Remains pending, then recovers | Automated retry behavior passes; real testnet scenario not run           | BLOCKED | —           |
-| Duplicate request                     | Prevented                      | Automated application and contract tests pass; no testnet transaction    | BLOCKED | —           |
-| Duplicate confirmation/event          | Idempotent                     | Restored-database reconciliation proof passed; no testnet event          | BLOCKED | —           |
-| Worker restart/delayed reconciliation | Recovered                      | Worker is not configured, so the real scenario cannot run                | BLOCKED | —           |
-| Reverted transaction                  | Not marked successful          | Automated receipt tests pass; no testnet transaction                     | BLOCKED | —           |
-| Wallet failure                        | Recoverable/error visible      | Automated wallet tests pass; no real Circle wallet                       | BLOCKED | —           |
-| Insufficient USDC                     | Rejected                       | Contract tests pass; no funded testnet wallet                            | BLOCKED | —           |
-| Unauthorized borrower                 | Rejected                       | Automated application and contract tests pass; no testnet transaction    | BLOCKED | —           |
-| Cross-organization access             | Rejected                       | Database-backed authorization tests pass; no pilot organizations created | BLOCKED | —           |
+## Repayment evidence
 
-Automated evidence is deliberately not reported as a successful end-to-end
-testnet scenario.
+- Outstanding amount: no pilot loan exists.
+- Repayment transaction hash and block: none; no transaction was submitted.
+- Final loan state: no pilot loan exists.
 
-## Financial invariants and reconciliation
+## On-chain/database reconciliation
 
-Application, database, and contract tests currently cover duplicate loans,
-duplicate repayments, authorization replay, wrong borrowers, double acceptance,
-repayment limits, tenant isolation, receipt finality, finalized-record conflict
-handling, and duplicate event processing. The disaster-recovery run additionally
-proved restored-cursor resume and financial idempotency.
+No lifecycle events were produced. A read-only scan found zero escrow logs from
+deployment block `66108453` through block `66494350`. The explicit catch-up and
+follow-up reconciliation passes observed and applied zero events and changed
+only reconciliation operational state (cursor/lease/run health). Database
+records, ledger entries, user and organization associations, event identifiers,
+state transitions, principal, repayment amounts, and token transfers therefore
+could not be compared. The database is healthy and the wallets are enrolled,
+but there are no pilot lifecycle records to reconcile.
 
-The milestone requires those invariants to be observed against real Arc
-transactions. That evidence does not exist yet. There are no transaction hashes
-to report, no authoritative-chain/database comparison was possible, and the
-stop/restart reconciliation exercise was not attempted because reconciliation
-is disabled.
+## Restart and idempotency results
 
-## Bugs and inconsistencies
+Initial catch-up and a normal reorganization-window follow-up completed without
+events. A scheduler-driven restart was not exercised. Real duplicate-request, pending
+transaction recovery, and reverted-transaction behavior remain unverified on
+Arc Testnet. Automated contract tests cover authorization replay, duplicate
+acceptance, duplicate repayment, wrong borrower, failure rollback, and exact
+repayment; these are supporting tests only, not live acceptance evidence.
 
-- Bugs fixed during this pilot: **none**; execution stopped before the lifecycle.
-- Database inconsistencies found against Arc: **not assessed** because there was
-  no configured contract or pilot transaction.
-- Local dependency health reports two pre-existing pending transaction records.
-  They were not modified and must not be treated as pilot evidence.
+## Tests passed and failed
 
-## Required actions before rerun
+| Command                   | Result                                                        |
+| ------------------------- | ------------------------------------------------------------- |
+| Focused portability tests | PASS: 8 files, 49 tests                                       |
+| `npm run test:arc-live`   | PASS: 1 file, 2 tests; Circle RPC and Arc deployment bindings |
+| `npm run test:contracts`  | PASS: 22/22 contract tests                                    |
+| `npm test`                | PASS: 53 files passed, 1 skipped; 325 tests passed, 1 skipped |
+| `npm run lint`            | PASS                                                          |
+| `npm run typecheck`       | PASS                                                          |
+| `npm run build`           | PASS                                                          |
+| `npm run format:check`    | PASS; the safe YAML-only formatting deviation was corrected   |
+| `npm run prisma:status`   | PASS: all 37 migrations applied                               |
+| `npm run pilot:preflight` | FAIL: stale reconciliation and zero token/native balances     |
 
-1. Provide the intended Arc Testnet escrow address and deployment block.
-2. Provide the dedicated server-side borrow-authorizer key through the local
-   secret mechanism and confirm its public address matches the contract's
-   `authorizationSigner()` value.
-3. Configure Arc chain ID, RPC URL, canonical USDC address, and application
-   contract address.
-4. Enable reconciliation with the deployment start block and a cron secret, then
-   verify dependency health is healthy rather than disabled.
-5. Validate the Circle client configuration by enrolling separate pilot wallets.
-6. Explicitly disable ERPNext or supply pilot-safe read-only credentials.
-7. Configure a dedicated rate-limit hashing secret.
-8. Rerun preflight, then create isolated pilot identities and fund only their
-   testnet wallets with test USDC.
+## Defects fixed
 
-Until these actions are complete, the system is **not ready for a controlled
-employer pilot**.
+- The preflight no longer starts the database-writing reconciliation worker;
+  it validates persisted health and bounded cursor lag read-only.
+- Ownership evidence now must match the exact organization, user, and address
+  tuple instead of independently matching a user and an address.
+- The preflight now reads both ERC-20 USDC and native Arc fee balances and
+  reports each prerequisite independently.
+- Arc wallets are now owned by the global user rather than deleted or rejected
+  at an organization boundary. A former employee can reconnect the same
+  passkey wallet after joining a new organization, with a fresh signed proof.
+- The wallet UI now exposes the complete public address, copy and Explorer
+  actions, and a read-only `/wallet-access` page that does not require an active
+  organization session.
+- ERPNext provisioning can reuse an inactive former employee identity while
+  retaining review protection for identities that are still active elsewhere.
+- `npm run reconcile:arc` now loads `.env` consistently with the other operator
+  scripts.
+- Stale `.env.example` reconciliation/RPC defaults and the unrelated
+  `compose.production.yaml` formatting deviation were corrected.
 
-## Commands executed
+## Remaining blockers and risks
 
-```powershell
-gh run list --limit 5
-gh run view 37195239253 --json conclusion,headSha,name,createdAt,updatedAt,url
-docker compose ps
-npm run prisma:status
-$env:POSTGRES_TOOLS_DOCKER_SERVICE = 'postgres'
-npm run dr:verify
-npm start
-# GET /api/health/live, /api/health/ready, /api/health/dependencies
-# Six invalid sign-in probes against one disposable account identifier
-# Public Arc JSON-RPC: eth_chainId, eth_blockNumber, eth_getCode for testnet USDC
-```
+1. Fund both public wallet balances with only the minimum required testnet
+   USDC/fees.
+2. Run the explicitly reviewed reconciliation command and confirm the cursor is
+   fresh.
+3. Confirm the configured keys are dedicated testnet credentials. No secret was
+   printed or copied into this report.
+4. Keep the scheduler invoking authenticated reconciliation often enough to
+   remain within the configured block range and stale-time threshold.
+5. Rerun the entire preflight. Do not submit a lending transaction until every
+   check passes.
+6. The read-only wallet-access page depends on the existing synced passkey,
+   Circle client, and configured passkey domain. Circle recovery-signer setup is
+   still a separate production-hardening requirement; the application does not
+   generate or retain recovery phrases.
 
-Database and RPC credentials, private keys, Circle keys, passwords, and complete
-rate-limit identities were not printed or written to this report.
+Security properties such as tenant isolation, wallet association enforcement,
+authorization replay protection, and authoritative receipt handling passed
+automated coverage where applicable, but were not validated by this halted live
+run. This report is not an independent security audit.
+
+## Recommendation for the next milestone
+
+Do not advance the pilot milestone yet. Fund the two enrolled Circle wallet
+identities with the minimum intended Arc Testnet ERC-20 USDC and native fee
+balances, refresh reconciliation, and rerun `npm run pilot:preflight`. Only a fully passing
+preflight should be followed by offer creation, separate-borrower acceptance,
+repayment, reconciliation restart/replay, and final chain/database evidence
+capture required for acceptance.

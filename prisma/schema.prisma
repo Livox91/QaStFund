@@ -271,7 +271,6 @@ model Organization {
   ledgerTransactions           LedgerTransaction[]
   ledgerEntries                LedgerEntry[]
   lendingPolicy                OrganizationLendingPolicy?
-  arcWallets                   ArcWallet[]
   arcWalletChallenges          ArcWalletChallenge[]
   loanDecisionEvaluations      LoanDecisionEvaluation[]
   loanDecisionReviews          LoanDecisionReview[]
@@ -286,7 +285,6 @@ model Organization {
 
 model ArcWallet {
   id              String                   @id @default(uuid()) @db.Uuid
-  organizationId  String                   @db.Uuid
   userId          String                   @db.Uuid
   address         String?                  @unique @db.VarChar(42)
   network         ArcWalletNetwork         @default(ARC_TESTNET)
@@ -296,12 +294,10 @@ model ArcWallet {
   enrollmentState ArcWalletEnrollmentState @default(NOT_STARTED)
   createdAt       DateTime                 @default(now())
   updatedAt       DateTime                 @updatedAt
-  organization    Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   user            User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, network])
-  @@unique([organizationId, id])
-  @@index([organizationId, status])
+  @@index([status])
 }
 
 model ArcWalletChallenge {

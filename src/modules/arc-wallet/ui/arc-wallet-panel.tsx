@@ -4,7 +4,8 @@ import { useState } from "react";
 
 import { useCircleWallet } from "@/modules/arc-wallet/ui/circle-wallet-provider";
 import type { Employee } from "@/modules/employees/domain/employee";
-import { Button } from "@/shared/ui/button";
+import { arcTestnet } from "@/integrations/arc/arc-testnet";
+import { Button, buttonStyles } from "@/shared/ui/button";
 import {
   Card,
   CardContent,
@@ -13,10 +14,6 @@ import {
   CardTitle,
 } from "@/shared/ui/card";
 import { StatusDisplay } from "@/shared/ui/status-display";
-
-function shortenAddress(address: string): string {
-  return `${address.slice(0, 6)}…${address.slice(-4)}`;
-}
 
 function formatUsdcBalance(balance: string | null): string {
   if (balance === null) return "—";
@@ -49,6 +46,7 @@ function persistedWalletStatus(
 export function ArcWalletPanel({ employee }: { employee: Employee }) {
   const wallet = useCircleWallet();
   const [actionError, setActionError] = useState<string | null>(null);
+  const [addressCopied, setAddressCopied] = useState(false);
   const walletAddress = wallet.walletAddress ?? employee.walletAddress ?? null;
   const walletStatus =
     wallet.isLoading && wallet.walletStatus === "NOT_CONFIGURED"
@@ -72,8 +70,9 @@ export function ArcWalletPanel({ employee }: { employee: Employee }) {
         <div>
           <CardTitle>Your Account</CardTitle>
           <CardDescription>
-            Your wallet is linked to {employee.email} and secured with your
-            device passkey.
+            Your personal wallet is linked to {employee.email}, secured with
+            your device passkey, and can be reconnected after an organization
+            change.
           </CardDescription>
         </div>
         <StatusDisplay status={employee.employmentStatus} />
@@ -96,7 +95,7 @@ export function ArcWalletPanel({ employee }: { employee: Employee }) {
                 onClick={() => run(wallet.recoverWallet)}
                 variant="outline"
               >
-                Recover wallet
+                Reconnect existing wallet
               </Button>
             </div>
           ) : walletStatus === "PENDING" ? (
@@ -115,7 +114,7 @@ export function ArcWalletPanel({ employee }: { employee: Employee }) {
               onClick={() => run(wallet.recoverWallet)}
               variant="secondary"
             >
-              Recover wallet
+              Reconnect existing wallet
             </Button>
           ) : walletStatus === "ACTIVE" && !wallet.isConnected ? (
             <Button
@@ -130,11 +129,33 @@ export function ArcWalletPanel({ employee }: { employee: Employee }) {
         </div>
 
         <dl className="mt-5 grid gap-4 sm:grid-cols-3">
-          <div>
+          <div className="sm:col-span-3">
             <dt className="text-xs text-slate-500">Wallet</dt>
-            <dd className="mt-1 font-mono text-sm font-medium text-slate-950">
-              {walletAddress ? shortenAddress(walletAddress) : "Not set up"}
+            <dd className="mt-1 font-mono text-sm font-medium break-all text-slate-950">
+              {walletAddress ?? "Not set up"}
             </dd>
+            {walletAddress ? (
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Button
+                  onClick={async () => {
+                    await navigator.clipboard.writeText(walletAddress);
+                    setAddressCopied(true);
+                  }}
+                  size="sm"
+                  variant="outline"
+                >
+                  {addressCopied ? "Copied" : "Copy address"}
+                </Button>
+                <a
+                  className={buttonStyles({ size: "sm", variant: "outline" })}
+                  href={`${arcTestnet.blockExplorers.default.url}/address/${walletAddress}`}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  View on Arc Explorer
+                </a>
+              </div>
+            ) : null}
           </div>
           <div>
             <dt className="text-xs text-slate-500">USDC Balance</dt>

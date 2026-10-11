@@ -37,7 +37,7 @@ export default defineConfig({
     arcTestnet: {
       type: "http",
       chainId: 5_042_002,
-      url: "https://rpc.testnet.arc.network",
+      url: "https://rpc.testnet.arc.io",
       accounts: [configVariable("ARC_DEPLOYER_PRIVATE_KEY")],
     },
   },

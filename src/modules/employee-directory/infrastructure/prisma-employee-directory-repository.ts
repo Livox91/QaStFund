@@ -3,6 +3,7 @@ import {
   MembershipRole,
   type Prisma,
 } from "@/generated/prisma/client";
+import { canProvisionEmployeeInOrganization } from "@/modules/employee-directory/domain/membership-portability";
 import { prisma } from "@/infrastructure/database/prisma";
 import { generateSecureToken } from "@/modules/auth/domain/secure-token";
 import type {
@@ -302,7 +303,10 @@ export const prismaEmployeeDirectoryRepository: EmployeeDirectoryRepository = {
           in: [...new Set(input.emails.map((email) => email.toLowerCase()))],
         },
         memberships: {
-          some: { organizationId: { not: input.organizationId } },
+          some: {
+            organizationId: { not: input.organizationId },
+            isActive: true,
+          },
         },
       },
       select: { email: true },
@@ -350,7 +354,12 @@ export const prismaEmployeeDirectoryRepository: EmployeeDirectoryRepository = {
             select: {
               id: true,
               memberships: {
-                select: { id: true, organizationId: true, role: true },
+                select: {
+                  id: true,
+                  organizationId: true,
+                  role: true,
+                  isActive: true,
+                },
               },
             },
           });
@@ -361,7 +370,13 @@ export const prismaEmployeeDirectoryRepository: EmployeeDirectoryRepository = {
           );
           if (sameOrganizationMembership) {
             matchedMembershipId = sameOrganizationMembership.id;
-          } else if (!existingUser || existingUser.memberships.length === 0) {
+          } else if (
+            !existingUser ||
+            canProvisionEmployeeInOrganization(
+              existingUser.memberships,
+              input.organizationId,
+            )
+          ) {
             const user = existingUser
               ? await transaction.user.update({
                   where: { id: existingUser.id },

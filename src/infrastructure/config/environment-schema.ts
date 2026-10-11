@@ -105,9 +105,7 @@ const environmentSchema = z
       .enum(["true", "false"])
       .default("false")
       .transform((value) => value === "true"),
-    ARC_RECONCILIATION_RPC_URL: z
-      .url()
-      .default("https://rpc.testnet.arc.network"),
+    ARC_RECONCILIATION_RPC_URL: z.url().default("https://rpc.testnet.arc.io"),
     ARC_RECONCILIATION_START_BLOCK: z
       .string()
       .regex(/^\d+$/)

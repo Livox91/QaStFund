@@ -2,7 +2,14 @@
 
 The reconciliation worker recovers finalized `OfferCreated`, `LoanStarted`, and
 `LoanRepaid` events when a browser confirmation callback is missed. It never
-sends a transaction and never creates an unmatched financial record.
+sends a blockchain transaction and never creates an unmatched financial
+record. It does write database state: it acquires a lease, advances the cursor,
+journals observed events, and can apply a finalized event to an already-matched
+offer, loan, repayment, ledger, or audit record.
+
+Setting `ARC_RECONCILIATION_ENABLED=true` only permits reconciliation. It does
+not start a background process. A pass runs only when the CLI command below is
+invoked or an authorized scheduler calls the internal endpoint.
 
 Configure the `ARC_RECONCILIATION_*` variables documented in `.env.example`.
 `ARC_RECONCILIATION_START_BLOCK` should be the deployed escrow's block.
@@ -12,6 +19,10 @@ Run one bounded pass locally with:
 ```shell
 npm run reconcile:arc
 ```
+
+Review the configured contract and start block before running this command. The
+Arc pilot preflight is read-only with respect to reconciliation and will not
+invoke the worker; it requires an existing healthy persisted cursor instead.
 
 Run a read-only comparison of linked database records, escrow state, stale
 intents, and reconciliation journal exceptions with:

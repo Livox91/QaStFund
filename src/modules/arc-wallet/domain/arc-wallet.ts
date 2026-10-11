@@ -17,7 +17,6 @@ export type ArcWalletEnrollmentState =
 
 export type ArcWallet = Readonly<{
   id: string;
-  organizationId: string;
   userId: string;
   address: Address | null;
   network: typeof ARC_TESTNET_NETWORK;

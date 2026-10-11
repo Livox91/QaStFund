@@ -2507,7 +2507,6 @@ export type OrganizationScalarFieldEnum = (typeof OrganizationScalarFieldEnum)[k
 
 export const ArcWalletScalarFieldEnum = {
   id: 'id',
-  organizationId: 'organizationId',
   userId: 'userId',
   address: 'address',
   network: 'network',
@@ -3051,28 +3050,28 @@ export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof Json
  * Reference to a field of type 'String'
  */
 export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>
-    
+
 
 
 /**
  * Reference to a field of type 'String[]'
  */
 export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
-    
+
 
 
 /**
  * Reference to a field of type 'DateTime'
  */
 export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
-    
+
 
 
 /**
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
-    
+
 
 
 /**
@@ -3086,7 +3085,7 @@ export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
  * Reference to a field of type 'ArcWalletNetwork'
  */
 export type EnumArcWalletNetworkFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ArcWalletNetwork'>
-    
+
 
 
 /**

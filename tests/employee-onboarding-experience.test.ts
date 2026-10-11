@@ -37,7 +37,6 @@ const capacity: BorrowingCapacity = {
 function wallet(overrides: Partial<ArcWallet> = {}): ArcWallet {
   return {
     id: "wallet-a",
-    organizationId: "organization-a",
     userId: "employee-a",
     address: "0x1111111111111111111111111111111111111111",
     network: "ARC_TESTNET",

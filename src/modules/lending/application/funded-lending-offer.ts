@@ -162,14 +162,12 @@ export async function prepareFundedLendingOffer(
       address: true,
       status: true,
       chainId: true,
-      organizationId: true,
     },
   });
   if (
     !wallet?.address ||
     wallet.status !== "ACTIVE" ||
-    wallet.chainId !== ARC_TESTNET_CHAIN_ID ||
-    wallet.organizationId !== actor.organizationId
+    wallet.chainId !== ARC_TESTNET_CHAIN_ID
   ) {
     throw new ApplicationError(
       "ARC_WALLET_NOT_READY",

@@ -16,6 +16,7 @@ export default defineConfig({
     exclude: [
       "contracts-test/**",
       "node_modules/**",
+      "tests/live/**",
       "tests/local-chain.test.ts",
     ],
     setupFiles: ["dotenv/config"],

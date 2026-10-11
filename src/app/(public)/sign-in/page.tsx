@@ -97,6 +97,15 @@ export default async function SignInPage({
             >
               Forgot password?
             </Link>
+            <span className="mx-2 text-slate-300" aria-hidden="true">
+              ·
+            </span>
+            <Link
+              className="text-sm font-medium text-teal-700 hover:text-teal-800"
+              href="/wallet-access"
+            >
+              Access existing wallet
+            </Link>
           </div>
 
           {process.env.NODE_ENV !== "production" ? (

@@ -264,14 +264,12 @@ export async function prepareOnChainRepayment(
       address: true,
       status: true,
       chainId: true,
-      organizationId: true,
     },
   });
   if (
     !wallet?.address ||
     wallet.status !== "ACTIVE" ||
     wallet.chainId !== ARC_TESTNET_CHAIN_ID ||
-    wallet.organizationId !== actor.organizationId ||
     wallet.address.toLowerCase() !== context.borrowerWalletAddress.toLowerCase()
   ) {
     throw new ApplicationError(

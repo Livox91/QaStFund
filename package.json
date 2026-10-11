@@ -12,6 +12,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
+    "test:arc-live": "vitest run --config vitest.arc-live.config.mts",
     "test:contracts": "hardhat test nodejs",
     "contracts:compile": "hardhat compile",
     "contracts:deploy:arc": "hardhat run --network arcTestnet --build-profile production scripts/deploy-lending-escrow.ts",
