@@ -31,6 +31,7 @@ const filters: ReadonlyArray<{
   label: string;
   value: EmployerLoanFilterType;
 }> = [
+  { label: "Reviews", value: EmployerLoanFilter.REVIEW },
   { label: "Active", value: EmployerLoanFilter.ACTIVE },
   { label: "Repaid", value: EmployerLoanFilter.REPAID },
   { label: "Overdue", value: EmployerLoanFilter.OVERDUE },
@@ -145,7 +146,14 @@ export function EmployerLoanList({
                     <RepaymentProgress basisPoints={loan.progressBasisPoints} />
                   </TableCell>
                   <TableCell>
-                    <StatusDisplay status={loan.status} />
+                    <StatusDisplay
+                      label={
+                        loan.status === "REQUESTED"
+                          ? "Awaiting review or completion"
+                          : undefined
+                      }
+                      status={loan.status}
+                    />
                   </TableCell>
                 </TableRow>
               ))}
@@ -155,8 +163,8 @@ export function EmployerLoanList({
       )}
 
       <p className="mt-4 text-xs leading-5 text-slate-400">
-        This view is read-only. Financial records cannot be changed from the
-        employer portal.
+        Financial terms are read-only. Pending eligibility decisions can be
+        reviewed without changing the requested terms.
       </p>
     </main>
   );

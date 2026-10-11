@@ -57,6 +57,23 @@ services:
       - internal
       - web
 
+  reconciliation-scheduler:
+    build:
+      context: .
+      target: reconciliation-scheduler
+    restart: unless-stopped
+    env_file:
+      - ${APP_ENV_FILE:-deploy/.env.production}
+    environment:
+      ARC_RECONCILIATION_SCHEDULER_URL: http://app:3000/api/internal/arc-reconciliation
+      ERP_NEXT_SYNC_SCHEDULER_URL: http://app:3000/api/internal/erpnext-sync
+    depends_on:
+      app:
+        condition: service_healthy
+    stop_grace_period: 30s
+    networks:
+      - internal
+
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped

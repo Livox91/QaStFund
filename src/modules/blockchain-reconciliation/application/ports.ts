@@ -3,7 +3,11 @@ import type {
   StoredReconciliationEvent,
 } from "@/modules/blockchain-reconciliation/domain/blockchain-event";
 
-export type ReconciliationCursor = Readonly<{ nextBlock: bigint }>;
+export type ReconciliationCursor = Readonly<{
+  nextBlock: bigint;
+  lastSuccessfulAt?: Date | null;
+  consecutiveFailures?: number;
+}>;
 
 export interface ReconciliationEventSource {
   getChainId(): Promise<number>;

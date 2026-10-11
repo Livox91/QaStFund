@@ -280,7 +280,10 @@ async function applyLoanStarted(
     where: {
       contractAddress,
       OR: [
-        { status: "REQUESTED", chainOfferId: event.payload.offerId },
+        {
+          status: { in: ["REQUESTED", "APPROVED"] },
+          chainOfferId: event.payload.offerId,
+        },
         { chainLoanId: event.payload.loanId },
         { acceptanceTransactionHash: event.transactionHash.toLowerCase() },
       ],
@@ -326,7 +329,7 @@ async function applyLoanStarted(
     );
   }
   const loan = matches[0];
-  if (loan.status !== "REQUESTED") {
+  if (!["REQUESTED", "APPROVED"].includes(loan.status)) {
     if (
       loan.chainLoanId !== event.payload.loanId ||
       loan.acceptanceTransactionHash?.toLowerCase() !== event.transactionHash
@@ -346,12 +349,12 @@ async function applyLoanStarted(
     const startedAt = new Date(Number(event.payload.startTime) * 1_000);
     const dueAt = new Date(Number(event.payload.dueTime) * 1_000);
     const updated = await transaction.loan.updateMany({
-      where: { id: loan.id, status: "REQUESTED" },
+      where: { id: loan.id, status: { in: ["REQUESTED", "APPROVED"] } },
       data: {
         status: "ACTIVE",
         chainLoanId: event.payload.loanId,
         acceptanceTransactionHash: event.transactionHash.toLowerCase(),
-        approvedAt: startedAt,
+        approvedAt: loan.status === "APPROVED" ? undefined : startedAt,
         activatedAt: startedAt,
         startedAt,
         repaymentDueAt: dueAt,
@@ -637,7 +640,11 @@ export const prismaReconciliationRepository: ReconciliationRepository = {
           contractAddress,
         },
       },
-      select: { nextBlock: true },
+      select: {
+        nextBlock: true,
+        lastSuccessfulAt: true,
+        consecutiveFailures: true,
+      },
     });
   },
 

@@ -26,6 +26,7 @@ export async function getConfiguredDependencyHealth() {
     chainId?: number;
     contractConfigured: boolean;
   } = { status: "unhealthy", contractConfigured: Boolean(contractAddress) };
+  let latestChainBlock: bigint | undefined;
 
   if (contractAddress) {
     try {
@@ -36,9 +37,10 @@ export async function getConfiguredDependencyHealth() {
           timeout: 5_000,
         }),
       });
-      const [chainId, code] = await Promise.all([
+      const [chainId, code, latestBlock] = await Promise.all([
         client.getChainId(),
         client.getCode({ address: contractAddress }),
+        client.getBlockNumber(),
       ]);
       arc = {
         status:
@@ -48,6 +50,7 @@ export async function getConfiguredDependencyHealth() {
         chainId,
         contractConfigured: code !== undefined && code !== "0x",
       };
+      latestChainBlock = latestBlock;
       if (arc.status === "healthy") recordOperationalSuccess("arc_rpc", now);
       else {
         recordOperationalFailure("arc_rpc", {
@@ -72,7 +75,12 @@ export async function getConfiguredDependencyHealth() {
           )
         : Promise.resolve(null),
       environment.ERP_NEXT_SYNC_ENABLED
-        ? prismaOperationalHealthRepository.getErpNextState()
+        ? prismaOperationalHealthRepository.getErpNextState(
+            new Date(
+              now.getTime() -
+                environment.ERP_NEXT_ELIGIBILITY_MAX_AGE_MINUTES * 60_000,
+            ),
+          )
         : Promise.resolve(null),
       prismaOperationalHealthRepository.getPendingTransactionCount(),
     ]);
@@ -109,6 +117,12 @@ export async function getConfiguredDependencyHealth() {
     reconciliationEnabled: environment.ARC_RECONCILIATION_ENABLED,
     reconciliationStaleAfterMs:
       environment.ARC_RECONCILIATION_STALE_AFTER_MINUTES * 60_000,
+    reconciliationConfirmationDepth:
+      environment.ARC_RECONCILIATION_CONFIRMATIONS,
+    reconciliationHealthWindowBlocks:
+      environment.ARC_RECONCILIATION_BLOCK_RANGE,
+    reconciliationMaxRangesPerRun: environment.ARC_RECONCILIATION_MAX_RANGES,
+    latestChainBlock,
     reconciliationState,
     latestObservedBlock:
       snapshot.reconciliation.latestObservedBlock ??

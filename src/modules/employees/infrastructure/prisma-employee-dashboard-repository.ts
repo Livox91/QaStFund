@@ -187,7 +187,7 @@ export const prismaEmployeeDashboardRepository: EmployeeDashboardRepository = {
         where: {
           organizationId,
           borrowerMembershipId: membership.id,
-          status: "REQUESTED",
+          status: { in: ["REQUESTED", "APPROVED"] },
         },
         orderBy: { updatedAt: "desc" },
         take: 8,

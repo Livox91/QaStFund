@@ -38,6 +38,17 @@ COPY prisma7.config.ts ./
 
 CMD ["npx", "prisma", "migrate", "deploy"]
 
+FROM node:24-bookworm-slim AS reconciliation-scheduler
+
+ENV NODE_ENV=production
+WORKDIR /app
+
+COPY --chown=node:node scripts/run-arc-reconciliation-scheduler.mjs ./scripts/
+
+USER node
+
+CMD ["node", "scripts/run-arc-reconciliation-scheduler.mjs"]
+
 FROM node:24-bookworm-slim AS runner
 
 ENV NODE_ENV=production \

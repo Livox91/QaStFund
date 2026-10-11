@@ -5,7 +5,10 @@ import {
   employeeLendingEscrowAbi,
   fundingRequestIdToBytes32,
 } from "@/integrations/arc/employee-lending-escrow";
-import { matchesFundedOfferEvent } from "@/modules/lending/domain/lending-offer";
+import {
+  calculateEstimatedRepayment,
+  matchesFundedOfferEvent,
+} from "@/modules/lending/domain/lending-offer";
 import { fundedLendingOfferSchema } from "@/modules/lending/schemas/funded-lending-offer.schema";
 import {
   formatUsdc,
@@ -68,6 +71,31 @@ describe("funded lending offer values", () => {
       durationSeconds: 2_592_000,
     });
     expect(fundingRequestIdToBytes32(requestId)).toMatch(/^0x[0-9a-f]{64}$/);
+  });
+
+  it("accepts the smallest controlled no-interest offer without rounding", () => {
+    const requestId = "3e52f4c3-4a16-40f9-a8d2-97cccb755821";
+    const result = fundedLendingOfferSchema.parse({
+      requestId,
+      amount: "0.01",
+      interestRate: "0",
+      durationDays: 7,
+    });
+
+    expect(result).toEqual({
+      requestId,
+      principalBaseUnits: 10_000n,
+      amountMinorUnits: 1n,
+      feeRateBasisPoints: 0,
+      durationDays: 7,
+      durationSeconds: 604_800,
+    });
+    expect(
+      calculateEstimatedRepayment(
+        result.amountMinorUnits,
+        result.feeRateBasisPoints,
+      ),
+    ).toBe(1n);
   });
 
   it("reconciles uint256 receipt values with application offer terms", () => {

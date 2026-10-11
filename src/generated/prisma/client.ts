@@ -68,12 +68,12 @@ export type ArcWalletChallenge = Prisma.ArcWalletChallengeModel
 export type OrganizationMembership = Prisma.OrganizationMembershipModel
 /**
  * Model EmployeeInvitation
- *
+ * 
  */
 export type EmployeeInvitation = Prisma.EmployeeInvitationModel
 /**
  * Model PasswordResetToken
- *
+ * 
  */
 export type PasswordResetToken = Prisma.PasswordResetTokenModel
 /**
@@ -83,7 +83,7 @@ export type PasswordResetToken = Prisma.PasswordResetTokenModel
 export type EmployeeDirectoryIntegration = Prisma.EmployeeDirectoryIntegrationModel
 /**
  * Model EmployeeDirectoryCredentialSecret
- *
+ * 
  */
 export type EmployeeDirectoryCredentialSecret = Prisma.EmployeeDirectoryCredentialSecretModel
 /**
@@ -121,6 +121,16 @@ export type LoanDecisionEvaluation = Prisma.LoanDecisionEvaluationModel
  * 
  */
 export type LoanDecisionReview = Prisma.LoanDecisionReviewModel
+/**
+ * Model LoanOriginationDecision
+ * 
+ */
+export type LoanOriginationDecision = Prisma.LoanOriginationDecisionModel
+/**
+ * Model LoanOriginationOverride
+ * 
+ */
+export type LoanOriginationOverride = Prisma.LoanOriginationOverrideModel
 /**
  * Model EmployerActionAttempt
  * 

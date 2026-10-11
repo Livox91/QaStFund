@@ -1,5 +1,6 @@
 import { validateEnvironment } from "@/infrastructure/config/environment";
-import { runConfiguredArcReconciliation } from "@/modules/blockchain-reconciliation/index.server";
+import { logger } from "@/infrastructure/logging/logger";
+import { runScheduledArcReconciliation } from "@/modules/blockchain-reconciliation/index.server";
 import { isAuthorizedSchedulerRequest } from "@/modules/employee-directory/infrastructure/scheduler-auth";
 
 export const runtime = "nodejs";
@@ -16,6 +17,14 @@ export async function POST(request: Request) {
   ) {
     return Response.json({ error: "UNAUTHORIZED" }, { status: 401 });
   }
-  const result = await runConfiguredArcReconciliation();
-  return Response.json(result, { status: 200 });
+  try {
+    const result = await runScheduledArcReconciliation();
+    return Response.json(result, { status: 200 });
+  } catch (error) {
+    logger.error("Scheduled Arc reconciliation request failed", error);
+    return Response.json(
+      { error: "RECONCILIATION_FAILED", retryable: true },
+      { status: 503 },
+    );
+  }
 }

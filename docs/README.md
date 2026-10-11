@@ -4,6 +4,13 @@ A production-oriented foundation for an employee peer-to-peer lending applicatio
 
 Operations documentation: [database backup and disaster recovery](./DATABASE_BACKUP_AND_DISASTER_RECOVERY.md), [operational health](./OPERATIONAL_HEALTH.md), and the [employee onboarding and lending experience](./EMPLOYEE_ONBOARDING_AND_LENDING.md).
 
+The versioned scoring policy, audited data sources, mandatory gates, and API
+boundaries are documented in the [explainable loan decision engine v1](./LOAN_DECISION_ENGINE_V1.md).
+The underlying field-by-field readiness assessment is recorded in the
+[loan decision data audit](./LOAN_DECISION_DATA_AUDIT.md).
+The integrated application, review, authorization, confirmation, and recovery
+state machine is documented in [end-to-end loan origination v1](./LOAN_ORIGINATION_V1.md).
+
 Arc Testnet pilot evidence and current blockers are recorded in the [Arc Testnet pilot report](./ARC_TESTNET_PILOT_REPORT.md).
 
 ## Prerequisites
@@ -158,8 +165,9 @@ Optional configuration is grouped by feature:
 
 - Arc reconciliation: `ARC_RECONCILIATION_ENABLED`, its RPC/range/finality
   settings, and `ARC_RECONCILIATION_CRON_SECRET` when enabled.
-- ERPNext: `ERP_NEXT_ALLOW_LOCAL_HTTP`, `ERP_NEXT_SYNC_ENABLED`, interval and
-  stale-run settings, credential encryption, and the cron secret when enabled.
+- ERPNext: `ERP_NEXT_ALLOW_LOCAL_HTTP`, `ERP_NEXT_SYNC_ENABLED`, interval,
+  eligibility freshness and stale-run settings, credential encryption, and the
+  cron secret when enabled.
 - Internal adapters: `LOAN_DECISION_PROVIDER` and `EMPLOYER_ACTION_PROVIDER`.
 - Deployment only: `ARC_BORROW_AUTHORIZER_ADDRESS` and
   `ARC_DEPLOYER_PRIVATE_KEY`; neither is needed for application startup.

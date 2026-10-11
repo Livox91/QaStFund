@@ -1,5 +1,7 @@
 import { MembershipRole } from "@/generated/prisma/enums";
 import { prisma } from "@/infrastructure/database/prisma";
+import { validateEnvironment } from "@/infrastructure/config/environment";
+import { evaluateEmployeeDirectoryEligibility } from "@/modules/employee-directory/domain/employee-eligibility";
 import type { LendingOfferRepository } from "@/modules/lending/application/ports/lending-offer-repository";
 import {
   ensureUserWallet,
@@ -89,9 +91,22 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
           id: true,
           isActive: true,
           employmentStatus: true,
+          employmentStatusSource: true,
+          employmentStatusSyncedAt: true,
           role: true,
           canLend: true,
-          organization: { select: { currency: true } },
+          organization: {
+            select: {
+              currency: true,
+              erpNextEnabled: true,
+              employeeDirectoryIntegration: {
+                select: {
+                  lastSyncStatus: true,
+                  lastSuccessfulSyncAt: true,
+                },
+              },
+            },
+          },
         },
       });
 
@@ -101,6 +116,20 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
         membership.role !== MembershipRole.EMPLOYEE
       ) {
         return { kind: "MEMBERSHIP_NOT_FOUND" } as const;
+      }
+      const directoryEligibility = evaluateEmployeeDirectoryEligibility({
+        erpNextEnabled: membership.organization.erpNextEnabled,
+        integration: membership.organization.employeeDirectoryIntegration,
+        employee: membership,
+        now,
+        maxAgeMs:
+          validateEnvironment().ERP_NEXT_ELIGIBILITY_MAX_AGE_MINUTES * 60_000,
+      });
+      if (!directoryEligibility.trusted) {
+        return {
+          kind: "POLICY_VIOLATION",
+          violation: "EMPLOYEE_CANNOT_LEND",
+        } as const;
       }
 
       const policy = await ensureOrganizationPolicy(

@@ -84,6 +84,7 @@ class MemoryRepository implements ReconciliationRepository {
   events = new Map<string, MemoryEvent>();
   applied: string[] = [];
   loanAvailable = false;
+  runFailures = 0;
 
   async acquireLease(input: { startBlock: bigint }) {
     if (this.leased) return null;
@@ -178,6 +179,14 @@ class MemoryRepository implements ReconciliationRepository {
   async releaseLease() {
     this.leased = false;
   }
+
+  async recordRunSuccess() {
+    this.runFailures = 0;
+  }
+
+  async recordRunFailure() {
+    this.runFailures += 1;
+  }
 }
 
 function source(
@@ -246,6 +255,28 @@ describe("blockchain reconciliation worker", () => {
     expect(repository.nextBlock).toBe(16n);
   });
 
+  it("bounds catch-up work and reports the finalized backlog that remains", async () => {
+    const repository = new MemoryRepository();
+    const result = await reconcileBlockchainEvents(
+      { ...config, maxRangesPerRun: 1 },
+      repository,
+      source({ latest: 30n }),
+      clock,
+    );
+
+    expect(result).toMatchObject({
+      status: "COMPLETED",
+      scannedRanges: 1,
+      cursorNextBlock: "11",
+      finalizedThrough: "28",
+      startedBacklogBlocks: "28",
+      remainingBacklogBlocks: "18",
+      maxBlocksPerRun: "10",
+      caughtUp: false,
+      startedStale: true,
+    });
+  });
+
   it("retries a transient RPC timeout without advancing early", async () => {
     const repository = new MemoryRepository();
     const getEvents = vi
@@ -262,6 +293,23 @@ describe("blockchain reconciliation worker", () => {
     expect(getEvents).toHaveBeenCalledTimes(2);
     expect(clock.sleep).toHaveBeenCalled();
     expect(result).toMatchObject({ appliedEvents: 1 });
+  });
+
+  it("persists an exhausted RPC failure and releases the lease for restart", async () => {
+    const repository = new MemoryRepository();
+    const unavailable = source();
+    vi.mocked(unavailable.getChainId).mockRejectedValue(new Error("offline"));
+
+    await expect(
+      reconcileBlockchainEvents(config, repository, unavailable, clock),
+    ).rejects.toThrow("offline");
+    expect(repository.runFailures).toBe(1);
+    expect(repository.leased).toBe(false);
+
+    await expect(
+      reconcileBlockchainEvents(config, repository, source(), clock),
+    ).resolves.toMatchObject({ status: "COMPLETED" });
+    expect(repository.runFailures).toBe(0);
   });
 
   it("sorts out-of-order events before applying dependent transitions", async () => {

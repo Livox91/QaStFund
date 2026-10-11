@@ -1,18 +1,30 @@
 import { randomUUID } from "node:crypto";
 
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 
 vi.mock("server-only", () => ({}));
 
 import { prisma } from "@/infrastructure/database/prisma";
+import { ApplicationRole } from "@/modules/auth/domain/application-role";
+import { overrideOriginationDecisionForActor } from "@/modules/loan-decisions/application/origination-decisions";
 import { prepareOnChainBorrow } from "@/modules/loans/application/onchain-borrow";
 import { prepareOnChainRepayment } from "@/modules/loans/application/onchain-repayment";
 
 const organizationId = randomUUID();
 const lenderUserId = randomUUID();
 const borrowerUserId = randomUUID();
+const adminUserId = randomUUID();
 const lenderMembershipId = randomUUID();
 const borrowerMembershipId = randomUUID();
+const adminMembershipId = randomUUID();
 const contractAddress = "0x1111111111111111111111111111111111111111";
 const lenderAddress = "0x2222222222222222222222222222222222222222";
 const borrowerAddress = "0x3333333333333333333333333333333333333333";
@@ -22,6 +34,15 @@ let nextChainOfferId = 1n;
 let nextChainLoanId = 1n;
 
 const actor = { organizationId, userId: borrowerUserId } as const;
+const admin = {
+  organizationId,
+  organizationName: "Intent Concurrency Test",
+  organizationSlug: `intent-${organizationId}`,
+  userId: adminUserId,
+  email: `${adminUserId}@test.local`,
+  name: "Reviewer",
+  role: ApplicationRole.EMPLOYER_ADMIN,
+} as const;
 
 async function createOffer() {
   const id = randomUUID();
@@ -72,6 +93,10 @@ function borrowDependencies(chainOfferId: bigint) {
       signerAddress,
       signature: `0x${"a".repeat(130)}`,
     })),
+    evaluateOrigination: vi.fn().mockResolvedValue({
+      status: "APPROVAL_CONSIDERATION",
+      override: { outcome: "APPROVED" },
+    }),
   } as never;
 }
 
@@ -159,6 +184,12 @@ describe("on-chain intent concurrency", () => {
           name: "Borrower",
           passwordHash: "test-only",
         },
+        {
+          id: adminUserId,
+          email: `${adminUserId}@test.local`,
+          name: "Reviewer",
+          passwordHash: "test-only",
+        },
       ],
     });
     await prisma.organizationMembership.createMany({
@@ -175,6 +206,12 @@ describe("on-chain intent concurrency", () => {
           userId: borrowerUserId,
           role: "EMPLOYEE",
         },
+        {
+          id: adminMembershipId,
+          organizationId,
+          userId: adminUserId,
+          role: "EMPLOYER_ADMIN",
+        },
       ],
     });
     await prisma.arcWallet.create({
@@ -190,8 +227,140 @@ describe("on-chain intent concurrency", () => {
   afterAll(async () => {
     await prisma.organization.delete({ where: { id: organizationId } });
     await prisma.user.deleteMany({
-      where: { id: { in: [lenderUserId, borrowerUserId] } },
+      where: { id: { in: [lenderUserId, borrowerUserId, adminUserId] } },
     });
+  });
+
+  afterEach(async () => {
+    await prisma.loan.updateMany({
+      where: { organizationId, status: { in: ["REQUESTED", "APPROVED"] } },
+      data: { status: "CANCELLED", closedAt: now },
+    });
+  });
+
+  it("persists review-required and withholds authorization when evidence is unavailable", async () => {
+    const offer = await createOffer();
+    const injected = borrowDependencies(offer.chainOfferId) as Record<
+      string,
+      unknown
+    >;
+    const signAuthorization = injected.signAuthorization as ReturnType<
+      typeof vi.fn
+    >;
+    const { evaluateOrigination: _ignored, ...dependencies } = injected;
+    void _ignored;
+
+    await expect(
+      prepareOnChainBorrow(
+        actor as never,
+        offer.id,
+        randomUUID(),
+        dependencies as never,
+      ),
+    ).resolves.toMatchObject({ state: "REVIEW_REQUIRED" });
+    expect(signAuthorization).not.toHaveBeenCalled();
+    await expect(
+      prisma.loanOriginationDecision.count({
+        where: { loan: { lendingOfferId: offer.id } },
+      }),
+    ).resolves.toBe(1);
+    await expect(
+      prisma.auditEvent.count({
+        where: {
+          lendingOfferId: offer.id,
+          type: "LOAN_REQUESTED",
+        },
+      }),
+    ).resolves.toBe(1);
+  });
+
+  it("requires an audited review before issuing an Arc authorization", async () => {
+    const offer = await createOffer();
+    const requestId = randomUUID();
+    const injected = borrowDependencies(offer.chainOfferId) as Record<
+      string,
+      unknown
+    >;
+    const signAuthorization = injected.signAuthorization as ReturnType<
+      typeof vi.fn
+    >;
+    const { evaluateOrigination: _ignored, ...dependencies } = injected;
+    void _ignored;
+
+    const application = await prepareOnChainBorrow(
+      actor as never,
+      offer.id,
+      requestId,
+      dependencies as never,
+    );
+    expect(application).toMatchObject({ state: "REVIEW_REQUIRED" });
+    expect(signAuthorization).not.toHaveBeenCalled();
+    if (application.state !== "REVIEW_REQUIRED") {
+      throw new Error("Expected an application awaiting review.");
+    }
+
+    await overrideOriginationDecisionForActor(
+      admin,
+      {
+        decisionId: application.decisionId,
+        outcome: "APPROVED",
+        rationale:
+          "The employer reviewer verified supporting affordability evidence.",
+      },
+      new Date("2026-10-03T12:01:00.000Z"),
+    );
+    await expect(
+      prisma.loan.findUniqueOrThrow({ where: { id: application.loanId } }),
+    ).resolves.toMatchObject({
+      status: "APPROVED",
+      activatedAt: null,
+      acceptanceTransactionHash: null,
+    });
+
+    const authorized = await prepareOnChainBorrow(
+      actor as never,
+      offer.id,
+      requestId,
+      dependencies as never,
+    );
+    expect(authorized).toMatchObject({
+      state: "PENDING",
+      loanId: application.loanId,
+    });
+    expect(signAuthorization).toHaveBeenCalledTimes(1);
+    await expect(
+      prisma.auditEvent.count({
+        where: {
+          loanId: application.loanId,
+          type: { in: ["LOAN_REQUESTED", "LOAN_APPROVED"] },
+        },
+      }),
+    ).resolves.toBe(2);
+
+    await prisma.loan.update({
+      where: { id: application.loanId },
+      data: {
+        status: "CANCELLED",
+        closedAt: new Date("2026-10-03T12:02:00.000Z"),
+      },
+    });
+    await expect(
+      prepareOnChainBorrow(
+        actor as never,
+        offer.id,
+        requestId,
+        dependencies as never,
+      ),
+    ).resolves.toMatchObject({ state: "PENDING", loanId: application.loanId });
+    await expect(
+      prisma.loan.findUniqueOrThrow({ where: { id: application.loanId } }),
+    ).resolves.toMatchObject({
+      status: "APPROVED",
+      requestedAt: now,
+      approvedAt: new Date("2026-10-03T12:01:00.000Z"),
+      closedAt: null,
+    });
+    expect(signAuthorization).toHaveBeenCalledTimes(2);
   });
 
   it("returns one acceptance intent for concurrent requests with the same key", async () => {
@@ -210,6 +379,35 @@ describe("on-chain intent concurrency", () => {
     await expect(
       prisma.loan.count({ where: { lendingOfferId: offer.id } }),
     ).resolves.toBe(1);
+  });
+
+  it("allows only one unresolved application across concurrent offers", async () => {
+    const [firstOffer, secondOffer] = await Promise.all([
+      createOffer(),
+      createOffer(),
+    ]);
+    const results = await Promise.allSettled([
+      prepareOnChainBorrow(
+        actor as never,
+        firstOffer.id,
+        randomUUID(),
+        borrowDependencies(firstOffer.chainOfferId),
+      ),
+      prepareOnChainBorrow(
+        actor as never,
+        secondOffer.id,
+        randomUUID(),
+        borrowDependencies(secondOffer.chainOfferId),
+      ),
+    ]);
+    expect(
+      results.filter((result) => result.status === "fulfilled"),
+    ).toHaveLength(1);
+    expect(
+      results.find((result) => result.status === "rejected"),
+    ).toMatchObject({
+      reason: { code: "ACCEPTANCE_INTENT_CONFLICT" },
+    });
   });
 
   it("rejects competing acceptance keys and safely revives a cancelled intent", async () => {

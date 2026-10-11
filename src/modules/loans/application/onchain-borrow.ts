@@ -9,6 +9,7 @@ import {
 } from "viem";
 
 import { prisma } from "@/infrastructure/database/prisma";
+import { validateEnvironment } from "@/infrastructure/config/environment";
 import { logger } from "@/infrastructure/logging/logger";
 import {
   logTransactionLifecycle,
@@ -27,6 +28,11 @@ import {
   getConfiguredEscrowAddress,
 } from "@/integrations/arc/employee-lending-escrow";
 import type { AuthenticatedActor } from "@/modules/auth/domain/actor";
+import { evaluateEmployeeDirectoryEligibility } from "@/modules/employee-directory/domain/employee-eligibility";
+import {
+  evaluateAndPersistLoanOrigination,
+  isOriginationAuthorized,
+} from "@/modules/loan-decisions/infrastructure/prisma-origination-decision-repository";
 import { borrowRequestIdToAuthorizationId } from "@/modules/loans/domain/borrow-authorization";
 import { calculateOnChainRepaymentBaseUnits } from "@/modules/loans/domain/onchain-borrow";
 import { signBorrowAuthorization } from "@/modules/loans/infrastructure/borrow-authorization-signer";
@@ -87,6 +93,7 @@ type PrepareOnChainBorrowDependencies = Readonly<{
   readAuthorizationSigner?: typeof readChainAuthorizationSigner;
   readOffer?: typeof readChainOffer;
   signAuthorization?: typeof signBorrowAuthorization;
+  evaluateOrigination?: typeof evaluateAndPersistLoanOrigination;
 }>;
 
 type ConfirmOnChainBorrowDependencies = Readonly<{
@@ -163,8 +170,20 @@ export async function prepareOnChainBorrow(
       contractAddress: true,
       borrowerWalletAddress: true,
       status: true,
+      approvedAt: true,
+      originationDecisions: {
+        orderBy: { evaluatedAt: "desc" },
+        take: 1,
+        select: { override: { select: { outcome: true } } },
+      },
     },
   });
+  if (
+    existing?.status === "CANCELLED" &&
+    existing.originationDecisions?.[0]?.override?.outcome === "REJECTED"
+  ) {
+    return { state: "REJECTED" as const, loanId: existing.id };
+  }
   if (existing) {
     if (
       existing.organizationId !== actor.organizationId ||
@@ -184,7 +203,7 @@ export async function prepareOnChainBorrow(
     ) {
       return { state: "CONFIRMED" as const, loanId: existing.id };
     }
-    if (existing.status !== "REQUESTED" && existing.status !== "CANCELLED") {
+    if (!["REQUESTED", "APPROVED", "CANCELLED"].includes(existing.status)) {
       throw unavailableError();
     }
   } else {
@@ -192,7 +211,7 @@ export async function prepareOnChainBorrow(
       where: {
         organizationId: actor.organizationId,
         lendingOfferId: offerId,
-        status: "REQUESTED",
+        status: { in: ["REQUESTED", "APPROVED"] },
       },
       select: { borrowRequestId: true },
     });
@@ -214,9 +233,22 @@ export async function prepareOnChainBorrow(
         id: true,
         isActive: true,
         employmentStatus: true,
+        employmentStatusSource: true,
+        employmentStatusSyncedAt: true,
         role: true,
         canBorrow: true,
         user: { select: { name: true } },
+        organization: {
+          select: {
+            erpNextEnabled: true,
+            employeeDirectoryIntegration: {
+              select: {
+                lastSyncStatus: true,
+                lastSuccessfulSyncAt: true,
+              },
+            },
+          },
+        },
       },
     });
     if (
@@ -226,6 +258,22 @@ export async function prepareOnChainBorrow(
       !membership.canBorrow
     ) {
       throw unavailableError();
+    }
+    const directoryEligibility = evaluateEmployeeDirectoryEligibility({
+      erpNextEnabled: membership.organization?.erpNextEnabled === true,
+      integration:
+        membership.organization?.employeeDirectoryIntegration ?? null,
+      employee: membership,
+      now,
+      maxAgeMs:
+        validateEnvironment().ERP_NEXT_ELIGIBILITY_MAX_AGE_MINUTES * 60_000,
+    });
+    if (!directoryEligibility.trusted) {
+      throw new ApplicationError(
+        "EMPLOYEE_DIRECTORY_NOT_FRESH",
+        "Employee eligibility cannot be verified from a complete, current ERPNext synchronization. Contact your employer administrator.",
+        503,
+      );
     }
 
     const wallet = await transaction.arcWallet.findUnique({
@@ -354,34 +402,6 @@ export async function prepareOnChainBorrow(
     throw unavailableError();
   }
 
-  const authorizationExpiry =
-    BigInt(Math.floor(now.getTime() / 1_000)) +
-    BORROW_AUTHORIZATION_TTL_SECONDS;
-  const authorization = await (
-    dependencies.signAuthorization ?? signBorrowAuthorization
-  )(
-    {
-      offerId: BigInt(chainOfferId),
-      borrower: getAddress(borrowerWalletAddress),
-      expiry: authorizationExpiry,
-      authorizationId: borrowRequestIdToAuthorizationId(requestId),
-    },
-    configuredContract,
-  );
-  const configuredAuthorizationSigner = await (
-    dependencies.readAuthorizationSigner ?? readChainAuthorizationSigner
-  )(configuredContract);
-  if (
-    configuredAuthorizationSigner.toLowerCase() !==
-    authorization.signerAddress.toLowerCase()
-  ) {
-    throw new ApplicationError(
-      "BORROW_AUTHORIZER_MISMATCH",
-      "Borrowing authorization is not configured for this contract.",
-      503,
-    );
-  }
-
   const repaymentBaseUnits = calculateOnChainRepaymentBaseUnits(
     principalBaseUnits,
     context.offer.feeRateBasisPoints,
@@ -399,12 +419,23 @@ export async function prepareOnChainBorrow(
   let loan: { id: string };
   try {
     if (existing?.status === "CANCELLED") {
+      const reviewed =
+        existing.originationDecisions?.[0]?.override?.outcome === "APPROVED";
       const revived = await database.loan.updateMany({
         where: { id: existing.id, status: "CANCELLED" },
         data: {
-          status: "REQUESTED",
+          status: reviewed ? "APPROVED" : "REQUESTED",
           closedAt: null,
-          requestedAt: now,
+          ...(reviewed
+            ? {
+                approvedAt: existing.approvedAt,
+                acceptanceTransactionHash: null,
+              }
+            : {
+                requestedAt: now,
+                approvedAt: null,
+                acceptanceTransactionHash: null,
+              }),
           startedAt: now,
           repaymentDueAt: estimatedDueAt,
         },
@@ -416,7 +447,7 @@ export async function prepareOnChainBorrow(
           where: { borrowRequestId: requestId },
           select: { id: true, status: true },
         });
-        if (current?.status !== "REQUESTED") {
+        if (!current || !["REQUESTED", "APPROVED"].includes(current.status)) {
           throw acceptanceIntentConflictError();
         }
         loan = current;
@@ -424,33 +455,52 @@ export async function prepareOnChainBorrow(
     } else if (existing) {
       loan = existing;
     } else {
-      loan = await database.loan.create({
-        data: {
-          organizationId: actor.organizationId,
-          lenderMembershipId: context.offer.lenderMembershipId,
-          borrowerMembershipId: context.membership.id,
-          lendingOfferId: context.offer.id,
-          borrowRequestId: requestId,
-          chainOfferId,
-          contractAddress: configuredContract.toLowerCase(),
-          lenderWalletAddress: lenderWalletAddress.toLowerCase(),
-          borrowerWalletAddress: borrowerWalletAddress.toLowerCase(),
-          principalBaseUnits,
-          repaymentBaseUnits,
-          principalAmountMinorUnits: context.offer.amountMinorUnits,
-          feeAmountMinorUnits: feeMinorUnits,
-          outstandingPrincipalMinorUnits: context.offer.amountMinorUnits,
-          currency: context.offer.currency,
-          durationDays: context.offer.durationDays,
-          feeRateBasisPoints: context.offer.feeRateBasisPoints,
-          status: "REQUESTED",
-          requestedAt: now,
-          startedAt: now,
-          repaymentDueAt: estimatedDueAt,
-          policyVersion: context.policy.policyVersion,
-          policySnapshot: policySnapshot(context.policy),
-        },
-        select: { id: true },
+      loan = await database.$transaction(async (transaction) => {
+        const created = await transaction.loan.create({
+          data: {
+            organizationId: actor.organizationId,
+            lenderMembershipId: context.offer.lenderMembershipId,
+            borrowerMembershipId: context.membership.id,
+            lendingOfferId: context.offer.id,
+            borrowRequestId: requestId,
+            chainOfferId,
+            contractAddress: configuredContract.toLowerCase(),
+            lenderWalletAddress: lenderWalletAddress.toLowerCase(),
+            borrowerWalletAddress: borrowerWalletAddress.toLowerCase(),
+            principalBaseUnits,
+            repaymentBaseUnits,
+            principalAmountMinorUnits: context.offer.amountMinorUnits,
+            feeAmountMinorUnits: feeMinorUnits,
+            outstandingPrincipalMinorUnits: context.offer.amountMinorUnits,
+            currency: context.offer.currency,
+            durationDays: context.offer.durationDays,
+            feeRateBasisPoints: context.offer.feeRateBasisPoints,
+            status: "REQUESTED",
+            requestedAt: now,
+            startedAt: now,
+            repaymentDueAt: estimatedDueAt,
+            policyVersion: context.policy.policyVersion,
+            policySnapshot: policySnapshot(context.policy),
+          },
+          select: { id: true },
+        });
+        await transaction.auditEvent.create({
+          data: {
+            organizationId: actor.organizationId,
+            loanId: created.id,
+            lendingOfferId: context.offer.id,
+            actorMembershipId: context.membership.id,
+            targetMembershipId: context.offer.lenderMembershipId,
+            amountMinorUnits: context.offer.amountMinorUnits,
+            currency: context.offer.currency,
+            type: "LOAN_REQUESTED",
+            title: "Loan application submitted for eligibility review",
+            actorLabel: context.membership.user.name,
+            occurredAt: now,
+            metadata: { borrowRequestId: requestId },
+          },
+        });
+        return created;
       });
     }
   } catch (error) {
@@ -478,7 +528,7 @@ export async function prepareOnChainBorrow(
       ) {
         return { state: "CONFIRMED" as const, loanId: sameRequest.id };
       }
-      if (sameRequest.status === "REQUESTED") {
+      if (["REQUESTED", "APPROVED"].includes(sameRequest.status)) {
         loan = sameRequest;
       } else {
         throw acceptanceIntentConflictError();
@@ -486,6 +536,68 @@ export async function prepareOnChainBorrow(
     } else {
       throw acceptanceIntentConflictError();
     }
+  }
+
+  const originationDecision = await (
+    dependencies.evaluateOrigination ?? evaluateAndPersistLoanOrigination
+  )({
+    organizationId: actor.organizationId,
+    loanId: loan.id,
+    evaluatedAt: now,
+    database,
+  });
+  if (!originationDecision) {
+    throw new ApplicationError(
+      "LOAN_DECISION_UNAVAILABLE",
+      "The loan decision could not be completed safely.",
+      503,
+    );
+  }
+  if (!isOriginationAuthorized(originationDecision)) {
+    if (
+      ["APPROVAL_CONSIDERATION", "REVIEW_REQUIRED"].includes(
+        originationDecision.status,
+      )
+    ) {
+      return {
+        state: "REVIEW_REQUIRED" as const,
+        loanId: loan.id,
+        decisionId: originationDecision.id,
+      };
+    }
+    throw new ApplicationError(
+      "LOAN_DECISION_NOT_ELIGIBLE",
+      "This borrowing request is not eligible under the current lending policy.",
+      422,
+    );
+  }
+
+  const authorizationExpiry =
+    BigInt(Math.floor(now.getTime() / 1_000)) +
+    BORROW_AUTHORIZATION_TTL_SECONDS;
+  const authorization = await (
+    dependencies.signAuthorization ?? signBorrowAuthorization
+  )(
+    {
+      offerId: BigInt(chainOfferId),
+      borrower: getAddress(borrowerWalletAddress),
+      expiry: authorizationExpiry,
+      authorizationId: borrowRequestIdToAuthorizationId(requestId),
+    },
+    configuredContract,
+  );
+  const configuredAuthorizationSigner = await (
+    dependencies.readAuthorizationSigner ?? readChainAuthorizationSigner
+  )(configuredContract);
+  if (
+    configuredAuthorizationSigner.toLowerCase() !==
+    authorization.signerAddress.toLowerCase()
+  ) {
+    throw new ApplicationError(
+      "BORROW_AUTHORIZER_MISMATCH",
+      "Borrowing authorization is not configured for this contract.",
+      503,
+    );
   }
 
   return {
@@ -549,7 +661,7 @@ export async function confirmOnChainBorrow(
     return { loanId: pending.id, status: "ACTIVE" as const };
   }
   if (
-    pending.status !== "REQUESTED" ||
+    !["REQUESTED", "APPROVED"].includes(pending.status) ||
     !pending.chainOfferId ||
     !pending.lenderWalletAddress ||
     !pending.borrowerWalletAddress ||
@@ -557,6 +669,36 @@ export async function confirmOnChainBorrow(
     pending.repaymentBaseUnits === null
   ) {
     throw unavailableError();
+  }
+
+  const normalizedTransactionHash = transactionHash.toLowerCase();
+  if (
+    pending.acceptanceTransactionHash &&
+    pending.acceptanceTransactionHash.toLowerCase() !==
+      normalizedTransactionHash
+  ) {
+    throw new ApplicationError(
+      "ACCEPTANCE_TRANSACTION_CONFLICT",
+      "This application is already linked to another Arc transaction.",
+      409,
+    );
+  }
+  if (!pending.acceptanceTransactionHash) {
+    const submitted = await database.loan.updateMany({
+      where: {
+        id: pending.id,
+        status: { in: ["REQUESTED", "APPROVED"] },
+        acceptanceTransactionHash: null,
+      },
+      data: { acceptanceTransactionHash: normalizedTransactionHash },
+    });
+    if (submitted.count !== 1) {
+      throw new ApplicationError(
+        "ACCEPTANCE_TRANSACTION_CONFLICT",
+        "This application submission conflicted with another confirmation.",
+        409,
+      );
+    }
   }
 
   let receipt;
@@ -584,7 +726,7 @@ export async function confirmOnChainBorrow(
   }
   if (receipt.status !== "success") {
     await database.loan.updateMany({
-      where: { id: pending.id, status: "REQUESTED" },
+      where: { id: pending.id, status: { in: ["REQUESTED", "APPROVED"] } },
       data: {
         status: "CANCELLED",
         closedAt: dependencies.now?.() ?? new Date(),
@@ -685,12 +827,13 @@ export async function confirmOnChainBorrow(
   );
   await database.$transaction(async (transaction) => {
     const updated = await transaction.loan.updateMany({
-      where: { id: pending.id, status: "REQUESTED" },
+      where: { id: pending.id, status: { in: ["REQUESTED", "APPROVED"] } },
       data: {
         status: "ACTIVE",
         chainLoanId: event.loanId.toString(),
         acceptanceTransactionHash: transactionHash.toLowerCase(),
-        approvedAt: lifecycleStartedAt,
+        approvedAt:
+          pending.status === "APPROVED" ? undefined : lifecycleStartedAt,
         activatedAt: lifecycleStartedAt,
         startedAt: lifecycleStartedAt,
         repaymentDueAt: dueAt,

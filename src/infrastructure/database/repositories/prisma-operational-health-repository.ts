@@ -18,6 +18,12 @@ export const prismaOperationalHealthRepository = {
           lastSuccessfulAt: true,
           lastFailureAt: true,
           consecutiveFailures: true,
+          alertState: true,
+          alertChangedAt: true,
+          alertDeliveryPending: true,
+          lastAlertAttemptAt: true,
+          lastAlertDeliveredAt: true,
+          lastAlertFailedAt: true,
         },
       }),
       prisma.blockchainEvent.count({
@@ -30,14 +36,43 @@ export const prismaOperationalHealthRepository = {
     return { cursor, unmatchedEvents, conflictingEvents };
   },
 
-  async getErpNextState() {
-    const [configuredIntegrations, failedIntegrations] = await Promise.all([
-      prisma.employeeDirectoryIntegration.count(),
+  async getErpNextState(staleBefore: Date) {
+    const enabled = { organization: { erpNextEnabled: true } } as const;
+    const [
+      configuredIntegrations,
+      incompleteIntegrations,
+      staleIntegrations,
+      connectedIntegrations,
+    ] = await Promise.all([
+      prisma.employeeDirectoryIntegration.count({ where: enabled }),
       prisma.employeeDirectoryIntegration.count({
-        where: { lastSyncStatus: { in: ["FAILED", "PARTIAL"] } },
+        where: {
+          ...enabled,
+          OR: [
+            { lastSyncStatus: null },
+            { lastSyncStatus: { not: "SUCCESS" } },
+          ],
+        },
+      }),
+      prisma.employeeDirectoryIntegration.count({
+        where: {
+          ...enabled,
+          OR: [
+            { lastSuccessfulSyncAt: null },
+            { lastSuccessfulSyncAt: { lt: staleBefore } },
+          ],
+        },
+      }),
+      prisma.employeeDirectoryIntegration.count({
+        where: { ...enabled, connectionStatus: "CONNECTED" },
       }),
     ]);
-    return { configuredIntegrations, failedIntegrations };
+    return {
+      configuredIntegrations,
+      connectedIntegrations,
+      incompleteIntegrations,
+      staleIntegrations,
+    };
   },
 
   async getPendingTransactionCount() {

@@ -9,6 +9,7 @@ import {
 } from "viem";
 
 import { prisma } from "@/infrastructure/database/prisma";
+import { validateEnvironment } from "@/infrastructure/config/environment";
 import { logger } from "@/infrastructure/logging/logger";
 import {
   logTransactionLifecycle,
@@ -30,6 +31,7 @@ import {
   getConfiguredEscrowAddress,
 } from "@/integrations/arc/employee-lending-escrow";
 import type { AuthenticatedActor } from "@/modules/auth/domain/actor";
+import { evaluateEmployeeDirectoryEligibility } from "@/modules/employee-directory/domain/employee-eligibility";
 import { matchesFundedOfferEvent } from "@/modules/lending/domain/lending-offer";
 import { ensureOrganizationPolicy } from "@/modules/policies/infrastructure/policy-data";
 import { validateOfferAgainstPolicy } from "@/modules/policies/domain/lending-policy";
@@ -93,6 +95,7 @@ export async function prepareFundedLendingOffer(
   const contractAddress =
     dependencies.contractAddress ?? getConfiguredEscrowAddress();
   if (!contractAddress) throw configurationError();
+  const now = dependencies.now?.() ?? new Date();
 
   const existing = await database.lendingOffer.findUnique({
     where: { fundingRequestId: terms.requestId },
@@ -134,9 +137,22 @@ export async function prepareFundedLendingOffer(
       id: true,
       isActive: true,
       employmentStatus: true,
+      employmentStatusSource: true,
+      employmentStatusSyncedAt: true,
       role: true,
       canLend: true,
-      organization: { select: { currency: true } },
+      organization: {
+        select: {
+          currency: true,
+          erpNextEnabled: true,
+          employeeDirectoryIntegration: {
+            select: {
+              lastSyncStatus: true,
+              lastSuccessfulSyncAt: true,
+            },
+          },
+        },
+      },
     },
   });
   if (
@@ -148,6 +164,21 @@ export async function prepareFundedLendingOffer(
       "EMPLOYEE_NOT_ELIGIBLE",
       "An active employee membership is required.",
       403,
+    );
+  }
+  const directoryEligibility = evaluateEmployeeDirectoryEligibility({
+    erpNextEnabled: membership.organization.erpNextEnabled,
+    integration: membership.organization.employeeDirectoryIntegration,
+    employee: membership,
+    now,
+    maxAgeMs:
+      validateEnvironment().ERP_NEXT_ELIGIBILITY_MAX_AGE_MINUTES * 60_000,
+  });
+  if (!directoryEligibility.trusted) {
+    throw new ApplicationError(
+      "EMPLOYEE_DIRECTORY_NOT_FRESH",
+      "Employee eligibility cannot be verified from a complete, current ERPNext synchronization. Contact your employer administrator.",
+      503,
     );
   }
   if (membership.organization.currency !== "USD") {
@@ -195,7 +226,7 @@ export async function prepareFundedLendingOffer(
     );
   }
 
-  const expiresAt = dependencies.now?.() ?? new Date();
+  const expiresAt = new Date(now);
   expiresAt.setUTCDate(expiresAt.getUTCDate() + 30);
   const offer = await database.lendingOffer.create({
     data: {

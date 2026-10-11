@@ -13,6 +13,7 @@ import type {
   ReconciliationEventSource,
   ReconciliationRepository,
 } from "@/modules/blockchain-reconciliation/application/ports";
+import { reconciliationProgress } from "@/modules/blockchain-reconciliation/domain/reconciliation-progress";
 
 export type ReconciliationConfig = Readonly<{
   chainId: number;
@@ -26,6 +27,7 @@ export type ReconciliationConfig = Readonly<{
   rpcMaxRetries: number;
   retryBaseDelayMs: number;
   leaseDurationMs: number;
+  staleAfterMs?: number;
   failureAlertThreshold?: number;
   unmatchedEventAlertThreshold?: number;
 }>;
@@ -80,21 +82,6 @@ export async function reconcileBlockchainEvents(
   source: ReconciliationEventSource,
   clock: Clock = systemClock,
 ) {
-  const actualChainId = await retryRpc(
-    "get-chain-id",
-    config.rpcMaxRetries,
-    config.retryBaseDelayMs,
-    config.failureAlertThreshold ?? 3,
-    clock,
-    () => source.getChainId(),
-  );
-  if (actualChainId !== config.chainId) {
-    throw new Error(
-      `Arc reconciliation chain mismatch: expected ${config.chainId}, received ${actualChainId}`,
-    );
-  }
-  recordOperationalSuccess("arc_rpc", clock.now());
-
   const leaseOwner = randomUUID();
   const lease = await repository.acquireLease({
     chainId: config.chainId,
@@ -121,6 +108,21 @@ export async function reconcileBlockchainEvents(
   let unmatchedEvents = 0;
   let conflictEvents = 0;
   try {
+    const actualChainId = await retryRpc(
+      "get-chain-id",
+      config.rpcMaxRetries,
+      config.retryBaseDelayMs,
+      config.failureAlertThreshold ?? 3,
+      clock,
+      () => source.getChainId(),
+    );
+    if (actualChainId !== config.chainId) {
+      throw new Error(
+        `Arc reconciliation chain mismatch: expected ${config.chainId}, received ${actualChainId}`,
+      );
+    }
+    recordOperationalSuccess("arc_rpc", clock.now());
+
     const latestBlock = await retryRpc(
       "get-latest-block",
       config.rpcMaxRetries,
@@ -133,12 +135,25 @@ export async function reconcileBlockchainEvents(
     const confirmationDepth = BigInt(config.confirmationDepth);
     const finalizedThrough =
       latestBlock > confirmationDepth ? latestBlock - confirmationDepth : 0n;
+    const startedProgress = reconciliationProgress({
+      cursorNextBlock: lease.nextBlock,
+      latestBlock,
+      confirmationDepth: config.confirmationDepth,
+      blockRange: config.blockRange,
+      maxRangesPerRun: config.maxRangesPerRun,
+    });
+    const startedTimeStale =
+      lease.lastSuccessfulAt === null ||
+      lease.lastSuccessfulAt === undefined ||
+      clock.now().getTime() - lease.lastSuccessfulAt.getTime() >
+        (config.staleAfterMs ?? Number.POSITIVE_INFINITY);
     const rewindFrom =
       lease.nextBlock > BigInt(config.reorgWindow)
         ? lease.nextBlock - BigInt(config.reorgWindow)
         : config.startBlock;
     let fromBlock =
       rewindFrom > config.startBlock ? rewindFrom : config.startBlock;
+    let cursorNextBlock = lease.nextBlock;
 
     while (fromBlock <= latestBlock && scannedRanges < config.maxRangesPerRun) {
       const candidateTo = fromBlock + BigInt(config.blockRange - 1);
@@ -163,6 +178,7 @@ export async function reconcileBlockchainEvents(
         toBlock,
       });
       scannedRanges += 1;
+      if (toBlock + 1n > cursorNextBlock) cursorNextBlock = toBlock + 1n;
       observedEvents += events.length;
       logger.info("Arc reconciliation scanned block range", {
         fromBlock: fromBlock.toString(),
@@ -251,6 +267,13 @@ export async function reconcileBlockchainEvents(
         contractAddress: config.contractAddress,
       });
     }
+    const remainingProgress = reconciliationProgress({
+      cursorNextBlock,
+      latestBlock,
+      confirmationDepth: config.confirmationDepth,
+      blockRange: config.blockRange,
+      maxRangesPerRun: config.maxRangesPerRun,
+    });
     return {
       status: "COMPLETED" as const,
       scannedRanges,
@@ -258,6 +281,14 @@ export async function reconcileBlockchainEvents(
       appliedEvents,
       unmatchedEvents,
       conflictEvents,
+      latestBlock: latestBlock.toString(),
+      finalizedThrough: finalizedThrough.toString(),
+      cursorNextBlock: cursorNextBlock.toString(),
+      startedBacklogBlocks: startedProgress.backlogBlocks.toString(),
+      remainingBacklogBlocks: remainingProgress.backlogBlocks.toString(),
+      maxBlocksPerRun: remainingProgress.maxBlocksPerRun.toString(),
+      caughtUp: remainingProgress.caughtUp,
+      startedStale: startedProgress.stale || startedTimeStale,
     };
   } catch (error) {
     incrementOperationalCounter("reconciliation_failures_total");

@@ -31,6 +31,8 @@ Configure the integration at `/employer/integrations`. The employer enters the E
 ```dotenv
 ERP_NEXT_SYNC_ENABLED="true"
 ERP_NEXT_SYNC_INTERVAL_MINUTES="1440"
+# Must exceed the interval. New lending and borrowing fail closed after this age.
+ERP_NEXT_ELIGIBILITY_MAX_AGE_MINUTES="1500"
 ERP_NEXT_SYNC_STALE_AFTER_MINUTES="30"
 ERP_NEXT_SYNC_PAGE_SIZE="100"
 ERP_NEXT_SYNC_MAX_PAGES="100"
@@ -40,7 +42,11 @@ ERP_NEXT_CREDENTIAL_ENCRYPTION_KEY="base64-encoded-32-byte-key"
 
 Do not commit the last two values or print them in logs. The encryption key is server-only and must remain stable across restarts. Existing operator-managed integrations may continue to use `ERP_NEXT_CREDENTIALS_JSON`, keyed first by organization ID and then by their saved legacy reference. OAuth bearer credentials use `accessToken` instead of the token pair.
 
-An external scheduler invokes the lightweight in-application worker. No separate queue is required:
+The existing internal production scheduler sidecar invokes the lightweight
+in-application worker. It uses the same environment file as the application,
+keeps the endpoint on the Compose internal network, and sends the dedicated
+bearer secret. No separate queue or public cron is required. The endpoint can
+still be invoked manually during recovery:
 
 ```bash
 curl --fail-with-body --request POST \
@@ -48,7 +54,23 @@ curl --fail-with-body --request POST \
   https://application.example/api/internal/erpnext-sync
 ```
 
-Run the trigger at least as often as `ERP_NEXT_SYNC_INTERVAL_MINUTES`. The application selects only configured, due, non-paused organizations. It retrieves bounded pages, processes organizations sequentially, and uses a PostgreSQL advisory lock plus a unique running-job index to prevent overlap for one organization.
+Start the scheduler with `docker compose -f compose.production.yaml --env-file
+deploy/.env.production up -d --build app reconciliation-scheduler`. The
+sidecar triggers immediately after startup and then every
+`ERP_NEXT_SYNC_INTERVAL_MINUTES`. The application selects only configured,
+due, non-paused organizations. It retrieves bounded pages, processes
+organizations sequentially, and uses a PostgreSQL advisory lock plus a unique
+running-job index to prevent overlap for one organization.
+
+`ERP_NEXT_SYNC_STALE_AFTER_MINUTES` is the abandoned-run lease timeout. It is
+not the eligibility policy. `ERP_NEXT_ELIGIBILITY_MAX_AGE_MINUTES` is the
+maximum age of the latest complete snapshot and must exceed the scheduled
+interval. For an ERPNext-enabled organization, new offer funding and borrowing
+require the latest run to be `SUCCESS`, the success timestamp to be inside this
+window, and the employee status to have been updated by that snapshot. A
+`PARTIAL`, `FAILED`, `RUNNING`, missing, or stale snapshot returns
+`EMPLOYEE_DIRECTORY_NOT_FRESH`; repayments and existing loan history remain
+available.
 
 ## Transaction and restart behavior
 
@@ -60,7 +82,7 @@ Authentication, permission, missing-credential, unsafe-URL, invalid-configuratio
 
 ## Operator status
 
-The employer integration page shows whether global scheduling is enabled, last attempt, last success, current/latest state, next due time, safe error text, duration, and processed/added/updated/removed/reactivated/unchanged/review counts. The dependency-health endpoint and operational counters also report sanitized ERPNext failures. Correlation IDs link a displayed run to logs; credentials, authorization headers, and remote response bodies are never included.
+The employer integration page shows whether global scheduling is enabled, last attempt, last success, current/latest state, next due time, safe error text, duration, and processed/added/updated/removed/reactivated/unchanged/review counts. The dependency-health endpoint reports connectivity separately from incomplete and stale integrations. The scheduler treats any partial or failed organization run as a failed iteration, alerts after the configured consecutive-failure threshold, suppresses repeated alerts, and emits one recovery. Correlation IDs link a displayed run to logs; credentials, authorization headers, employee details, and remote response bodies are never included.
 
 ## Failure procedure
 
@@ -70,7 +92,30 @@ The employer integration page shows whether global scheduling is enabled, last a
 4. For `REQUEST_TIMEOUT`, `RATE_LIMITED`, or `REMOTE_SERVER_ERROR`, verify ERPNext availability and allow the next scheduled attempt or use the manual retry.
 5. For `REMOTE_RESPONSE_INVALID`, inspect ERPNext version/customization changes. Do not replay a partial response; the failed run made no directory changes.
 6. For `SYNC_LIMIT_EXCEEDED`, verify ERPNext pagination, then deliberately raise `ERP_NEXT_SYNC_MAX_PAGES` or reduce the source population/filtering. Keep `ERP_NEXT_SYNC_PAGE_SIZE` within 10–1000.
-7. Test the connection, then run a manual sync. Confirm a new successful timestamp and expected counters before considering the incident recovered.
+7. For `PARTIAL_SYNC`, resolve every review record in the employer integration
+   page. Do not treat a connected ERPNext API or a fully retrieved page count as
+   a complete sync while unmatched, ambiguous, duplicate, or unmapped records
+   remain.
+8. For `EMAIL_AUTHENTICATION_FAILED`, rotate or correct the outbound email
+   provider credential, then resend the pending invitations. Do not change the
+   ERPNext service credential unless its own connection test fails.
+9. Test the connection, then run a manual sync. Confirm a new successful timestamp and expected counters before considering the incident recovered.
+10. Run `npm run audit:erpnext`, check that every enabled integration is
+    `SUCCESS` and inside the freshness window, then run
+    `npm run pilot:preflight`.
+
+Credential-safe diagnostics are available before retrying:
+
+```powershell
+npm run verify:erpnext-source
+npm run verify:email-provider
+```
+
+The first command reads only review records from the configured ERPNext source
+and prints hashed source identifiers plus presence/status metadata. The second
+performs SMTP connection/authentication verification without sending a message.
+Neither command prints credentials, email addresses, names, or invitation
+tokens. A non-zero result must remain a readiness blocker.
 
 ## ERPNext pilot prerequisites
 
@@ -79,7 +124,8 @@ The employer integration page shows whether global scheduling is enabled, last a
 - A reviewed mapping for every ERPNext status used by the pilot. Unknown statuses go to review and never silently change membership status.
 - A credential saved through the employer integration form, or a legacy server-side environment entry matching its saved reference.
 - An HTTPS ERPNext base URL resolvable to a public address in production. Local HTTP is a development-only opt-in.
-- An external HTTPS cron capable of sending the bearer-authenticated POST shown above.
+- The internal Compose scheduler running and observed through a restart and one
+  complete scheduled execution.
 
 ## Verification commands
 
@@ -98,4 +144,14 @@ npm run build
 
 The focused tests cover five-run idempotency, inactive pre-acceptance access, hashed and rotated invitation tokens, backend email matching, tenant isolation, password change/reset and session revocation, stable-ID field updates, complete-snapshot removal, outstanding-loan and repayment preservation, rehire, transient/authentication/malformed/partial-page failures, restart recovery, overlap prevention, and bounded pagination.
 
-Last verified on 2026-10-05 with Docker PostgreSQL: migration deploy applied all 36 migrations; the focused ERPNext/email/security suites passed 46 tests; the full suite passed 298 tests in 47 files with one intentional skip; type checking, ESLint, formatting, and the Next.js production build passed. No live ERPNext instance was available—the adapter responses were mocked while persistence, invitation delivery state, password/token lifecycle, locking, restart, duplicate, and tenant-isolation behavior ran against PostgreSQL.
+Last verified on 2026-10-11 with Docker PostgreSQL: all 38 migrations were
+applied; the focused ERPNext, scheduler, environment, and borrowing suites
+passed 68 tests; the full suite passed 351 tests in 57 files with one
+intentional skip; contract tests passed 23/23; and type checking, ESLint,
+formatting, the scheduler image, Compose validation, and the Next.js production
+build passed. `npm run audit:erpnext` inspected the real persisted state without
+printing employee details or credentials. After HR corrected the trusted source
+email, a manual run completed successfully on 2026-10-11 with all three records
+matched and zero reviews or errors. Current SMTP authentication and both
+persisted invitation lifecycles are healthy. The runtime scheduler remains
+disabled and has not produced a live `SCHEDULED/SUCCESS` run.

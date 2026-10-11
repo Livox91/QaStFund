@@ -1,6 +1,12 @@
 import "dotenv/config";
 
-import { createPublicClient, getAddress, http, type Hex } from "viem";
+import {
+  createPublicClient,
+  decodeEventLog,
+  getAddress,
+  http,
+  type Hex,
+} from "viem";
 
 import { prisma } from "@/infrastructure/database/prisma";
 import {
@@ -9,6 +15,8 @@ import {
 } from "@/integrations/arc/arc-testnet";
 import {
   employeeLendingEscrowAbi,
+  erc20UsdcAbi,
+  fundingRequestIdToBytes32,
   getConfiguredEscrowAddress,
 } from "@/integrations/arc/employee-lending-escrow";
 
@@ -33,6 +41,16 @@ const rpcUrl =
   "https://rpc.testnet.arc.network";
 const client = createPublicClient({ transport: http(rpcUrl) });
 const issues: AuditIssue[] = [];
+const receiptEvidence: Array<{
+  purpose: string;
+  transactionHash: string;
+  blockNumber: string;
+  blockTimestamp: string;
+  confirmations: string;
+  contractEvent: string;
+  contractEventLogIndex: number;
+  transfer: { from: string; to: string; value: string };
+}> = [];
 let checkedReceipts = 0;
 const normalizedContract = contractAddress.toLowerCase();
 
@@ -40,7 +58,10 @@ function issue(value: AuditIssue) {
   issues.push(value);
 }
 
-const actualChainId = await client.getChainId();
+const [actualChainId, latestBlock] = await Promise.all([
+  client.getChainId(),
+  client.getBlockNumber(),
+]);
 if (actualChainId !== ARC_TESTNET_CHAIN_ID) {
   issue({
     code: "CHAIN_ID_MISMATCH",
@@ -72,11 +93,13 @@ const [configuredToken, configuredSigner, offers, loans, journalProblems] =
         id: true,
         status: true,
         chainOfferId: true,
+        fundingRequestId: true,
         lenderWalletAddress: true,
         principalBaseUnits: true,
         feeRateBasisPoints: true,
         durationDays: true,
         fundingTransactionHash: true,
+        fundedAt: true,
       },
       orderBy: { createdAt: "asc" },
       take: MAX_RECORDS,
@@ -97,6 +120,13 @@ const [configuredToken, configuredSigner, offers, loans, journalProblems] =
         repaymentBaseUnits: true,
         acceptanceTransactionHash: true,
         repaymentTransactionHash: true,
+        onChainStartedAt: true,
+        onChainRepaidAt: true,
+        repayments: {
+          where: { status: "COMPLETED" },
+          select: { id: true },
+          take: 1,
+        },
       },
       orderBy: { createdAt: "asc" },
       take: MAX_RECORDS,
@@ -156,6 +186,13 @@ async function checkSuccessfulReceipt(
   recordId: string,
   transactionHash: string | null,
   purpose: string,
+  expected: Readonly<{
+    eventName: "OfferCreated" | "LoanStarted" | "LoanRepaid";
+    journalName: "OFFER_CREATED" | "LOAN_STARTED" | "LOAN_REPAID";
+    journalRecordId: string;
+    eventMatches(args: Record<string, unknown>): boolean;
+    transfer: { from: string; to: string; value: bigint };
+  }>,
 ) {
   if (!transactionHash) {
     issue({
@@ -164,7 +201,7 @@ async function checkSuccessfulReceipt(
       recordId,
       detail: `${purpose} transaction hash is missing.`,
     });
-    return;
+    return null;
   }
   checkedReceipts += 1;
   try {
@@ -178,7 +215,122 @@ async function checkSuccessfulReceipt(
         recordId,
         detail: `${purpose} receipt ${transactionHash} is reverted.`,
       });
+      return null;
     }
+    let matchingEvent:
+      | { logIndex: number; name: string; args: Record<string, unknown> }
+      | undefined;
+    let matchingTransfer:
+      { from: string; to: string; value: bigint } | undefined;
+    for (const log of receipt.logs) {
+      if (log.address.toLowerCase() === normalizedContract) {
+        try {
+          const decoded = decodeEventLog({
+            abi: employeeLendingEscrowAbi,
+            data: log.data,
+            topics: log.topics,
+          });
+          const args = decoded.args as Record<string, unknown>;
+          if (
+            decoded.eventName === expected.eventName &&
+            expected.eventMatches(args)
+          ) {
+            matchingEvent = {
+              logIndex: log.logIndex,
+              name: decoded.eventName,
+              args,
+            };
+          }
+        } catch {}
+      }
+      if (log.address.toLowerCase() === ARC_USDC_ADDRESS.toLowerCase()) {
+        try {
+          const decoded = decodeEventLog({
+            abi: erc20UsdcAbi,
+            data: log.data,
+            topics: log.topics,
+          });
+          if (decoded.eventName === "Transfer") {
+            const transfer = decoded.args;
+            if (
+              transfer.from.toLowerCase() ===
+                expected.transfer.from.toLowerCase() &&
+              transfer.to.toLowerCase() ===
+                expected.transfer.to.toLowerCase() &&
+              transfer.value === expected.transfer.value
+            ) {
+              matchingTransfer = transfer;
+            }
+          }
+        } catch {}
+      }
+    }
+    if (!matchingEvent) {
+      issue({
+        code: "EXPECTED_CONTRACT_EVENT_MISSING",
+        recordType,
+        recordId,
+        detail: `${purpose} receipt ${transactionHash} does not contain the exact expected ${expected.eventName} event.`,
+      });
+    }
+    if (!matchingTransfer) {
+      issue({
+        code: "EXPECTED_USDC_TRANSFER_MISSING",
+        recordType,
+        recordId,
+        detail: `${purpose} receipt ${transactionHash} does not contain the exact expected USDC transfer.`,
+      });
+    }
+    const journalEvent = matchingEvent
+      ? await prisma.blockchainEvent.findUnique({
+          where: {
+            chainId_contractAddress_transactionHash_logIndex: {
+              chainId: ARC_TESTNET_CHAIN_ID,
+              contractAddress: normalizedContract,
+              transactionHash: transactionHash.toLowerCase(),
+              logIndex: matchingEvent.logIndex,
+            },
+          },
+          select: {
+            name: true,
+            status: true,
+            isFinalized: true,
+            matchedRecordId: true,
+          },
+        })
+      : null;
+    if (
+      !journalEvent ||
+      journalEvent.name !== expected.journalName ||
+      journalEvent.status !== "APPLIED" ||
+      !journalEvent.isFinalized ||
+      journalEvent.matchedRecordId !== expected.journalRecordId
+    ) {
+      issue({
+        code: "JOURNAL_EVENT_NOT_APPLIED",
+        recordType,
+        recordId,
+        detail: `${purpose} transaction ${transactionHash} is not linked to the expected finalized application record.`,
+      });
+    }
+    if (matchingEvent && matchingTransfer) {
+      const block = await client.getBlock({ blockNumber: receipt.blockNumber });
+      receiptEvidence.push({
+        purpose,
+        transactionHash: transactionHash.toLowerCase(),
+        blockNumber: receipt.blockNumber.toString(),
+        blockTimestamp: new Date(Number(block.timestamp) * 1_000).toISOString(),
+        confirmations: (latestBlock - receipt.blockNumber + 1n).toString(),
+        contractEvent: matchingEvent.name,
+        contractEventLogIndex: matchingEvent.logIndex,
+        transfer: {
+          from: matchingTransfer.from.toLowerCase(),
+          to: matchingTransfer.to.toLowerCase(),
+          value: matchingTransfer.value.toString(),
+        },
+      });
+    }
+    return receipt;
   } catch {
     issue({
       code: "RECEIPT_UNAVAILABLE",
@@ -186,6 +338,7 @@ async function checkSuccessfulReceipt(
       recordId,
       detail: `${purpose} receipt ${transactionHash} is unavailable from the configured RPC.`,
     });
+    return null;
   }
 }
 
@@ -195,6 +348,25 @@ for (const offer of offers) {
     offer.id,
     offer.fundingTransactionHash,
     "Funding",
+    {
+      eventName: "OfferCreated",
+      journalName: "OFFER_CREATED",
+      journalRecordId: offer.id,
+      eventMatches: (args) =>
+        args.offerId === BigInt(offer.chainOfferId!) &&
+        String(args.lender).toLowerCase() ===
+          offer.lenderWalletAddress?.toLowerCase() &&
+        args.principal === offer.principalBaseUnits &&
+        args.interestBps === BigInt(offer.feeRateBasisPoints) &&
+        args.duration === BigInt(offer.durationDays * 86_400) &&
+        String(args.requestId).toLowerCase() ===
+          fundingRequestIdToBytes32(offer.fundingRequestId!).toLowerCase(),
+      transfer: {
+        from: offer.lenderWalletAddress!,
+        to: normalizedContract,
+        value: offer.principalBaseUnits!,
+      },
+    },
   );
   const chainOfferId = BigInt(offer.chainOfferId!);
   const chainOffer = await client.readContract({
@@ -235,6 +407,25 @@ for (const loan of loans) {
     loan.id,
     loan.acceptanceTransactionHash,
     "Acceptance",
+    {
+      eventName: "LoanStarted",
+      journalName: "LOAN_STARTED",
+      journalRecordId: loan.id,
+      eventMatches: (args) =>
+        args.loanId === BigInt(loan.chainLoanId!) &&
+        args.offerId === BigInt(loan.chainOfferId!) &&
+        String(args.lender).toLowerCase() ===
+          loan.lenderWalletAddress?.toLowerCase() &&
+        String(args.borrower).toLowerCase() ===
+          loan.borrowerWalletAddress?.toLowerCase() &&
+        args.principal === loan.principalBaseUnits &&
+        args.repaymentAmount === loan.repaymentBaseUnits,
+      transfer: {
+        from: normalizedContract,
+        to: loan.borrowerWalletAddress!,
+        value: loan.principalBaseUnits!,
+      },
+    },
   );
   if (loan.status === "REPAID") {
     await checkSuccessfulReceipt(
@@ -242,6 +433,23 @@ for (const loan of loans) {
       loan.id,
       loan.repaymentTransactionHash,
       "Repayment",
+      {
+        eventName: "LoanRepaid",
+        journalName: "LOAN_REPAID",
+        journalRecordId: loan.repayments[0]?.id ?? "",
+        eventMatches: (args) =>
+          args.loanId === BigInt(loan.chainLoanId!) &&
+          String(args.lender).toLowerCase() ===
+            loan.lenderWalletAddress?.toLowerCase() &&
+          String(args.borrower).toLowerCase() ===
+            loan.borrowerWalletAddress?.toLowerCase() &&
+          args.amount === loan.repaymentBaseUnits,
+        transfer: {
+          from: loan.borrowerWalletAddress!,
+          to: loan.lenderWalletAddress!,
+          value: loan.repaymentBaseUnits!,
+        },
+      },
     );
   }
   const chainLoanId = BigInt(loan.chainLoanId!);
@@ -285,7 +493,7 @@ const [staleOffers, staleLoans, staleRepayments] = await Promise.all([
   prisma.loan.findMany({
     where: {
       contractAddress: normalizedContract,
-      status: "REQUESTED",
+      status: { in: ["REQUESTED", "APPROVED"] },
       updatedAt: { lt: staleBefore },
     },
     select: { id: true },
@@ -327,6 +535,7 @@ const report = {
     staleIntents:
       staleOffers.length + staleLoans.length + staleRepayments.length,
   },
+  receiptEvidence,
   limitPerCategory: MAX_RECORDS,
   issues,
 };

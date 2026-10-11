@@ -15,7 +15,8 @@ import {
 } from "@/modules/transactions/browser-pending-operation";
 import { Button } from "@/shared/ui/button";
 
-type Phase = "idle" | "preparing" | "authorizing" | "confirming" | "failed";
+type Phase =
+  "idle" | "preparing" | "review" | "authorizing" | "confirming" | "failed";
 
 async function readApiError(response: Response): Promise<string> {
   const body = (await response.json().catch(() => null)) as {
@@ -121,6 +122,12 @@ export function ConfirmBorrowForm({ offerId }: { offerId: string }) {
       const { intent } = (await intentResponse.json()) as {
         intent:
           | { state: "CONFIRMED"; loanId: string }
+          | { state: "REJECTED"; loanId: string }
+          | {
+              state: "REVIEW_REQUIRED";
+              loanId: string;
+              decisionId: string;
+            }
           | {
               state: "PENDING";
               loanId: string;
@@ -138,6 +145,31 @@ export function ConfirmBorrowForm({ offerId }: { offerId: string }) {
         await wallet.refreshWallet();
         router.push(`/app?loanCreated=1&loanId=${intent.loanId}`);
         router.refresh();
+        return;
+      }
+      if (intent.state === "REJECTED") {
+        clearPendingOperation(window.localStorage, "loan_acceptance", offerId);
+        setStoredOperation(null);
+        requestId.current = null;
+        setPhase("failed");
+        setMessage(
+          "Your employer did not approve this request. No wallet transaction was submitted.",
+        );
+        return;
+      }
+      if (intent.state === "REVIEW_REQUIRED") {
+        setStoredOperation(
+          writePendingOperation(window.localStorage, {
+            kind: "loan_acceptance",
+            referenceId: offerId,
+            requestId: requestId.current,
+            operationId: intent.loanId,
+          }),
+        );
+        setPhase("review");
+        setMessage(
+          "This request needs employer review because required eligibility evidence is unavailable. No wallet transaction was submitted.",
+        );
         return;
       }
 
@@ -229,9 +261,11 @@ export function ConfirmBorrowForm({ offerId }: { offerId: string }) {
         >
           {storedOperation?.transactionHash
             ? "Resume confirmation"
-            : storedOperation
-              ? "Continue borrowing"
-              : "Confirm borrowing"}
+            : phase === "review"
+              ? "Check review status"
+              : storedOperation
+                ? "Continue borrowing"
+                : "Confirm borrowing"}
         </Button>
       )}
     </div>

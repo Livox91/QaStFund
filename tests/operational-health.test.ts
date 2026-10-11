@@ -56,6 +56,72 @@ describe("operational health", () => {
     expect(result.lastSuccessfullyReconciledBlock).toBe("115");
   });
 
+  it("detects finalized-head backlog before the time threshold expires", () => {
+    const result = evaluateReconciliationHealth({
+      enabled: true,
+      cursor: {
+        nextBlock: 101n,
+        finalizedThrough: 100n,
+        updatedAt: new Date("2026-10-04T11:59:30.000Z"),
+        lastSuccessfulAt: new Date("2026-10-04T11:59:30.000Z"),
+      },
+      latestObservedBlock: "100",
+      latestChainBlock: 250n,
+      confirmationDepth: 5,
+      healthWindowBlocks: 100,
+      maxRangesPerRun: 10,
+      lastSuccessfulAt: null,
+      failureCount: 0,
+      unmatchedEvents: 0,
+      conflictingEvents: 0,
+      staleAfterMs: 15 * 60_000,
+      now: new Date("2026-10-04T12:00:00.000Z"),
+    });
+
+    expect(result).toMatchObject({
+      status: "stale",
+      finalizedChainHead: "245",
+      backlogBlocks: "145",
+      healthWindowBlocks: "100",
+      maxBlocksPerRun: "1000",
+      caughtUp: false,
+    });
+  });
+
+  it("distinguishes ERPNext connectivity from complete, fresh synchronization", () => {
+    const report = buildDependencyHealth({
+      now: new Date("2026-10-11T12:00:00.000Z"),
+      reconciliationEnabled: false,
+      reconciliationStaleAfterMs: 60_000,
+      reconciliationState: null,
+      latestObservedBlock: null,
+      failures: {},
+      arc: {
+        status: "healthy",
+        contractConfigured: true,
+      },
+      circleConfigured: true,
+      erpEnabled: true,
+      erpState: {
+        configuredIntegrations: 1,
+        connectedIntegrations: 1,
+        incompleteIntegrations: 1,
+        staleIntegrations: 1,
+      },
+      pendingTransactionCount: 0,
+      metrics: {},
+      timers: {},
+    });
+
+    expect(report.status).toBe("degraded");
+    expect(report.dependencies.erpnext).toMatchObject({
+      status: "unhealthy",
+      connectedIntegrations: 1,
+      incompleteIntegrations: 1,
+      staleIntegrations: 1,
+    });
+  });
+
   it("alerts only when repeated failures reach the threshold", () => {
     const warning = vi
       .spyOn(console, "warn")

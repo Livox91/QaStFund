@@ -52,9 +52,73 @@ second deployment mechanism.
    npm run pilot:preflight
    ```
 
+8. Configure automatic reconciliation in `deploy/.env.production`:
+
+   ```dotenv
+   ARC_RECONCILIATION_ENABLED="true"
+   ARC_RECONCILIATION_INTERVAL_SECONDS="60"
+   ARC_RECONCILIATION_CRON_SECRET="a-dedicated-random-value-of-at-least-32-characters"
+   OPERATIONAL_ALERT_WEBHOOK_URL="https://alerts.example.com/arc"
+   OPERATIONAL_ALERT_WEBHOOK_BEARER_TOKEN="a-dedicated-receiver-token"
+   ERP_NEXT_SYNC_ENABLED="true"
+   ERP_NEXT_SYNC_INTERVAL_MINUTES="1440"
+   ERP_NEXT_ELIGIBILITY_MAX_AGE_MINUTES="1500"
+   ERP_NEXT_SYNC_CRON_SECRET="a-separate-random-value-of-at-least-32-characters"
+   ```
+
+   The webhook settings are optional. Without them, transition and recovery
+   alerts remain available in structured application and scheduler logs.
+
+9. Apply migrations and start the application plus internal scheduler:
+
+   ```shell
+   docker compose -f compose.production.yaml --env-file deploy/.env.production --profile tools run --rm migrate
+   docker compose -f compose.production.yaml --env-file deploy/.env.production up -d --build app reconciliation-scheduler caddy
+   ```
+
+10. Verify deployment without submitting a blockchain transaction:
+
+    ```shell
+    docker compose -f compose.production.yaml --env-file deploy/.env.production ps
+    docker compose -f compose.production.yaml --env-file deploy/.env.production logs --since=5m reconciliation-scheduler app
+    curl --fail https://YOUR_DOMAIN/api/health/dependencies
+    ```
+
+    Retain evidence that scheduler logs show repeated `COMPLETED` passes,
+    `remainingBacklogBlocks` stays within the configured range, cursor blocks
+    advance in dependency health, and no unmatched/conflicting count increases.
+    Also retain one `ERPNext scheduler response received` entry with zero partial
+    and failed runs, a new `SCHEDULED/SUCCESS` database run, and dependency
+    health with zero incomplete and stale integrations. Before deployment, run
+    `npm run verify:erpnext-source` and `npm run verify:email-provider`; both
+    must pass without emitting employee details or credentials.
+
+### Restart, stale-alert, and recovery verification
+
+Perform this only in the testnet deployment:
+
+1. Record the cursor, finalized head, and alert state from dependency health.
+2. Restart `reconciliation-scheduler`; verify the next pass resumes the same
+   persisted cursor and rechecks the configured reorg window.
+3. Stop only the scheduler long enough to exceed the configured stale time or
+   block window. Confirm dependency health reports `stale`.
+4. Start the scheduler. Confirm one stale transition, bounded catch-up with
+   explicit remaining backlog, one `HEALTHY` recovery, and no duplicate
+   financial or audit records.
+5. Point the scheduler at an unavailable internal endpoint in a controlled
+   test deployment or stop `app`; after the configured failure threshold,
+   verify one scheduler-endpoint alert. Restore the app and verify one recovery.
+6. Run `npm run audit:arc` and `npm run pilot:preflight` from an operator host.
+
+If backlog remains above one configured block range, keep the pilot paused and
+allow subsequent bounded passes to continue. Do not increase range limits
+without reviewing RPC and execution-time impact. For manual recovery, run
+`npm run reconcile:arc` repeatedly until `remainingBacklogBlocks` is within the
+health window, then rerun the audit and preflight.
+
 The command fails unless Arc RPC, canonical USDC, escrow bytecode and constructor
 bindings, borrow-authorizer matching, a healthy persisted reconciliation
 cursor, Circle configuration, two distinct ownership-verified wallets, their
-ERC-20 USDC and native fee balances, explicit ERPNext disablement, rate-limit
-secret, and the database are all verified. The preflight does not run the
+ERC-20 USDC and native fee balances, fresh ERPNext state with scheduling
+enabled, rate-limit secret, and the database are all verified. The preflight does not run the
 reconciliation worker, create offers, accept loans, repay loans, or move funds.

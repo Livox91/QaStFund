@@ -53,8 +53,8 @@ The active blockchain target is **Arc Testnet**:
 | ----------------------- | -------------------------------------------- |
 | Chain name              | Arc Testnet                                  |
 | Chain ID                | `5042002`                                    |
-| RPC URL                 | `https://rpc.testnet.arc.network`            |
-| Block explorer          | `https://testnet.arcscan.app`                |
+| RPC URL                 | `https://rpc.testnet.arc.io`                 |
+| Block explorer          | `https://explorer.testnet.arc.io`            |
 | Native asset            | USDC                                         |
 | Native asset decimals   | 18                                           |
 | ERC-20 USDC address     | `0x3600000000000000000000000000000000000000` |
@@ -330,11 +330,13 @@ Flow:
 
 1. The server validates tenant membership, employment status, borrow policy, wallet ownership, configured chain, and the live contract offer.
 2. It creates a `REQUESTED` loan intent.
-3. It signs the five-minute EIP-712 borrow authorization.
-4. The Circle wallet calls `EmployeeLendingEscrow.acceptOffer(...)`.
-5. The contract consumes the offer, creates the loan, and transfers escrowed principal to the borrower atomically.
-6. The server verifies the receipt, `LoanStarted` event, addresses, amounts, offer ID, and current contract state.
-7. The application loan becomes `ACTIVE` only after successful verification.
+3. The versioned origination engine records its result. Missing verified income or tenure requires employer review.
+4. An employer administrator records an immutable approval rationale, transitioning the application to `APPROVED`; this does not move funds.
+5. On employee retry, the server revalidates eligibility, policy, exposure, offer and chain state before signing the five-minute EIP-712 borrow authorization.
+6. The Circle wallet calls `EmployeeLendingEscrow.acceptOffer(...)`.
+7. The contract consumes the offer, creates the loan, and transfers escrowed principal to the borrower atomically.
+8. The server verifies the receipt, `LoanStarted` event, addresses, amounts, offer ID, and current contract state.
+9. The application loan becomes `ACTIVE` only after successful verification.
 
 The organization boundary is enforced by the application; it is not encoded in the public smart contract.
 
@@ -401,7 +403,11 @@ Older direct repayment endpoints remain in the repository but do not replace the
 | --------------------------------------- | ------------------------------------------------- |
 | `POST /api/internal/arc-reconciliation` | Run a bounded, authenticated reconciliation pass. |
 
-The internal route requires a bearer token matching `ARC_RECONCILIATION_CRON_SECRET`.
+The internal route requires a constant-time-checked bearer token matching
+`ARC_RECONCILIATION_CRON_SECRET`. Production Compose runs an internal-only
+`reconciliation-scheduler` sidecar that invokes it sequentially at the
+configured interval. Concurrent or duplicate invocations remain safe because
+the worker acquires a PostgreSQL lease and event application is idempotent.
 
 ## 9. Receipt verification and chain reads
 
@@ -441,8 +447,8 @@ It has four principal parts:
 Important behavior:
 
 - the worker never sends a blockchain transaction;
-- enabling reconciliation does not start a background process; the CLI or an
-  authenticated scheduler must invoke it;
+- production Compose starts a dedicated authenticated scheduler sidecar;
+  non-Compose deployments must provide an equivalent trigger;
 - a pass writes reconciliation cursor, lease, journal, and run-health state and
   may apply a validated finalized event to an already-matched financial record;
 - overlapping invocations are protected by a database lease;
@@ -452,12 +458,17 @@ Important behavior:
 - changed or missing finalized events become `CONFLICT` and are not silently reversed;
 - unmatched finalized events remain journaled with investigation codes and are retried; and
 - no unmatched financial record is invented solely from an event.
+- each run is bounded and reports finalized-head backlog and remaining work;
+- block-lag and time-based staleness are exposed in dependency health; and
+- persistent alert transitions prevent floods across worker restarts and emit
+  one recovery when health returns.
 
 Operational entry points:
 
 - `npm run reconcile:arc` performs one bounded reconciliation pass.
 - `npm run audit:arc` performs a read-only comparison of database records, escrow state, stale intents, and journal exceptions.
-- a scheduler may call the authenticated internal reconciliation API.
+- `reconciliation-scheduler` calls the authenticated internal API every 60
+  seconds by default.
 
 ## 11. Database components
 
@@ -528,7 +539,10 @@ Only public addresses and non-secret settings should be exposed to browser code.
 | `ARC_RECONCILIATION_MAX_RANGES`          | Bound on work per invocation.                   |
 | `ARC_RECONCILIATION_RPC_RETRIES`         | RPC retry count.                                |
 | `ARC_RECONCILIATION_STALE_AFTER_MINUTES` | Operational staleness threshold.                |
+| `ARC_RECONCILIATION_INTERVAL_SECONDS`    | Scheduler cadence; defaults to 60 seconds.      |
 | `ARC_RECONCILIATION_CRON_SECRET`         | Bearer secret for the internal worker route.    |
+| `OPERATIONAL_ALERT_WEBHOOK_URL`          | Optional sanitized alert/recovery JSON target.  |
+| `OPERATIONAL_ALERT_WEBHOOK_BEARER_TOKEN` | Optional secret used only for webhook delivery. |
 
 ### Local-chain configuration
 
@@ -589,6 +603,7 @@ The deployment script deploys `MockUSDC`, mints 1,000,000 mUSDC each to the depl
 - `scripts/preflight-arc-pilot.ts`: read-only verification of RPC, USDC, escrow bytecode and constructor bindings, authorizer matching, Circle configuration, two exact ownership-verified wallets, ERC-20 and native fee balances, database readiness, and persisted reconciliation health/cursor lag.
 - `scripts/reconcile-arc.ts`: runs a configured reconciliation pass.
 - `scripts/audit-arc-reconciliation.ts`: performs a read-only database-versus-chain audit.
+- `scripts/run-arc-reconciliation-scheduler.mjs`: runs the internal authenticated production cadence.
 
 ## 14. Commands
 
@@ -691,7 +706,14 @@ Database backup is essential even though the chain contains finalized escrow tra
 
 ## 19. Current deployment status recorded in the repository
 
-`docs/ARC_TESTNET_PILOT_REPORT.md`, updated 2026-10-10, records the pilot as **blocked at preflight**. The Arc contract, authorizer, USDC runtime, Circle client, database, and reconciliation cursor are verified. The remaining blockers are two distinct ownership-verified Circle wallet enrollments and their ERC-20/native fee balances. No lending transaction or test-fund movement was submitted by the readiness run.
+`docs/ARC_TESTNET_PILOT_REPORT.md`, updated 2026-10-11, records one verified
+Arc Testnet lifecycle: a 2.50 USDC offer, disbursement, and 2.625 USDC full
+repayment. All three successful receipts were matched to exact escrow events,
+USDC transfers, application records, and finalized `APPLIED` reconciliation
+journal rows. The report permits a continued controlled testnet pilot but keeps
+unattended and production operation blocked pending scheduler and ERPNext
+freshness evidence. `docs/ARC_TESTNET_CONTROLLED_LENDING_RUNBOOK.md` remains the
+approval boundary for any additional fund-moving run.
 
 This is historical status documentation, not a guarantee of current runtime state. Before claiming readiness, rerun `npm run pilot:preflight` against the intended environment and confirm a real two-wallet Arc Testnet lifecycle.
 

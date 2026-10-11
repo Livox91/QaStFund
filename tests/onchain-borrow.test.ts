@@ -145,6 +145,86 @@ describe("on-chain borrowing values", () => {
     expect(signAuthorization).not.toHaveBeenCalled();
   });
 
+  it("does not revive an application rejected by an employer review", async () => {
+    const signAuthorization = vi.fn();
+    const database = {
+      loan: {
+        findUnique: vi.fn().mockResolvedValue({
+          id: "60000000-0000-4000-8000-000000000001",
+          organizationId: actor.organizationId,
+          borrowerMembership: { userId: actor.userId },
+          lendingOfferId: offerId,
+          chainOfferId: "17",
+          contractAddress,
+          borrowerWalletAddress: "0x2222222222222222222222222222222222222222",
+          status: "CANCELLED",
+          originationDecisions: [{ override: { outcome: "REJECTED" } }],
+        }),
+      },
+      $transaction: vi.fn(),
+    };
+
+    await expect(
+      prepareOnChainBorrow(actor as never, offerId, requestId, {
+        contractAddress,
+        database: database as never,
+        signAuthorization,
+      }),
+    ).resolves.toEqual({
+      state: "REJECTED",
+      loanId: "60000000-0000-4000-8000-000000000001",
+    });
+    expect(database.$transaction).not.toHaveBeenCalled();
+    expect(signAuthorization).not.toHaveBeenCalled();
+  });
+
+  it("does not issue authorization from a partial ERPNext snapshot", async () => {
+    const signAuthorization = vi.fn();
+    const synchronizedAt = new Date("2026-10-11T11:30:00.000Z");
+    const database = {
+      loan: {
+        findFirst: vi.fn().mockResolvedValue(null),
+        findUnique: vi.fn().mockResolvedValue(null),
+      },
+      $transaction: vi.fn(async (run: (transaction: unknown) => unknown) =>
+        run({
+          organizationMembership: {
+            findUnique: vi.fn().mockResolvedValue({
+              id: "40000000-0000-4000-8000-000000000001",
+              isActive: true,
+              employmentStatus: "ACTIVE",
+              employmentStatusSource: "ERPNEXT",
+              employmentStatusSyncedAt: synchronizedAt,
+              role: "EMPLOYEE",
+              canBorrow: true,
+              user: { name: "Employee" },
+              organization: {
+                erpNextEnabled: true,
+                employeeDirectoryIntegration: {
+                  lastSyncStatus: "PARTIAL",
+                  lastSuccessfulSyncAt: synchronizedAt,
+                },
+              },
+            }),
+          },
+        }),
+      ),
+    };
+
+    await expect(
+      prepareOnChainBorrow(actor as never, offerId, requestId, {
+        contractAddress,
+        database: database as never,
+        now: () => new Date("2026-10-11T12:00:00.000Z"),
+        signAuthorization,
+      }),
+    ).rejects.toMatchObject({
+      code: "EMPLOYEE_DIRECTORY_NOT_FRESH",
+      statusCode: 503,
+    });
+    expect(signAuthorization).not.toHaveBeenCalled();
+  });
+
   it("does not issue authorization for a cross-organization offer", async () => {
     const signAuthorization = vi.fn();
     const database = {
@@ -193,7 +273,7 @@ describe("on-chain borrowing values", () => {
       loan: {
         findFirst: vi.fn().mockResolvedValue({
           id: "60000000-0000-4000-8000-000000000001",
-          status: "REQUESTED",
+          status: "APPROVED",
           lendingOfferId: offerId,
           chainLoanId: null,
           chainOfferId: "17",
@@ -231,6 +311,59 @@ describe("on-chain borrowing values", () => {
         data: expect.objectContaining({ status: "CANCELLED" }),
       }),
     );
+    expect(updateMany).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ status: "ACTIVE" }),
+      }),
+    );
+  });
+
+  it("persists a submitted hash while receipt confirmation is unavailable", async () => {
+    const transactionHash = `0x${"c".repeat(64)}` as const;
+    const updateMany = vi.fn().mockResolvedValue({ count: 1 });
+    const database = {
+      loan: {
+        findFirst: vi.fn().mockResolvedValue({
+          id: "60000000-0000-4000-8000-000000000001",
+          status: "APPROVED",
+          lendingOfferId: offerId,
+          chainLoanId: null,
+          chainOfferId: "17",
+          lenderWalletAddress: "0x3333333333333333333333333333333333333333",
+          borrowerWalletAddress: "0x2222222222222222222222222222222222222222",
+          principalBaseUnits: 100_000_000n,
+          repaymentBaseUnits: 105_000_000n,
+          feeRateBasisPoints: 500,
+          durationDays: 30,
+          requestedAt: new Date("2026-10-03T12:00:00.000Z"),
+          acceptanceTransactionHash: null,
+        }),
+        updateMany,
+      },
+    };
+
+    await expect(
+      confirmOnChainBorrow(
+        actor as never,
+        "60000000-0000-4000-8000-000000000001",
+        transactionHash,
+        {
+          contractAddress,
+          database: database as never,
+          getTransactionReceipt: vi
+            .fn()
+            .mockRejectedValue(new Error("receipt unavailable")) as never,
+        },
+      ),
+    ).rejects.toMatchObject({ code: "LOAN_CONFIRMATION_PENDING" });
+    expect(updateMany).toHaveBeenCalledWith({
+      where: {
+        id: "60000000-0000-4000-8000-000000000001",
+        status: { in: ["REQUESTED", "APPROVED"] },
+        acceptanceTransactionHash: null,
+      },
+      data: { acceptanceTransactionHash: transactionHash },
+    });
     expect(updateMany).not.toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({ status: "ACTIVE" }),

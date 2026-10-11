@@ -820,6 +820,40 @@ export type EnumLoanDecisionSourceWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumLoanDecisionSourceFilter<$PrismaModel>
 }
 
+export type EnumLoanOriginationDecisionStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.LoanOriginationDecisionStatus | Prisma.EnumLoanOriginationDecisionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.LoanOriginationDecisionStatus[] | Prisma.ListEnumLoanOriginationDecisionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.LoanOriginationDecisionStatus[] | Prisma.ListEnumLoanOriginationDecisionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumLoanOriginationDecisionStatusFilter<$PrismaModel> | $Enums.LoanOriginationDecisionStatus
+}
+
+export type EnumLoanOriginationDecisionStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.LoanOriginationDecisionStatus | Prisma.EnumLoanOriginationDecisionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.LoanOriginationDecisionStatus[] | Prisma.ListEnumLoanOriginationDecisionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.LoanOriginationDecisionStatus[] | Prisma.ListEnumLoanOriginationDecisionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumLoanOriginationDecisionStatusWithAggregatesFilter<$PrismaModel> | $Enums.LoanOriginationDecisionStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumLoanOriginationDecisionStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumLoanOriginationDecisionStatusFilter<$PrismaModel>
+}
+
+export type EnumLoanOriginationOverrideOutcomeFilter<$PrismaModel = never> = {
+  equals?: $Enums.LoanOriginationOverrideOutcome | Prisma.EnumLoanOriginationOverrideOutcomeFieldRefInput<$PrismaModel>
+  in?: $Enums.LoanOriginationOverrideOutcome[] | Prisma.ListEnumLoanOriginationOverrideOutcomeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.LoanOriginationOverrideOutcome[] | Prisma.ListEnumLoanOriginationOverrideOutcomeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumLoanOriginationOverrideOutcomeFilter<$PrismaModel> | $Enums.LoanOriginationOverrideOutcome
+}
+
+export type EnumLoanOriginationOverrideOutcomeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.LoanOriginationOverrideOutcome | Prisma.EnumLoanOriginationOverrideOutcomeFieldRefInput<$PrismaModel>
+  in?: $Enums.LoanOriginationOverrideOutcome[] | Prisma.ListEnumLoanOriginationOverrideOutcomeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.LoanOriginationOverrideOutcome[] | Prisma.ListEnumLoanOriginationOverrideOutcomeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumLoanOriginationOverrideOutcomeWithAggregatesFilter<$PrismaModel> | $Enums.LoanOriginationOverrideOutcome
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumLoanOriginationOverrideOutcomeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumLoanOriginationOverrideOutcomeFilter<$PrismaModel>
+}
+
 export type EnumEmployerActionTypeFilter<$PrismaModel = never> = {
   equals?: $Enums.EmployerActionType | Prisma.EnumEmployerActionTypeFieldRefInput<$PrismaModel>
   in?: $Enums.EmployerActionType[] | Prisma.ListEnumEmployerActionTypeFieldRefInput<$PrismaModel>
@@ -988,6 +1022,23 @@ export type EnumAuditEventTypeWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumAuditEventTypeFilter<$PrismaModel>
   _max?: Prisma.NestedEnumAuditEventTypeFilter<$PrismaModel>
+}
+
+export type EnumReconciliationAlertStateFilter<$PrismaModel = never> = {
+  equals?: $Enums.ReconciliationAlertState | Prisma.EnumReconciliationAlertStateFieldRefInput<$PrismaModel>
+  in?: $Enums.ReconciliationAlertState[] | Prisma.ListEnumReconciliationAlertStateFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ReconciliationAlertState[] | Prisma.ListEnumReconciliationAlertStateFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumReconciliationAlertStateFilter<$PrismaModel> | $Enums.ReconciliationAlertState
+}
+
+export type EnumReconciliationAlertStateWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ReconciliationAlertState | Prisma.EnumReconciliationAlertStateFieldRefInput<$PrismaModel>
+  in?: $Enums.ReconciliationAlertState[] | Prisma.ListEnumReconciliationAlertStateFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ReconciliationAlertState[] | Prisma.ListEnumReconciliationAlertStateFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumReconciliationAlertStateWithAggregatesFilter<$PrismaModel> | $Enums.ReconciliationAlertState
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumReconciliationAlertStateFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumReconciliationAlertStateFilter<$PrismaModel>
 }
 
 export type EnumBlockchainEventNameFilter<$PrismaModel = never> = {
@@ -1785,6 +1836,40 @@ export type NestedEnumLoanDecisionSourceWithAggregatesFilter<$PrismaModel = neve
   _max?: Prisma.NestedEnumLoanDecisionSourceFilter<$PrismaModel>
 }
 
+export type NestedEnumLoanOriginationDecisionStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.LoanOriginationDecisionStatus | Prisma.EnumLoanOriginationDecisionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.LoanOriginationDecisionStatus[] | Prisma.ListEnumLoanOriginationDecisionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.LoanOriginationDecisionStatus[] | Prisma.ListEnumLoanOriginationDecisionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumLoanOriginationDecisionStatusFilter<$PrismaModel> | $Enums.LoanOriginationDecisionStatus
+}
+
+export type NestedEnumLoanOriginationDecisionStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.LoanOriginationDecisionStatus | Prisma.EnumLoanOriginationDecisionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.LoanOriginationDecisionStatus[] | Prisma.ListEnumLoanOriginationDecisionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.LoanOriginationDecisionStatus[] | Prisma.ListEnumLoanOriginationDecisionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumLoanOriginationDecisionStatusWithAggregatesFilter<$PrismaModel> | $Enums.LoanOriginationDecisionStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumLoanOriginationDecisionStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumLoanOriginationDecisionStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumLoanOriginationOverrideOutcomeFilter<$PrismaModel = never> = {
+  equals?: $Enums.LoanOriginationOverrideOutcome | Prisma.EnumLoanOriginationOverrideOutcomeFieldRefInput<$PrismaModel>
+  in?: $Enums.LoanOriginationOverrideOutcome[] | Prisma.ListEnumLoanOriginationOverrideOutcomeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.LoanOriginationOverrideOutcome[] | Prisma.ListEnumLoanOriginationOverrideOutcomeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumLoanOriginationOverrideOutcomeFilter<$PrismaModel> | $Enums.LoanOriginationOverrideOutcome
+}
+
+export type NestedEnumLoanOriginationOverrideOutcomeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.LoanOriginationOverrideOutcome | Prisma.EnumLoanOriginationOverrideOutcomeFieldRefInput<$PrismaModel>
+  in?: $Enums.LoanOriginationOverrideOutcome[] | Prisma.ListEnumLoanOriginationOverrideOutcomeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.LoanOriginationOverrideOutcome[] | Prisma.ListEnumLoanOriginationOverrideOutcomeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumLoanOriginationOverrideOutcomeWithAggregatesFilter<$PrismaModel> | $Enums.LoanOriginationOverrideOutcome
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumLoanOriginationOverrideOutcomeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumLoanOriginationOverrideOutcomeFilter<$PrismaModel>
+}
+
 export type NestedEnumEmployerActionTypeFilter<$PrismaModel = never> = {
   equals?: $Enums.EmployerActionType | Prisma.EnumEmployerActionTypeFieldRefInput<$PrismaModel>
   in?: $Enums.EmployerActionType[] | Prisma.ListEnumEmployerActionTypeFieldRefInput<$PrismaModel>
@@ -1953,6 +2038,23 @@ export type NestedEnumAuditEventTypeWithAggregatesFilter<$PrismaModel = never> =
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumAuditEventTypeFilter<$PrismaModel>
   _max?: Prisma.NestedEnumAuditEventTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumReconciliationAlertStateFilter<$PrismaModel = never> = {
+  equals?: $Enums.ReconciliationAlertState | Prisma.EnumReconciliationAlertStateFieldRefInput<$PrismaModel>
+  in?: $Enums.ReconciliationAlertState[] | Prisma.ListEnumReconciliationAlertStateFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ReconciliationAlertState[] | Prisma.ListEnumReconciliationAlertStateFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumReconciliationAlertStateFilter<$PrismaModel> | $Enums.ReconciliationAlertState
+}
+
+export type NestedEnumReconciliationAlertStateWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ReconciliationAlertState | Prisma.EnumReconciliationAlertStateFieldRefInput<$PrismaModel>
+  in?: $Enums.ReconciliationAlertState[] | Prisma.ListEnumReconciliationAlertStateFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ReconciliationAlertState[] | Prisma.ListEnumReconciliationAlertStateFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumReconciliationAlertStateWithAggregatesFilter<$PrismaModel> | $Enums.ReconciliationAlertState
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumReconciliationAlertStateFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumReconciliationAlertStateFilter<$PrismaModel>
 }
 
 export type NestedEnumBlockchainEventNameFilter<$PrismaModel = never> = {

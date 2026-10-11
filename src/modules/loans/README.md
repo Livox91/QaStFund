@@ -13,8 +13,11 @@ and rejects expired or consumed authorizations.
 
 The application creates a `REQUESTED` intent after enforcing authenticated
 same-organization membership, employment state, wallet ownership, policy, and
-on-chain offer availability. It changes the application loan to `ACTIVE` only
-after verifying the `LoanStarted` receipt and current contract loan state.
+on-chain offer availability. A rules result never authorizes borrowing by
+itself: an employer-admin review records `APPROVED` or `CANCELLED` without
+moving funds. The employee must retry the approved request, and the application
+changes it to `ACTIVE` only after verifying the `LoanStarted` receipt and
+current contract loan state.
 
 Interest is applied once for the complete term. Both Solidity and TypeScript
 round a positive fractional interest amount up to the nearest USDC base unit.

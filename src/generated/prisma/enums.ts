@@ -158,6 +158,8 @@ export const AuditEventType = {
   LOAN_DEFAULTED: 'LOAN_DEFAULTED',
   LOAN_CANCELLED: 'LOAN_CANCELLED',
   LOAN_MARKED_OVERDUE: 'LOAN_MARKED_OVERDUE',
+  LOAN_ORIGINATION_DECISION_RECORDED: 'LOAN_ORIGINATION_DECISION_RECORDED',
+  LOAN_ORIGINATION_DECISION_OVERRIDDEN: 'LOAN_ORIGINATION_DECISION_OVERRIDDEN',
   LENDING_POLICY_UPDATED: 'LENDING_POLICY_UPDATED',
   EMPLOYEE_BORROWING_SUSPENDED: 'EMPLOYEE_BORROWING_SUSPENDED',
   EMPLOYEE_BORROWING_ENABLED: 'EMPLOYEE_BORROWING_ENABLED',
@@ -209,6 +211,15 @@ export const BlockchainEventStatus = {
 export type BlockchainEventStatus = (typeof BlockchainEventStatus)[keyof typeof BlockchainEventStatus]
 
 
+export const ReconciliationAlertState = {
+  HEALTHY: 'HEALTHY',
+  STALE: 'STALE',
+  FAILING: 'FAILING'
+} as const
+
+export type ReconciliationAlertState = (typeof ReconciliationAlertState)[keyof typeof ReconciliationAlertState]
+
+
 export const LoanDecisionClassification = {
   HEALTHY: 'HEALTHY',
   DUE_SOON: 'DUE_SOON',
@@ -235,6 +246,23 @@ export const LoanDecisionSource = {
 } as const
 
 export type LoanDecisionSource = (typeof LoanDecisionSource)[keyof typeof LoanDecisionSource]
+
+
+export const LoanOriginationDecisionStatus = {
+  APPROVAL_CONSIDERATION: 'APPROVAL_CONSIDERATION',
+  REVIEW_REQUIRED: 'REVIEW_REQUIRED',
+  NOT_ELIGIBLE: 'NOT_ELIGIBLE'
+} as const
+
+export type LoanOriginationDecisionStatus = (typeof LoanOriginationDecisionStatus)[keyof typeof LoanOriginationDecisionStatus]
+
+
+export const LoanOriginationOverrideOutcome = {
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type LoanOriginationOverrideOutcome = (typeof LoanOriginationOverrideOutcome)[keyof typeof LoanOriginationOverrideOutcome]
 
 
 export const EmployerActionType = {

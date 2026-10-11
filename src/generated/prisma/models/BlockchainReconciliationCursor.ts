@@ -54,6 +54,12 @@ export type BlockchainReconciliationCursorMinAggregateOutputType = {
   lastSuccessfulAt: Date | null
   lastFailureAt: Date | null
   consecutiveFailures: number | null
+  alertState: $Enums.ReconciliationAlertState | null
+  alertChangedAt: Date | null
+  alertDeliveryPending: boolean | null
+  lastAlertAttemptAt: Date | null
+  lastAlertDeliveredAt: Date | null
+  lastAlertFailedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -70,6 +76,12 @@ export type BlockchainReconciliationCursorMaxAggregateOutputType = {
   lastSuccessfulAt: Date | null
   lastFailureAt: Date | null
   consecutiveFailures: number | null
+  alertState: $Enums.ReconciliationAlertState | null
+  alertChangedAt: Date | null
+  alertDeliveryPending: boolean | null
+  lastAlertAttemptAt: Date | null
+  lastAlertDeliveredAt: Date | null
+  lastAlertFailedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -86,6 +98,12 @@ export type BlockchainReconciliationCursorCountAggregateOutputType = {
   lastSuccessfulAt: number
   lastFailureAt: number
   consecutiveFailures: number
+  alertState: number
+  alertChangedAt: number
+  alertDeliveryPending: number
+  lastAlertAttemptAt: number
+  lastAlertDeliveredAt: number
+  lastAlertFailedAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -120,6 +138,12 @@ export type BlockchainReconciliationCursorMinAggregateInputType = {
   lastSuccessfulAt?: true
   lastFailureAt?: true
   consecutiveFailures?: true
+  alertState?: true
+  alertChangedAt?: true
+  alertDeliveryPending?: true
+  lastAlertAttemptAt?: true
+  lastAlertDeliveredAt?: true
+  lastAlertFailedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -136,6 +160,12 @@ export type BlockchainReconciliationCursorMaxAggregateInputType = {
   lastSuccessfulAt?: true
   lastFailureAt?: true
   consecutiveFailures?: true
+  alertState?: true
+  alertChangedAt?: true
+  alertDeliveryPending?: true
+  lastAlertAttemptAt?: true
+  lastAlertDeliveredAt?: true
+  lastAlertFailedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -152,6 +182,12 @@ export type BlockchainReconciliationCursorCountAggregateInputType = {
   lastSuccessfulAt?: true
   lastFailureAt?: true
   consecutiveFailures?: true
+  alertState?: true
+  alertChangedAt?: true
+  alertDeliveryPending?: true
+  lastAlertAttemptAt?: true
+  lastAlertDeliveredAt?: true
+  lastAlertFailedAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -255,6 +291,12 @@ export type BlockchainReconciliationCursorGroupByOutputType = {
   lastSuccessfulAt: Date | null
   lastFailureAt: Date | null
   consecutiveFailures: number
+  alertState: $Enums.ReconciliationAlertState
+  alertChangedAt: Date
+  alertDeliveryPending: boolean
+  lastAlertAttemptAt: Date | null
+  lastAlertDeliveredAt: Date | null
+  lastAlertFailedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: BlockchainReconciliationCursorCountAggregateOutputType | null
@@ -294,6 +336,12 @@ export type BlockchainReconciliationCursorWhereInput = {
   lastSuccessfulAt?: Prisma.DateTimeNullableFilter<"BlockchainReconciliationCursor"> | Date | string | null
   lastFailureAt?: Prisma.DateTimeNullableFilter<"BlockchainReconciliationCursor"> | Date | string | null
   consecutiveFailures?: Prisma.IntFilter<"BlockchainReconciliationCursor"> | number
+  alertState?: Prisma.EnumReconciliationAlertStateFilter<"BlockchainReconciliationCursor"> | $Enums.ReconciliationAlertState
+  alertChangedAt?: Prisma.DateTimeFilter<"BlockchainReconciliationCursor"> | Date | string
+  alertDeliveryPending?: Prisma.BoolFilter<"BlockchainReconciliationCursor"> | boolean
+  lastAlertAttemptAt?: Prisma.DateTimeNullableFilter<"BlockchainReconciliationCursor"> | Date | string | null
+  lastAlertDeliveredAt?: Prisma.DateTimeNullableFilter<"BlockchainReconciliationCursor"> | Date | string | null
+  lastAlertFailedAt?: Prisma.DateTimeNullableFilter<"BlockchainReconciliationCursor"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"BlockchainReconciliationCursor"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BlockchainReconciliationCursor"> | Date | string
 }
@@ -310,6 +358,12 @@ export type BlockchainReconciliationCursorOrderByWithRelationInput = {
   lastSuccessfulAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastFailureAt?: Prisma.SortOrderInput | Prisma.SortOrder
   consecutiveFailures?: Prisma.SortOrder
+  alertState?: Prisma.SortOrder
+  alertChangedAt?: Prisma.SortOrder
+  alertDeliveryPending?: Prisma.SortOrder
+  lastAlertAttemptAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastAlertDeliveredAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastAlertFailedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -330,6 +384,12 @@ export type BlockchainReconciliationCursorWhereUniqueInput = Prisma.AtLeast<{
   lastSuccessfulAt?: Prisma.DateTimeNullableFilter<"BlockchainReconciliationCursor"> | Date | string | null
   lastFailureAt?: Prisma.DateTimeNullableFilter<"BlockchainReconciliationCursor"> | Date | string | null
   consecutiveFailures?: Prisma.IntFilter<"BlockchainReconciliationCursor"> | number
+  alertState?: Prisma.EnumReconciliationAlertStateFilter<"BlockchainReconciliationCursor"> | $Enums.ReconciliationAlertState
+  alertChangedAt?: Prisma.DateTimeFilter<"BlockchainReconciliationCursor"> | Date | string
+  alertDeliveryPending?: Prisma.BoolFilter<"BlockchainReconciliationCursor"> | boolean
+  lastAlertAttemptAt?: Prisma.DateTimeNullableFilter<"BlockchainReconciliationCursor"> | Date | string | null
+  lastAlertDeliveredAt?: Prisma.DateTimeNullableFilter<"BlockchainReconciliationCursor"> | Date | string | null
+  lastAlertFailedAt?: Prisma.DateTimeNullableFilter<"BlockchainReconciliationCursor"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"BlockchainReconciliationCursor"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BlockchainReconciliationCursor"> | Date | string
 }, "id" | "chainId_contractAddress">
@@ -346,6 +406,12 @@ export type BlockchainReconciliationCursorOrderByWithAggregationInput = {
   lastSuccessfulAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastFailureAt?: Prisma.SortOrderInput | Prisma.SortOrder
   consecutiveFailures?: Prisma.SortOrder
+  alertState?: Prisma.SortOrder
+  alertChangedAt?: Prisma.SortOrder
+  alertDeliveryPending?: Prisma.SortOrder
+  lastAlertAttemptAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastAlertDeliveredAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastAlertFailedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.BlockchainReconciliationCursorCountOrderByAggregateInput
@@ -370,6 +436,12 @@ export type BlockchainReconciliationCursorScalarWhereWithAggregatesInput = {
   lastSuccessfulAt?: Prisma.DateTimeNullableWithAggregatesFilter<"BlockchainReconciliationCursor"> | Date | string | null
   lastFailureAt?: Prisma.DateTimeNullableWithAggregatesFilter<"BlockchainReconciliationCursor"> | Date | string | null
   consecutiveFailures?: Prisma.IntWithAggregatesFilter<"BlockchainReconciliationCursor"> | number
+  alertState?: Prisma.EnumReconciliationAlertStateWithAggregatesFilter<"BlockchainReconciliationCursor"> | $Enums.ReconciliationAlertState
+  alertChangedAt?: Prisma.DateTimeWithAggregatesFilter<"BlockchainReconciliationCursor"> | Date | string
+  alertDeliveryPending?: Prisma.BoolWithAggregatesFilter<"BlockchainReconciliationCursor"> | boolean
+  lastAlertAttemptAt?: Prisma.DateTimeNullableWithAggregatesFilter<"BlockchainReconciliationCursor"> | Date | string | null
+  lastAlertDeliveredAt?: Prisma.DateTimeNullableWithAggregatesFilter<"BlockchainReconciliationCursor"> | Date | string | null
+  lastAlertFailedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"BlockchainReconciliationCursor"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"BlockchainReconciliationCursor"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"BlockchainReconciliationCursor"> | Date | string
 }
@@ -386,6 +458,12 @@ export type BlockchainReconciliationCursorCreateInput = {
   lastSuccessfulAt?: Date | string | null
   lastFailureAt?: Date | string | null
   consecutiveFailures?: number
+  alertState?: $Enums.ReconciliationAlertState
+  alertChangedAt?: Date | string
+  alertDeliveryPending?: boolean
+  lastAlertAttemptAt?: Date | string | null
+  lastAlertDeliveredAt?: Date | string | null
+  lastAlertFailedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -402,6 +480,12 @@ export type BlockchainReconciliationCursorUncheckedCreateInput = {
   lastSuccessfulAt?: Date | string | null
   lastFailureAt?: Date | string | null
   consecutiveFailures?: number
+  alertState?: $Enums.ReconciliationAlertState
+  alertChangedAt?: Date | string
+  alertDeliveryPending?: boolean
+  lastAlertAttemptAt?: Date | string | null
+  lastAlertDeliveredAt?: Date | string | null
+  lastAlertFailedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -418,6 +502,12 @@ export type BlockchainReconciliationCursorUpdateInput = {
   lastSuccessfulAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastFailureAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   consecutiveFailures?: Prisma.IntFieldUpdateOperationsInput | number
+  alertState?: Prisma.EnumReconciliationAlertStateFieldUpdateOperationsInput | $Enums.ReconciliationAlertState
+  alertChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  alertDeliveryPending?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastAlertAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastAlertDeliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastAlertFailedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -434,6 +524,12 @@ export type BlockchainReconciliationCursorUncheckedUpdateInput = {
   lastSuccessfulAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastFailureAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   consecutiveFailures?: Prisma.IntFieldUpdateOperationsInput | number
+  alertState?: Prisma.EnumReconciliationAlertStateFieldUpdateOperationsInput | $Enums.ReconciliationAlertState
+  alertChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  alertDeliveryPending?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastAlertAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastAlertDeliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastAlertFailedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -450,6 +546,12 @@ export type BlockchainReconciliationCursorCreateManyInput = {
   lastSuccessfulAt?: Date | string | null
   lastFailureAt?: Date | string | null
   consecutiveFailures?: number
+  alertState?: $Enums.ReconciliationAlertState
+  alertChangedAt?: Date | string
+  alertDeliveryPending?: boolean
+  lastAlertAttemptAt?: Date | string | null
+  lastAlertDeliveredAt?: Date | string | null
+  lastAlertFailedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -466,6 +568,12 @@ export type BlockchainReconciliationCursorUpdateManyMutationInput = {
   lastSuccessfulAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastFailureAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   consecutiveFailures?: Prisma.IntFieldUpdateOperationsInput | number
+  alertState?: Prisma.EnumReconciliationAlertStateFieldUpdateOperationsInput | $Enums.ReconciliationAlertState
+  alertChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  alertDeliveryPending?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastAlertAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastAlertDeliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastAlertFailedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -482,6 +590,12 @@ export type BlockchainReconciliationCursorUncheckedUpdateManyInput = {
   lastSuccessfulAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastFailureAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   consecutiveFailures?: Prisma.IntFieldUpdateOperationsInput | number
+  alertState?: Prisma.EnumReconciliationAlertStateFieldUpdateOperationsInput | $Enums.ReconciliationAlertState
+  alertChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  alertDeliveryPending?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastAlertAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastAlertDeliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastAlertFailedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -503,6 +617,12 @@ export type BlockchainReconciliationCursorCountOrderByAggregateInput = {
   lastSuccessfulAt?: Prisma.SortOrder
   lastFailureAt?: Prisma.SortOrder
   consecutiveFailures?: Prisma.SortOrder
+  alertState?: Prisma.SortOrder
+  alertChangedAt?: Prisma.SortOrder
+  alertDeliveryPending?: Prisma.SortOrder
+  lastAlertAttemptAt?: Prisma.SortOrder
+  lastAlertDeliveredAt?: Prisma.SortOrder
+  lastAlertFailedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -527,6 +647,12 @@ export type BlockchainReconciliationCursorMaxOrderByAggregateInput = {
   lastSuccessfulAt?: Prisma.SortOrder
   lastFailureAt?: Prisma.SortOrder
   consecutiveFailures?: Prisma.SortOrder
+  alertState?: Prisma.SortOrder
+  alertChangedAt?: Prisma.SortOrder
+  alertDeliveryPending?: Prisma.SortOrder
+  lastAlertAttemptAt?: Prisma.SortOrder
+  lastAlertDeliveredAt?: Prisma.SortOrder
+  lastAlertFailedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -543,6 +669,12 @@ export type BlockchainReconciliationCursorMinOrderByAggregateInput = {
   lastSuccessfulAt?: Prisma.SortOrder
   lastFailureAt?: Prisma.SortOrder
   consecutiveFailures?: Prisma.SortOrder
+  alertState?: Prisma.SortOrder
+  alertChangedAt?: Prisma.SortOrder
+  alertDeliveryPending?: Prisma.SortOrder
+  lastAlertAttemptAt?: Prisma.SortOrder
+  lastAlertDeliveredAt?: Prisma.SortOrder
+  lastAlertFailedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -553,6 +685,10 @@ export type BlockchainReconciliationCursorSumOrderByAggregateInput = {
   finalizedThrough?: Prisma.SortOrder
   latestObservedBlock?: Prisma.SortOrder
   consecutiveFailures?: Prisma.SortOrder
+}
+
+export type EnumReconciliationAlertStateFieldUpdateOperationsInput = {
+  set?: $Enums.ReconciliationAlertState
 }
 
 
@@ -569,6 +705,12 @@ export type BlockchainReconciliationCursorSelect<ExtArgs extends runtime.Types.E
   lastSuccessfulAt?: boolean
   lastFailureAt?: boolean
   consecutiveFailures?: boolean
+  alertState?: boolean
+  alertChangedAt?: boolean
+  alertDeliveryPending?: boolean
+  lastAlertAttemptAt?: boolean
+  lastAlertDeliveredAt?: boolean
+  lastAlertFailedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["blockchainReconciliationCursor"]>
@@ -585,6 +727,12 @@ export type BlockchainReconciliationCursorSelectCreateManyAndReturn<ExtArgs exte
   lastSuccessfulAt?: boolean
   lastFailureAt?: boolean
   consecutiveFailures?: boolean
+  alertState?: boolean
+  alertChangedAt?: boolean
+  alertDeliveryPending?: boolean
+  lastAlertAttemptAt?: boolean
+  lastAlertDeliveredAt?: boolean
+  lastAlertFailedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["blockchainReconciliationCursor"]>
@@ -601,6 +749,12 @@ export type BlockchainReconciliationCursorSelectUpdateManyAndReturn<ExtArgs exte
   lastSuccessfulAt?: boolean
   lastFailureAt?: boolean
   consecutiveFailures?: boolean
+  alertState?: boolean
+  alertChangedAt?: boolean
+  alertDeliveryPending?: boolean
+  lastAlertAttemptAt?: boolean
+  lastAlertDeliveredAt?: boolean
+  lastAlertFailedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["blockchainReconciliationCursor"]>
@@ -617,11 +771,17 @@ export type BlockchainReconciliationCursorSelectScalar = {
   lastSuccessfulAt?: boolean
   lastFailureAt?: boolean
   consecutiveFailures?: boolean
+  alertState?: boolean
+  alertChangedAt?: boolean
+  alertDeliveryPending?: boolean
+  lastAlertAttemptAt?: boolean
+  lastAlertDeliveredAt?: boolean
+  lastAlertFailedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type BlockchainReconciliationCursorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "chainId" | "contractAddress" | "nextBlock" | "finalizedThrough" | "leaseOwner" | "leaseExpiresAt" | "latestObservedBlock" | "lastSuccessfulAt" | "lastFailureAt" | "consecutiveFailures" | "createdAt" | "updatedAt", ExtArgs["result"]["blockchainReconciliationCursor"]>
+export type BlockchainReconciliationCursorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "chainId" | "contractAddress" | "nextBlock" | "finalizedThrough" | "leaseOwner" | "leaseExpiresAt" | "latestObservedBlock" | "lastSuccessfulAt" | "lastFailureAt" | "consecutiveFailures" | "alertState" | "alertChangedAt" | "alertDeliveryPending" | "lastAlertAttemptAt" | "lastAlertDeliveredAt" | "lastAlertFailedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["blockchainReconciliationCursor"]>
 
 export type $BlockchainReconciliationCursorPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "BlockchainReconciliationCursor"
@@ -638,6 +798,12 @@ export type $BlockchainReconciliationCursorPayload<ExtArgs extends runtime.Types
     lastSuccessfulAt: Date | null
     lastFailureAt: Date | null
     consecutiveFailures: number
+    alertState: $Enums.ReconciliationAlertState
+    alertChangedAt: Date
+    alertDeliveryPending: boolean
+    lastAlertAttemptAt: Date | null
+    lastAlertDeliveredAt: Date | null
+    lastAlertFailedAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["blockchainReconciliationCursor"]>
@@ -1074,6 +1240,12 @@ export interface BlockchainReconciliationCursorFieldRefs {
   readonly lastSuccessfulAt: Prisma.FieldRef<"BlockchainReconciliationCursor", 'DateTime'>
   readonly lastFailureAt: Prisma.FieldRef<"BlockchainReconciliationCursor", 'DateTime'>
   readonly consecutiveFailures: Prisma.FieldRef<"BlockchainReconciliationCursor", 'Int'>
+  readonly alertState: Prisma.FieldRef<"BlockchainReconciliationCursor", 'ReconciliationAlertState'>
+  readonly alertChangedAt: Prisma.FieldRef<"BlockchainReconciliationCursor", 'DateTime'>
+  readonly alertDeliveryPending: Prisma.FieldRef<"BlockchainReconciliationCursor", 'Boolean'>
+  readonly lastAlertAttemptAt: Prisma.FieldRef<"BlockchainReconciliationCursor", 'DateTime'>
+  readonly lastAlertDeliveredAt: Prisma.FieldRef<"BlockchainReconciliationCursor", 'DateTime'>
+  readonly lastAlertFailedAt: Prisma.FieldRef<"BlockchainReconciliationCursor", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"BlockchainReconciliationCursor", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"BlockchainReconciliationCursor", 'DateTime'>
 }

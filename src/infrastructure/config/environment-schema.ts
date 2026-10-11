@@ -147,6 +147,12 @@ const environmentSchema = z
       .min(1)
       .max(10_080)
       .default(15),
+    ARC_RECONCILIATION_INTERVAL_SECONDS: z.coerce
+      .number()
+      .int()
+      .min(10)
+      .max(3600)
+      .default(60),
     OBSERVABILITY_FAILURE_ALERT_THRESHOLD: z.coerce
       .number()
       .int()
@@ -162,6 +168,14 @@ const environmentSchema = z
     ARC_RECONCILIATION_CRON_SECRET: z.preprocess(
       (value) => (value === "" ? undefined : value),
       z.string().min(32).optional(),
+    ),
+    OPERATIONAL_ALERT_WEBHOOK_URL: z.preprocess(
+      (value) => (value === "" ? undefined : value),
+      z.url().optional(),
+    ),
+    OPERATIONAL_ALERT_WEBHOOK_BEARER_TOKEN: z.preprocess(
+      (value) => (value === "" ? undefined : value),
+      z.string().min(16).optional(),
     ),
     LOAN_DECISION_PROVIDER: z.enum(["rules", "model"]).default("rules"),
     EMPLOYER_ACTION_PROVIDER: z.enum(["mock"]).default("mock"),
@@ -185,6 +199,12 @@ const environmentSchema = z
       .min(5)
       .max(1440)
       .default(30),
+    ERP_NEXT_ELIGIBILITY_MAX_AGE_MINUTES: z.coerce
+      .number()
+      .int()
+      .min(10)
+      .max(10_080)
+      .default(1500),
     ERP_NEXT_SYNC_PAGE_SIZE: z.coerce
       .number()
       .int()
@@ -229,6 +249,18 @@ const environmentSchema = z
       });
     }
     if (
+      environment.ERP_NEXT_SYNC_ENABLED &&
+      environment.ERP_NEXT_SYNC_INTERVAL_MINUTES >=
+        environment.ERP_NEXT_ELIGIBILITY_MAX_AGE_MINUTES
+    ) {
+      context.addIssue({
+        code: "custom",
+        path: ["ERP_NEXT_ELIGIBILITY_MAX_AGE_MINUTES"],
+        message:
+          "eligibility freshness must be longer than the scheduled sync interval",
+      });
+    }
+    if (
       environment.ARC_RECONCILIATION_ENABLED &&
       !environment.ARC_RECONCILIATION_CRON_SECRET
     ) {
@@ -258,6 +290,18 @@ const environmentSchema = z
         path: ["ARC_RECONCILIATION_REORG_WINDOW"],
         message:
           "reorganization window must be at least the confirmation depth",
+      });
+    }
+    if (
+      environment.ARC_RECONCILIATION_ENABLED &&
+      environment.ARC_RECONCILIATION_INTERVAL_SECONDS >=
+        environment.ARC_RECONCILIATION_STALE_AFTER_MINUTES * 60
+    ) {
+      context.addIssue({
+        code: "custom",
+        path: ["ARC_RECONCILIATION_INTERVAL_SECONDS"],
+        message:
+          "reconciliation interval must be shorter than the stale threshold",
       });
     }
   });
@@ -345,6 +389,7 @@ export function parseEnvironment(
     ERP_NEXT_SYNC_ENABLED?: NodeJS.ProcessEnv[string];
     ERP_NEXT_SYNC_INTERVAL_MINUTES?: NodeJS.ProcessEnv[string];
     ERP_NEXT_SYNC_STALE_AFTER_MINUTES?: NodeJS.ProcessEnv[string];
+    ERP_NEXT_ELIGIBILITY_MAX_AGE_MINUTES?: NodeJS.ProcessEnv[string];
     ERP_NEXT_SYNC_PAGE_SIZE?: NodeJS.ProcessEnv[string];
     ERP_NEXT_SYNC_MAX_PAGES?: NodeJS.ProcessEnv[string];
     ERP_NEXT_SYNC_CRON_SECRET?: NodeJS.ProcessEnv[string];
@@ -359,9 +404,12 @@ export function parseEnvironment(
     ARC_RECONCILIATION_MAX_RANGES?: NodeJS.ProcessEnv[string];
     ARC_RECONCILIATION_RPC_RETRIES?: NodeJS.ProcessEnv[string];
     ARC_RECONCILIATION_STALE_AFTER_MINUTES?: NodeJS.ProcessEnv[string];
+    ARC_RECONCILIATION_INTERVAL_SECONDS?: NodeJS.ProcessEnv[string];
     OBSERVABILITY_FAILURE_ALERT_THRESHOLD?: NodeJS.ProcessEnv[string];
     OBSERVABILITY_UNMATCHED_EVENT_ALERT_THRESHOLD?: NodeJS.ProcessEnv[string];
     ARC_RECONCILIATION_CRON_SECRET?: NodeJS.ProcessEnv[string];
+    OPERATIONAL_ALERT_WEBHOOK_URL?: NodeJS.ProcessEnv[string];
+    OPERATIONAL_ALERT_WEBHOOK_BEARER_TOKEN?: NodeJS.ProcessEnv[string];
   },
 ): Environment {
   const result = environmentSchema.safeParse(environment);

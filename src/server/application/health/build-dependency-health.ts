@@ -14,11 +14,21 @@ type DependencyHealthInput = Readonly<{
   now: Date;
   reconciliationEnabled: boolean;
   reconciliationStaleAfterMs: number;
+  reconciliationConfirmationDepth?: number;
+  reconciliationHealthWindowBlocks?: number;
+  reconciliationMaxRangesPerRun?: number;
+  latestChainBlock?: bigint | null;
   reconciliationState: {
     cursor: {
       nextBlock: bigint;
       finalizedThrough: bigint;
       updatedAt: Date;
+      alertState?: "HEALTHY" | "STALE" | "FAILING";
+      alertChangedAt?: Date;
+      alertDeliveryPending?: boolean;
+      lastAlertAttemptAt?: Date | null;
+      lastAlertDeliveredAt?: Date | null;
+      lastAlertFailedAt?: Date | null;
     } | null;
     unmatchedEvents: number;
     conflictingEvents: number;
@@ -36,7 +46,9 @@ type DependencyHealthInput = Readonly<{
   erpEnabled: boolean;
   erpState: {
     configuredIntegrations: number;
-    failedIntegrations: number;
+    connectedIntegrations: number;
+    incompleteIntegrations: number;
+    staleIntegrations: number;
   } | null;
   pendingTransactionCount: number | null;
   metrics: Record<string, number>;
@@ -55,6 +67,10 @@ export function buildDependencyHealth(input: DependencyHealthInput) {
         unmatchedEvents: input.reconciliationState.unmatchedEvents,
         conflictingEvents: input.reconciliationState.conflictingEvents,
         staleAfterMs: input.reconciliationStaleAfterMs,
+        latestChainBlock: input.latestChainBlock,
+        confirmationDepth: input.reconciliationConfirmationDepth,
+        healthWindowBlocks: input.reconciliationHealthWindowBlocks,
+        maxRangesPerRun: input.reconciliationMaxRangesPerRun,
         now: input.now,
       })
     : input.reconciliationEnabled
@@ -81,7 +97,8 @@ export function buildDependencyHealth(input: DependencyHealthInput) {
     : input.erpState
       ? {
           status:
-            input.erpState.failedIntegrations > 0 ||
+            input.erpState.incompleteIntegrations > 0 ||
+            input.erpState.staleIntegrations > 0 ||
             (erpFailure?.consecutiveFailures ?? 0) > 0
               ? ("unhealthy" as const)
               : ("healthy" as const),

@@ -8,6 +8,7 @@ import { prisma } from "@/infrastructure/database/prisma";
 import { fundingRequestIdToBytes32 } from "@/integrations/arc/employee-lending-escrow";
 import type { StoredReconciliationEvent } from "@/modules/blockchain-reconciliation/domain/blockchain-event";
 import { prismaReconciliationRepository } from "@/modules/blockchain-reconciliation/infrastructure/prisma-reconciliation-repository";
+import { prismaReconciliationAlertRepository } from "@/modules/blockchain-reconciliation/infrastructure/prisma-reconciliation-alert-repository";
 
 const organizationA = randomUUID();
 const organizationB = randomUUID();
@@ -320,5 +321,258 @@ describe("Prisma blockchain reconciliation", () => {
     await expect(
       prisma.auditEvent.count({ where: { organizationId: organizationB } }),
     ).resolves.toBe(0);
+  });
+
+  it("journals an already-confirmed lifecycle without duplicating financial records", async () => {
+    const fundingRequestId = randomUUID();
+    const offerId = randomUUID();
+    const loanId = randomUUID();
+    const repaymentId = randomUUID();
+    const principalBaseUnits = 2_500_000n;
+    const repaymentBaseUnits = 2_625_000n;
+    const fundingHash = `0x${"4".repeat(64)}` as const;
+    const acceptanceHash = `0x${"5".repeat(64)}` as const;
+    const repaymentHash = `0x${"6".repeat(64)}` as const;
+
+    await prisma.lendingOffer.create({
+      data: {
+        id: offerId,
+        organizationId: organizationA,
+        lenderMembershipId,
+        amountMinorUnits: 250n,
+        availableAmountMinorUnits: 0n,
+        minimumLoanAmountMinorUnits: 250n,
+        maximumLoanAmountMinorUnits: 250n,
+        currency: "USD",
+        durationDays: 30,
+        feeRateBasisPoints: 500,
+        expiresAt: new Date("2026-11-03T12:00:00.000Z"),
+        status: "EXHAUSTED",
+        fundingStatus: "FUNDED",
+        fundingRequestId,
+        lenderWalletAddress: lenderAddress,
+        principalBaseUnits,
+        chainOfferId: "91",
+        contractAddress,
+        fundingTransactionHash: fundingHash,
+        fundedAt: now,
+      },
+    });
+    await prisma.loan.create({
+      data: {
+        id: loanId,
+        organizationId: organizationA,
+        lenderMembershipId,
+        borrowerMembershipId,
+        lendingOfferId: offerId,
+        borrowRequestId: randomUUID(),
+        chainLoanId: "92",
+        chainOfferId: "91",
+        contractAddress,
+        lenderWalletAddress: lenderAddress,
+        borrowerWalletAddress: borrowerAddress,
+        principalBaseUnits,
+        repaymentBaseUnits,
+        acceptanceTransactionHash: acceptanceHash,
+        repaymentTransactionHash: repaymentHash,
+        onChainStartedAt: new Date(Number(startTime) * 1_000),
+        onChainDueAt: new Date(Number(dueTime) * 1_000),
+        onChainRepaidAt: new Date(Number(repaidAt) * 1_000),
+        principalAmountMinorUnits: 250n,
+        feeAmountMinorUnits: 13n,
+        outstandingPrincipalMinorUnits: 0n,
+        currency: "USD",
+        durationDays: 30,
+        feeRateBasisPoints: 500,
+        status: "REPAID",
+        requestedAt: now,
+        approvedAt: new Date(Number(startTime) * 1_000),
+        activatedAt: new Date(Number(startTime) * 1_000),
+        closedAt: new Date(Number(repaidAt) * 1_000),
+        startedAt: new Date(Number(startTime) * 1_000),
+        repaymentDueAt: new Date(Number(dueTime) * 1_000),
+      },
+    });
+    await prisma.loanRepayment.create({
+      data: {
+        id: repaymentId,
+        organizationId: organizationA,
+        loanId,
+        repaymentRequestId: randomUUID(),
+        // The exact 2.625 USDC chain amount is retained on Loan while the
+        // cents-only display/audit amount is conservatively rounded up.
+        amountMinorUnits: 263n,
+        currency: "USD",
+        status: "COMPLETED",
+        paidAt: new Date(Number(repaidAt) * 1_000),
+        completedAt: new Date(Number(repaidAt) * 1_000),
+      },
+    });
+    await prisma.auditEvent.createMany({
+      data: [
+        {
+          organizationId: organizationA,
+          loanId,
+          lendingOfferId: offerId,
+          amountMinorUnits: 250n,
+          currency: "USD",
+          type: "LOAN_ACTIVATED",
+          title: "Escrow released and loan activated",
+          occurredAt: new Date(Number(startTime) * 1_000),
+        },
+        {
+          organizationId: organizationA,
+          loanId,
+          repaymentId,
+          amountMinorUnits: 263n,
+          currency: "USD",
+          type: "REPAYMENT_COMPLETED",
+          title: "On-chain repayment completed",
+          occurredAt: new Date(Number(repaidAt) * 1_000),
+        },
+        {
+          organizationId: organizationA,
+          loanId,
+          repaymentId,
+          amountMinorUnits: 263n,
+          currency: "USD",
+          type: "LOAN_REPAID",
+          title: "Loan repaid in full",
+          occurredAt: new Date(Number(repaidAt) * 1_000),
+        },
+      ],
+    });
+
+    const events: StoredReconciliationEvent[] = [
+      {
+        id: randomUUID(),
+        name: "OFFER_CREATED",
+        blockNumber: 200n,
+        blockHash: `0x${"d".repeat(64)}`,
+        blockTimestamp: now,
+        transactionHash: fundingHash,
+        logIndex: 0,
+        payload: {
+          offerId: "91",
+          lender: lenderAddress,
+          principal: principalBaseUnits.toString(),
+          interestBps: "500",
+          duration: (30n * 86_400n).toString(),
+          requestId: fundingRequestIdToBytes32(fundingRequestId).toLowerCase(),
+        },
+      },
+      {
+        id: randomUUID(),
+        name: "LOAN_STARTED",
+        blockNumber: 201n,
+        blockHash: `0x${"e".repeat(64)}`,
+        blockTimestamp: now,
+        transactionHash: acceptanceHash,
+        logIndex: 0,
+        payload: {
+          loanId: "92",
+          offerId: "91",
+          lender: lenderAddress,
+          borrower: borrowerAddress,
+          principal: principalBaseUnits.toString(),
+          repaymentAmount: repaymentBaseUnits.toString(),
+          startTime: startTime.toString(),
+          dueTime: dueTime.toString(),
+        },
+      },
+      {
+        id: randomUUID(),
+        name: "LOAN_REPAID",
+        blockNumber: 202n,
+        blockHash: `0x${"f".repeat(64)}`,
+        blockTimestamp: now,
+        transactionHash: repaymentHash,
+        logIndex: 0,
+        payload: {
+          loanId: "92",
+          borrower: borrowerAddress,
+          lender: lenderAddress,
+          amount: repaymentBaseUnits.toString(),
+          repaidAt: repaidAt.toString(),
+        },
+      },
+    ];
+
+    for (const event of events) {
+      await journal(event);
+      await expect(
+        prismaReconciliationRepository.applyEvent(event, now),
+      ).resolves.toMatchObject({ kind: "APPLIED" });
+      await expect(
+        prismaReconciliationRepository.applyEvent(event, now),
+      ).resolves.toEqual({ kind: "ALREADY_APPLIED" });
+    }
+
+    await expect(
+      prisma.loanRepayment.count({ where: { loanId } }),
+    ).resolves.toBe(1);
+    await expect(prisma.auditEvent.count({ where: { loanId } })).resolves.toBe(
+      3,
+    );
+    await expect(
+      prisma.blockchainEvent.count({
+        where: { matchedRecordId: { in: [offerId, loanId, repaymentId] } },
+      }),
+    ).resolves.toBe(3);
+  });
+
+  it("persists alert suppression and recovery state across worker restarts", async () => {
+    await prisma.blockchainReconciliationCursor.upsert({
+      where: {
+        chainId_contractAddress: {
+          chainId: 5_042_002,
+          contractAddress,
+        },
+      },
+      create: {
+        chainId: 5_042_002,
+        contractAddress,
+        nextBlock: 1n,
+        finalizedThrough: 0n,
+      },
+      update: {},
+    });
+    const staleAt = new Date("2026-10-11T12:00:00.000Z");
+    await expect(
+      prismaReconciliationAlertRepository.prepareDelivery({
+        chainId: 5_042_002,
+        contractAddress,
+        targetState: "STALE",
+        now: staleAt,
+        retryAfterMs: 300_000,
+      }),
+    ).resolves.toEqual({ deliver: true, previousState: "HEALTHY" });
+    await prismaReconciliationAlertRepository.markDelivered({
+      chainId: 5_042_002,
+      contractAddress,
+      state: "STALE",
+      now: staleAt,
+    });
+
+    // A new invocation reads the persisted state and does not redeliver.
+    await expect(
+      prismaReconciliationAlertRepository.prepareDelivery({
+        chainId: 5_042_002,
+        contractAddress,
+        targetState: "STALE",
+        now: new Date(staleAt.getTime() + 60_000),
+        retryAfterMs: 300_000,
+      }),
+    ).resolves.toEqual({ deliver: false, previousState: "STALE" });
+
+    await expect(
+      prismaReconciliationAlertRepository.prepareDelivery({
+        chainId: 5_042_002,
+        contractAddress,
+        targetState: "HEALTHY",
+        now: new Date(staleAt.getTime() + 120_000),
+        retryAfterMs: 300_000,
+      }),
+    ).resolves.toEqual({ deliver: true, previousState: "STALE" });
   });
 });

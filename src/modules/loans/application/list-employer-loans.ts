@@ -13,6 +13,7 @@ function toLoanStatus(
   filter: EmployerLoanFilterType,
 ): EmployerLoanStatus | undefined {
   if (filter === EmployerLoanFilter.ALL) return undefined;
+  if (filter === EmployerLoanFilter.REVIEW) return "REQUESTED";
   return filter.toUpperCase() as EmployerLoanStatus;
 }
 

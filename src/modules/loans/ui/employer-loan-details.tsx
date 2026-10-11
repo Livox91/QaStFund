@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import type { EmployerLoanDetails as EmployerLoanDetailsView } from "@/modules/loans/domain/employer-loan";
+import { EmployerOriginationDecision } from "@/modules/loan-decisions/ui/employer-origination-decision";
 import { RepaymentProgress } from "@/modules/loans/ui/repayment-progress";
 import { buttonStyles } from "@/shared/ui/button";
 import {
@@ -57,8 +58,11 @@ function DetailItem({
 
 export function EmployerLoanDetails({
   loan,
+  originationDecision,
 }: {
   loan: EmployerLoanDetailsView;
+  originationDecision:
+    React.ComponentProps<typeof EmployerOriginationDecision>["decision"] | null;
 }) {
   const durationDays = Math.max(
     1,
@@ -89,9 +93,14 @@ export function EmployerLoanDetails({
         title="Original terms and repayment record"
       />
 
-      <div className="mt-8 rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm leading-6 text-sky-800">
-        This is a read-only financial record. Employer administrators can review
-        its terms and history but cannot modify it.
+      {originationDecision ? (
+        <EmployerOriginationDecision decision={originationDecision} />
+      ) : null}
+
+      <div className="mt-6 rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm leading-6 text-sky-800">
+        {["REQUESTED", "APPROVED"].includes(loan.status)
+          ? "This application has not created an on-chain loan. Its terms are read-only; approval permits the employee to accept the funded offer but does not move funds."
+          : "This is a read-only financial record. Employer administrators can review its terms and history but cannot modify it."}
       </div>
 
       <section className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">

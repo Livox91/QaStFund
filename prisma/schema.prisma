@@ -111,6 +111,8 @@ enum AuditEventType {
   LOAN_DEFAULTED
   LOAN_CANCELLED
   LOAN_MARKED_OVERDUE
+  LOAN_ORIGINATION_DECISION_RECORDED
+  LOAN_ORIGINATION_DECISION_OVERRIDDEN
   LENDING_POLICY_UPDATED
   EMPLOYEE_BORROWING_SUSPENDED
   EMPLOYEE_BORROWING_ENABLED
@@ -150,6 +152,12 @@ enum BlockchainEventStatus {
   REORGED
 }
 
+enum ReconciliationAlertState {
+  HEALTHY
+  STALE
+  FAILING
+}
+
 enum LoanDecisionClassification {
   HEALTHY
   DUE_SOON
@@ -167,6 +175,17 @@ enum LoanDecisionAction {
 enum LoanDecisionSource {
   RULES
   MODEL
+}
+
+enum LoanOriginationDecisionStatus {
+  APPROVAL_CONSIDERATION
+  REVIEW_REQUIRED
+  NOT_ELIGIBLE
+}
+
+enum LoanOriginationOverrideOutcome {
+  APPROVED
+  REJECTED
 }
 
 enum EmployerActionType {
@@ -274,6 +293,8 @@ model Organization {
   arcWalletChallenges          ArcWalletChallenge[]
   loanDecisionEvaluations      LoanDecisionEvaluation[]
   loanDecisionReviews          LoanDecisionReview[]
+  loanOriginationDecisions     LoanOriginationDecision[]
+  loanOriginationOverrides     LoanOriginationOverride[]
   employerActionAttempts       EmployerActionAttempt[]
   employeeDirectoryIntegration EmployeeDirectoryIntegration?
   employeeDirectorySecrets     EmployeeDirectoryCredentialSecret[]
@@ -341,6 +362,8 @@ model OrganizationMembership {
   auditEventsActed          AuditEvent[]               @relation("AuditEventActor")
   auditEventsTargeted       AuditEvent[]               @relation("AuditEventTarget")
   loanDecisionReviews       LoanDecisionReview[]       @relation("DecisionReviewsBy")
+  originationDecisions      LoanOriginationDecision[]  @relation("OriginationDecisionBorrower")
+  originationOverrides      LoanOriginationOverride[]  @relation("OriginationOverrideReviewer")
   employerActionAttempts    EmployerActionAttempt[]    @relation("EmployerActionsRequestedBy")
   employeeDirectoryMappings EmployeeDirectoryMapping[] @relation("EmployeeDirectoryMatchedMembership")
   employeeDirectorySyncRuns EmployeeDirectorySyncRun[] @relation("EmployeeDirectorySyncRequestedBy")
@@ -558,49 +581,50 @@ model EmployeeBalance {
 }
 
 model Loan {
-  id                             String                   @id @default(uuid()) @db.Uuid
-  organizationId                 String                   @db.Uuid
-  lenderMembershipId             String                   @db.Uuid
-  borrowerMembershipId           String                   @db.Uuid
-  lendingOfferId                 String?                  @db.Uuid
-  borrowRequestId                String?                  @unique @db.Uuid
-  chainLoanId                    String?                  @db.VarChar(78)
-  chainOfferId                   String?                  @db.VarChar(78)
-  contractAddress                String?                  @db.VarChar(42)
-  lenderWalletAddress            String?                  @db.VarChar(42)
-  borrowerWalletAddress          String?                  @db.VarChar(42)
+  id                             String                    @id @default(uuid()) @db.Uuid
+  organizationId                 String                    @db.Uuid
+  lenderMembershipId             String                    @db.Uuid
+  borrowerMembershipId           String                    @db.Uuid
+  lendingOfferId                 String?                   @db.Uuid
+  borrowRequestId                String?                   @unique @db.Uuid
+  chainLoanId                    String?                   @db.VarChar(78)
+  chainOfferId                   String?                   @db.VarChar(78)
+  contractAddress                String?                   @db.VarChar(42)
+  lenderWalletAddress            String?                   @db.VarChar(42)
+  borrowerWalletAddress          String?                   @db.VarChar(42)
   principalBaseUnits             BigInt?
   repaymentBaseUnits             BigInt?
-  acceptanceTransactionHash      String?                  @unique @db.VarChar(66)
-  repaymentTransactionHash       String?                  @unique @db.VarChar(66)
+  acceptanceTransactionHash      String?                   @unique @db.VarChar(66)
+  repaymentTransactionHash       String?                   @unique @db.VarChar(66)
   onChainStartedAt               DateTime?
   onChainDueAt                   DateTime?
   onChainRepaidAt                DateTime?
   principalAmountMinorUnits      BigInt
-  feeAmountMinorUnits            BigInt                   @default(0)
+  feeAmountMinorUnits            BigInt                    @default(0)
   outstandingPrincipalMinorUnits BigInt
-  currency                       String                   @db.VarChar(3)
+  currency                       String                    @db.VarChar(3)
   durationDays                   Int
   feeRateBasisPoints             Int
   status                         LoanStatus
-  requestedAt                    DateTime                 @default(now())
+  requestedAt                    DateTime                  @default(now())
   approvedAt                     DateTime?
   activatedAt                    DateTime?
   closedAt                       DateTime?
-  startedAt                      DateTime                 @default(now())
+  startedAt                      DateTime                  @default(now())
   repaymentDueAt                 DateTime
-  createdAt                      DateTime                 @default(now())
-  updatedAt                      DateTime                 @updatedAt
+  createdAt                      DateTime                  @default(now())
+  updatedAt                      DateTime                  @updatedAt
   policyVersion                  Int?
   policySnapshot                 Json?
-  organization                   Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  lenderMembership               OrganizationMembership   @relation("LoansAsLender", fields: [organizationId, lenderMembershipId], references: [organizationId, id], onDelete: Restrict)
-  borrowerMembership             OrganizationMembership   @relation("LoansAsBorrower", fields: [organizationId, borrowerMembershipId], references: [organizationId, id], onDelete: Restrict)
-  lendingOffer                   LendingOffer?            @relation(fields: [organizationId, lendingOfferId], references: [organizationId, id], onDelete: Restrict)
+  organization                   Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  lenderMembership               OrganizationMembership    @relation("LoansAsLender", fields: [organizationId, lenderMembershipId], references: [organizationId, id], onDelete: Restrict)
+  borrowerMembership             OrganizationMembership    @relation("LoansAsBorrower", fields: [organizationId, borrowerMembershipId], references: [organizationId, id], onDelete: Restrict)
+  lendingOffer                   LendingOffer?             @relation(fields: [organizationId, lendingOfferId], references: [organizationId, id], onDelete: Restrict)
   repayments                     LoanRepayment[]
   auditEvents                    AuditEvent[]
   decisionEvaluations            LoanDecisionEvaluation[]
   decisionReviews                LoanDecisionReview[]
+  originationDecisions           LoanOriginationDecision[]
   employerActionAttempts         EmployerActionAttempt[]
 
   @@unique([organizationId, id])
@@ -649,6 +673,50 @@ model LoanDecisionReview {
   reviewedByMembership   OrganizationMembership @relation("DecisionReviewsBy", fields: [organizationId, reviewedByMembershipId], references: [organizationId, id], onDelete: Restrict)
 
   @@unique([evaluationId, reviewedByMembershipId])
+  @@index([organizationId, loanId, reviewedAt])
+}
+
+model LoanOriginationDecision {
+  id                    String                        @id @default(uuid()) @db.Uuid
+  organizationId        String                        @db.Uuid
+  loanId                String                        @db.Uuid
+  borrowerMembershipId  String                        @db.Uuid
+  idempotencyKey        String                        @unique @db.VarChar(128)
+  modelVersion          String                        @db.VarChar(64)
+  status                LoanOriginationDecisionStatus
+  score                 Int?
+  reasonCodes           String[]
+  inputSnapshot         Json
+  affordabilitySnapshot Json
+  evaluatedAt           DateTime
+  createdAt             DateTime                      @default(now())
+  organization          Organization                  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  loan                  Loan                          @relation(fields: [organizationId, loanId], references: [organizationId, id], onDelete: Restrict)
+  borrowerMembership    OrganizationMembership        @relation("OriginationDecisionBorrower", fields: [organizationId, borrowerMembershipId], references: [organizationId, id], onDelete: Restrict)
+  override              LoanOriginationOverride?
+
+  @@unique([loanId, modelVersion])
+  @@unique([organizationId, id])
+  @@index([organizationId, status, evaluatedAt])
+  @@index([organizationId, borrowerMembershipId, evaluatedAt])
+}
+
+model LoanOriginationOverride {
+  id                     String                         @id @default(uuid()) @db.Uuid
+  organizationId         String                         @db.Uuid
+  decisionId             String                         @unique @db.Uuid
+  loanId                 String                         @db.Uuid
+  reviewedByMembershipId String                         @db.Uuid
+  outcome                LoanOriginationOverrideOutcome
+  rationale              String                         @db.VarChar(1000)
+  reviewedAt             DateTime
+  createdAt              DateTime                       @default(now())
+  organization           Organization                   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  decision               LoanOriginationDecision        @relation(fields: [organizationId, decisionId], references: [organizationId, id], onDelete: Restrict)
+  reviewedByMembership   OrganizationMembership         @relation("OriginationOverrideReviewer", fields: [organizationId, reviewedByMembershipId], references: [organizationId, id], onDelete: Restrict)
+
+  @@unique([organizationId, id])
+  @@unique([organizationId, decisionId])
   @@index([organizationId, loanId, reviewedAt])
 }
 
@@ -815,19 +883,25 @@ model Session {
 }
 
 model BlockchainReconciliationCursor {
-  id                  String    @id @default(uuid()) @db.Uuid
-  chainId             Int
-  contractAddress     String    @db.VarChar(42)
-  nextBlock           BigInt
-  finalizedThrough    BigInt
-  leaseOwner          String?   @db.Uuid
-  leaseExpiresAt      DateTime?
-  latestObservedBlock BigInt?
-  lastSuccessfulAt    DateTime?
-  lastFailureAt       DateTime?
-  consecutiveFailures Int       @default(0)
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
+  id                   String                   @id @default(uuid()) @db.Uuid
+  chainId              Int
+  contractAddress      String                   @db.VarChar(42)
+  nextBlock            BigInt
+  finalizedThrough     BigInt
+  leaseOwner           String?                  @db.Uuid
+  leaseExpiresAt       DateTime?
+  latestObservedBlock  BigInt?
+  lastSuccessfulAt     DateTime?
+  lastFailureAt        DateTime?
+  consecutiveFailures  Int                      @default(0)
+  alertState           ReconciliationAlertState @default(HEALTHY)
+  alertChangedAt       DateTime                 @default(now())
+  alertDeliveryPending Boolean                  @default(false)
+  lastAlertAttemptAt   DateTime?
+  lastAlertDeliveredAt DateTime?
+  lastAlertFailedAt    DateTime?
+  createdAt            DateTime                 @default(now())
+  updatedAt            DateTime                 @updatedAt
 
   @@unique([chainId, contractAddress])
 }

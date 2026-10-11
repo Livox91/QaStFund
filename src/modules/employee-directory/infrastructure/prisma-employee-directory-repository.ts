@@ -750,8 +750,15 @@ export const prismaEmployeeDirectoryRepository: EmployeeDirectoryRepository = {
             id: input.runId,
             organizationId: input.organizationId,
           },
-          select: { integrationId: true },
+          select: {
+            integrationId: true,
+            status: true,
+            safeErrorCode: true,
+          },
         });
+        const directoryAlreadyIncomplete =
+          syncRun?.status === "PARTIAL" &&
+          syncRun.safeErrorCode === "PARTIAL_SYNC";
         await transaction.employeeDirectorySyncRun.updateMany({
           where: {
             id: input.runId,
@@ -762,9 +769,14 @@ export const prismaEmployeeDirectoryRepository: EmployeeDirectoryRepository = {
             : {
                 invitationFailureCount: { increment: 1 },
                 status: "PARTIAL",
-                safeErrorCode: input.failureCode ?? "EMAIL_DELIVERY_FAILED",
-                safeErrorSummary:
-                  "One or more employee invitation emails could not be delivered.",
+                ...(directoryAlreadyIncomplete
+                  ? {}
+                  : {
+                      safeErrorCode:
+                        input.failureCode ?? "EMAIL_DELIVERY_FAILED",
+                      safeErrorSummary:
+                        "One or more employee invitation emails could not be delivered.",
+                    }),
               },
         });
         if (becameFailed && syncRun) {
@@ -772,7 +784,9 @@ export const prismaEmployeeDirectoryRepository: EmployeeDirectoryRepository = {
             where: { id: syncRun.integrationId },
             data: {
               lastSyncStatus: "PARTIAL",
-              lastSyncErrorCode: input.failureCode ?? "EMAIL_DELIVERY_FAILED",
+              lastSyncErrorCode: directoryAlreadyIncomplete
+                ? "PARTIAL_SYNC"
+                : (input.failureCode ?? "EMAIL_DELIVERY_FAILED"),
             },
           });
         }

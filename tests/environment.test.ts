@@ -105,6 +105,54 @@ describe("environment validation", () => {
     ).not.toThrow();
   });
 
+  it("requires the eligibility freshness window to exceed the sync cadence", () => {
+    const scheduled = {
+      ...startupEnvironment,
+      ERP_NEXT_SYNC_ENABLED: "true",
+      ERP_NEXT_SYNC_CRON_SECRET: "test-only-cron-secret-at-least-32-characters",
+      ERP_NEXT_CREDENTIAL_ENCRYPTION_KEY: Buffer.alloc(32, 7).toString(
+        "base64",
+      ),
+      ERP_NEXT_SYNC_INTERVAL_MINUTES: "60",
+    };
+    expect(() =>
+      parseEnvironment({
+        ...scheduled,
+        ERP_NEXT_ELIGIBILITY_MAX_AGE_MINUTES: "60",
+      }),
+    ).toThrow(/eligibility freshness must be longer/);
+    expect(
+      parseEnvironment({
+        ...scheduled,
+        ERP_NEXT_ELIGIBILITY_MAX_AGE_MINUTES: "90",
+      }).ERP_NEXT_ELIGIBILITY_MAX_AGE_MINUTES,
+    ).toBe(90);
+  });
+
+  it("requires reconciliation cadence to stay inside its stale window", () => {
+    const reconciliation = {
+      ...startupEnvironment,
+      ARC_RECONCILIATION_ENABLED: "true",
+      ARC_RECONCILIATION_CRON_SECRET:
+        "test-only-reconciliation-secret-at-least-32-characters",
+      ARC_RECONCILIATION_STALE_AFTER_MINUTES: "5",
+    };
+    expect(() =>
+      parseEnvironment({
+        ...reconciliation,
+        ARC_RECONCILIATION_INTERVAL_SECONDS: "300",
+      }),
+    ).toThrow(
+      /reconciliation interval must be shorter than the stale threshold/,
+    );
+    expect(
+      parseEnvironment({
+        ...reconciliation,
+        ARC_RECONCILIATION_INTERVAL_SECONDS: "60",
+      }).ARC_RECONCILIATION_INTERVAL_SECONDS,
+    ).toBe(60);
+  });
+
   it("never returns server-only values from browser configuration", () => {
     const serverSecret = `0x${"cd".repeat(32)}`;
     const publicConfiguration = parsePublicTestnetEnvironment({

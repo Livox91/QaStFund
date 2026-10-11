@@ -413,6 +413,8 @@ export const ModelName = {
   Loan: 'Loan',
   LoanDecisionEvaluation: 'LoanDecisionEvaluation',
   LoanDecisionReview: 'LoanDecisionReview',
+  LoanOriginationDecision: 'LoanOriginationDecision',
+  LoanOriginationOverride: 'LoanOriginationOverride',
   EmployerActionAttempt: 'EmployerActionAttempt',
   LedgerAccount: 'LedgerAccount',
   LedgerTransaction: 'LedgerTransaction',
@@ -439,7 +441,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "organization" | "arcWallet" | "arcWalletChallenge" | "organizationMembership" | "employeeInvitation" | "passwordResetToken" | "employeeDirectoryIntegration" | "employeeDirectoryCredentialSecret" | "employeeDirectoryMapping" | "employeeDirectorySyncRun" | "lendingOffer" | "employeeBalance" | "loan" | "loanDecisionEvaluation" | "loanDecisionReview" | "employerActionAttempt" | "ledgerAccount" | "ledgerTransaction" | "ledgerEntry" | "loanRepayment" | "auditEvent" | "organizationLendingPolicy" | "session" | "blockchainReconciliationCursor" | "blockchainEvent" | "rateLimitBucket"
+    modelProps: "user" | "organization" | "arcWallet" | "arcWalletChallenge" | "organizationMembership" | "employeeInvitation" | "passwordResetToken" | "employeeDirectoryIntegration" | "employeeDirectoryCredentialSecret" | "employeeDirectoryMapping" | "employeeDirectorySyncRun" | "lendingOffer" | "employeeBalance" | "loan" | "loanDecisionEvaluation" | "loanDecisionReview" | "loanOriginationDecision" | "loanOriginationOverride" | "employerActionAttempt" | "ledgerAccount" | "ledgerTransaction" | "ledgerEntry" | "loanRepayment" | "auditEvent" | "organizationLendingPolicy" | "session" | "blockchainReconciliationCursor" | "blockchainEvent" | "rateLimitBucket"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1627,6 +1629,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    LoanOriginationDecision: {
+      payload: Prisma.$LoanOriginationDecisionPayload<ExtArgs>
+      fields: Prisma.LoanOriginationDecisionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LoanOriginationDecisionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanOriginationDecisionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LoanOriginationDecisionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanOriginationDecisionPayload>
+        }
+        findFirst: {
+          args: Prisma.LoanOriginationDecisionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanOriginationDecisionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LoanOriginationDecisionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanOriginationDecisionPayload>
+        }
+        findMany: {
+          args: Prisma.LoanOriginationDecisionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanOriginationDecisionPayload>[]
+        }
+        create: {
+          args: Prisma.LoanOriginationDecisionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanOriginationDecisionPayload>
+        }
+        createMany: {
+          args: Prisma.LoanOriginationDecisionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LoanOriginationDecisionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanOriginationDecisionPayload>[]
+        }
+        delete: {
+          args: Prisma.LoanOriginationDecisionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanOriginationDecisionPayload>
+        }
+        update: {
+          args: Prisma.LoanOriginationDecisionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanOriginationDecisionPayload>
+        }
+        deleteMany: {
+          args: Prisma.LoanOriginationDecisionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LoanOriginationDecisionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LoanOriginationDecisionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanOriginationDecisionPayload>[]
+        }
+        upsert: {
+          args: Prisma.LoanOriginationDecisionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanOriginationDecisionPayload>
+        }
+        aggregate: {
+          args: Prisma.LoanOriginationDecisionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLoanOriginationDecision>
+        }
+        groupBy: {
+          args: Prisma.LoanOriginationDecisionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LoanOriginationDecisionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LoanOriginationDecisionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LoanOriginationDecisionCountAggregateOutputType> | number
+        }
+      }
+    }
+    LoanOriginationOverride: {
+      payload: Prisma.$LoanOriginationOverridePayload<ExtArgs>
+      fields: Prisma.LoanOriginationOverrideFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LoanOriginationOverrideFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanOriginationOverridePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LoanOriginationOverrideFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanOriginationOverridePayload>
+        }
+        findFirst: {
+          args: Prisma.LoanOriginationOverrideFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanOriginationOverridePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LoanOriginationOverrideFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanOriginationOverridePayload>
+        }
+        findMany: {
+          args: Prisma.LoanOriginationOverrideFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanOriginationOverridePayload>[]
+        }
+        create: {
+          args: Prisma.LoanOriginationOverrideCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanOriginationOverridePayload>
+        }
+        createMany: {
+          args: Prisma.LoanOriginationOverrideCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LoanOriginationOverrideCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanOriginationOverridePayload>[]
+        }
+        delete: {
+          args: Prisma.LoanOriginationOverrideDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanOriginationOverridePayload>
+        }
+        update: {
+          args: Prisma.LoanOriginationOverrideUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanOriginationOverridePayload>
+        }
+        deleteMany: {
+          args: Prisma.LoanOriginationOverrideDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LoanOriginationOverrideUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LoanOriginationOverrideUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanOriginationOverridePayload>[]
+        }
+        upsert: {
+          args: Prisma.LoanOriginationOverrideUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoanOriginationOverridePayload>
+        }
+        aggregate: {
+          args: Prisma.LoanOriginationOverrideAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLoanOriginationOverride>
+        }
+        groupBy: {
+          args: Prisma.LoanOriginationOverrideGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LoanOriginationOverrideGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LoanOriginationOverrideCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LoanOriginationOverrideCountAggregateOutputType> | number
+        }
+      }
+    }
     EmployerActionAttempt: {
       payload: Prisma.$EmployerActionAttemptPayload<ExtArgs>
       fields: Prisma.EmployerActionAttemptFieldRefs
@@ -2801,6 +2951,40 @@ export const LoanDecisionReviewScalarFieldEnum = {
 export type LoanDecisionReviewScalarFieldEnum = (typeof LoanDecisionReviewScalarFieldEnum)[keyof typeof LoanDecisionReviewScalarFieldEnum]
 
 
+export const LoanOriginationDecisionScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  loanId: 'loanId',
+  borrowerMembershipId: 'borrowerMembershipId',
+  idempotencyKey: 'idempotencyKey',
+  modelVersion: 'modelVersion',
+  status: 'status',
+  score: 'score',
+  reasonCodes: 'reasonCodes',
+  inputSnapshot: 'inputSnapshot',
+  affordabilitySnapshot: 'affordabilitySnapshot',
+  evaluatedAt: 'evaluatedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type LoanOriginationDecisionScalarFieldEnum = (typeof LoanOriginationDecisionScalarFieldEnum)[keyof typeof LoanOriginationDecisionScalarFieldEnum]
+
+
+export const LoanOriginationOverrideScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  decisionId: 'decisionId',
+  loanId: 'loanId',
+  reviewedByMembershipId: 'reviewedByMembershipId',
+  outcome: 'outcome',
+  rationale: 'rationale',
+  reviewedAt: 'reviewedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type LoanOriginationOverrideScalarFieldEnum = (typeof LoanOriginationOverrideScalarFieldEnum)[keyof typeof LoanOriginationOverrideScalarFieldEnum]
+
+
 export const EmployerActionAttemptScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
@@ -2945,6 +3129,12 @@ export const BlockchainReconciliationCursorScalarFieldEnum = {
   lastSuccessfulAt: 'lastSuccessfulAt',
   lastFailureAt: 'lastFailureAt',
   consecutiveFailures: 'consecutiveFailures',
+  alertState: 'alertState',
+  alertChangedAt: 'alertChangedAt',
+  alertDeliveryPending: 'alertDeliveryPending',
+  lastAlertAttemptAt: 'lastAlertAttemptAt',
+  lastAlertDeliveredAt: 'lastAlertDeliveredAt',
+  lastAlertFailedAt: 'lastAlertFailedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -3050,42 +3240,42 @@ export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof Json
  * Reference to a field of type 'String'
  */
 export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>
-
+    
 
 
 /**
  * Reference to a field of type 'String[]'
  */
 export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
-
+    
 
 
 /**
  * Reference to a field of type 'DateTime'
  */
 export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
-
+    
 
 
 /**
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
-
+    
 
 
 /**
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-
+    
 
 
 /**
  * Reference to a field of type 'ArcWalletNetwork'
  */
 export type EnumArcWalletNetworkFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ArcWalletNetwork'>
-
+    
 
 
 /**
@@ -3197,28 +3387,28 @@ export type ListEnumEmploymentStatusSourceFieldRefInput<$PrismaModel> = FieldRef
  * Reference to a field of type 'InvitationStatus'
  */
 export type EnumInvitationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InvitationStatus'>
-
+    
 
 
 /**
  * Reference to a field of type 'InvitationStatus[]'
  */
 export type ListEnumInvitationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InvitationStatus[]'>
-
+    
 
 
 /**
  * Reference to a field of type 'EmailDeliveryStatus'
  */
 export type EnumEmailDeliveryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmailDeliveryStatus'>
-
+    
 
 
 /**
  * Reference to a field of type 'EmailDeliveryStatus[]'
  */
 export type ListEnumEmailDeliveryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmailDeliveryStatus[]'>
-
+    
 
 
 /**
@@ -3432,6 +3622,34 @@ export type ListEnumLoanDecisionSourceFieldRefInput<$PrismaModel> = FieldRefInpu
 
 
 /**
+ * Reference to a field of type 'LoanOriginationDecisionStatus'
+ */
+export type EnumLoanOriginationDecisionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LoanOriginationDecisionStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'LoanOriginationDecisionStatus[]'
+ */
+export type ListEnumLoanOriginationDecisionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LoanOriginationDecisionStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'LoanOriginationOverrideOutcome'
+ */
+export type EnumLoanOriginationOverrideOutcomeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LoanOriginationOverrideOutcome'>
+    
+
+
+/**
+ * Reference to a field of type 'LoanOriginationOverrideOutcome[]'
+ */
+export type ListEnumLoanOriginationOverrideOutcomeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LoanOriginationOverrideOutcome[]'>
+    
+
+
+/**
  * Reference to a field of type 'EmployerActionType'
  */
 export type EnumEmployerActionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployerActionType'>
@@ -3568,6 +3786,20 @@ export type EnumAuditEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$P
  * Reference to a field of type 'AuditEventType[]'
  */
 export type ListEnumAuditEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditEventType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ReconciliationAlertState'
+ */
+export type EnumReconciliationAlertStateFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReconciliationAlertState'>
+    
+
+
+/**
+ * Reference to a field of type 'ReconciliationAlertState[]'
+ */
+export type ListEnumReconciliationAlertStateFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReconciliationAlertState[]'>
     
 
 
@@ -3779,6 +4011,8 @@ export type GlobalOmitConfig = {
   loan?: Prisma.LoanOmit
   loanDecisionEvaluation?: Prisma.LoanDecisionEvaluationOmit
   loanDecisionReview?: Prisma.LoanDecisionReviewOmit
+  loanOriginationDecision?: Prisma.LoanOriginationDecisionOmit
+  loanOriginationOverride?: Prisma.LoanOriginationOverrideOmit
   employerActionAttempt?: Prisma.EmployerActionAttemptOmit
   ledgerAccount?: Prisma.LedgerAccountOmit
   ledgerTransaction?: Prisma.LedgerTransactionOmit
@@ -3852,3 +4086,4 @@ export type PrismaAction =
  * `PrismaClient` proxy available in interactive transactions.
  */
 export type TransactionClient = Omit<DefaultPrismaClient, runtime.ITXClientDenyList>
+

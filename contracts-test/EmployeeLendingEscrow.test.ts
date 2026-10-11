@@ -434,6 +434,49 @@ describe("EmployeeLendingEscrow", async () => {
     assert.equal((await escrow.read.loans([1n]))[6], 10_001n);
   });
 
+  it("completes the smallest application-supported no-interest lifecycle", async () => {
+    const minimumPrincipal = 10_000n;
+    const minimumRequestId = keccak256(stringToHex("minimum-controlled-offer"));
+    const aliceStartingBalance = await usdc.read.balanceOf([
+      alice.account.address,
+    ]);
+
+    await usdc.write.approve([escrow.address, minimumPrincipal], {
+      account: alice.account,
+    });
+    await escrow.write.createOffer(
+      [minimumPrincipal, 0n, 7n * 86_400n, minimumRequestId],
+      { account: alice.account },
+    );
+    await acceptOffer();
+
+    const activeLoan = await escrow.read.loans([1n]);
+    assert.equal(activeLoan[4], minimumPrincipal);
+    assert.equal(activeLoan[5], 0n);
+    assert.equal(activeLoan[6], minimumPrincipal);
+    assert.equal(activeLoan[9], 0);
+    assert.equal(
+      await usdc.read.balanceOf([bob.account.address]),
+      minimumPrincipal,
+    );
+
+    await usdc.write.approve([escrow.address, minimumPrincipal], {
+      account: bob.account,
+    });
+    await escrow.write.repayLoan([1n], { account: bob.account });
+
+    const repaidLoan = await escrow.read.loans([1n]);
+    assert.equal(repaidLoan[9], 1);
+    assert.ok(repaidLoan[10] > 0n);
+    assert.equal(await escrow.read.totalReserved(), 0n);
+    assert.equal(await usdc.read.balanceOf([escrow.address]), 0n);
+    assert.equal(
+      await usdc.read.balanceOf([alice.account.address]),
+      aliceStartingBalance,
+    );
+    assert.equal(await usdc.read.balanceOf([bob.account.address]), 0n);
+  });
+
   it("repays the exact obligation directly from Bob to Alice", async () => {
     await usdc.write.mint([bob.account.address, 10_000_000n]);
     await createActiveLoan();

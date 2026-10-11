@@ -50,12 +50,13 @@ Configure:
 ```dotenv
 ERP_NEXT_SYNC_ENABLED="true"
 ERP_NEXT_SYNC_INTERVAL_MINUTES="1440"
+ERP_NEXT_ELIGIBILITY_MAX_AGE_MINUTES="1500"
 ERP_NEXT_SYNC_STALE_AFTER_MINUTES="30"
 ERP_NEXT_SYNC_CRON_SECRET="replace-with-at-least-32-random-characters"
 ```
 
-Call the trigger from cron, a cloud scheduler, or Windows Task Scheduler at
-least as often as the configured interval. Calling it more often is safe: the
+The production Compose `reconciliation-scheduler` sidecar calls the trigger at
+the configured interval. Calling it manually during recovery is safe: the
 server selects only due organizations.
 
 ```powershell

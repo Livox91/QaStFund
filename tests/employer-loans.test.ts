@@ -105,6 +105,16 @@ describe("employer loan queries", () => {
       organizationId: "organization-a",
       status: "ACTIVE",
     });
+
+    await listEmployerLoans(
+      employerAdmin,
+      EmployerLoanFilter.REVIEW,
+      repository,
+    );
+    expect(repository.listForOrganization).toHaveBeenLastCalledWith({
+      organizationId: "organization-a",
+      status: "REQUESTED",
+    });
   });
 
   it("never accepts a caller-supplied organization for loan details", async () => {
@@ -142,6 +152,7 @@ describe("employer loan queries", () => {
 describe("employer loan request validation", () => {
   it("accepts supported filters and safely falls back to all", () => {
     expect(employerLoanFilterSchema.parse("overdue")).toBe("overdue");
+    expect(employerLoanFilterSchema.parse("review")).toBe("review");
     expect(employerLoanFilterSchema.parse("unknown")).toBe("all");
     expect(employerLoanFilterSchema.parse(undefined)).toBe("all");
   });

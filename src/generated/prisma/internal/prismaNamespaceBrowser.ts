@@ -67,6 +67,8 @@ export const ModelName = {
   Loan: 'Loan',
   LoanDecisionEvaluation: 'LoanDecisionEvaluation',
   LoanDecisionReview: 'LoanDecisionReview',
+  LoanOriginationDecision: 'LoanOriginationDecision',
+  LoanOriginationOverride: 'LoanOriginationOverride',
   EmployerActionAttempt: 'EmployerActionAttempt',
   LedgerAccount: 'LedgerAccount',
   LedgerTransaction: 'LedgerTransaction',
@@ -417,6 +419,40 @@ export const LoanDecisionReviewScalarFieldEnum = {
 export type LoanDecisionReviewScalarFieldEnum = (typeof LoanDecisionReviewScalarFieldEnum)[keyof typeof LoanDecisionReviewScalarFieldEnum]
 
 
+export const LoanOriginationDecisionScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  loanId: 'loanId',
+  borrowerMembershipId: 'borrowerMembershipId',
+  idempotencyKey: 'idempotencyKey',
+  modelVersion: 'modelVersion',
+  status: 'status',
+  score: 'score',
+  reasonCodes: 'reasonCodes',
+  inputSnapshot: 'inputSnapshot',
+  affordabilitySnapshot: 'affordabilitySnapshot',
+  evaluatedAt: 'evaluatedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type LoanOriginationDecisionScalarFieldEnum = (typeof LoanOriginationDecisionScalarFieldEnum)[keyof typeof LoanOriginationDecisionScalarFieldEnum]
+
+
+export const LoanOriginationOverrideScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  decisionId: 'decisionId',
+  loanId: 'loanId',
+  reviewedByMembershipId: 'reviewedByMembershipId',
+  outcome: 'outcome',
+  rationale: 'rationale',
+  reviewedAt: 'reviewedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type LoanOriginationOverrideScalarFieldEnum = (typeof LoanOriginationOverrideScalarFieldEnum)[keyof typeof LoanOriginationOverrideScalarFieldEnum]
+
+
 export const EmployerActionAttemptScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
@@ -561,6 +597,12 @@ export const BlockchainReconciliationCursorScalarFieldEnum = {
   lastSuccessfulAt: 'lastSuccessfulAt',
   lastFailureAt: 'lastFailureAt',
   consecutiveFailures: 'consecutiveFailures',
+  alertState: 'alertState',
+  alertChangedAt: 'alertChangedAt',
+  alertDeliveryPending: 'alertDeliveryPending',
+  lastAlertAttemptAt: 'lastAlertAttemptAt',
+  lastAlertDeliveredAt: 'lastAlertDeliveredAt',
+  lastAlertFailedAt: 'lastAlertFailedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

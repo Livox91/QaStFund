@@ -25,6 +25,16 @@ export const erc20UsdcAbi = [
     inputs: [{ name: "account", type: "address" }],
     outputs: [{ name: "", type: "uint256" }],
   },
+  {
+    type: "event",
+    name: "Transfer",
+    anonymous: false,
+    inputs: [
+      { indexed: true, name: "from", type: "address" },
+      { indexed: true, name: "to", type: "address" },
+      { indexed: false, name: "value", type: "uint256" },
+    ],
+  },
 ] as const;
 
 export const employeeLendingEscrowAbi = [

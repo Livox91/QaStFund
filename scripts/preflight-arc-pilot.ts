@@ -435,13 +435,41 @@ await check("Pilot wallet native fee balances", () => {
     .join(", ");
 });
 
-await check("ERPNext disabled", () => {
-  if (process.env.ERP_NEXT_SYNC_ENABLED !== "false") {
+await check("ERPNext eligibility source", async () => {
+  const environment = validateEnvironment();
+  const enabledOrganizations = await prisma.organization.count({
+    where: { erpNextEnabled: true },
+  });
+  if (enabledOrganizations === 0) {
+    if (environment.ERP_NEXT_SYNC_ENABLED) {
+      throw new Error(
+        "ERPNext scheduling is enabled but no organization uses it",
+      );
+    }
+    return "DISABLED";
+  }
+  if (!environment.ERP_NEXT_SYNC_ENABLED) {
     throw new Error(
-      "ERP_NEXT_SYNC_ENABLED must be explicitly false for this pilot",
+      `ERPNext is required by ${enabledOrganizations} organization(s), but scheduled synchronization is disabled`,
     );
   }
-  return "DISABLED";
+  strongSecret("ERP_NEXT_SYNC_CRON_SECRET");
+  const staleBefore = new Date(
+    Date.now() - environment.ERP_NEXT_ELIGIBILITY_MAX_AGE_MINUTES * 60_000,
+  );
+  const healthyIntegrations = await prisma.employeeDirectoryIntegration.count({
+    where: {
+      organization: { erpNextEnabled: true },
+      lastSyncStatus: "SUCCESS",
+      lastSuccessfulSyncAt: { gte: staleBefore },
+    },
+  });
+  if (healthyIntegrations !== enabledOrganizations) {
+    throw new Error(
+      `complete, fresh ERPNext sync required for every enabled organization (${healthyIntegrations}/${enabledOrganizations} healthy)`,
+    );
+  }
+  return `${healthyIntegrations}/${enabledOrganizations} complete and fresh`;
 });
 
 await check("Rate-limit secret", () => {

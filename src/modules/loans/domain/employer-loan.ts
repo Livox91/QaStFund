@@ -1,4 +1,5 @@
 export const EmployerLoanFilter = {
+  REVIEW: "review",
   ACTIVE: "active",
   REPAID: "repaid",
   OVERDUE: "overdue",

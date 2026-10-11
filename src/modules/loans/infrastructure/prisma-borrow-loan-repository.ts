@@ -1,5 +1,7 @@
 import { MembershipRole } from "@/generated/prisma/enums";
 import { prisma } from "@/infrastructure/database/prisma";
+import { validateEnvironment } from "@/infrastructure/config/environment";
+import { evaluateEmployeeDirectoryEligibility } from "@/modules/employee-directory/domain/employee-eligibility";
 import type { BorrowLoanRepository } from "@/modules/loans/application/ports/borrow-loan-repository";
 import {
   ensureUserWallet,
@@ -151,6 +153,8 @@ export const prismaBorrowLoanRepository: BorrowLoanRepository = {
           id: true,
           isActive: true,
           employmentStatus: true,
+          employmentStatusSource: true,
+          employmentStatusSyncedAt: true,
           role: true,
           canBorrow: true,
           user: { select: { name: true } },
@@ -177,8 +181,21 @@ export const prismaBorrowLoanRepository: BorrowLoanRepository = {
           select: {
             isActive: true,
             employmentStatus: true,
+            employmentStatusSource: true,
+            employmentStatusSyncedAt: true,
             role: true,
             canBorrow: true,
+            organization: {
+              select: {
+                erpNextEnabled: true,
+                employeeDirectoryIntegration: {
+                  select: {
+                    lastSyncStatus: true,
+                    lastSuccessfulSyncAt: true,
+                  },
+                },
+              },
+            },
           },
         });
       if (
@@ -187,6 +204,20 @@ export const prismaBorrowLoanRepository: BorrowLoanRepository = {
         borrowerAccess.role !== MembershipRole.EMPLOYEE
       ) {
         return { kind: "OFFER_NOT_AVAILABLE" } as const;
+      }
+      const directoryEligibility = evaluateEmployeeDirectoryEligibility({
+        erpNextEnabled: borrowerAccess.organization.erpNextEnabled,
+        integration: borrowerAccess.organization.employeeDirectoryIntegration,
+        employee: borrowerAccess,
+        now,
+        maxAgeMs:
+          validateEnvironment().ERP_NEXT_ELIGIBILITY_MAX_AGE_MINUTES * 60_000,
+      });
+      if (!directoryEligibility.trusted) {
+        return {
+          kind: "POLICY_VIOLATION",
+          violation: "EMPLOYEE_CANNOT_BORROW",
+        } as const;
       }
 
       const existingLoan = await transaction.loan.findUnique({

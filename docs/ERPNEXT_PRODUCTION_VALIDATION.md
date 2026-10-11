@@ -2,7 +2,7 @@
 
 ## Current validation status
 
-The application-side integration is implemented and covered by automated tests. On 2026-10-05, the local `erpnext.localhost` site was available for version, resource-read, and least-privilege checks. A real email provider and complete P2P lifecycle configuration were not available, so the remaining acceptance checklist is still a production blocker. Do not represent the integration as production-ready until the evidence table is completed.
+The application-side integration is implemented and covered by automated tests. On 2026-10-11, HR corrected the missing trusted email and a credential-safe read-only check confirmed the source no longer has review records. The supported manual sync then completed successfully with all three records matched, zero reviews, and zero errors. SMTP authentication passed, and the two invitations that had failed during an earlier sync are persisted as sent and accepted. Scheduling remains disabled and no target-host environment or secret-store access was available in this workspace, so the remaining acceptance checklist is still a production blocker. Do not represent the integration as production-ready until the scheduler evidence is completed.
 
 Validated locally: ERPNext `17.x.x-develop` (`650da0d`) on Frappe `17.x.x-develop` (`4672706`). The dedicated `p2p.employee.reader@erpnext.local` identity with the `P2P Employee Reader` role returned `200` for an Employee read and `403` for Employee create, Employee delete, and Salary Slip read. Rotate its API secret before configuring P2P; the validation secret was deliberately not printed or retained outside ERPNext.
 
@@ -27,6 +27,7 @@ APP_URL="https://p2p.example.com"
 ERP_NEXT_CREDENTIAL_ENCRYPTION_KEY="base64-encoded-32-byte-key"
 ERP_NEXT_SYNC_ENABLED="true"
 ERP_NEXT_SYNC_INTERVAL_MINUTES="1440"
+ERP_NEXT_ELIGIBILITY_MAX_AGE_MINUTES="1500"
 ERP_NEXT_SYNC_STALE_AFTER_MINUTES="30"
 ERP_NEXT_SYNC_PAGE_SIZE="100"
 ERP_NEXT_SYNC_MAX_PAGES="100"
@@ -44,7 +45,15 @@ Inspect distinct status values returned by the live Employee records, then confi
 
 ## Scheduler
 
-Invoke `POST /api/internal/erpnext-sync` from one external scheduler at least as often as `ERP_NEXT_SYNC_INTERVAL_MINUTES`:
+Deploy the existing internal scheduler sidecar. It invokes
+`POST /api/internal/erpnext-sync` at
+`ERP_NEXT_SYNC_INTERVAL_MINUTES` with the dedicated bearer secret:
+
+```powershell
+docker compose -f compose.production.yaml --env-file deploy/.env.production up -d --build app reconciliation-scheduler
+```
+
+The following remains available as a manual recovery trigger:
 
 ```powershell
 Invoke-RestMethod -Method Post `
@@ -52,7 +61,13 @@ Invoke-RestMethod -Method Post `
   -Headers @{ Authorization = "Bearer $env:ERP_NEXT_SYNC_CRON_SECRET" }
 ```
 
-The endpoint uses constant-time bearer verification and IP rate limiting. It returns `401` for disabled/invalid authentication, `429` with `Retry-After` when rate-limited, or `200` with `considered`, `succeeded`, `partial`, `failed`, and `skipped` totals. Per-organization database locks reject overlap safely. Retry transient failures on the next schedule; permanent authentication, permission, configuration, and safety failures pause that organization's schedule until a successful manual retry.
+The endpoint uses constant-time bearer verification and IP rate limiting. It returns `401` for disabled/invalid authentication, `429` with `Retry-After` when rate-limited, or `200` with `considered`, `succeeded`, `partial`, `failed`, and `skipped` totals. The sidecar treats non-zero `partial` or `failed` totals as failed scheduled iterations and alerts after the configured threshold. Per-organization database locks reject overlap safely. Retry transient failures on the next schedule; permanent authentication, permission, configuration, and safety failures pause that organization's schedule until a successful manual retry.
+
+The repository intentionally does not contain `deploy/.env.production` and
+has no target-host control plane or secret-store credentials. An operator with
+deployment authority must create that file through the approved secret process,
+set both dedicated cron secrets, and run the Compose commands above. A local
+image build or rendered Compose file is not live scheduler evidence.
 
 ## Live acceptance evidence
 

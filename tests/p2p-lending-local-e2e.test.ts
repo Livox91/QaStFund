@@ -227,6 +227,11 @@ describe("local P2P lending lifecycle", () => {
             message: authorization,
           }),
         }),
+        evaluateOrigination: async () =>
+          ({
+            status: "APPROVAL_CONSIDERATION" as const,
+            override: { outcome: "APPROVED" },
+          }) as never,
       },
     );
     if (borrowIntent.state !== "PENDING") {
