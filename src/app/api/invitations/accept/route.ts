@@ -7,7 +7,10 @@ import { AUTH_SESSION_COOKIE } from "@/modules/auth/domain/session";
 import { setSessionCookie } from "@/modules/auth/infrastructure/session-cookie";
 import { passwordConfirmationSchema } from "@/modules/auth/schemas/password.schema";
 import { acceptInvitation } from "@/modules/employee-invitations/infrastructure/invitation-service";
-import { assertTrustedRequestOrigin } from "@/shared/api/request-origin";
+import {
+  assertTrustedRequestOrigin,
+  getApplicationUrl,
+} from "@/shared/api/request-origin";
 
 const schema = passwordConfirmationSchema.extend({
   token: z.string().min(32).max(256),
@@ -28,7 +31,7 @@ export async function POST(request: NextRequest) {
       email: data.email,
       password: data.password,
     });
-    const response = NextResponse.redirect(new URL("/app", request.url), 303);
+    const response = NextResponse.redirect(getApplicationUrl("/app"), 303);
     response.cookies.delete(AUTH_SESSION_COOKIE);
     setSessionCookie(
       response,
@@ -38,7 +41,7 @@ export async function POST(request: NextRequest) {
     return response;
   } catch {
     return NextResponse.redirect(
-      new URL("/sign-in?error=invitation_failed", request.url),
+      getApplicationUrl("/sign-in?error=invitation_failed"),
       303,
     );
   }

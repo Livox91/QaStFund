@@ -9,7 +9,10 @@ import {
 } from "@/infrastructure/rate-limit/rate-limit";
 import { requestPasswordReset } from "@/modules/employee-invitations/infrastructure/invitation-service";
 import { emailSender } from "@/modules/notifications/infrastructure/http-email-sender";
-import { assertTrustedRequestOrigin } from "@/shared/api/request-origin";
+import {
+  assertTrustedRequestOrigin,
+  getApplicationUrl,
+} from "@/shared/api/request-origin";
 
 export async function POST(request: NextRequest) {
   try {
@@ -35,7 +38,7 @@ export async function POST(request: NextRequest) {
     /* Always return the same response to prevent enumeration. */
   }
   return NextResponse.redirect(
-    new URL("/forgot-password?sent=1", request.url),
+    getApplicationUrl("/forgot-password?sent=1"),
     303,
   );
 }

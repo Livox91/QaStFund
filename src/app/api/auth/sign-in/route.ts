@@ -14,14 +14,17 @@ import {
   signOutSession,
 } from "@/modules/auth/infrastructure/auth-service";
 import { signInSchema } from "@/modules/auth/schemas/sign-in.schema";
-import { assertTrustedRequestOrigin } from "@/shared/api/request-origin";
+import {
+  assertTrustedRequestOrigin,
+  getApplicationUrl,
+} from "@/shared/api/request-origin";
 import { apiError } from "@/shared/api/responses";
 import { RateLimitExceededError } from "@/shared/errors/rate-limit-error";
 
 export const runtime = "nodejs";
 
-function signInRedirect(request: Request, error?: string): URL {
-  const url = new URL("/sign-in", request.url);
+function signInRedirect(error?: string): URL {
+  const url = getApplicationUrl("/sign-in");
 
   if (error) {
     url.searchParams.set("error", error);
@@ -42,10 +45,7 @@ export async function POST(request: NextRequest): Promise<Response> {
     });
 
     if (!parsedInput.success) {
-      return NextResponse.redirect(
-        signInRedirect(request, "invalid_input"),
-        303,
-      );
+      return NextResponse.redirect(signInRedirect("invalid_input"), 303);
     }
 
     await enforceLoginAccountRateLimit(parsedInput.data.email);
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest): Promise<Response> {
 
     const authentication = await signInWithPassword(parsedInput.data);
     const response = NextResponse.redirect(
-      new URL(getRoleHome(authentication.actor.role), request.url),
+      getApplicationUrl(getRoleHome(authentication.actor.role)),
       303,
     );
 
@@ -75,16 +75,10 @@ export async function POST(request: NextRequest): Promise<Response> {
       return apiError(error);
     }
     if (error instanceof InvalidCredentialsError) {
-      return NextResponse.redirect(
-        signInRedirect(request, "invalid_credentials"),
-        303,
-      );
+      return NextResponse.redirect(signInRedirect("invalid_credentials"), 303);
     }
 
     logger.error("Sign-in failed", error);
-    return NextResponse.redirect(
-      signInRedirect(request, "sign_in_failed"),
-      303,
-    );
+    return NextResponse.redirect(signInRedirect("sign_in_failed"), 303);
   }
 }

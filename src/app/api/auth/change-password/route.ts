@@ -6,7 +6,10 @@ import { getCurrentActor } from "@/modules/auth/infrastructure/auth-guard";
 import { AUTH_SESSION_COOKIE } from "@/modules/auth/domain/session";
 import { securePasswordSchema } from "@/modules/auth/schemas/password.schema";
 import { changePassword } from "@/modules/employee-invitations/infrastructure/invitation-service";
-import { assertTrustedRequestOrigin } from "@/shared/api/request-origin";
+import {
+  assertTrustedRequestOrigin,
+  getApplicationUrl,
+} from "@/shared/api/request-origin";
 
 const schema = z
   .object({
@@ -31,12 +34,12 @@ export async function POST(request: NextRequest) {
       currentSessionToken: request.cookies.get(AUTH_SESSION_COOKIE)?.value,
     });
     return NextResponse.redirect(
-      new URL("/profile?password=changed", request.url),
+      getApplicationUrl("/profile?password=changed"),
       303,
     );
   } catch {
     return NextResponse.redirect(
-      new URL("/profile?password=failed", request.url),
+      getApplicationUrl("/profile?password=failed"),
       303,
     );
   }

@@ -1,8 +1,17 @@
 import { describe, expect, it } from "vitest";
 
-import { assertTrustedRequestOrigin } from "@/shared/api/request-origin";
+import {
+  assertTrustedRequestOrigin,
+  getApplicationUrl,
+} from "@/shared/api/request-origin";
 
 describe("sensitive mutation request origins", () => {
+  it("builds redirects from the configured public application URL", () => {
+    expect(getApplicationUrl("/employer").origin).toBe(
+      new URL(process.env.APP_URL!).origin,
+    );
+  });
+
   it("accepts the configured application origin", () => {
     const appUrl = process.env.APP_URL!;
 

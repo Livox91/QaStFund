@@ -5,7 +5,10 @@ import { logger } from "@/infrastructure/logging/logger";
 import { AUTH_SESSION_COOKIE } from "@/modules/auth/domain/session";
 import { signOutSession } from "@/modules/auth/infrastructure/auth-service";
 import { apiError } from "@/shared/api/responses";
-import { assertTrustedRequestOrigin } from "@/shared/api/request-origin";
+import {
+  assertTrustedRequestOrigin,
+  getApplicationUrl,
+} from "@/shared/api/request-origin";
 import { ApplicationError } from "@/shared/errors/application-error";
 
 export const runtime = "nodejs";
@@ -30,7 +33,7 @@ export async function POST(request: NextRequest): Promise<Response> {
     );
   }
 
-  const response = NextResponse.redirect(new URL("/sign-in", request.url), 303);
+  const response = NextResponse.redirect(getApplicationUrl("/sign-in"), 303);
   response.cookies.set(AUTH_SESSION_COOKIE, "", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
