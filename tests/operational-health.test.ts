@@ -88,6 +88,27 @@ describe("operational health", () => {
     });
   });
 
+  it("treats a canonical event conflict as unhealthy even when the cursor is fresh", () => {
+    const result = evaluateReconciliationHealth({
+      enabled: true,
+      cursor: {
+        nextBlock: 121n,
+        finalizedThrough: 120n,
+        updatedAt: new Date("2026-10-04T11:59:30.000Z"),
+        lastSuccessfulAt: new Date("2026-10-04T11:59:30.000Z"),
+      },
+      latestObservedBlock: "120",
+      lastSuccessfulAt: null,
+      failureCount: 0,
+      unmatchedEvents: 0,
+      conflictingEvents: 1,
+      staleAfterMs: 15 * 60_000,
+      now: new Date("2026-10-04T12:00:00.000Z"),
+    });
+    expect(result.status).toBe("unhealthy");
+    expect(result.conflictingEvents).toBe(1);
+  });
+
   it("distinguishes ERPNext connectivity from complete, fresh synchronization", () => {
     const report = buildDependencyHealth({
       now: new Date("2026-10-11T12:00:00.000Z"),
@@ -107,6 +128,10 @@ describe("operational health", () => {
         connectedIntegrations: 1,
         incompleteIntegrations: 1,
         staleIntegrations: 1,
+        unresolvedEmployeeRecords: 3,
+        lastAttemptedAt: new Date("2026-10-11T11:00:00.000Z"),
+        lastSuccessfulAt: new Date("2026-10-10T11:00:00.000Z"),
+        lastResult: "PARTIAL",
       },
       pendingTransactionCount: 0,
       metrics: {},
@@ -119,7 +144,71 @@ describe("operational health", () => {
       connectedIntegrations: 1,
       incompleteIntegrations: 1,
       staleIntegrations: 1,
+      unresolvedEmployeeRecords: 3,
+      lastAttemptedAt: "2026-10-11T11:00:00.000Z",
+      lastSuccessfulAt: "2026-10-10T11:00:00.000Z",
+      lastResult: "PARTIAL",
     });
+  });
+
+  it("reports transaction phases, overdue repayments, missed jobs, and alert delivery failures", () => {
+    const report = buildDependencyHealth({
+      now: new Date("2026-10-12T12:03:01.000Z"),
+      reconciliationEnabled: false,
+      reconciliationStaleAfterMs: 60_000,
+      reconciliationState: null,
+      latestObservedBlock: null,
+      failures: {},
+      arc: { status: "healthy", contractConfigured: true },
+      circleConfigured: true,
+      erpEnabled: false,
+      erpState: null,
+      transactionState: {
+        pendingSubmission: 2,
+        pendingConfirmation: 3,
+        pendingReconciliation: 4,
+        ambiguousOutcomes: 1,
+        failedOperations: 0,
+        failedRepayments: 0,
+        overdueRepayments: 5,
+      },
+      operationalJobs: [
+        {
+          jobKey: "arc-reconciliation",
+          subsystem: "reconciliation",
+          intervalSeconds: 60,
+          lastAttemptedAt: new Date("2026-10-12T12:00:00.000Z"),
+          lastSucceededAt: new Date("2026-10-12T12:00:00.000Z"),
+          lastFailedAt: null,
+          nextExpectedAt: new Date("2026-10-12T12:01:00.000Z"),
+          consecutiveFailures: 0,
+          lastSafeErrorCode: null,
+        },
+      ],
+      schedulerGraceMs: 120_000,
+      incidentDeliveryState: {
+        activeIncidents: 2,
+        pendingDeliveries: 1,
+        failedDeliveries: 1,
+      },
+      metrics: {},
+      timers: {},
+    });
+
+    expect(report.status).toBe("degraded");
+    expect(report.metrics.pendingTransactionCount).toBe(9);
+    expect(report.transactions).toMatchObject({
+      pendingSubmission: 2,
+      pendingConfirmation: 3,
+      pendingReconciliation: 4,
+      ambiguousOutcomes: 1,
+    });
+    expect(report.repayments.overdue).toBe(5);
+    expect(report.jobs[0]).toMatchObject({
+      status: "unhealthy",
+      missed: true,
+    });
+    expect(report.incidents?.failedDeliveries).toBe(1);
   });
 
   it("alerts only when repeated failures reach the threshold", () => {

@@ -165,6 +165,24 @@ const environmentSchema = z
       .min(1)
       .max(100_000)
       .default(10),
+    OBSERVABILITY_TRANSACTION_STALE_AFTER_MINUTES: z.coerce
+      .number()
+      .int()
+      .min(1)
+      .max(10_080)
+      .default(15),
+    OBSERVABILITY_SCHEDULER_GRACE_SECONDS: z.coerce
+      .number()
+      .int()
+      .min(10)
+      .max(86_400)
+      .default(120),
+    OBSERVABILITY_ALERT_RETRY_MINUTES: z.coerce
+      .number()
+      .int()
+      .min(1)
+      .max(1440)
+      .default(5),
     ARC_RECONCILIATION_CRON_SECRET: z.preprocess(
       (value) => (value === "" ? undefined : value),
       z.string().min(32).optional(),
@@ -407,6 +425,9 @@ export function parseEnvironment(
     ARC_RECONCILIATION_INTERVAL_SECONDS?: NodeJS.ProcessEnv[string];
     OBSERVABILITY_FAILURE_ALERT_THRESHOLD?: NodeJS.ProcessEnv[string];
     OBSERVABILITY_UNMATCHED_EVENT_ALERT_THRESHOLD?: NodeJS.ProcessEnv[string];
+    OBSERVABILITY_TRANSACTION_STALE_AFTER_MINUTES?: NodeJS.ProcessEnv[string];
+    OBSERVABILITY_SCHEDULER_GRACE_SECONDS?: NodeJS.ProcessEnv[string];
+    OBSERVABILITY_ALERT_RETRY_MINUTES?: NodeJS.ProcessEnv[string];
     ARC_RECONCILIATION_CRON_SECRET?: NodeJS.ProcessEnv[string];
     OPERATIONAL_ALERT_WEBHOOK_URL?: NodeJS.ProcessEnv[string];
     OPERATIONAL_ALERT_WEBHOOK_BEARER_TOKEN?: NodeJS.ProcessEnv[string];

@@ -220,6 +220,22 @@ export const ReconciliationAlertState = {
 export type ReconciliationAlertState = (typeof ReconciliationAlertState)[keyof typeof ReconciliationAlertState]
 
 
+export const OperationalIncidentSeverity = {
+  WARNING: 'WARNING',
+  CRITICAL: 'CRITICAL'
+} as const
+
+export type OperationalIncidentSeverity = (typeof OperationalIncidentSeverity)[keyof typeof OperationalIncidentSeverity]
+
+
+export const OperationalIncidentStatus = {
+  ACTIVE: 'ACTIVE',
+  RECOVERED: 'RECOVERED'
+} as const
+
+export type OperationalIncidentStatus = (typeof OperationalIncidentStatus)[keyof typeof OperationalIncidentStatus]
+
+
 export const LoanDecisionClassification = {
   HEALTHY: 'HEALTHY',
   DUE_SOON: 'DUE_SOON',

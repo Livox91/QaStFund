@@ -158,6 +158,16 @@ enum ReconciliationAlertState {
   FAILING
 }
 
+enum OperationalIncidentSeverity {
+  WARNING
+  CRITICAL
+}
+
+enum OperationalIncidentStatus {
+  ACTIVE
+  RECOVERED
+}
+
 enum LoanDecisionClassification {
   HEALTHY
   DUE_SOON
@@ -302,6 +312,7 @@ model Organization {
   employeeDirectorySyncRuns    EmployeeDirectorySyncRun[]
   employeeInvitations          EmployeeInvitation[]
   passwordResetTokens          PasswordResetToken[]
+  operationalIncidents         OperationalIncident[]
 }
 
 model ArcWallet {
@@ -934,6 +945,52 @@ model BlockchainEvent {
   @@index([chainId, contractAddress, blockNumber])
   @@index([chainId, contractAddress, isFinalized, status, blockNumber])
   @@index([status, updatedAt])
+}
+
+model OperationalIncident {
+  id                    String                      @id @default(uuid()) @db.Uuid
+  deduplicationKey      String                      @unique @db.VarChar(180)
+  organizationId        String?                     @db.Uuid
+  subsystem             String                      @db.VarChar(64)
+  kind                  String                      @db.VarChar(96)
+  severity              OperationalIncidentSeverity
+  status                OperationalIncidentStatus   @default(ACTIVE)
+  safeReferenceId       String                      @db.VarChar(128)
+  summary               String                      @db.VarChar(240)
+  remediation           String                      @db.VarChar(500)
+  occurrenceCount       Int                         @default(1)
+  firstDetectedAt       DateTime
+  lastDetectedAt        DateTime
+  recoveredAt           DateTime?
+  deliveryPending       Boolean                     @default(true)
+  lastDeliveryAttemptAt DateTime?
+  lastDeliveredAt       DateTime?
+  lastDeliveryFailedAt  DateTime?
+  metadata              Json?
+  createdAt             DateTime                    @default(now())
+  updatedAt             DateTime                    @updatedAt
+  organization          Organization?               @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([status, severity, lastDetectedAt])
+  @@index([organizationId, safeReferenceId, lastDetectedAt])
+  @@index([deliveryPending, lastDeliveryFailedAt])
+}
+
+model OperationalJobHeartbeat {
+  jobKey              String    @id @db.VarChar(96)
+  subsystem           String    @db.VarChar(64)
+  intervalSeconds     Int
+  lastAttemptedAt     DateTime?
+  lastSucceededAt     DateTime?
+  lastFailedAt        DateTime?
+  nextExpectedAt      DateTime?
+  consecutiveFailures Int       @default(0)
+  lastSafeErrorCode   String?   @db.VarChar(64)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  @@index([nextExpectedAt])
+  @@index([subsystem, lastSucceededAt])
 }
 
 model RateLimitBucket {

@@ -4,6 +4,10 @@ export type ReconciliationAlertState = "HEALTHY" | "STALE" | "FAILING";
 
 export type ReconciliationAlertPayload = Readonly<{
   event: "ACTIVE" | "RECOVERED";
+  severity: "CRITICAL";
+  subsystem: "reconciliation";
+  referenceId: string;
+  remediation: string;
   state: ReconciliationAlertState;
   previousState: ReconciliationAlertState;
   occurredAt: string;
@@ -119,6 +123,11 @@ export async function transitionReconciliationAlert(input: {
         ? "RECOVERED"
         : "ACTIVE",
     state: input.targetState,
+    severity: "CRITICAL",
+    subsystem: "reconciliation",
+    referenceId: `arc:${input.chainId}:${input.contractAddress.toLowerCase()}`,
+    remediation:
+      "Inspect the persisted cursor, canonical receipts, and conflicting events; use bounded replay and never resubmit an ambiguous financial transaction.",
     previousState: prepared.previousState,
     occurredAt: now.toISOString(),
     chainId: input.chainId,

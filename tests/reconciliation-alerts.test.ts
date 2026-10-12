@@ -134,6 +134,10 @@ describe("reconciliation alert transitions", () => {
     });
     await sender({
       event: "ACTIVE",
+      severity: "CRITICAL",
+      subsystem: "reconciliation",
+      referenceId: "arc:5042002:escrow",
+      remediation: "Inspect the persisted cursor.",
       state: "STALE",
       previousState: "HEALTHY",
       occurredAt: "2026-10-11T12:00:00.000Z",

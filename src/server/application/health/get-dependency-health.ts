@@ -51,7 +51,12 @@ export function evaluateReconciliationHealth(input: ReconciliationHealthInput) {
         })
       : null;
   const stale = timeStale || (progress?.stale ?? false);
-  const status: DependencyStatus = stale ? "stale" : "healthy";
+  const status: DependencyStatus =
+    input.failureCount > 0 || input.conflictingEvents > 0
+      ? "unhealthy"
+      : stale
+        ? "stale"
+        : "healthy";
   return {
     status,
     enabled: true,

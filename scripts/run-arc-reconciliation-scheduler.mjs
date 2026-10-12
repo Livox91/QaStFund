@@ -77,12 +77,25 @@ async function deliverSchedulerAlert(
   fetchImplementation,
   alert = "arc_reconciliation_scheduler",
 ) {
+  const subsystem =
+    alert === "erpnext_scheduler" ? "erpnext" : "reconciliation";
+  const envelope = {
+    alert,
+    severity: "CRITICAL",
+    subsystem,
+    eventTime: new Date().toISOString(),
+    referenceId: alert,
+    remediation:
+      subsystem === "erpnext"
+        ? "Inspect the scheduler and safe ERPNext sync result, then retry one controlled synchronization."
+        : "Inspect the scheduler and persisted reconciliation cursor, then resume bounded catch-up.",
+    ...payload,
+  };
   if (!config.webhookUrl) {
     console.warn(
       JSON.stringify({
         message: "Operational alert triggered",
-        alert,
-        ...payload,
+        ...envelope,
       }),
     );
     return "LOG";
@@ -95,11 +108,7 @@ async function deliverSchedulerAlert(
         ? { Authorization: `Bearer ${config.webhookToken}` }
         : {}),
     },
-    body: JSON.stringify({
-      alert,
-      occurredAt: new Date().toISOString(),
-      ...payload,
-    }),
+    body: JSON.stringify(envelope),
     signal: AbortSignal.timeout(5_000),
   });
   if (!response.ok) {

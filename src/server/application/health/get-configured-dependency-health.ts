@@ -15,6 +15,9 @@ import {
   ARC_TESTNET_CHAIN_ID,
 } from "@/integrations/arc/arc-testnet";
 import { getConfiguredEscrowAddress } from "@/integrations/arc/employee-lending-escrow";
+import { evaluateOperationalIncidents } from "@/modules/operations/application/evaluate-operational-incidents";
+import { createOperationalIncidentSender } from "@/modules/operations/application/operational-incidents";
+import { prismaOperationalIncidentRepository } from "@/modules/operations/infrastructure/prisma-operational-incident-repository";
 import { buildDependencyHealth } from "@/server/application/health/build-dependency-health";
 
 export async function getConfiguredDependencyHealth() {
@@ -66,24 +69,37 @@ export async function getConfiguredDependencyHealth() {
     }
   }
 
-  const [reconciliationResult, erpResult, pendingResult] =
-    await Promise.allSettled([
-      contractAddress
-        ? prismaOperationalHealthRepository.getReconciliationState(
-            ARC_TESTNET_CHAIN_ID,
-            contractAddress,
-          )
-        : Promise.resolve(null),
-      environment.ERP_NEXT_SYNC_ENABLED
-        ? prismaOperationalHealthRepository.getErpNextState(
-            new Date(
-              now.getTime() -
-                environment.ERP_NEXT_ELIGIBILITY_MAX_AGE_MINUTES * 60_000,
-            ),
-          )
-        : Promise.resolve(null),
-      prismaOperationalHealthRepository.getPendingTransactionCount(),
-    ]);
+  const [
+    reconciliationResult,
+    erpResult,
+    transactionResult,
+    jobsResult,
+    incidentResult,
+  ] = await Promise.allSettled([
+    contractAddress
+      ? prismaOperationalHealthRepository.getReconciliationState(
+          ARC_TESTNET_CHAIN_ID,
+          contractAddress,
+        )
+      : Promise.resolve(null),
+    environment.ERP_NEXT_SYNC_ENABLED
+      ? prismaOperationalHealthRepository.getErpNextState(
+          new Date(
+            now.getTime() -
+              environment.ERP_NEXT_SYNC_STALE_AFTER_MINUTES * 60_000,
+          ),
+        )
+      : Promise.resolve(null),
+    prismaOperationalHealthRepository.getTransactionState({
+      now,
+      staleBefore: new Date(
+        now.getTime() -
+          environment.OBSERVABILITY_TRANSACTION_STALE_AFTER_MINUTES * 60_000,
+      ),
+    }),
+    prismaOperationalHealthRepository.getOperationalJobs(),
+    prismaOperationalHealthRepository.getIncidentDeliveryState(),
+  ]);
   const snapshot = getOperationalSnapshot();
   const reconciliationState =
     reconciliationResult.status === "fulfilled"
@@ -136,8 +152,32 @@ export async function getConfiguredDependencyHealth() {
     ),
     erpEnabled: environment.ERP_NEXT_SYNC_ENABLED,
     erpState: erpResult.status === "fulfilled" ? erpResult.value : null,
-    pendingTransactionCount:
-      pendingResult.status === "fulfilled" ? pendingResult.value : null,
+    transactionState:
+      transactionResult.status === "fulfilled" ? transactionResult.value : null,
+    operationalJobs: jobsResult.status === "fulfilled" ? jobsResult.value : [],
+    expectedJobs: [
+      ...(environment.ARC_RECONCILIATION_ENABLED
+        ? [
+            {
+              jobKey: "arc-reconciliation",
+              subsystem: "reconciliation",
+              intervalSeconds: environment.ARC_RECONCILIATION_INTERVAL_SECONDS,
+            },
+          ]
+        : []),
+      ...(environment.ERP_NEXT_SYNC_ENABLED
+        ? [
+            {
+              jobKey: "erpnext-sync",
+              subsystem: "erpnext",
+              intervalSeconds: environment.ERP_NEXT_SYNC_INTERVAL_MINUTES * 60,
+            },
+          ]
+        : []),
+    ],
+    schedulerGraceMs: environment.OBSERVABILITY_SCHEDULER_GRACE_SECONDS * 1_000,
+    incidentDeliveryState:
+      incidentResult.status === "fulfilled" ? incidentResult.value : null,
     metrics: snapshot.counters,
     timers: snapshot.timers,
   });
@@ -158,5 +198,18 @@ export async function getConfiguredDependencyHealth() {
   } else if (report.dependencies.reconciliation.status === "healthy") {
     recordOperationalSuccess("reconciliation", now);
   }
+  await evaluateOperationalIncidents({
+    report,
+    failureThreshold: environment.OBSERVABILITY_FAILURE_ALERT_THRESHOLD,
+    unmatchedEventThreshold:
+      environment.OBSERVABILITY_UNMATCHED_EVENT_ALERT_THRESHOLD,
+    retryAfterMs: environment.OBSERVABILITY_ALERT_RETRY_MINUTES * 60_000,
+    now,
+    repository: prismaOperationalIncidentRepository,
+    sender: createOperationalIncidentSender({
+      webhookUrl: environment.OPERATIONAL_ALERT_WEBHOOK_URL,
+      bearerToken: environment.OPERATIONAL_ALERT_WEBHOOK_BEARER_TOKEN,
+    }),
+  });
   return report;
 }

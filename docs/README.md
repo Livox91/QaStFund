@@ -5,7 +5,7 @@ Finance that moves with you.
 
 A production-oriented foundation for an employee peer-to-peer lending application. Local authentication, organization membership, employer reporting, employee dashboards, lending offers, marketplace discovery, Arc Testnet escrow funding and borrowing, full on-chain repayment, loan monitoring, and read-only ERPNext employee synchronization are implemented. Payroll writes and production settlement are intentionally not implemented.
 
-Operations documentation: [database backup and disaster recovery](./DATABASE_BACKUP_AND_DISASTER_RECOVERY.md), [operational health](./OPERATIONAL_HEALTH.md), and the [employee onboarding and lending experience](./EMPLOYEE_ONBOARDING_AND_LENDING.md).
+Operations documentation: [database backup and disaster recovery](./DATABASE_BACKUP_AND_DISASTER_RECOVERY.md), [operational health](./OPERATIONAL_HEALTH.md), [operations and incident recovery](./OPERATIONS_AND_INCIDENT_RECOVERY.md), and the [employee onboarding and lending experience](./EMPLOYEE_ONBOARDING_AND_LENDING.md).
 
 The versioned scoring policy, audited data sources, mandatory gates, and API
 boundaries are documented in the [explainable loan decision engine v1](./LOAN_DECISION_ENGINE_V1.md).
@@ -61,6 +61,7 @@ Open:
 - `http://localhost:3000/api/health/live` — process liveness
 - `http://localhost:3000/api/health/ready` — configuration and database readiness
 - `http://localhost:3000/api/health/dependencies` — sanitized dependency and worker health
+- `http://localhost:3000/api/employer/operations/loans/[loanId]` — employer-admin operational evidence trace
 
 Verify the health endpoint from another terminal:
 

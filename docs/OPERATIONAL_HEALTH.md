@@ -5,6 +5,7 @@ The application exposes three uncached, read-only health checks:
 - `GET /api/health/live` only confirms that the process can answer HTTP.
 - `GET /api/health/ready` (and compatibility route `GET /api/health`) validates required configuration and PostgreSQL connectivity. A failed check returns `503`.
 - `GET /api/health/dependencies` reports sanitized Arc RPC/contract, Circle configuration, optional ERPNext state, reconciliation progress, pending transaction count, and the lightweight metric snapshot. Optional dependency failures degrade this report but do not fail readiness.
+- `GET /api/employer/operations/loans/{loanId}` provides an employer-admin-only, organization-scoped, redacted evidence trace for incident investigation.
 
 Responses contain statuses, timestamps, counters, block numbers, and safe configuration booleans. They never include URLs, credentials, tokens, signatures, private keys, or raw provider errors. Operators should restrict dependency-health routes at the ingress if their deployment does not permit public operational metadata.
 
@@ -30,6 +31,14 @@ success/failure time, failure streak, active alert state, alert transition time,
 delivery-pending flag, and delivery timestamps. Other counters and timers are
 intentionally process-local. In a multi-instance deployment, aggregate
 structured logs externally and treat the metric snapshot as instance-scoped.
+
+PostgreSQL also persists generic operational incidents and job heartbeats.
+Incidents deduplicate across restarts, retain delivery failures, and produce one
+recovery transition. The dependency report separates transaction submission,
+confirmation, and reconciliation phases; reports overdue loans using the stored
+single-payment due date; and marks missed scheduler windows using the configured
+grace period. See `OPERATIONS_AND_INCIDENT_RECOVERY.md` for definitions and
+recovery procedures.
 
 ## Operational signals
 

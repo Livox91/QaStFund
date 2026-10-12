@@ -79,6 +79,8 @@ export const ModelName = {
   Session: 'Session',
   BlockchainReconciliationCursor: 'BlockchainReconciliationCursor',
   BlockchainEvent: 'BlockchainEvent',
+  OperationalIncident: 'OperationalIncident',
+  OperationalJobHeartbeat: 'OperationalJobHeartbeat',
   RateLimitBucket: 'RateLimitBucket'
 } as const
 
@@ -635,6 +637,50 @@ export const BlockchainEventScalarFieldEnum = {
 } as const
 
 export type BlockchainEventScalarFieldEnum = (typeof BlockchainEventScalarFieldEnum)[keyof typeof BlockchainEventScalarFieldEnum]
+
+
+export const OperationalIncidentScalarFieldEnum = {
+  id: 'id',
+  deduplicationKey: 'deduplicationKey',
+  organizationId: 'organizationId',
+  subsystem: 'subsystem',
+  kind: 'kind',
+  severity: 'severity',
+  status: 'status',
+  safeReferenceId: 'safeReferenceId',
+  summary: 'summary',
+  remediation: 'remediation',
+  occurrenceCount: 'occurrenceCount',
+  firstDetectedAt: 'firstDetectedAt',
+  lastDetectedAt: 'lastDetectedAt',
+  recoveredAt: 'recoveredAt',
+  deliveryPending: 'deliveryPending',
+  lastDeliveryAttemptAt: 'lastDeliveryAttemptAt',
+  lastDeliveredAt: 'lastDeliveredAt',
+  lastDeliveryFailedAt: 'lastDeliveryFailedAt',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OperationalIncidentScalarFieldEnum = (typeof OperationalIncidentScalarFieldEnum)[keyof typeof OperationalIncidentScalarFieldEnum]
+
+
+export const OperationalJobHeartbeatScalarFieldEnum = {
+  jobKey: 'jobKey',
+  subsystem: 'subsystem',
+  intervalSeconds: 'intervalSeconds',
+  lastAttemptedAt: 'lastAttemptedAt',
+  lastSucceededAt: 'lastSucceededAt',
+  lastFailedAt: 'lastFailedAt',
+  nextExpectedAt: 'nextExpectedAt',
+  consecutiveFailures: 'consecutiveFailures',
+  lastSafeErrorCode: 'lastSafeErrorCode',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OperationalJobHeartbeatScalarFieldEnum = (typeof OperationalJobHeartbeatScalarFieldEnum)[keyof typeof OperationalJobHeartbeatScalarFieldEnum]
 
 
 export const RateLimitBucketScalarFieldEnum = {

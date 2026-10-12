@@ -425,6 +425,8 @@ export const ModelName = {
   Session: 'Session',
   BlockchainReconciliationCursor: 'BlockchainReconciliationCursor',
   BlockchainEvent: 'BlockchainEvent',
+  OperationalIncident: 'OperationalIncident',
+  OperationalJobHeartbeat: 'OperationalJobHeartbeat',
   RateLimitBucket: 'RateLimitBucket'
 } as const
 
@@ -441,7 +443,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "organization" | "arcWallet" | "arcWalletChallenge" | "organizationMembership" | "employeeInvitation" | "passwordResetToken" | "employeeDirectoryIntegration" | "employeeDirectoryCredentialSecret" | "employeeDirectoryMapping" | "employeeDirectorySyncRun" | "lendingOffer" | "employeeBalance" | "loan" | "loanDecisionEvaluation" | "loanDecisionReview" | "loanOriginationDecision" | "loanOriginationOverride" | "employerActionAttempt" | "ledgerAccount" | "ledgerTransaction" | "ledgerEntry" | "loanRepayment" | "auditEvent" | "organizationLendingPolicy" | "session" | "blockchainReconciliationCursor" | "blockchainEvent" | "rateLimitBucket"
+    modelProps: "user" | "organization" | "arcWallet" | "arcWalletChallenge" | "organizationMembership" | "employeeInvitation" | "passwordResetToken" | "employeeDirectoryIntegration" | "employeeDirectoryCredentialSecret" | "employeeDirectoryMapping" | "employeeDirectorySyncRun" | "lendingOffer" | "employeeBalance" | "loan" | "loanDecisionEvaluation" | "loanDecisionReview" | "loanOriginationDecision" | "loanOriginationOverride" | "employerActionAttempt" | "ledgerAccount" | "ledgerTransaction" | "ledgerEntry" | "loanRepayment" | "auditEvent" | "organizationLendingPolicy" | "session" | "blockchainReconciliationCursor" | "blockchainEvent" | "operationalIncident" | "operationalJobHeartbeat" | "rateLimitBucket"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2517,6 +2519,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    OperationalIncident: {
+      payload: Prisma.$OperationalIncidentPayload<ExtArgs>
+      fields: Prisma.OperationalIncidentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.OperationalIncidentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperationalIncidentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.OperationalIncidentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperationalIncidentPayload>
+        }
+        findFirst: {
+          args: Prisma.OperationalIncidentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperationalIncidentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.OperationalIncidentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperationalIncidentPayload>
+        }
+        findMany: {
+          args: Prisma.OperationalIncidentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperationalIncidentPayload>[]
+        }
+        create: {
+          args: Prisma.OperationalIncidentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperationalIncidentPayload>
+        }
+        createMany: {
+          args: Prisma.OperationalIncidentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.OperationalIncidentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperationalIncidentPayload>[]
+        }
+        delete: {
+          args: Prisma.OperationalIncidentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperationalIncidentPayload>
+        }
+        update: {
+          args: Prisma.OperationalIncidentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperationalIncidentPayload>
+        }
+        deleteMany: {
+          args: Prisma.OperationalIncidentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.OperationalIncidentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.OperationalIncidentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperationalIncidentPayload>[]
+        }
+        upsert: {
+          args: Prisma.OperationalIncidentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperationalIncidentPayload>
+        }
+        aggregate: {
+          args: Prisma.OperationalIncidentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOperationalIncident>
+        }
+        groupBy: {
+          args: Prisma.OperationalIncidentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OperationalIncidentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.OperationalIncidentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OperationalIncidentCountAggregateOutputType> | number
+        }
+      }
+    }
+    OperationalJobHeartbeat: {
+      payload: Prisma.$OperationalJobHeartbeatPayload<ExtArgs>
+      fields: Prisma.OperationalJobHeartbeatFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.OperationalJobHeartbeatFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperationalJobHeartbeatPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.OperationalJobHeartbeatFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperationalJobHeartbeatPayload>
+        }
+        findFirst: {
+          args: Prisma.OperationalJobHeartbeatFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperationalJobHeartbeatPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.OperationalJobHeartbeatFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperationalJobHeartbeatPayload>
+        }
+        findMany: {
+          args: Prisma.OperationalJobHeartbeatFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperationalJobHeartbeatPayload>[]
+        }
+        create: {
+          args: Prisma.OperationalJobHeartbeatCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperationalJobHeartbeatPayload>
+        }
+        createMany: {
+          args: Prisma.OperationalJobHeartbeatCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.OperationalJobHeartbeatCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperationalJobHeartbeatPayload>[]
+        }
+        delete: {
+          args: Prisma.OperationalJobHeartbeatDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperationalJobHeartbeatPayload>
+        }
+        update: {
+          args: Prisma.OperationalJobHeartbeatUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperationalJobHeartbeatPayload>
+        }
+        deleteMany: {
+          args: Prisma.OperationalJobHeartbeatDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.OperationalJobHeartbeatUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.OperationalJobHeartbeatUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperationalJobHeartbeatPayload>[]
+        }
+        upsert: {
+          args: Prisma.OperationalJobHeartbeatUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperationalJobHeartbeatPayload>
+        }
+        aggregate: {
+          args: Prisma.OperationalJobHeartbeatAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOperationalJobHeartbeat>
+        }
+        groupBy: {
+          args: Prisma.OperationalJobHeartbeatGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OperationalJobHeartbeatGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.OperationalJobHeartbeatCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OperationalJobHeartbeatCountAggregateOutputType> | number
+        }
+      }
+    }
     RateLimitBucket: {
       payload: Prisma.$RateLimitBucketPayload<ExtArgs>
       fields: Prisma.RateLimitBucketFieldRefs
@@ -3169,6 +3319,50 @@ export const BlockchainEventScalarFieldEnum = {
 export type BlockchainEventScalarFieldEnum = (typeof BlockchainEventScalarFieldEnum)[keyof typeof BlockchainEventScalarFieldEnum]
 
 
+export const OperationalIncidentScalarFieldEnum = {
+  id: 'id',
+  deduplicationKey: 'deduplicationKey',
+  organizationId: 'organizationId',
+  subsystem: 'subsystem',
+  kind: 'kind',
+  severity: 'severity',
+  status: 'status',
+  safeReferenceId: 'safeReferenceId',
+  summary: 'summary',
+  remediation: 'remediation',
+  occurrenceCount: 'occurrenceCount',
+  firstDetectedAt: 'firstDetectedAt',
+  lastDetectedAt: 'lastDetectedAt',
+  recoveredAt: 'recoveredAt',
+  deliveryPending: 'deliveryPending',
+  lastDeliveryAttemptAt: 'lastDeliveryAttemptAt',
+  lastDeliveredAt: 'lastDeliveredAt',
+  lastDeliveryFailedAt: 'lastDeliveryFailedAt',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OperationalIncidentScalarFieldEnum = (typeof OperationalIncidentScalarFieldEnum)[keyof typeof OperationalIncidentScalarFieldEnum]
+
+
+export const OperationalJobHeartbeatScalarFieldEnum = {
+  jobKey: 'jobKey',
+  subsystem: 'subsystem',
+  intervalSeconds: 'intervalSeconds',
+  lastAttemptedAt: 'lastAttemptedAt',
+  lastSucceededAt: 'lastSucceededAt',
+  lastFailedAt: 'lastFailedAt',
+  nextExpectedAt: 'nextExpectedAt',
+  consecutiveFailures: 'consecutiveFailures',
+  lastSafeErrorCode: 'lastSafeErrorCode',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OperationalJobHeartbeatScalarFieldEnum = (typeof OperationalJobHeartbeatScalarFieldEnum)[keyof typeof OperationalJobHeartbeatScalarFieldEnum]
+
+
 export const RateLimitBucketScalarFieldEnum = {
   id: 'id',
   identityHash: 'identityHash',
@@ -3241,28 +3435,28 @@ export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof Json
  * Reference to a field of type 'String'
  */
 export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>
-    
+
 
 
 /**
  * Reference to a field of type 'String[]'
  */
 export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
-    
+
 
 
 /**
  * Reference to a field of type 'DateTime'
  */
 export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
-    
+
 
 
 /**
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
-    
+
 
 
 /**
@@ -3833,6 +4027,34 @@ export type ListEnumBlockchainEventStatusFieldRefInput<$PrismaModel> = FieldRefI
 
 
 /**
+ * Reference to a field of type 'OperationalIncidentSeverity'
+ */
+export type EnumOperationalIncidentSeverityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OperationalIncidentSeverity'>
+
+
+
+/**
+ * Reference to a field of type 'OperationalIncidentSeverity[]'
+ */
+export type ListEnumOperationalIncidentSeverityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OperationalIncidentSeverity[]'>
+
+
+
+/**
+ * Reference to a field of type 'OperationalIncidentStatus'
+ */
+export type EnumOperationalIncidentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OperationalIncidentStatus'>
+
+
+
+/**
+ * Reference to a field of type 'OperationalIncidentStatus[]'
+ */
+export type ListEnumOperationalIncidentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OperationalIncidentStatus[]'>
+
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -4024,6 +4246,8 @@ export type GlobalOmitConfig = {
   session?: Prisma.SessionOmit
   blockchainReconciliationCursor?: Prisma.BlockchainReconciliationCursorOmit
   blockchainEvent?: Prisma.BlockchainEventOmit
+  operationalIncident?: Prisma.OperationalIncidentOmit
+  operationalJobHeartbeat?: Prisma.OperationalJobHeartbeatOmit
   rateLimitBucket?: Prisma.RateLimitBucketOmit
 }
 

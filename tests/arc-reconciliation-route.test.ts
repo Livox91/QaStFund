@@ -15,6 +15,13 @@ vi.mock("@/infrastructure/logging/logger", () => ({
 vi.mock("@/modules/blockchain-reconciliation/index.server", () => ({
   runScheduledArcReconciliation: mocks.runScheduledArcReconciliation,
 }));
+vi.mock("@/modules/operations/application/monitored-job", () => ({
+  runMonitoredJob: vi.fn(async (input) => input.run()),
+}));
+vi.mock(
+  "@/modules/operations/infrastructure/prisma-operational-job-repository",
+  () => ({ prismaOperationalJobRepository: {} }),
+);
 
 import { POST } from "@/app/api/internal/arc-reconciliation/route";
 
@@ -24,6 +31,7 @@ describe("authenticated Arc reconciliation route", () => {
     mocks.validateEnvironment.mockReturnValue({
       ARC_RECONCILIATION_ENABLED: true,
       ARC_RECONCILIATION_CRON_SECRET: "s".repeat(32),
+      ARC_RECONCILIATION_INTERVAL_SECONDS: 60,
     });
   });
 
