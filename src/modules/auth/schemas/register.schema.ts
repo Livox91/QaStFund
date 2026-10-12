@@ -21,9 +21,21 @@ export type RegisterInput = z.infer<typeof registerSchema>;
 
 export const employerSignupSchema = z
   .object({
-    organizationName: z.string().trim().min(2).max(120),
-    name: z.string().trim().min(2).max(100),
-    email: z.string().trim().toLowerCase().pipe(z.email()),
+    organizationName: z
+      .string()
+      .trim()
+      .min(2, "Organization name must be at least 2 characters.")
+      .max(120, "Organization name must be no more than 120 characters."),
+    name: z
+      .string()
+      .trim()
+      .min(2, "Administrator name must be at least 2 characters.")
+      .max(100, "Administrator name must be no more than 100 characters."),
+    email: z
+      .string()
+      .trim()
+      .toLowerCase()
+      .pipe(z.email("Enter a valid work email address.")),
     password: securePasswordSchema,
     confirmPassword: z.string(),
   })
@@ -32,3 +44,5 @@ export const employerSignupSchema = z
     path: ["confirmPassword"],
     message: "Passwords do not match.",
   });
+
+export type EmployerSignupInput = z.infer<typeof employerSignupSchema>;

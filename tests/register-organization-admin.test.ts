@@ -10,6 +10,7 @@ import {
   employerSignupSchema,
   registerSchema,
 } from "@/modules/auth/schemas/register.schema";
+import { validateEmployerSignup } from "@/modules/auth/ui/employer-signup-validation";
 
 const input = {
   name: "Acme Admin",
@@ -87,6 +88,48 @@ describe("organization registration", () => {
         organizationId: "foreign-org",
       }).success,
     ).toBe(false);
+  });
+
+  it("returns actionable field errors before a signup request is sent", () => {
+    const validation = validateEmployerSignup({
+      organizationName: " ",
+      name: "A",
+      email: "not-an-email",
+      password: "alllowercase",
+      confirmPassword: "different",
+    });
+
+    expect(validation).toEqual({
+      success: false,
+      errors: {
+        organizationName: "Organization name must be at least 2 characters.",
+        name: "Administrator name must be at least 2 characters.",
+        email: "Enter a valid work email address.",
+        password: "Password must include an uppercase letter.",
+        confirmPassword: "Passwords do not match.",
+      },
+    });
+  });
+
+  it("normalizes valid public signup values for the API request", () => {
+    const validation = validateEmployerSignup({
+      organizationName: "  Acme Corp  ",
+      name: "  Acme Admin  ",
+      email: "  ADMIN@ACME.TEST  ",
+      password: input.password,
+      confirmPassword: input.password,
+    });
+
+    expect(validation).toEqual({
+      success: true,
+      data: {
+        organizationName: "Acme Corp",
+        name: "Acme Admin",
+        email: "admin@acme.test",
+        password: input.password,
+        confirmPassword: input.password,
+      },
+    });
   });
 
   it("hashes the password and atomically requests an admin membership session", async () => {
