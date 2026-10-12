@@ -1,12 +1,19 @@
 name: Deploy Production to EC2
 
 on:
-  push:
+  workflow_run:
+    workflows:
+      - CI
+    types:
+      - completed
     branches:
-      - master # Ensure this matches your default branch (main or master)
+      - master
 
 jobs:
   deploy:
+    if: >-
+      ${{ github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -19,16 +26,19 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            set -euo pipefail
             cd ~/app
 
-            # 1. Pull the latest code from the repository
-            git pull origin master
+            # 1. Update to the revision that passed CI
+            git fetch origin master
+            git checkout master
+            git merge --ff-only ${{ github.event.workflow_run.head_sha }}
 
             # 2. Start the database first so it is ready for migrations
             docker compose -f compose.production.yaml --env-file deploy/.env.production up -d database
 
-            # 3. Run the Prisma migrations using the tools profile
-            docker compose -f compose.production.yaml --env-file deploy/.env.production --profile tools run --rm migrate
+            # 3. Build the migrator from this revision, then apply its migrations
+            docker compose -f compose.production.yaml --env-file deploy/.env.production --profile tools run --rm --build migrate
 
             # 4. Build and start the Next.js app, scheduler, and Caddy reverse proxy
             docker compose -f compose.production.yaml --env-file deploy/.env.production up -d --build
