@@ -72,7 +72,7 @@ export function EmployerLoanList({
                 key={filter.value}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "rounded-lg px-3.5 py-2 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600",
+                  "focus-visible:outline-accent rounded-lg px-3.5 py-2 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2",
                   active
                     ? "bg-slate-950 !text-white shadow-sm"
                     : "text-slate-500 hover:bg-slate-50 hover:text-slate-950",
@@ -119,7 +119,7 @@ export function EmployerLoanList({
                   <TableCell className="font-semibold text-slate-950">
                     <Link
                       aria-label={`View loan for ${loan.borrowerName}`}
-                      className="after:absolute after:inset-0 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600"
+                      className="focus-visible:outline-accent after:absolute after:inset-0 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2"
                       href={`/employer/loans/${loan.id}`}
                     >
                       {loan.borrowerName}

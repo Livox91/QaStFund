@@ -12,16 +12,16 @@ export const metadata: Metadata = {
 
 export default function EmployerSignupPage() {
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-10 sm:px-6">
+    <main className="bg-canvas min-h-screen px-4 py-10 sm:px-6">
       <div className="mx-auto max-w-2xl">
         <div className="mb-8 flex items-center justify-between gap-4">
-          <ProductBrand />
-          <Link className="text-sm font-semibold text-teal-700" href="/sign-in">
+          <ProductBrand subtitle="Finance that moves with you." />
+          <Link className="text-brand text-sm font-semibold" href="/sign-in">
             Already have an account? Sign in
           </Link>
         </div>
-        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/50 sm:p-10">
-          <p className="text-sm font-semibold tracking-wide text-teal-700 uppercase">
+        <section className="border-brand-border/60 bg-surface rounded-3xl border p-6 shadow-xl shadow-slate-200/50 sm:p-10">
+          <p className="text-brand text-sm font-semibold tracking-wide uppercase">
             Employer onboarding
           </p>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">

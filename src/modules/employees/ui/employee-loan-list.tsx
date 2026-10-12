@@ -112,7 +112,7 @@ export function EmployeeLoanList({
             </div>
             <div>
               <dt className="text-xs text-slate-400">Remaining</dt>
-              <dd className="mt-1 text-sm font-semibold text-teal-700">
+              <dd className="text-brand mt-1 text-sm font-semibold">
                 <CurrencyDisplay
                   amountMinorUnits={loan.remainingAgreedAmountMinorUnits}
                   currency={loan.currency}

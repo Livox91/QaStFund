@@ -1,3 +1,8 @@
+import {
+  APPLICATION_NAME,
+  APPLICATION_TAGLINE,
+} from "@/shared/constants/application";
+
 export function invitationEmail(input: {
   appUrl: string;
   token: string;
@@ -15,9 +20,9 @@ export function invitationEmail(input: {
   });
   return {
     to: input.email,
-    subject: `Join ${input.organizationName}'s P2P Lending platform`,
-    text: `You've been invited to ${input.organizationName}'s P2P Lending platform.\n\nAccept invitation: ${link}\n\nThis invitation was issued to ${input.email}.\nIt expires ${expiration}.`,
-    html: `<p>You've been invited to <strong>${escapeHtml(input.organizationName)}</strong>'s P2P Lending platform.</p><p>Your organization has enabled secure employee borrowing and lending.</p><p><a href="${link}">Accept invitation</a></p><p>This invitation was issued to ${escapeHtml(input.email)}.</p><p>Invitation expires: ${expiration}</p>`,
+    subject: `Join ${input.organizationName} on ${APPLICATION_NAME}`,
+    text: `You've been invited to ${input.organizationName} on ${APPLICATION_NAME}.\n\n${APPLICATION_TAGLINE}\n\nAccept invitation: ${link}\n\nThis invitation was issued to ${input.email}.\nIt expires ${expiration}.`,
+    html: `<p>You've been invited to <strong>${escapeHtml(input.organizationName)}</strong> on <strong>${APPLICATION_NAME}</strong>.</p><p>Your organization has enabled secure employee borrowing and peer-to-peer funding.</p><p><a href="${link}">Accept invitation</a></p><p><em>${APPLICATION_TAGLINE}</em></p><p>This invitation was issued to ${escapeHtml(input.email)}.</p><p>Invitation expires: ${expiration}</p>`,
   };
 }
 

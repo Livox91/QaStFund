@@ -39,6 +39,7 @@ export type LoanRepaymentMinAggregateOutputType = {
   organizationId: string | null
   loanId: string | null
   repaymentRequestId: string | null
+  submissionTransactionHash: string | null
   amountMinorUnits: bigint | null
   currency: string | null
   status: $Enums.RepaymentStatus | null
@@ -52,6 +53,7 @@ export type LoanRepaymentMaxAggregateOutputType = {
   organizationId: string | null
   loanId: string | null
   repaymentRequestId: string | null
+  submissionTransactionHash: string | null
   amountMinorUnits: bigint | null
   currency: string | null
   status: $Enums.RepaymentStatus | null
@@ -65,6 +67,7 @@ export type LoanRepaymentCountAggregateOutputType = {
   organizationId: number
   loanId: number
   repaymentRequestId: number
+  submissionTransactionHash: number
   amountMinorUnits: number
   currency: number
   status: number
@@ -88,6 +91,7 @@ export type LoanRepaymentMinAggregateInputType = {
   organizationId?: true
   loanId?: true
   repaymentRequestId?: true
+  submissionTransactionHash?: true
   amountMinorUnits?: true
   currency?: true
   status?: true
@@ -101,6 +105,7 @@ export type LoanRepaymentMaxAggregateInputType = {
   organizationId?: true
   loanId?: true
   repaymentRequestId?: true
+  submissionTransactionHash?: true
   amountMinorUnits?: true
   currency?: true
   status?: true
@@ -114,6 +119,7 @@ export type LoanRepaymentCountAggregateInputType = {
   organizationId?: true
   loanId?: true
   repaymentRequestId?: true
+  submissionTransactionHash?: true
   amountMinorUnits?: true
   currency?: true
   status?: true
@@ -214,6 +220,7 @@ export type LoanRepaymentGroupByOutputType = {
   organizationId: string
   loanId: string
   repaymentRequestId: string | null
+  submissionTransactionHash: string | null
   amountMinorUnits: bigint
   currency: string
   status: $Enums.RepaymentStatus
@@ -250,6 +257,7 @@ export type LoanRepaymentWhereInput = {
   organizationId?: Prisma.UuidFilter<"LoanRepayment"> | string
   loanId?: Prisma.UuidFilter<"LoanRepayment"> | string
   repaymentRequestId?: Prisma.UuidNullableFilter<"LoanRepayment"> | string | null
+  submissionTransactionHash?: Prisma.StringNullableFilter<"LoanRepayment"> | string | null
   amountMinorUnits?: Prisma.BigIntFilter<"LoanRepayment"> | bigint | number
   currency?: Prisma.StringFilter<"LoanRepayment"> | string
   status?: Prisma.EnumRepaymentStatusFilter<"LoanRepayment"> | $Enums.RepaymentStatus
@@ -266,6 +274,7 @@ export type LoanRepaymentOrderByWithRelationInput = {
   organizationId?: Prisma.SortOrder
   loanId?: Prisma.SortOrder
   repaymentRequestId?: Prisma.SortOrderInput | Prisma.SortOrder
+  submissionTransactionHash?: Prisma.SortOrderInput | Prisma.SortOrder
   amountMinorUnits?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -280,6 +289,7 @@ export type LoanRepaymentOrderByWithRelationInput = {
 export type LoanRepaymentWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   repaymentRequestId?: string
+  submissionTransactionHash?: string
   organizationId_id?: Prisma.LoanRepaymentOrganizationIdIdCompoundUniqueInput
   AND?: Prisma.LoanRepaymentWhereInput | Prisma.LoanRepaymentWhereInput[]
   OR?: Prisma.LoanRepaymentWhereInput[]
@@ -295,13 +305,14 @@ export type LoanRepaymentWhereUniqueInput = Prisma.AtLeast<{
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   loan?: Prisma.XOR<Prisma.LoanScalarRelationFilter, Prisma.LoanWhereInput>
   auditEvents?: Prisma.AuditEventListRelationFilter
-}, "id" | "repaymentRequestId" | "organizationId_id">
+}, "id" | "repaymentRequestId" | "submissionTransactionHash" | "organizationId_id">
 
 export type LoanRepaymentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   loanId?: Prisma.SortOrder
   repaymentRequestId?: Prisma.SortOrderInput | Prisma.SortOrder
+  submissionTransactionHash?: Prisma.SortOrderInput | Prisma.SortOrder
   amountMinorUnits?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -323,6 +334,7 @@ export type LoanRepaymentScalarWhereWithAggregatesInput = {
   organizationId?: Prisma.UuidWithAggregatesFilter<"LoanRepayment"> | string
   loanId?: Prisma.UuidWithAggregatesFilter<"LoanRepayment"> | string
   repaymentRequestId?: Prisma.UuidNullableWithAggregatesFilter<"LoanRepayment"> | string | null
+  submissionTransactionHash?: Prisma.StringNullableWithAggregatesFilter<"LoanRepayment"> | string | null
   amountMinorUnits?: Prisma.BigIntWithAggregatesFilter<"LoanRepayment"> | bigint | number
   currency?: Prisma.StringWithAggregatesFilter<"LoanRepayment"> | string
   status?: Prisma.EnumRepaymentStatusWithAggregatesFilter<"LoanRepayment"> | $Enums.RepaymentStatus
@@ -334,6 +346,7 @@ export type LoanRepaymentScalarWhereWithAggregatesInput = {
 export type LoanRepaymentCreateInput = {
   id?: string
   repaymentRequestId?: string | null
+  submissionTransactionHash?: string | null
   amountMinorUnits: bigint | number
   currency: string
   status?: $Enums.RepaymentStatus
@@ -350,6 +363,7 @@ export type LoanRepaymentUncheckedCreateInput = {
   organizationId: string
   loanId: string
   repaymentRequestId?: string | null
+  submissionTransactionHash?: string | null
   amountMinorUnits: bigint | number
   currency: string
   status?: $Enums.RepaymentStatus
@@ -362,6 +376,7 @@ export type LoanRepaymentUncheckedCreateInput = {
 export type LoanRepaymentUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   repaymentRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submissionTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumRepaymentStatusFieldUpdateOperationsInput | $Enums.RepaymentStatus
@@ -378,6 +393,7 @@ export type LoanRepaymentUncheckedUpdateInput = {
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   loanId?: Prisma.StringFieldUpdateOperationsInput | string
   repaymentRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submissionTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumRepaymentStatusFieldUpdateOperationsInput | $Enums.RepaymentStatus
@@ -392,6 +408,7 @@ export type LoanRepaymentCreateManyInput = {
   organizationId: string
   loanId: string
   repaymentRequestId?: string | null
+  submissionTransactionHash?: string | null
   amountMinorUnits: bigint | number
   currency: string
   status?: $Enums.RepaymentStatus
@@ -403,6 +420,7 @@ export type LoanRepaymentCreateManyInput = {
 export type LoanRepaymentUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   repaymentRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submissionTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumRepaymentStatusFieldUpdateOperationsInput | $Enums.RepaymentStatus
@@ -416,6 +434,7 @@ export type LoanRepaymentUncheckedUpdateManyInput = {
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   loanId?: Prisma.StringFieldUpdateOperationsInput | string
   repaymentRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submissionTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumRepaymentStatusFieldUpdateOperationsInput | $Enums.RepaymentStatus
@@ -444,6 +463,7 @@ export type LoanRepaymentCountOrderByAggregateInput = {
   organizationId?: Prisma.SortOrder
   loanId?: Prisma.SortOrder
   repaymentRequestId?: Prisma.SortOrder
+  submissionTransactionHash?: Prisma.SortOrder
   amountMinorUnits?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -461,6 +481,7 @@ export type LoanRepaymentMaxOrderByAggregateInput = {
   organizationId?: Prisma.SortOrder
   loanId?: Prisma.SortOrder
   repaymentRequestId?: Prisma.SortOrder
+  submissionTransactionHash?: Prisma.SortOrder
   amountMinorUnits?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -474,6 +495,7 @@ export type LoanRepaymentMinOrderByAggregateInput = {
   organizationId?: Prisma.SortOrder
   loanId?: Prisma.SortOrder
   repaymentRequestId?: Prisma.SortOrder
+  submissionTransactionHash?: Prisma.SortOrder
   amountMinorUnits?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -598,6 +620,7 @@ export type LoanRepaymentUpdateOneWithoutAuditEventsNestedInput = {
 export type LoanRepaymentCreateWithoutOrganizationInput = {
   id?: string
   repaymentRequestId?: string | null
+  submissionTransactionHash?: string | null
   amountMinorUnits: bigint | number
   currency: string
   status?: $Enums.RepaymentStatus
@@ -612,6 +635,7 @@ export type LoanRepaymentUncheckedCreateWithoutOrganizationInput = {
   id?: string
   loanId: string
   repaymentRequestId?: string | null
+  submissionTransactionHash?: string | null
   amountMinorUnits: bigint | number
   currency: string
   status?: $Enums.RepaymentStatus
@@ -655,6 +679,7 @@ export type LoanRepaymentScalarWhereInput = {
   organizationId?: Prisma.UuidFilter<"LoanRepayment"> | string
   loanId?: Prisma.UuidFilter<"LoanRepayment"> | string
   repaymentRequestId?: Prisma.UuidNullableFilter<"LoanRepayment"> | string | null
+  submissionTransactionHash?: Prisma.StringNullableFilter<"LoanRepayment"> | string | null
   amountMinorUnits?: Prisma.BigIntFilter<"LoanRepayment"> | bigint | number
   currency?: Prisma.StringFilter<"LoanRepayment"> | string
   status?: Prisma.EnumRepaymentStatusFilter<"LoanRepayment"> | $Enums.RepaymentStatus
@@ -666,6 +691,7 @@ export type LoanRepaymentScalarWhereInput = {
 export type LoanRepaymentCreateWithoutLoanInput = {
   id?: string
   repaymentRequestId?: string | null
+  submissionTransactionHash?: string | null
   amountMinorUnits: bigint | number
   currency: string
   status?: $Enums.RepaymentStatus
@@ -679,6 +705,7 @@ export type LoanRepaymentCreateWithoutLoanInput = {
 export type LoanRepaymentUncheckedCreateWithoutLoanInput = {
   id?: string
   repaymentRequestId?: string | null
+  submissionTransactionHash?: string | null
   amountMinorUnits: bigint | number
   currency: string
   status?: $Enums.RepaymentStatus
@@ -717,6 +744,7 @@ export type LoanRepaymentUpdateManyWithWhereWithoutLoanInput = {
 export type LoanRepaymentCreateWithoutAuditEventsInput = {
   id?: string
   repaymentRequestId?: string | null
+  submissionTransactionHash?: string | null
   amountMinorUnits: bigint | number
   currency: string
   status?: $Enums.RepaymentStatus
@@ -732,6 +760,7 @@ export type LoanRepaymentUncheckedCreateWithoutAuditEventsInput = {
   organizationId: string
   loanId: string
   repaymentRequestId?: string | null
+  submissionTransactionHash?: string | null
   amountMinorUnits: bigint | number
   currency: string
   status?: $Enums.RepaymentStatus
@@ -759,6 +788,7 @@ export type LoanRepaymentUpdateToOneWithWhereWithoutAuditEventsInput = {
 export type LoanRepaymentUpdateWithoutAuditEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   repaymentRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submissionTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumRepaymentStatusFieldUpdateOperationsInput | $Enums.RepaymentStatus
@@ -774,6 +804,7 @@ export type LoanRepaymentUncheckedUpdateWithoutAuditEventsInput = {
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   loanId?: Prisma.StringFieldUpdateOperationsInput | string
   repaymentRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submissionTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumRepaymentStatusFieldUpdateOperationsInput | $Enums.RepaymentStatus
@@ -786,6 +817,7 @@ export type LoanRepaymentCreateManyOrganizationInput = {
   id?: string
   loanId: string
   repaymentRequestId?: string | null
+  submissionTransactionHash?: string | null
   amountMinorUnits: bigint | number
   currency: string
   status?: $Enums.RepaymentStatus
@@ -797,6 +829,7 @@ export type LoanRepaymentCreateManyOrganizationInput = {
 export type LoanRepaymentUpdateWithoutOrganizationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   repaymentRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submissionTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumRepaymentStatusFieldUpdateOperationsInput | $Enums.RepaymentStatus
@@ -811,6 +844,7 @@ export type LoanRepaymentUncheckedUpdateWithoutOrganizationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   loanId?: Prisma.StringFieldUpdateOperationsInput | string
   repaymentRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submissionTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumRepaymentStatusFieldUpdateOperationsInput | $Enums.RepaymentStatus
@@ -824,6 +858,7 @@ export type LoanRepaymentUncheckedUpdateManyWithoutOrganizationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   loanId?: Prisma.StringFieldUpdateOperationsInput | string
   repaymentRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submissionTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumRepaymentStatusFieldUpdateOperationsInput | $Enums.RepaymentStatus
@@ -835,6 +870,7 @@ export type LoanRepaymentUncheckedUpdateManyWithoutOrganizationInput = {
 export type LoanRepaymentCreateManyLoanInput = {
   id?: string
   repaymentRequestId?: string | null
+  submissionTransactionHash?: string | null
   amountMinorUnits: bigint | number
   currency: string
   status?: $Enums.RepaymentStatus
@@ -846,6 +882,7 @@ export type LoanRepaymentCreateManyLoanInput = {
 export type LoanRepaymentUpdateWithoutLoanInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   repaymentRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submissionTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumRepaymentStatusFieldUpdateOperationsInput | $Enums.RepaymentStatus
@@ -859,6 +896,7 @@ export type LoanRepaymentUpdateWithoutLoanInput = {
 export type LoanRepaymentUncheckedUpdateWithoutLoanInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   repaymentRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submissionTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumRepaymentStatusFieldUpdateOperationsInput | $Enums.RepaymentStatus
@@ -871,6 +909,7 @@ export type LoanRepaymentUncheckedUpdateWithoutLoanInput = {
 export type LoanRepaymentUncheckedUpdateManyWithoutLoanInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   repaymentRequestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submissionTransactionHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumRepaymentStatusFieldUpdateOperationsInput | $Enums.RepaymentStatus
@@ -915,6 +954,7 @@ export type LoanRepaymentSelect<ExtArgs extends runtime.Types.Extensions.Interna
   organizationId?: boolean
   loanId?: boolean
   repaymentRequestId?: boolean
+  submissionTransactionHash?: boolean
   amountMinorUnits?: boolean
   currency?: boolean
   status?: boolean
@@ -932,6 +972,7 @@ export type LoanRepaymentSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   organizationId?: boolean
   loanId?: boolean
   repaymentRequestId?: boolean
+  submissionTransactionHash?: boolean
   amountMinorUnits?: boolean
   currency?: boolean
   status?: boolean
@@ -947,6 +988,7 @@ export type LoanRepaymentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   organizationId?: boolean
   loanId?: boolean
   repaymentRequestId?: boolean
+  submissionTransactionHash?: boolean
   amountMinorUnits?: boolean
   currency?: boolean
   status?: boolean
@@ -962,6 +1004,7 @@ export type LoanRepaymentSelectScalar = {
   organizationId?: boolean
   loanId?: boolean
   repaymentRequestId?: boolean
+  submissionTransactionHash?: boolean
   amountMinorUnits?: boolean
   currency?: boolean
   status?: boolean
@@ -970,7 +1013,7 @@ export type LoanRepaymentSelectScalar = {
   createdAt?: boolean
 }
 
-export type LoanRepaymentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "loanId" | "repaymentRequestId" | "amountMinorUnits" | "currency" | "status" | "paidAt" | "completedAt" | "createdAt", ExtArgs["result"]["loanRepayment"]>
+export type LoanRepaymentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "loanId" | "repaymentRequestId" | "submissionTransactionHash" | "amountMinorUnits" | "currency" | "status" | "paidAt" | "completedAt" | "createdAt", ExtArgs["result"]["loanRepayment"]>
 export type LoanRepaymentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   loan?: boolean | Prisma.LoanDefaultArgs<ExtArgs>
@@ -998,6 +1041,7 @@ export type $LoanRepaymentPayload<ExtArgs extends runtime.Types.Extensions.Inter
     organizationId: string
     loanId: string
     repaymentRequestId: string | null
+    submissionTransactionHash: string | null
     amountMinorUnits: bigint
     currency: string
     status: $Enums.RepaymentStatus
@@ -1434,6 +1478,7 @@ export interface LoanRepaymentFieldRefs {
   readonly organizationId: Prisma.FieldRef<"LoanRepayment", 'String'>
   readonly loanId: Prisma.FieldRef<"LoanRepayment", 'String'>
   readonly repaymentRequestId: Prisma.FieldRef<"LoanRepayment", 'String'>
+  readonly submissionTransactionHash: Prisma.FieldRef<"LoanRepayment", 'String'>
   readonly amountMinorUnits: Prisma.FieldRef<"LoanRepayment", 'BigInt'>
   readonly currency: Prisma.FieldRef<"LoanRepayment", 'String'>
   readonly status: Prisma.FieldRef<"LoanRepayment", 'RepaymentStatus'>

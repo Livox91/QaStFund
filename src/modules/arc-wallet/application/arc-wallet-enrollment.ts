@@ -9,6 +9,7 @@ import {
   ArcWalletOwnershipError,
 } from "@/modules/arc-wallet/application/errors";
 import type { ArcWalletRepository } from "@/modules/arc-wallet/application/ports/arc-wallet-repository";
+import { APPLICATION_NAME } from "@/shared/constants/application";
 
 const CHALLENGE_TTL_MS = 5 * 60 * 1_000;
 
@@ -23,8 +24,24 @@ export function buildArcWalletChallengeMessage(input: {
   nonce: string;
   expiresAt: Date;
 }): string {
+  return buildArcWalletChallengeMessageWithHeading(
+    `${APPLICATION_NAME} Arc Wallet Verification`,
+    input,
+  );
+}
+
+function buildArcWalletChallengeMessageWithHeading(
+  heading: string,
+  input: {
+    organizationId: string;
+    userId: string;
+    address: `0x${string}`;
+    nonce: string;
+    expiresAt: Date;
+  },
+): string {
   return [
-    "Employee Lending Arc Wallet Verification",
+    heading,
     `Organization: ${input.organizationId}`,
     `User: ${input.userId}`,
     `Address: ${input.address}`,
@@ -114,13 +131,33 @@ export async function completeArcWalletChallenge(
     nonce: input.nonce,
     expiresAt: challenge.expiresAt,
   });
-  if (
-    !(await dependencies.verifySignature({
-      address,
-      message,
-      signature: input.signature as Hex,
-    }))
-  ) {
+  const signatureInput = {
+    address,
+    signature: input.signature as Hex,
+  };
+  const verified = await dependencies.verifySignature({
+    ...signatureInput,
+    message,
+  });
+  // Challenges live for only five minutes, but accept the previous heading
+  // during that window so a deployment does not strand an in-flight wallet
+  // verification signature.
+  const legacyVerified =
+    !verified &&
+    (await dependencies.verifySignature({
+      ...signatureInput,
+      message: buildArcWalletChallengeMessageWithHeading(
+        "Employee Lending Arc Wallet Verification",
+        {
+          organizationId: employee.organizationId,
+          userId: employee.userId,
+          address,
+          nonce: input.nonce,
+          expiresAt: challenge.expiresAt,
+        },
+      ),
+    }));
+  if (!verified && !legacyVerified) {
     throw new ArcWalletOwnershipError();
   }
   return dependencies.repository.activateFromChallenge({

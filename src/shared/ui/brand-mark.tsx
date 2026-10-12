@@ -4,18 +4,25 @@ import { cn } from "@/shared/utils/class-names";
 
 export function BrandMark({ className }: { className?: string }) {
   return (
-    <span
+    <svg
       aria-hidden="true"
       className={cn(
-        "relative flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-slate-950 shadow-sm",
+        "size-9 shrink-0 overflow-visible drop-shadow-sm",
         className,
       )}
+      fill="none"
+      viewBox="0 0 40 40"
     >
-      <span className="absolute -top-2 -right-2 size-6 rounded-full bg-teal-400" />
-      <span className="relative text-sm font-bold tracking-tight !text-white">
-        EL
-      </span>
-    </span>
+      <rect width="40" height="40" rx="12" fill="#0D302B" />
+      <circle cx="19" cy="18" r="8.5" stroke="#F5F5EF" strokeWidth="4" />
+      <path
+        d="m24.8 24.3 7 7"
+        stroke="#10B981"
+        strokeLinecap="round"
+        strokeWidth="4"
+      />
+      <circle cx="19" cy="18" r="2.25" fill="#10B981" />
+    </svg>
   );
 }
 
@@ -36,7 +43,7 @@ export function ProductBrand({
       <BrandMark />
       <span className="min-w-0">
         <span className="block truncate text-sm font-bold tracking-tight text-slate-950">
-          Employee Lending
+          QastFund
         </span>
         {subtitle ? (
           <span className="mt-0.5 block text-xs text-slate-500">

@@ -559,6 +559,7 @@ model LendingOffer {
   auditEvents                 AuditEvent[]
 
   @@unique([organizationId, id])
+  @@unique([contractAddress, chainOfferId])
   @@index([organizationId, status])
   @@index([organizationId, fundingStatus, status])
   @@index([organizationId, status, expiresAt])
@@ -803,19 +804,20 @@ model LedgerEntry {
 }
 
 model LoanRepayment {
-  id                 String          @id @default(uuid()) @db.Uuid
-  organizationId     String          @db.Uuid
-  loanId             String          @db.Uuid
-  repaymentRequestId String?         @unique @db.Uuid
-  amountMinorUnits   BigInt
-  currency           String          @db.VarChar(3)
-  status             RepaymentStatus @default(COMPLETED)
-  paidAt             DateTime
-  completedAt        DateTime?
-  createdAt          DateTime        @default(now())
-  organization       Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  loan               Loan            @relation(fields: [organizationId, loanId], references: [organizationId, id], onDelete: Restrict)
-  auditEvents        AuditEvent[]
+  id                        String          @id @default(uuid()) @db.Uuid
+  organizationId            String          @db.Uuid
+  loanId                    String          @db.Uuid
+  repaymentRequestId        String?         @unique @db.Uuid
+  submissionTransactionHash String?         @unique @db.VarChar(66)
+  amountMinorUnits          BigInt
+  currency                  String          @db.VarChar(3)
+  status                    RepaymentStatus @default(COMPLETED)
+  paidAt                    DateTime
+  completedAt               DateTime?
+  createdAt                 DateTime        @default(now())
+  organization              Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  loan                      Loan            @relation(fields: [organizationId, loanId], references: [organizationId, id], onDelete: Restrict)
+  auditEvents               AuditEvent[]
 
   @@unique([organizationId, id])
   @@index([organizationId, loanId, paidAt])

@@ -36,7 +36,7 @@ const steps: ReadonlyArray<{
 export function HowItWorks() {
   return (
     <section
-      className="border-y border-slate-200 bg-slate-50 py-20 sm:py-24"
+      className="border-brand-border/60 bg-canvas border-y py-20 sm:py-24"
       id="how-it-works"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -58,7 +58,7 @@ export function HowItWorks() {
               className="relative rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
             >
               <div className="relative z-10 flex items-center justify-between md:block">
-                <span className="flex size-14 items-center justify-center rounded-2xl bg-slate-950 !text-white shadow-sm md:mx-auto">
+                <span className="bg-brand flex size-14 items-center justify-center rounded-2xl !text-white shadow-sm md:mx-auto">
                   <LandingIcon className="size-6" name={step.icon} />
                 </span>
                 <span className="text-xs font-bold text-slate-400 md:mt-5 md:block md:text-center">

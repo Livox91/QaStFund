@@ -31,7 +31,7 @@ export function RepaymentProgress({
         role="progressbar"
       >
         <div
-          className="h-full rounded-full bg-teal-500"
+          className="bg-accent h-full rounded-full"
           style={{ width: `${percentage}%` }}
         />
       </div>

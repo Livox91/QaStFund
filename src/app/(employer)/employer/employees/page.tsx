@@ -54,7 +54,7 @@ export default async function EmployerEmployeesPage() {
               </p>
             </div>
             <Link
-              className="text-sm font-semibold text-teal-700 underline-offset-4 hover:underline"
+              className="text-brand text-sm font-semibold underline-offset-4 hover:underline"
               href="/employer/integrations#review-unmatched"
             >
               Review and resolve

@@ -7,6 +7,7 @@ import { getCurrentActor } from "@/modules/auth/infrastructure/auth-guard";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent } from "@/shared/ui/card";
 import { Field, Input } from "@/shared/ui/input";
+import { BrandMark } from "@/shared/ui/brand-mark";
 
 export const metadata: Metadata = {
   title: "Sign in",
@@ -33,25 +34,22 @@ export default async function SignInPage({
   const errorCode = typeof error === "string" ? error : undefined;
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-50 px-4 py-16 sm:px-6">
+    <main className="bg-canvas relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-16 sm:px-6">
       <div
         aria-hidden="true"
-        className="absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-teal-50 to-transparent"
+        className="from-brand-soft absolute inset-x-0 top-0 h-72 bg-gradient-to-b to-transparent"
       />
       <Card className="relative w-full max-w-md shadow-xl shadow-slate-200/60">
         <CardContent className="p-7 sm:p-9">
           <div className="mb-8">
-            <div className="mb-6 flex size-11 items-center justify-center rounded-xl bg-slate-950 text-sm font-bold !text-white shadow-sm">
-              EL
-            </div>
-            <p className="text-sm font-semibold text-teal-700">
-              Employee Lending Platform
-            </p>
+            <BrandMark className="mb-6 size-11" />
+            <p className="text-brand text-sm font-semibold">QastFund</p>
             <h1 className="mt-1 text-3xl font-semibold tracking-tight text-slate-950">
               Welcome back
             </h1>
             <p className="mt-2 text-sm leading-6 text-slate-500">
-              Sign in with your organization account to continue.
+              Finance that moves with you. Sign in with your organization
+              account to continue.
             </p>
           </div>
 
@@ -92,7 +90,7 @@ export default async function SignInPage({
           </form>
           <div className="mt-4 text-center">
             <Link
-              className="text-sm font-medium text-teal-700 hover:text-teal-800"
+              className="text-brand hover:text-brand text-sm font-medium"
               href="/forgot-password"
             >
               Forgot password?
@@ -101,7 +99,7 @@ export default async function SignInPage({
               ·
             </span>
             <Link
-              className="text-sm font-medium text-teal-700 hover:text-teal-800"
+              className="text-brand hover:text-brand text-sm font-medium"
               href="/wallet-access"
             >
               Access existing wallet

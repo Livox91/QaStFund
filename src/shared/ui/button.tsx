@@ -4,13 +4,13 @@ import { cn } from "@/shared/utils/class-names";
 
 const variantStyles = {
   primary:
-    "bg-slate-950 !text-white shadow-sm hover:bg-slate-800 focus-visible:outline-slate-950",
+    "bg-brand !text-white shadow-sm hover:bg-brand-hover focus-visible:outline-brand",
   secondary:
-    "bg-teal-600 !text-white shadow-sm hover:bg-teal-700 focus-visible:outline-teal-600",
+    "bg-accent !text-white shadow-sm hover:bg-accent-hover focus-visible:outline-accent",
   outline:
     "border border-slate-300 bg-white text-slate-700 shadow-sm hover:border-slate-400 hover:bg-slate-50 focus-visible:outline-slate-600",
   ghost:
-    "text-slate-600 hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-slate-600",
+    "text-slate-600 hover:bg-brand-soft hover:text-brand focus-visible:outline-brand",
   danger:
     "bg-rose-600 !text-white shadow-sm hover:bg-rose-700 focus-visible:outline-rose-600",
 } as const;

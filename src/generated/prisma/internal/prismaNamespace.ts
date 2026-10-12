@@ -3053,6 +3053,7 @@ export const LoanRepaymentScalarFieldEnum = {
   organizationId: 'organizationId',
   loanId: 'loanId',
   repaymentRequestId: 'repaymentRequestId',
+  submissionTransactionHash: 'submissionTransactionHash',
   amountMinorUnits: 'amountMinorUnits',
   currency: 'currency',
   status: 'status',

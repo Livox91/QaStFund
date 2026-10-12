@@ -1,10 +1,10 @@
-# Blockchain Components in P2P Lending
+# Blockchain Components in QastFund
 
 Last reviewed: 2026-10-09
 
 ## 1. Purpose and scope
 
-This document inventories the blockchain-related components currently present in the P2P Lending project. It covers the Arc network integration, Circle smart wallets, Solidity contracts, on-chain lending workflows, server-side authorization, event reconciliation, persistence, APIs, configuration, deployment tooling, tests, and operational documentation.
+This document inventories the blockchain-related components currently present in QastFund. It covers the Arc network integration, Circle smart wallets, Solidity contracts, on-chain lending workflows, server-side authorization, event reconciliation, persistence, APIs, configuration, deployment tooling, tests, and operational documentation.
 
 The project has two distinct concepts that should not be confused:
 

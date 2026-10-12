@@ -265,6 +265,7 @@ describe("Prisma blockchain reconciliation", () => {
         organizationId: organizationA,
         loanId,
         repaymentRequestId: randomUUID(),
+        submissionTransactionHash: `0x${"3".repeat(64)}`,
         amountMinorUnits: 10_500n,
         currency: "USD",
         status: "PENDING",
@@ -399,6 +400,7 @@ describe("Prisma blockchain reconciliation", () => {
         organizationId: organizationA,
         loanId,
         repaymentRequestId: randomUUID(),
+        submissionTransactionHash: repaymentHash,
         // The exact 2.625 USDC chain amount is retained on Loan while the
         // cents-only display/audit amount is conservatively rounded up.
         amountMinorUnits: 263n,

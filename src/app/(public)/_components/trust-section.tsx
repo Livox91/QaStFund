@@ -34,7 +34,7 @@ const trustPrinciples: ReadonlyArray<{
 
 export function TrustSection() {
   return (
-    <section className="bg-white py-20 sm:py-24" id="trust">
+    <section className="bg-surface py-20 sm:py-24" id="trust">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading
           align="center"
@@ -47,7 +47,7 @@ export function TrustSection() {
           {trustPrinciples.map((principle) => (
             <article key={principle.title} className="bg-slate-50 p-6 sm:p-7">
               <LandingIcon
-                className="size-6 text-teal-700"
+                className="text-brand size-6"
                 name={principle.icon}
               />
               <h3 className="mt-5 font-semibold text-slate-950">

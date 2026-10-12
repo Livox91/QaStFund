@@ -15,7 +15,7 @@ Configure the outbound email gateway used for invitations and password resets:
 ```dotenv
 EMAIL_DELIVERY_ENDPOINT="https://mail-gateway.example/send"
 EMAIL_DELIVERY_TOKEN="server-only-bearer-token"
-EMAIL_FROM="Employee Lending <no-reply@example.com>"
+EMAIL_FROM="QastFund <no-reply@example.com>"
 ```
 
 The gateway receives a JSON message containing `from`, `to`, `subject`, `text`, and `html`, plus an `Idempotency-Key` header. If delivery fails, the employee remains inactive, the invitation records an explicit `FAILED` delivery state and safe failure code, and a later sync or employer resend can retry. Successful delivery records `SENT`; invitation acceptance remains a separate lifecycle state. Tokens are never stored in plaintext or written to application logs.

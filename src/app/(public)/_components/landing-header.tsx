@@ -12,7 +12,7 @@ const navigation = [
 
 export function LandingHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
+    <header className="border-brand-border/60 bg-surface/90 sticky top-0 z-40 border-b backdrop-blur-xl">
       <div className="mx-auto flex h-18 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
         <ProductBrand />
         <nav
@@ -22,7 +22,7 @@ export function LandingHeader() {
           {navigation.map((item) => (
             <Link
               key={item.href}
-              className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-950 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal-600"
+              className="focus-visible:outline-accent text-sm font-medium text-slate-600 transition-colors hover:text-slate-950 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-4"
               href={item.href}
             >
               {item.label}

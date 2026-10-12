@@ -1,3 +1,5 @@
+import { APPLICATION_NAME } from "@/shared/constants/application";
+
 export function passwordResetEmail(input: {
   appUrl: string;
   token: string;
@@ -10,9 +12,9 @@ export function passwordResetEmail(input: {
   ).toString();
   return {
     to: input.email,
-    subject: "Reset your P2P Lending password",
-    text: `Reset your password: ${link}\nThis link expires in one hour.`,
-    html: `<p>Reset your password for ${escapeHtml(input.organizationName)}.</p><p><a href="${link}">Reset password</a></p><p>This link expires in one hour.</p>`,
+    subject: `Reset your ${APPLICATION_NAME} password`,
+    text: `Reset your ${APPLICATION_NAME} password: ${link}\nThis link expires in one hour.`,
+    html: `<p>Reset your ${APPLICATION_NAME} password for ${escapeHtml(input.organizationName)}.</p><p><a href="${link}">Reset password</a></p><p>This link expires in one hour.</p>`,
   };
 }
 

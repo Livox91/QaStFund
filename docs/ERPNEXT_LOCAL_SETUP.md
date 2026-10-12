@@ -44,11 +44,11 @@ Generate that user's API key and API secret in ERPNext. The API secret is shown
 for provisioning and should be handled as a password.
 
 Ensure ERPNext employee records have stable IDs (`name`) and, where matching is
-expected, email addresses equal to existing P2P Lending employee accounts.
+expected, email addresses equal to existing QastFund employee accounts.
 
 ## Connect and verify
 
-1. Sign in to P2P Lending as the employer administrator.
+1. Sign in to QastFund as the employer administrator.
 2. If ERPNext is disabled, open Employer Dashboard → Onboarding and enable it.
 3. Open Employer Dashboard → Integrations → ERPNext.
 4. Enter the local ERPNext base URL, normally `http://localhost:<port>` when

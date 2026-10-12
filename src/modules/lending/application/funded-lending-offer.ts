@@ -326,6 +326,45 @@ export async function confirmFundedLendingOffer(
     throw invalidOffer("This offer is not awaiting funding confirmation.");
   }
 
+  const normalizedTransactionHash = transactionHash.toLowerCase();
+  if (
+    offer.fundingTransactionHash &&
+    offer.fundingTransactionHash.toLowerCase() !== normalizedTransactionHash
+  ) {
+    throw new ApplicationError(
+      "FUNDING_TRANSACTION_CONFLICT",
+      "This offer is already linked to another Arc transaction.",
+      409,
+    );
+  }
+  if (!offer.fundingTransactionHash) {
+    const submitted = await database.lendingOffer.updateMany({
+      where: {
+        id: offer.id,
+        fundingStatus: "PENDING",
+        fundingTransactionHash: null,
+      },
+      data: { fundingTransactionHash: normalizedTransactionHash },
+    });
+    if (submitted.count !== 1) {
+      const current = await database.lendingOffer.findUnique({
+        where: { id: offer.id },
+        select: { fundingStatus: true, fundingTransactionHash: true },
+      });
+      if (
+        current?.fundingStatus !== "PENDING" ||
+        current.fundingTransactionHash?.toLowerCase() !==
+          normalizedTransactionHash
+      ) {
+        throw new ApplicationError(
+          "FUNDING_TRANSACTION_CONFLICT",
+          "This offer submission conflicted with another confirmation.",
+          409,
+        );
+      }
+    }
+  }
+
   let receipt;
   try {
     receipt = await (
@@ -423,7 +462,7 @@ export async function confirmFundedLendingOffer(
       fundingStatus: "FUNDED",
       status: "ACTIVE",
       chainOfferId: chainOfferId.toString(),
-      fundingTransactionHash: transactionHash.toLowerCase(),
+      fundingTransactionHash: normalizedTransactionHash,
       fundedAt: dependencies.now?.() ?? new Date(),
     },
   });

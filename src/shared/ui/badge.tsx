@@ -9,7 +9,7 @@ const toneStyles: Record<BadgeTone, string> = {
   warning: "bg-amber-50 text-amber-700 ring-amber-600/20",
   danger: "bg-rose-50 text-rose-700 ring-rose-600/20",
   info: "bg-sky-50 text-sky-700 ring-sky-600/20",
-  accent: "bg-teal-50 text-teal-700 ring-teal-600/20",
+  accent: "bg-brand-soft text-brand ring-brand-border/50",
 };
 
 export function Badge({

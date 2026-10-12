@@ -70,7 +70,7 @@ export function OriginationDecisionReviewForm({
       >
         <textarea
           id="decision-rationale"
-          className="min-h-28 w-full rounded-lg border border-slate-300 bg-white px-3.5 py-3 text-sm text-slate-950 shadow-sm outline-none placeholder:text-slate-400 focus:border-teal-600 focus:ring-3 focus:ring-teal-100"
+          className="focus:border-accent focus:ring-brand-muted min-h-28 w-full rounded-lg border border-slate-300 bg-white px-3.5 py-3 text-sm text-slate-950 shadow-sm outline-none placeholder:text-slate-400 focus:ring-3"
           maxLength={1_000}
           onChange={(event) => setRationale(event.target.value)}
           placeholder="Describe the income, employment, or other supporting evidence reviewed…"

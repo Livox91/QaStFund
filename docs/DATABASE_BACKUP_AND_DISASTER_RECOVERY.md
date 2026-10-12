@@ -25,7 +25,7 @@ Requirements: PostgreSQL 17-compatible `pg_dump` and `pg_restore` on `PATH`. Sup
 
 ```powershell
 $env:DATABASE_URL = '<loaded from the deployment secret manager>'
-$env:BACKUP_FILE = 'D:\secure-backups\employee-lending-2026-10-04.dump'
+$env:BACKUP_FILE = 'D:\secure-backups\qastfund-2026-10-04.dump'
 npm run db:backup
 ```
 
@@ -36,7 +36,7 @@ The command creates a compressed custom-format dump, validates its table of cont
 Restore into a newly provisioned database whenever possible. The restore command deliberately clears the target `public` schema and refuses to run unless the operator confirms the exact target database name.
 
 ```powershell
-$env:BACKUP_FILE = 'D:\secure-backups\employee-lending-2026-10-04.dump'
+$env:BACKUP_FILE = 'D:\secure-backups\qastfund-2026-10-04.dump'
 $env:RESTORE_DATABASE_URL = '<loaded from the recovery secret manager>'
 $env:RESTORE_CONFIRM_DATABASE = 'employee_lending_recovery'
 npm run db:restore

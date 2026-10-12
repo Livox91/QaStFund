@@ -416,6 +416,7 @@ export type LendingOfferWhereUniqueInput = Prisma.AtLeast<{
   fundingRequestId?: string
   fundingTransactionHash?: string
   organizationId_id?: Prisma.LendingOfferOrganizationIdIdCompoundUniqueInput
+  contractAddress_chainOfferId?: Prisma.LendingOfferContractAddressChainOfferIdCompoundUniqueInput
   AND?: Prisma.LendingOfferWhereInput | Prisma.LendingOfferWhereInput[]
   OR?: Prisma.LendingOfferWhereInput[]
   NOT?: Prisma.LendingOfferWhereInput | Prisma.LendingOfferWhereInput[]
@@ -442,7 +443,7 @@ export type LendingOfferWhereUniqueInput = Prisma.AtLeast<{
   lenderMembership?: Prisma.XOR<Prisma.OrganizationMembershipScalarRelationFilter, Prisma.OrganizationMembershipWhereInput>
   loans?: Prisma.LoanListRelationFilter
   auditEvents?: Prisma.AuditEventListRelationFilter
-}, "id" | "fundingRequestId" | "fundingTransactionHash" | "organizationId_id">
+}, "id" | "fundingRequestId" | "fundingTransactionHash" | "organizationId_id" | "contractAddress_chainOfferId">
 
 export type LendingOfferOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -696,6 +697,11 @@ export type LendingOfferOrderByRelationAggregateInput = {
 export type LendingOfferOrganizationIdIdCompoundUniqueInput = {
   organizationId: string
   id: string
+}
+
+export type LendingOfferContractAddressChainOfferIdCompoundUniqueInput = {
+  contractAddress: string
+  chainOfferId: string
 }
 
 export type LendingOfferCountOrderByAggregateInput = {

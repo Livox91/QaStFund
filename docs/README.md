@@ -1,4 +1,7 @@
-# Employee P2P Lending MVP
+# QastFund
+
+QastFund is an employer-enabled lending and peer-to-peer funding platform.
+Finance that moves with you.
 
 A production-oriented foundation for an employee peer-to-peer lending application. Local authentication, organization membership, employer reporting, employee dashboards, lending offers, marketplace discovery, Arc Testnet escrow funding and borrowing, full on-chain repayment, loan monitoring, and read-only ERPNext employee synchronization are implemented. Payroll writes and production settlement are intentionally not implemented.
 

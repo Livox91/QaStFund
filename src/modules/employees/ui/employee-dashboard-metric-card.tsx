@@ -14,7 +14,7 @@ export function EmployeeDashboardMetricCard({
       <CardContent className="p-5">
         <span
           aria-hidden="true"
-          className="absolute top-0 right-0 h-full w-1 bg-teal-500"
+          className="bg-accent absolute top-0 right-0 h-full w-1"
         />
         <p className="text-sm font-medium text-slate-500">{label}</p>
         <p className="mt-3 text-2xl font-semibold tracking-tight text-slate-950">

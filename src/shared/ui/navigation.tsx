@@ -122,11 +122,11 @@ export function Navigation({
             key={item.href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "flex items-center gap-3 rounded-lg text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600",
+              "focus-visible:outline-accent flex items-center gap-3 rounded-lg text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-2 focus-visible:outline-offset-2",
               variant === "sidebar" ? "px-3 py-2.5" : "px-3 py-2",
               active
-                ? "bg-slate-900 !text-white shadow-sm"
-                : "text-slate-600 hover:bg-slate-100 hover:text-slate-950",
+                ? "bg-brand !text-white shadow-sm"
+                : "hover:bg-brand-soft hover:text-brand text-slate-600",
             )}
             href={item.href}
           >

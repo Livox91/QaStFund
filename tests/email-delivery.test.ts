@@ -89,7 +89,7 @@ describe("SMTP email delivery", () => {
     vi.stubEnv("EMAIL_SMTP_SECURE", "true");
     vi.stubEnv("EMAIL_SMTP_USER", "personal@gmail.com");
     vi.stubEnv("EMAIL_SMTP_PASSWORD", "app-password");
-    vi.stubEnv("EMAIL_FROM", "Employee Lending <personal@gmail.com>");
+    vi.stubEnv("EMAIL_FROM", "QastFund <personal@gmail.com>");
     const sendMail = vi.fn(async () => ({ messageId: "message-1" }));
     const createTransport = vi.fn(() => ({ sendMail }));
 
@@ -106,7 +106,7 @@ describe("SMTP email delivery", () => {
       }),
     );
     expect(sendMail).toHaveBeenCalledWith({
-      from: "Employee Lending <personal@gmail.com>",
+      from: "QastFund <personal@gmail.com>",
       to: message.to,
       subject: message.subject,
       text: message.text,

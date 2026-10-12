@@ -68,7 +68,7 @@ function BenefitList({ benefits }: { benefits: ReadonlyArray<Benefit> }) {
           key={benefit.title}
           className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
         >
-          <span className="flex size-10 items-center justify-center rounded-xl bg-teal-50 text-teal-700">
+          <span className="bg-brand-soft text-brand flex size-10 items-center justify-center rounded-xl">
             <LandingIcon name={benefit.icon} />
           </span>
           <h3 className="mt-4 font-semibold text-slate-950">{benefit.title}</h3>
@@ -84,7 +84,7 @@ function BenefitList({ benefits }: { benefits: ReadonlyArray<Benefit> }) {
 export function AudienceSections() {
   return (
     <>
-      <section className="bg-white py-20 sm:py-24" id="employees">
+      <section className="bg-surface py-20 sm:py-24" id="employees">
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
           <SectionHeading
             description="Borrow when a short-term need arises, or participate as a lender when you have money available. Every offer is presented with clear terms."
@@ -95,10 +95,7 @@ export function AudienceSections() {
         </div>
       </section>
 
-      <section
-        className="bg-slate-950 py-20 !text-white sm:py-24"
-        id="employers"
-      >
+      <section className="bg-brand py-20 !text-white sm:py-24" id="employers">
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.2fr_0.8fr] lg:px-8">
           <div className="grid gap-4 sm:grid-cols-2">
             {employerBenefits.map((benefit) => (
@@ -106,7 +103,7 @@ export function AudienceSections() {
                 key={benefit.title}
                 className="rounded-2xl border border-white/10 bg-white/[0.06] p-5"
               >
-                <span className="flex size-10 items-center justify-center rounded-xl bg-teal-400/10 text-teal-300">
+                <span className="bg-accent/10 flex size-10 items-center justify-center rounded-xl text-emerald-300">
                   <LandingIcon name={benefit.icon} />
                 </span>
                 <h3 className="mt-4 font-semibold !text-white">
@@ -119,7 +116,7 @@ export function AudienceSections() {
             ))}
           </div>
           <div className="lg:order-last">
-            <p className="text-sm font-semibold tracking-wide text-teal-300 uppercase">
+            <p className="text-sm font-semibold tracking-wide text-emerald-300 uppercase">
               For employers
             </p>
             <h2 className="mt-3 text-3xl font-semibold tracking-[-0.025em] !text-white sm:text-4xl">

@@ -4,7 +4,7 @@ const questions = [
   {
     answer:
       "It is software for an employer-enabled lending marketplace. A company establishes the program, eligible employees are verified, and those employees can participate as lenders or borrowers within that organization.",
-    question: "What exactly is the employee lending platform?",
+    question: "What exactly is QastFund?",
   },
   {
     answer:
@@ -31,7 +31,7 @@ const questions = [
 export function FrequentlyAskedQuestions() {
   return (
     <section
-      className="border-t border-slate-200 bg-slate-50 py-20 sm:py-24"
+      className="border-brand-border/60 bg-canvas border-t py-20 sm:py-24"
       id="faq"
     >
       <div className="mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 lg:grid-cols-[0.75fr_1.25fr] lg:px-8">
@@ -43,7 +43,7 @@ export function FrequentlyAskedQuestions() {
         <div className="divide-y divide-slate-200 rounded-2xl border border-slate-200 bg-white px-5 shadow-sm sm:px-7">
           {questions.map((item, index) => (
             <details key={item.question} className="group" open={index === 0}>
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-left font-semibold text-slate-950 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 [&::-webkit-details-marker]:hidden">
+              <summary className="focus-visible:outline-accent flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-left font-semibold text-slate-950 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 [&::-webkit-details-marker]:hidden">
                 {item.question}
                 <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-lg font-normal text-slate-500 transition-transform group-open:rotate-45">
                   +

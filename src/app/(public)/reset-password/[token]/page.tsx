@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent } from "@/shared/ui/card";
 import { Field, Input } from "@/shared/ui/input";
+import { ProductBrand } from "@/shared/ui/brand-mark";
 
 export const metadata: Metadata = { title: "Reset password" };
 export default async function ResetPasswordPage({
@@ -9,9 +10,10 @@ export default async function ResetPasswordPage({
 }: PageProps<"/reset-password/[token]">) {
   const { token } = await params;
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-16">
+    <main className="bg-canvas flex min-h-screen items-center justify-center px-4 py-16">
       <Card className="w-full max-w-md">
         <CardContent className="p-8">
+          <ProductBrand className="mb-8" subtitle="Secure account recovery" />
           <h1 className="text-3xl font-semibold text-slate-950">
             Choose a new password
           </h1>

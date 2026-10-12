@@ -62,7 +62,7 @@ function MetricCard({
           aria-hidden="true"
           className={cn(
             "absolute top-0 right-0 h-full w-1",
-            emphasis === "warning" ? "bg-amber-400" : "bg-teal-500",
+            emphasis === "warning" ? "bg-amber-400" : "bg-accent",
           )}
         />
         <p className="text-sm font-medium text-slate-500">{label}</p>

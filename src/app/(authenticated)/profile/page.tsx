@@ -37,7 +37,7 @@ export default async function ProfilePage({
       <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold text-teal-700">Account</p>
+            <p className="text-brand text-sm font-semibold">Account</p>
             <h1 className="mt-1 text-3xl font-semibold tracking-tight text-slate-950">
               Profile
             </h1>

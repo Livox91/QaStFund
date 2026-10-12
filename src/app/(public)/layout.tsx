@@ -1,5 +1,5 @@
 export default function PublicLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  return <div className="min-h-screen bg-white">{children}</div>;
+  return <div className="bg-canvas min-h-screen">{children}</div>;
 }

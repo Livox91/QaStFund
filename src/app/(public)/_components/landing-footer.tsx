@@ -12,14 +12,14 @@ const footerLinks = [
 
 export function LandingFooter() {
   return (
-    <footer className="border-t border-slate-200 bg-slate-50">
+    <footer className="border-brand-border/60 bg-canvas border-t">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="flex flex-col justify-between gap-8 sm:flex-row sm:items-center">
           <div>
             <ProductBrand />
             <p className="mt-3 max-w-sm text-sm leading-6 text-slate-500">
-              A workplace-based marketplace for transparent employee lending and
-              borrowing.
+              Employer-enabled lending and peer-to-peer funding, with clear
+              terms and controlled access.
             </p>
           </div>
           <nav
@@ -38,7 +38,7 @@ export function LandingFooter() {
           </nav>
         </div>
         <div className="mt-8 flex flex-col justify-between gap-3 border-t border-slate-200 pt-6 text-xs text-slate-500 sm:flex-row">
-          <p>Employee Lending Platform</p>
+          <p>QastFund · Finance that moves with you.</p>
           <Link className="font-medium hover:text-slate-950" href="/sign-in">
             Member sign in
           </Link>

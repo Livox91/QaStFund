@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent } from "@/shared/ui/card";
 import { Field, Input } from "@/shared/ui/input";
+import { ProductBrand } from "@/shared/ui/brand-mark";
 
 export const metadata: Metadata = { title: "Forgot password" };
 
@@ -11,9 +12,13 @@ export default async function ForgotPasswordPage({
 }: PageProps<"/forgot-password">) {
   const sent = (await searchParams).sent === "1";
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-16">
+    <main className="bg-canvas flex min-h-screen items-center justify-center px-4 py-16">
       <Card className="w-full max-w-md">
         <CardContent className="p-8">
+          <ProductBrand
+            className="mb-8"
+            subtitle="Finance that moves with you."
+          />
           <h1 className="text-3xl font-semibold text-slate-950">
             Reset your password
           </h1>
@@ -45,7 +50,7 @@ export default async function ForgotPasswordPage({
             </Button>
           </form>
           <Link
-            className="mt-5 inline-block text-sm font-medium text-teal-700"
+            className="text-brand mt-5 inline-block text-sm font-medium"
             href="/sign-in"
           >
             Back to sign in

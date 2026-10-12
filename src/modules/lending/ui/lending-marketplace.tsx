@@ -107,7 +107,7 @@ export function LendingMarketplaceView({
             </Field>
             <Field htmlFor="sort" label="Sort by">
               <select
-                className="h-11 w-full rounded-lg border border-slate-300 bg-white px-3.5 text-sm text-slate-950 shadow-sm outline-none focus:border-teal-600 focus:ring-3 focus:ring-teal-100"
+                className="focus:border-accent focus:ring-brand-muted h-11 w-full rounded-lg border border-slate-300 bg-white px-3.5 text-sm text-slate-950 shadow-sm outline-none focus:ring-3"
                 defaultValue={filters.sort}
                 id="sort"
                 name="sort"

@@ -4,6 +4,7 @@ import { inspectInvitation } from "@/modules/employee-invitations/infrastructure
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent } from "@/shared/ui/card";
 import { Field, Input } from "@/shared/ui/input";
+import { ProductBrand } from "@/shared/ui/brand-mark";
 
 export const metadata: Metadata = { title: "Accept invitation" };
 
@@ -18,12 +19,16 @@ export default async function InvitationPage({
     invitation = null;
   }
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-16">
+    <main className="bg-canvas flex min-h-screen items-center justify-center px-4 py-16">
       <Card className="w-full max-w-lg">
         <CardContent className="p-8">
+          <ProductBrand
+            className="mb-8"
+            subtitle="Finance that moves with you."
+          />
           {invitation ? (
             <>
-              <p className="text-sm font-semibold text-teal-700">
+              <p className="text-brand text-sm font-semibold">
                 Employee invitation
               </p>
               <h1 className="mt-1 text-3xl font-semibold text-slate-950">

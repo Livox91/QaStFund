@@ -175,7 +175,7 @@ export default async function EmployerOnboardingPage() {
 
       {ready ? (
         <section className="mt-6 rounded-3xl bg-slate-950 p-7 text-white shadow-xl sm:p-9">
-          <p className="text-sm font-semibold tracking-wide text-teal-300 uppercase">
+          <p className="text-sm font-semibold tracking-wide text-emerald-300 uppercase">
             Onboarding complete
           </p>
           <h2 className="mt-2 text-2xl font-semibold text-white">

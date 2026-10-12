@@ -14,7 +14,7 @@ function UserInitials({ name }: { name: string }) {
     .join("");
 
   return (
-    <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-teal-50 text-xs font-bold text-teal-700 ring-1 ring-teal-600/20">
+    <span className="bg-brand-soft text-brand ring-accent/20 flex size-9 shrink-0 items-center justify-center rounded-full text-xs font-bold ring-1">
       {initials || "U"}
     </span>
   );
@@ -34,8 +34,8 @@ export function ApplicationShell({
   portalLabel: string;
 }) {
   return (
-    <div className="min-h-screen bg-slate-50 lg:grid lg:grid-cols-[272px_minmax(0,1fr)]">
-      <aside className="sticky top-0 hidden h-screen flex-col border-r border-slate-200 bg-white lg:flex">
+    <div className="bg-canvas min-h-screen lg:grid lg:grid-cols-[272px_minmax(0,1fr)]">
+      <aside className="border-brand-muted bg-surface sticky top-0 hidden h-screen flex-col border-r lg:flex">
         <div className="flex h-20 items-center gap-3 border-b border-slate-100 px-6">
           <BrandMark />
           <div className="min-w-0">
@@ -43,7 +43,7 @@ export function ApplicationShell({
               className="block truncate text-sm font-bold tracking-tight text-slate-950"
               href={homeHref}
             >
-              Employee Lending
+              QastFund
             </Link>
             <p className="mt-0.5 text-xs text-slate-500">{portalLabel}</p>
           </div>
@@ -86,13 +86,13 @@ export function ApplicationShell({
       </aside>
 
       <div className="min-w-0">
-        <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur lg:hidden">
+        <header className="border-brand-muted bg-surface/95 sticky top-0 z-20 border-b backdrop-blur lg:hidden">
           <div className="flex h-16 items-center justify-between gap-4 px-4 sm:px-6">
             <Link className="flex min-w-0 items-center gap-3" href={homeHref}>
               <BrandMark />
               <div className="min-w-0">
                 <p className="truncate text-sm font-bold text-slate-950">
-                  Employee Lending
+                  QastFund
                 </p>
                 <p className="text-xs text-slate-500">{portalLabel}</p>
               </div>

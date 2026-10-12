@@ -91,7 +91,7 @@ export function EmployeeActivityList({
               className="absolute top-3 bottom-0 left-[5px] w-px bg-slate-200"
             />
           ) : null}
-          <span className="relative mt-1.5 size-3 shrink-0 rounded-full border-2 border-white bg-teal-500 ring-1 ring-teal-200" />
+          <span className="bg-accent ring-brand-border relative mt-1.5 size-3 shrink-0 rounded-full border-2 border-white ring-1" />
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-start justify-between gap-2">
               <p className="text-sm font-semibold text-slate-950">

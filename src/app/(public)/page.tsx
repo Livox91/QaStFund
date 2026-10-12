@@ -11,15 +11,15 @@ import { TrustSection } from "./_components/trust-section";
 
 export const metadata: Metadata = {
   title: {
-    absolute: "Employee Lending Platform | Workplace lending, made clear",
+    absolute: "QastFund | Finance that moves with you",
   },
   description:
-    "An employer-enabled internal marketplace where verified employees can lend to and borrow from coworkers with transparent terms.",
+    "Employer-enabled lending and peer-to-peer funding for verified workplace communities, with transparent terms and controlled access.",
 };
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="bg-canvas min-h-screen">
       <LandingHeader />
       <main>
         <Hero />

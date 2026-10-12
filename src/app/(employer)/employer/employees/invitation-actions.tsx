@@ -61,7 +61,7 @@ export function InvitationActions({
       </div>
       {states.map((state, index) => (
         <p
-          className={`mt-2 text-xs ${state.status === "error" ? "text-rose-700" : "text-teal-700"}`}
+          className={`mt-2 text-xs ${state.status === "error" ? "text-rose-700" : "text-brand"}`}
           key={`${state.status}-${index}`}
           role={state.status === "error" ? "alert" : "status"}
         >

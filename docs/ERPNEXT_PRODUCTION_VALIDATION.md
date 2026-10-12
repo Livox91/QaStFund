@@ -34,7 +34,7 @@ ERP_NEXT_SYNC_MAX_PAGES="100"
 ERP_NEXT_SYNC_CRON_SECRET="at-least-32-random-characters"
 EMAIL_DELIVERY_ENDPOINT="https://mail-gateway.example/send"
 EMAIL_DELIVERY_TOKEN="server-only-bearer-token"
-EMAIL_FROM="Employee Lending <no-reply@example.com>"
+EMAIL_FROM="QastFund <no-reply@example.com>"
 ```
 
 The email gateway must accept bearer authentication and JSON fields `from`, `to`, `subject`, `text`, and `html`. It should honor the `Idempotency-Key` header. Any non-2xx response is a failed delivery; the application stores a safe failure code and does not set `sentAt`.

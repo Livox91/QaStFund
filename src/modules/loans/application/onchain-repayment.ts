@@ -320,7 +320,12 @@ export async function prepareOnChainRepayment(
           id: existing.id,
           status: { in: ["FAILED", "CANCELLED"] },
         },
-        data: { status: "PENDING", paidAt, completedAt: null },
+        data: {
+          status: "PENDING",
+          paidAt,
+          completedAt: null,
+          submissionTransactionHash: null,
+        },
       });
       if (revived.count === 1) {
         repayment = existing;
@@ -428,6 +433,7 @@ export async function confirmOnChainRepayment(
       id: true,
       status: true,
       paidAt: true,
+      submissionTransactionHash: true,
       loan: {
         select: {
           id: true,
@@ -466,6 +472,46 @@ export async function confirmOnChainRepayment(
     pending.loan.repaymentBaseUnits === null
   ) {
     throw unavailableError();
+  }
+
+  const normalizedTransactionHash = transactionHash.toLowerCase();
+  if (
+    pending.submissionTransactionHash &&
+    pending.submissionTransactionHash.toLowerCase() !==
+      normalizedTransactionHash
+  ) {
+    throw new ApplicationError(
+      "REPAYMENT_TRANSACTION_CONFLICT",
+      "This repayment is already linked to another Arc transaction.",
+      409,
+    );
+  }
+  if (!pending.submissionTransactionHash) {
+    const submitted = await database.loanRepayment.updateMany({
+      where: {
+        id: repaymentId,
+        status: "PENDING",
+        submissionTransactionHash: null,
+      },
+      data: { submissionTransactionHash: normalizedTransactionHash },
+    });
+    if (submitted.count !== 1) {
+      const current = await database.loanRepayment.findUnique({
+        where: { id: repaymentId },
+        select: { status: true, submissionTransactionHash: true },
+      });
+      if (
+        current?.status !== "PENDING" ||
+        current.submissionTransactionHash?.toLowerCase() !==
+          normalizedTransactionHash
+      ) {
+        throw new ApplicationError(
+          "REPAYMENT_TRANSACTION_CONFLICT",
+          "This repayment submission conflicted with another confirmation.",
+          409,
+        );
+      }
+    }
   }
 
   let receipt;
@@ -597,7 +643,7 @@ export async function confirmOnChainRepayment(
         outstandingPrincipalMinorUnits: 0n,
         closedAt: repaidAt,
         onChainRepaidAt,
-        repaymentTransactionHash: transactionHash.toLowerCase(),
+        repaymentTransactionHash: normalizedTransactionHash,
       },
     });
     if (updated.count !== 1) throw unavailableError();

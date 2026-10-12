@@ -218,6 +218,21 @@ async function applyOfferCreated(
     );
   }
   const offer = matches[0];
+  if (
+    offer.fundingTransactionHash &&
+    offer.fundingTransactionHash.toLowerCase() !== event.transactionHash
+  ) {
+    return resolveEvent(
+      transaction,
+      event.id,
+      {
+        kind: "CONFLICT",
+        code: "FUNDING_TRANSACTION_MISMATCH",
+        note: "The finalized funding event does not match the submitted transaction.",
+      },
+      now,
+    );
+  }
   if (offer.fundingStatus === "FUNDED") {
     if (
       offer.chainOfferId !== event.payload.offerId ||
@@ -329,6 +344,21 @@ async function applyLoanStarted(
     );
   }
   const loan = matches[0];
+  if (
+    loan.acceptanceTransactionHash &&
+    loan.acceptanceTransactionHash.toLowerCase() !== event.transactionHash
+  ) {
+    return resolveEvent(
+      transaction,
+      event.id,
+      {
+        kind: "CONFLICT",
+        code: "ACCEPTANCE_TRANSACTION_MISMATCH",
+        note: "The finalized acceptance event does not match the submitted transaction.",
+      },
+      now,
+    );
+  }
   if (!["REQUESTED", "APPROVED"].includes(loan.status)) {
     if (
       loan.chainLoanId !== event.payload.loanId ||
@@ -471,7 +501,7 @@ async function applyLoanRepaid(
       loanId: loan.id,
       status: loan.status === "REPAID" ? "COMPLETED" : "PENDING",
     },
-    select: { id: true },
+    select: { id: true, submissionTransactionHash: true },
   });
   if (!repayment) {
     return resolveEvent(
@@ -481,6 +511,21 @@ async function applyLoanRepaid(
         kind: "UNMATCHED",
         code: "REPAYMENT_INTENT_NOT_FOUND",
         note: "No pending repayment intent matches the finalized LoanRepaid event.",
+      },
+      now,
+    );
+  }
+  if (
+    repayment.submissionTransactionHash &&
+    repayment.submissionTransactionHash.toLowerCase() !== event.transactionHash
+  ) {
+    return resolveEvent(
+      transaction,
+      event.id,
+      {
+        kind: "CONFLICT",
+        code: "REPAYMENT_TRANSACTION_MISMATCH",
+        note: "The finalized repayment event does not match the submitted transaction.",
       },
       now,
     );

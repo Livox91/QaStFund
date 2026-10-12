@@ -15,7 +15,7 @@ export function SectionHeading({
     <div
       className={cn("max-w-2xl", align === "center" && "mx-auto text-center")}
     >
-      <p className="text-sm font-semibold tracking-wide text-teal-700 uppercase">
+      <p className="text-brand text-sm font-semibold tracking-wide uppercase">
         {eyebrow}
       </p>
       <h2 className="mt-3 text-3xl font-semibold tracking-[-0.025em] text-slate-950 sm:text-4xl">

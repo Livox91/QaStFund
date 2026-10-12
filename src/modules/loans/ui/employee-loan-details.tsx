@@ -191,7 +191,7 @@ export function EmployeeLoanDetails({
                 value={
                   <CurrencyDisplay
                     amountMinorUnits={loan.remainingAmountMinorUnits}
-                    className="text-teal-700"
+                    className="text-brand"
                     currency={loan.currency}
                   />
                 }

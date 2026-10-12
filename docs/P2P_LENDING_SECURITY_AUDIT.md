@@ -1,4 +1,4 @@
-# P2P lending security and end-to-end audit
+# QastFund lending security and end-to-end audit
 
 Date: 2026-10-05
 

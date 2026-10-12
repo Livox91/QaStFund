@@ -212,7 +212,7 @@ export function EmployeeDashboard({
                     {offer.durationDays} days
                   </p>
                   <Link
-                    className="mt-3 inline-block text-sm font-semibold text-teal-700"
+                    className="text-brand mt-3 inline-block text-sm font-semibold"
                     href={`/app/borrow/${offer.id}`}
                   >
                     Review terms
