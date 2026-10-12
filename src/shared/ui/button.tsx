@@ -13,6 +13,10 @@ const variantStyles = {
     "text-slate-600 hover:bg-brand-soft hover:text-brand focus-visible:outline-brand",
   danger:
     "bg-rose-600 !text-white shadow-sm hover:bg-rose-700 focus-visible:outline-rose-600",
+  inverse:
+    "bg-white !text-slate-950 shadow-sm hover:bg-brand-soft focus-visible:outline-white",
+  inverseOutline:
+    "border border-white/30 bg-transparent !text-white shadow-sm hover:bg-white/10 focus-visible:outline-white",
 } as const;
 
 const sizeStyles = {

@@ -29,8 +29,8 @@ export function EmployerCallToAction() {
           <div className="mt-8 flex shrink-0 flex-col gap-3 sm:flex-row lg:mt-0 lg:flex-col">
             <Link
               className={buttonStyles({
-                className: "hover:bg-brand-soft bg-white !text-slate-950",
                 size: "lg",
+                variant: "inverse",
               })}
               href="/signup"
             >
@@ -39,10 +39,8 @@ export function EmployerCallToAction() {
             </Link>
             <Link
               className={buttonStyles({
-                className:
-                  "border-white/30 bg-transparent !text-white hover:bg-white/10",
                 size: "lg",
-                variant: "outline",
+                variant: "inverseOutline",
               })}
               href="/#how-it-works"
             >

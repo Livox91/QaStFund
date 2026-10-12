@@ -189,8 +189,9 @@ export default async function EmployerOnboardingPage() {
           </ul>
           <Link
             className={buttonStyles({
-              className: "mt-6 bg-white !text-slate-950 hover:bg-slate-100",
+              className: "mt-6",
               size: "lg",
+              variant: "inverse",
             })}
             href="/employer"
           >
