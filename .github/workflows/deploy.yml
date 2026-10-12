@@ -27,7 +27,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             set -euo pipefail
-            cd ~/app
+            cd "$HOME/QaStFund"
 
             # 1. Update to the revision that passed CI
             git fetch origin master
