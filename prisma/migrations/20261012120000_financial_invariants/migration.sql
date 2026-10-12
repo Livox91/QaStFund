@@ -13,13 +13,11 @@ ALTER TABLE "LendingOffer"
       "minimumLoanAmountMinorUnits" > 0
       AND "maximumLoanAmountMinorUnits" >= "minimumLoanAmountMinorUnits"
       AND "maximumLoanAmountMinorUnits" <= "amountMinorUnits"
-    ),
-  ADD CONSTRAINT "LendingOffer_terms_check"
-    CHECK (
-      "durationDays" > 0
-      AND "feeRateBasisPoints" >= 0
-      AND "feeRateBasisPoints" <= 10000
     );
+
+-- LendingOffer_terms_check was created by
+-- 20260929030000_add_lending_offer_creation. It already enforces duration and
+-- fee bounds, as well as expiry ordering, so it must not be redefined here.
 
 ALTER TABLE "Loan"
   ADD CONSTRAINT "Loan_financial_terms_check"
