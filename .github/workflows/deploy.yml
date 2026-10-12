@@ -34,14 +34,18 @@ jobs:
             git checkout master
             git merge --ff-only ${{ github.event.workflow_run.head_sha }}
 
-            # 2. Start the database first so it is ready for migrations
+            # 2. Reclaim unused Docker storage before building on the 8 GB host
+            docker builder prune --all --force
+            docker image prune --all --force
+
+            # 3. Start the database first so it is ready for migrations
             docker compose -f compose.production.yaml --env-file deploy/.env.production up -d database
 
-            # 3. Build the migrator from this revision, then apply its migrations
+            # 4. Build the migrator from this revision, then apply its migrations
             docker compose -f compose.production.yaml --env-file deploy/.env.production --profile tools run --rm --build migrate
 
-            # 4. Build and start the Next.js app, scheduler, and Caddy reverse proxy
+            # 5. Build and start the Next.js app, scheduler, and Caddy reverse proxy
             docker compose -f compose.production.yaml --env-file deploy/.env.production up -d --build
 
-            # 5. Clean up old unused Docker images to save disk space on EC2
+            # 6. Clean up dangling images created during the deployment
             docker image prune -f
