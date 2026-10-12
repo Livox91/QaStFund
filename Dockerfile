@@ -69,10 +69,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# CRITICAL NEXT.JS STANDALONE + PRISMA FIX: 
-# Copy the compiled engine binaries and client configurations
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modules/.prisma
-
 USER nextjs
 
 EXPOSE 3000
