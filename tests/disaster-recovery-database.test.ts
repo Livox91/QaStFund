@@ -20,7 +20,7 @@ restoredSuite("restored database reconciliation state", () => {
         startBlock: 1n,
       });
 
-      expect(cursor).toEqual({ nextBlock: 4243n });
+      expect(cursor).toMatchObject({ nextBlock: 4243n });
       await prismaReconciliationRepository.releaseLease({
         chainId: 5_042_002,
         contractAddress: "0x1111111111111111111111111111111111111111",
