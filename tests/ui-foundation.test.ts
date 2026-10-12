@@ -44,10 +44,17 @@ describe("status display", () => {
 });
 
 describe("inverse controls", () => {
-  it.each(["primary", "secondary", "danger"] as const)(
+  it.each(["primary", "danger"] as const)(
     "keeps %s button text visible on a dark background",
     (variant) => {
       expect(buttonStyles({ variant })).toContain("!text-white");
     },
   );
+
+  it("uses readable brand text for the soft secondary action", () => {
+    const styles = buttonStyles({ variant: "secondary" });
+
+    expect(styles).toContain("bg-brand-soft");
+    expect(styles).toContain("!text-brand");
+  });
 });

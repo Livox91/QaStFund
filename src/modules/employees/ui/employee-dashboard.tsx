@@ -71,14 +71,14 @@ export function EmployeeDashboard({
                   : "Complete setup"
               }
             >
-              {onboarding.readyToUse ? "Lending Marketplace" : "Complete setup"}
+              {onboarding.readyToUse ? "Browse offers" : "Complete setup"}
             </Link>
             <Link
               className={buttonStyles({ size: "lg", variant: "secondary" })}
               href="/app/lending#new-offer"
               title="Create a lending offer"
             >
-              Lend Money
+              Create lending offer
             </Link>
           </div>
         }

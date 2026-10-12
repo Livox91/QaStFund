@@ -36,7 +36,7 @@ export function WalletCard({ wallet }: { wallet: Wallet }) {
           <form action={addTestFundsAction}>
             <input name="requestId" type="hidden" value={crypto.randomUUID()} />
             <Button type="submit" variant="secondary">
-              Add 100 USDC · TEST FUNDS
+              Add 100 test USDC
             </Button>
           </form>
         ) : null}

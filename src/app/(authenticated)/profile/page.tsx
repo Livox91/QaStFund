@@ -6,7 +6,7 @@ import {
   getRoleHome,
 } from "@/modules/auth/domain/application-role";
 import { requireAuthenticatedPageUser } from "@/modules/auth/infrastructure/auth-guard";
-import { buttonStyles } from "@/shared/ui/button";
+import { Button, buttonStyles } from "@/shared/ui/button";
 import {
   Card,
   CardContent,
@@ -149,12 +149,7 @@ export default async function ProfilePage({
                   type="password"
                 />
               </label>
-              <button
-                className="rounded-lg bg-slate-950 px-4 py-2 text-sm font-semibold !text-white"
-                type="submit"
-              >
-                Change password
-              </button>
+              <Button type="submit">Change password</Button>
             </form>
           </CardContent>
         </Card>

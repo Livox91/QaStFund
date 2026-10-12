@@ -126,12 +126,12 @@ export function LendingMarketplaceView({
                 </option>
               </select>
             </Field>
-            <Button type="submit">Apply</Button>
+            <Button type="submit">Apply filters</Button>
             <Link
               className={buttonStyles({ variant: "ghost" })}
               href="/app/borrow"
             >
-              Clear
+              Clear filters
             </Link>
           </form>
         </CardContent>

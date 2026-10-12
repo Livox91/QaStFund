@@ -6,7 +6,7 @@ const variantStyles = {
   primary:
     "bg-brand !text-white shadow-sm hover:bg-brand-hover focus-visible:outline-brand",
   secondary:
-    "bg-accent !text-white shadow-sm hover:bg-accent-hover focus-visible:outline-accent",
+    "border border-brand-border bg-brand-soft !text-brand shadow-sm hover:bg-brand-muted focus-visible:outline-brand",
   outline:
     "border border-slate-300 bg-white text-slate-700 shadow-sm hover:border-slate-400 hover:bg-slate-50 focus-visible:outline-slate-600",
   ghost:
@@ -44,6 +44,7 @@ export function buttonStyles({
 
 export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   isLoading?: boolean;
+  loadingLabel?: React.ReactNode;
   size?: ButtonSize;
   variant?: ButtonVariant;
 };
@@ -55,6 +56,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       className,
       disabled,
       isLoading = false,
+      loadingLabel,
       size = "md",
       type = "button",
       variant = "primary",
@@ -76,7 +78,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             className="size-4 animate-spin rounded-full border-2 border-current border-r-transparent"
           />
         ) : null}
-        <span>{isLoading ? "Please wait" : children}</span>
+        <span>{isLoading ? (loadingLabel ?? children) : children}</span>
       </button>
     );
   },
