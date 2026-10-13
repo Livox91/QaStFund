@@ -175,7 +175,14 @@ export const AuditEventType = {
   EMPLOYEE_INVITATION_ACCEPTED: 'EMPLOYEE_INVITATION_ACCEPTED',
   EMPLOYEE_INVITATION_REVOKED: 'EMPLOYEE_INVITATION_REVOKED',
   PASSWORD_CHANGED: 'PASSWORD_CHANGED',
-  PASSWORD_RESET: 'PASSWORD_RESET'
+  PASSWORD_RESET: 'PASSWORD_RESET',
+  REPAYMENT_PLAN_CREATED: 'REPAYMENT_PLAN_CREATED',
+  REPAYMENT_PLAN_REVISED: 'REPAYMENT_PLAN_REVISED',
+  PAYROLL_DEDUCTION_PROPOSED: 'PAYROLL_DEDUCTION_PROPOSED',
+  PAYROLL_DEDUCTION_REVIEWED: 'PAYROLL_DEDUCTION_REVIEWED',
+  PAYROLL_DEDUCTION_RECONCILED: 'PAYROLL_DEDUCTION_RECONCILED',
+  DELINQUENCY_NOTIFICATION_CREATED: 'DELINQUENCY_NOTIFICATION_CREATED',
+  DELINQUENCY_CASE_REVIEWED: 'DELINQUENCY_CASE_REVIEWED'
 } as const
 
 export type AuditEventType = (typeof AuditEventType)[keyof typeof AuditEventType]
@@ -189,6 +196,48 @@ export const RepaymentStatus = {
 } as const
 
 export type RepaymentStatus = (typeof RepaymentStatus)[keyof typeof RepaymentStatus]
+
+
+export const RepaymentPlanStatus = {
+  PROPOSED: 'PROPOSED',
+  ACTIVE: 'ACTIVE',
+  SUPERSEDED: 'SUPERSEDED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type RepaymentPlanStatus = (typeof RepaymentPlanStatus)[keyof typeof RepaymentPlanStatus]
+
+
+export const PayrollDeductionStatus = {
+  PROPOSED: 'PROPOSED',
+  AWAITING_APPROVAL: 'AWAITING_APPROVAL',
+  APPROVED: 'APPROVED',
+  SUBMITTED: 'SUBMITTED',
+  PARTIALLY_DEDUCTED: 'PARTIALLY_DEDUCTED',
+  RECONCILED: 'RECONCILED',
+  REJECTED: 'REJECTED',
+  FAILED: 'FAILED',
+  NOT_AVAILABLE: 'NOT_AVAILABLE'
+} as const
+
+export type PayrollDeductionStatus = (typeof PayrollDeductionStatus)[keyof typeof PayrollDeductionStatus]
+
+
+export const EmployeeDeductionAuthorizationStatus = {
+  NOT_RECORDED: 'NOT_RECORDED',
+  AUTHORIZED: 'AUTHORIZED',
+  REVOKED: 'REVOKED'
+} as const
+
+export type EmployeeDeductionAuthorizationStatus = (typeof EmployeeDeductionAuthorizationStatus)[keyof typeof EmployeeDeductionAuthorizationStatus]
+
+
+export const DelinquencyCaseStatus = {
+  OPEN: 'OPEN',
+  RESOLVED: 'RESOLVED'
+} as const
+
+export type DelinquencyCaseStatus = (typeof DelinquencyCaseStatus)[keyof typeof DelinquencyCaseStatus]
 
 
 export const BlockchainEventName = {

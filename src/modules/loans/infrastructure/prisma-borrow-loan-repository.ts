@@ -14,6 +14,7 @@ import {
   type BorrowableOffer,
   type CreatedBorrowingLoan,
 } from "@/modules/loans/domain/borrow-loan";
+import { generateRepaymentSchedule } from "@/modules/repayment-plans/domain/repayment-plan";
 import {
   policySnapshot,
   validateBorrowAgainstPolicy,
@@ -32,6 +33,7 @@ const offerSelection = {
   durationDays: true,
   feeRateBasisPoints: true,
   expiresAt: true,
+  fundingStatus: true,
   lenderMembership: { select: { user: { select: { name: true } } } },
 } as const;
 
@@ -119,7 +121,7 @@ export const prismaBorrowLoanRepository: BorrowLoanRepository = {
         organizationId,
         lenderMembershipId: { not: membership.id },
         status: "ACTIVE",
-        fundingStatus: "FUNDED",
+        fundingStatus: { in: ["FUNDED", "LEGACY"] },
         expiresAt: { gt: now },
         availableAmountMinorUnits: { gt: 0n },
         lenderMembership: {
@@ -321,6 +323,14 @@ export const prismaBorrowLoanRepository: BorrowLoanRepository = {
       if (command.amountMinorUnits > offer.availableAmountMinorUnits) {
         return { kind: "INSUFFICIENT_LIQUIDITY" } as const;
       }
+      const termMonths = command.termMonths ?? 1;
+      const permittedTermMonths = Math.min(
+        3,
+        Math.max(1, Math.ceil(offer.durationDays / 30)),
+      );
+      if (termMonths > permittedTermMonths) {
+        return { kind: "AMOUNT_OUT_OF_RANGE" } as const;
+      }
 
       const lenderWallet = await ensureUserWallet(transaction, {
         organizationId,
@@ -383,6 +393,23 @@ export const prismaBorrowLoanRepository: BorrowLoanRepository = {
         command.amountMinorUnits,
         now,
       );
+      const schedule = command.termMonths
+        ? generateRepaymentSchedule({
+            totalRepaymentMinorUnits: summary.totalRepaymentMinorUnits,
+            termMonths,
+            originatedAt: now,
+          })
+        : [
+            {
+              sequence: 1,
+              amountMinorUnits: summary.totalRepaymentMinorUnits,
+              dueAt: summary.repaymentDueAt,
+            },
+          ];
+      const repaymentDueAt = schedule.at(-1)!.dueAt;
+      const durationDays = Math.ceil(
+        (repaymentDueAt.getTime() - now.getTime()) / 86_400_000,
+      );
       const loan = await transaction.loan.create({
         data: {
           organizationId,
@@ -394,18 +421,43 @@ export const prismaBorrowLoanRepository: BorrowLoanRepository = {
           feeAmountMinorUnits: summary.feeAmountMinorUnits,
           outstandingPrincipalMinorUnits: command.amountMinorUnits,
           currency: offer.currency,
-          durationDays: offer.durationDays,
+          durationDays,
           feeRateBasisPoints: offer.feeRateBasisPoints,
           status: "ACTIVE",
           requestedAt: now,
           approvedAt: now,
           activatedAt: now,
           startedAt: now,
-          repaymentDueAt: summary.repaymentDueAt,
+          repaymentDueAt,
           policyVersion: lockedPolicy.policyVersion,
           policySnapshot: policySnapshot(lockedPolicy),
         },
         select: createdLoanSelection,
+      });
+
+      const repaymentPlan = await transaction.loanRepaymentPlan.create({
+        data: {
+          organizationId,
+          loanId: loan.id,
+          version: 1,
+          status: "ACTIVE",
+          termMonths,
+          installmentCount: schedule.length,
+          totalRepaymentMinorUnits: summary.totalRepaymentMinorUnits,
+          currency: offer.currency,
+          borrowerConsentedAt: now,
+          effectiveAt: now,
+        },
+      });
+      await transaction.loanInstallment.createMany({
+        data: schedule.map((installment) => ({
+          organizationId,
+          loanId: loan.id,
+          planId: repaymentPlan.id,
+          sequence: installment.sequence,
+          amountMinorUnits: installment.amountMinorUnits,
+          dueAt: installment.dueAt,
+        })),
       });
 
       await postLedgerTransaction(transaction, {
@@ -442,6 +494,20 @@ export const prismaBorrowLoanRepository: BorrowLoanRepository = {
           actorMembershipId: membership.id,
           actorLabel: membership.user.name,
           occurredAt: now,
+        },
+      });
+      await transaction.auditEvent.create({
+        data: {
+          organizationId,
+          loanId: loan.id,
+          amountMinorUnits: summary.totalRepaymentMinorUnits,
+          currency: offer.currency,
+          type: "REPAYMENT_PLAN_CREATED",
+          title: "Borrower agreed to repayment schedule",
+          actorMembershipId: membership.id,
+          actorLabel: membership.user.name,
+          occurredAt: now,
+          metadata: { termMonths, installmentCount: schedule.length },
         },
       });
 

@@ -10,12 +10,14 @@ export type BorrowableOffer = Readonly<{
   durationDays: number;
   feeRateBasisPoints: number;
   expiresAt: Date;
+  fundingStatus?: "LEGACY" | "PENDING" | "FUNDED" | "FAILED";
 }>;
 
 export type BorrowLoanCommand = Readonly<{
   offerId: string;
   amountMinorUnits: bigint;
   requestId: string;
+  termMonths?: 1 | 2 | 3;
 }>;
 
 export type CreatedBorrowingLoan = Readonly<{

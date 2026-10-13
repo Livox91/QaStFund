@@ -14,12 +14,16 @@ import { registerOrganizationAdmin } from "@/modules/auth/application/register-o
 import { ApplicationRole } from "@/modules/auth/domain/application-role";
 import type { AuthenticatedActor } from "@/modules/auth/domain/actor";
 import { prismaRegistrationRepository } from "@/modules/auth/infrastructure/prisma-registration-repository";
+import { synchronizeOrganizationEmployees } from "@/modules/employee-directory/application/synchronize-employees";
+import type { EmployeeDirectoryAdapter } from "@/modules/employee-directory/domain/employee-directory";
+import { prismaEmployeeDirectoryRepository } from "@/modules/employee-directory/infrastructure/prisma-employee-directory-repository";
 import {
   confirmFundedLendingOffer,
   prepareFundedLendingOffer,
 } from "@/modules/lending/application/funded-lending-offer";
 import { LendingMarketplaceSort } from "@/modules/lending/domain/lending-offer";
 import { prismaLendingOfferRepository } from "@/modules/lending/infrastructure/prisma-lending-offer-repository";
+import { overrideOriginationDecisionForActor } from "@/modules/loan-decisions/application/origination-decisions";
 import {
   confirmOnChainBorrow,
   prepareOnChainBorrow,
@@ -90,6 +94,7 @@ describe("local P2P lending lifecycle", () => {
             create: {
               organizationId: registration.actor.organizationId,
               role: "EMPLOYEE",
+              accountActivatedAt: new Date(),
             },
           },
         },
@@ -108,6 +113,50 @@ describe("local P2P lending lifecycle", () => {
 
     const alice = await createEmployee("Alice", "alice");
     const bob = await createEmployee("Bob", "bob");
+
+    await prismaEmployeeDirectoryRepository.saveIntegration({
+      organizationId: registration.actor.organizationId,
+      baseUrl: "https://erp.example.test",
+      apiPath: "/api/resource",
+      apiVersion: "v1",
+      authMethod: "token",
+      credentialReference: "local-e2e-test-only",
+      timeoutMs: 1_000,
+      statusMapping: {
+        active: "ACTIVE",
+        inactive: "SUSPENDED",
+      },
+    });
+    const employeeAdapter: EmployeeDirectoryAdapter = {
+      testConnection: async () => ({
+        ok: true,
+        messageCode: "CONNECTION_OK",
+      }),
+      listEmployees: async () => ({
+        employees: [alice, bob].map((employee, index) => ({
+          externalId: `EMP-${index + 1}`,
+          employeeCode: `EMP-${index + 1}`,
+          fullName: employee.name,
+          email: employee.email,
+          employmentStatus: "Active",
+        })),
+      }),
+      getEmployee: async () => null,
+    };
+    const syncResult = await synchronizeOrganizationEmployees(
+      {
+        organizationId: registration.actor.organizationId,
+        requestedByUserId: registration.actor.userId,
+        trigger: "manual",
+        staleAfterMs: 30 * 60_000,
+      },
+      prismaEmployeeDirectoryRepository,
+      () => employeeAdapter,
+      { now: () => new Date() },
+    );
+    expect(syncResult.status).toBe("success");
+    expect(syncResult.processedCount).toBe(2);
+    expect(syncResult.reviewCount).toBe(0);
 
     async function enrollWallet(
       actor: AuthenticatedActor,
@@ -196,43 +245,61 @@ describe("local P2P lending lifecycle", () => {
       offerIntent.offerId,
     );
 
+    const borrowRequestId = randomUUID();
+    const borrowDependencies = {
+      contractAddress: escrow.address,
+      readOffer: (_address: `0x${string}`, offerId: bigint) =>
+        escrow.read.offers([offerId]),
+      readAuthorizationSigner: () => escrow.read.authorizationSigner(),
+      signAuthorization: async (authorization: {
+        offerId: bigint;
+        borrower: `0x${string}`;
+        expiry: bigint;
+        authorizationId: `0x${string}`;
+      }) => ({
+        ...authorization,
+        signerAddress: authorizerWallet.account.address,
+        signature: await authorizerWallet.signTypedData({
+          account: authorizerWallet.account,
+          domain: {
+            name: "EmployeeLendingEscrow",
+            version: "1",
+            chainId,
+            verifyingContract: escrow.address,
+          },
+          types: {
+            BorrowAuthorization: [
+              { name: "offerId", type: "uint256" },
+              { name: "borrower", type: "address" },
+              { name: "expiry", type: "uint256" },
+              { name: "authorizationId", type: "bytes32" },
+            ],
+          },
+          primaryType: "BorrowAuthorization" as const,
+          message: authorization,
+        }),
+      }),
+    };
+    const review = await prepareOnChainBorrow(
+      bob,
+      offerIntent.offerId,
+      borrowRequestId,
+      borrowDependencies,
+    );
+    if (review.state !== "REVIEW_REQUIRED") {
+      throw new Error("Expected a manual-review decision.");
+    }
+    await overrideOriginationDecisionForActor(registration.actor, {
+      decisionId: review.decisionId,
+      outcome: "APPROVED",
+      rationale:
+        "Controlled local-chain regression approval using test fixtures only.",
+    });
     const borrowIntent = await prepareOnChainBorrow(
       bob,
       offerIntent.offerId,
-      randomUUID(),
-      {
-        contractAddress: escrow.address,
-        readOffer: (_address, offerId) => escrow.read.offers([offerId]),
-        readAuthorizationSigner: () => escrow.read.authorizationSigner(),
-        signAuthorization: async (authorization) => ({
-          ...authorization,
-          signerAddress: authorizerWallet.account.address,
-          signature: await authorizerWallet.signTypedData({
-            account: authorizerWallet.account,
-            domain: {
-              name: "EmployeeLendingEscrow",
-              version: "1",
-              chainId,
-              verifyingContract: escrow.address,
-            },
-            types: {
-              BorrowAuthorization: [
-                { name: "offerId", type: "uint256" },
-                { name: "borrower", type: "address" },
-                { name: "expiry", type: "uint256" },
-                { name: "authorizationId", type: "bytes32" },
-              ],
-            },
-            primaryType: "BorrowAuthorization",
-            message: authorization,
-          }),
-        }),
-        evaluateOrigination: async () =>
-          ({
-            status: "APPROVAL_CONSIDERATION" as const,
-            override: { outcome: "APPROVED" },
-          }) as never,
-      },
+      borrowRequestId,
+      borrowDependencies,
     );
     if (borrowIntent.state !== "PENDING") {
       throw new Error("Expected a pending borrowing intent.");

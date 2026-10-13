@@ -144,8 +144,13 @@ function baseUnitsToMinorUnitsRoundedUp(value: bigint): bigint {
 export function resolveLifecycleStartedAt(
   onChainStartedAt: Date,
   requestedAt: Date,
+  approvedAt?: Date | null,
 ): Date {
-  return onChainStartedAt < requestedAt ? requestedAt : onChainStartedAt;
+  const latestApplicationMilestone =
+    approvedAt && approvedAt > requestedAt ? approvedAt : requestedAt;
+  return onChainStartedAt < latestApplicationMilestone
+    ? latestApplicationMilestone
+    : onChainStartedAt;
 }
 
 export async function prepareOnChainBorrow(
@@ -644,9 +649,13 @@ export async function confirmOnChainBorrow(
       borrowerWalletAddress: true,
       principalBaseUnits: true,
       repaymentBaseUnits: true,
+      principalAmountMinorUnits: true,
+      feeAmountMinorUnits: true,
+      currency: true,
       feeRateBasisPoints: true,
       durationDays: true,
       requestedAt: true,
+      approvedAt: true,
       acceptanceTransactionHash: true,
     },
   });
@@ -824,6 +833,7 @@ export async function confirmOnChainBorrow(
   const lifecycleStartedAt = resolveLifecycleStartedAt(
     startedAt,
     pending.requestedAt,
+    pending.approvedAt,
   );
   await database.$transaction(async (transaction) => {
     const updated = await transaction.loan.updateMany({
@@ -842,6 +852,51 @@ export async function confirmOnChainBorrow(
       },
     });
     if (updated.count !== 1) throw unavailableError();
+
+    const existingPlan = await transaction.loanRepaymentPlan.findFirst({
+      where: { loanId: pending.id, status: "ACTIVE" },
+      select: { id: true },
+    });
+    if (!existingPlan) {
+      const totalRepaymentMinorUnits =
+        pending.principalAmountMinorUnits + pending.feeAmountMinorUnits;
+      const plan = await transaction.loanRepaymentPlan.create({
+        data: {
+          organizationId: actor.organizationId,
+          loanId: pending.id,
+          version: 1,
+          status: "ACTIVE",
+          termMonths: 1,
+          installmentCount: 1,
+          totalRepaymentMinorUnits,
+          currency: pending.currency,
+          borrowerConsentedAt: lifecycleStartedAt,
+          effectiveAt: lifecycleStartedAt,
+        },
+      });
+      await transaction.loanInstallment.create({
+        data: {
+          organizationId: actor.organizationId,
+          loanId: pending.id,
+          planId: plan.id,
+          sequence: 1,
+          amountMinorUnits: totalRepaymentMinorUnits,
+          dueAt,
+        },
+      });
+      await transaction.auditEvent.create({
+        data: {
+          organizationId: actor.organizationId,
+          loanId: pending.id,
+          amountMinorUnits: totalRepaymentMinorUnits,
+          currency: pending.currency,
+          type: "REPAYMENT_PLAN_CREATED",
+          title: "On-chain repayment obligation recorded",
+          occurredAt: startedAt,
+          metadata: { version: 1, installmentCount: 1 },
+        },
+      });
+    }
 
     await transaction.lendingOffer.update({
       where: { id: pending.lendingOfferId! },

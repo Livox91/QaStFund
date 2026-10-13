@@ -231,8 +231,8 @@ describe("origination decision persistence", () => {
       evaluatedAt: new Date("2026-10-11T13:31:00.000Z"),
     });
     expect(first).toMatchObject({
-      modelVersion: "loan-decision-rules-v1",
-      idempotencyKey: `${loanId}:loan-decision-rules-v1`,
+      modelVersion: "loan-decision-manual-review-v1",
+      idempotencyKey: `${loanId}:loan-decision-manual-review-v1`,
       status: "REVIEW_REQUIRED",
       score: null,
       reasonCodes: expect.arrayContaining([

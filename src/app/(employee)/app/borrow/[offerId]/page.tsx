@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ConfirmBorrowForm } from "@/app/(employee)/app/borrow/[offerId]/confirm-borrow-form";
+import { LegacyBorrowForm } from "@/app/(employee)/app/borrow/[offerId]/legacy-borrow-form";
 import { requireEmployeePage } from "@/modules/auth/infrastructure/auth-guard";
 import {
   calculateEstimatedRepayment,
@@ -86,7 +87,7 @@ export default async function BorrowOfferPage({
           <CardContent>
             <dl className="grid grid-cols-2 gap-5 text-sm">
               <div>
-                <dt className="text-slate-500">You receive</dt>
+                <dt className="text-slate-500">Available</dt>
                 <dd className="mt-1 text-xl font-semibold text-slate-950">
                   <CurrencyDisplay
                     amountMinorUnits={offer.availableAmountMinorUnits}
@@ -124,47 +125,61 @@ export default async function BorrowOfferPage({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <dl className="space-y-4 text-sm">
-              <div className="flex justify-between gap-4">
-                <dt className="text-slate-500">You receive</dt>
-                <dd className="font-semibold">
-                  <CurrencyDisplay
-                    amountMinorUnits={offer.availableAmountMinorUnits}
-                    currency={offer.currency}
-                  />
-                </dd>
-              </div>
-              <div className="flex justify-between gap-4">
-                <dt className="text-slate-500">Interest</dt>
-                <dd className="font-semibold">
-                  <CurrencyDisplay
-                    amountMinorUnits={interest}
-                    currency={offer.currency}
-                  />
-                </dd>
-              </div>
-              <div className="flex justify-between gap-4 border-t border-slate-100 pt-4">
-                <dt className="font-medium text-slate-700">You repay</dt>
-                <dd className="text-lg font-semibold text-slate-950">
-                  <CurrencyDisplay
-                    amountMinorUnits={repayment}
-                    currency={offer.currency}
-                  />
-                </dd>
-              </div>
-              <div className="flex justify-between gap-4">
-                <dt className="text-slate-500">Due</dt>
-                <dd className="font-semibold">
-                  {dateFormatter.format(estimatedDueAt)}
-                </dd>
-              </div>
-            </dl>
-            <p className="my-5 rounded-xl bg-slate-50 px-4 py-3 text-xs leading-5 text-slate-600">
-              Confirmation releases the secured funds to your wallet and starts
-              the loan. If the offer was taken moments earlier, nothing is
-              transferred.
-            </p>
-            <ConfirmBorrowForm offerId={offer.id} />
+            {offer.fundingStatus === "LEGACY" ? (
+              <LegacyBorrowForm
+                availableAmountMinorUnits={offer.availableAmountMinorUnits.toString()}
+                currency={offer.currency}
+                durationDays={offer.durationDays}
+                feeRateBasisPoints={offer.feeRateBasisPoints}
+                maximumLoanAmountMinorUnits={offer.maximumLoanAmountMinorUnits.toString()}
+                minimumLoanAmountMinorUnits={offer.minimumLoanAmountMinorUnits.toString()}
+                offerId={offer.id}
+              />
+            ) : (
+              <>
+                <dl className="space-y-4 text-sm">
+                  <div className="flex justify-between gap-4">
+                    <dt className="text-slate-500">You receive</dt>
+                    <dd className="font-semibold">
+                      <CurrencyDisplay
+                        amountMinorUnits={offer.availableAmountMinorUnits}
+                        currency={offer.currency}
+                      />
+                    </dd>
+                  </div>
+                  <div className="flex justify-between gap-4">
+                    <dt className="text-slate-500">Interest</dt>
+                    <dd className="font-semibold">
+                      <CurrencyDisplay
+                        amountMinorUnits={interest}
+                        currency={offer.currency}
+                      />
+                    </dd>
+                  </div>
+                  <div className="flex justify-between gap-4 border-t border-slate-100 pt-4">
+                    <dt className="font-medium text-slate-700">You repay</dt>
+                    <dd className="text-lg font-semibold text-slate-950">
+                      <CurrencyDisplay
+                        amountMinorUnits={repayment}
+                        currency={offer.currency}
+                      />
+                    </dd>
+                  </div>
+                  <div className="flex justify-between gap-4">
+                    <dt className="text-slate-500">Due</dt>
+                    <dd className="font-semibold">
+                      {dateFormatter.format(estimatedDueAt)}
+                    </dd>
+                  </div>
+                </dl>
+                <p className="my-5 rounded-xl bg-slate-50 px-4 py-3 text-xs leading-5 text-slate-600">
+                  Confirmation releases the secured funds to your wallet and
+                  starts the loan. If the offer was taken moments earlier,
+                  nothing is transferred.
+                </p>
+                <ConfirmBorrowForm offerId={offer.id} />
+              </>
+            )}
           </CardContent>
         </Card>
       </div>

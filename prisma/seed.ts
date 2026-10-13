@@ -8,6 +8,7 @@ import {
   lockLedgerAccounts,
   postLedgerTransaction,
 } from "../src/modules/ledger/infrastructure/ledger-posting";
+import { requireSafeDemoEnvironment } from "../scripts/demo/demo-environment";
 
 const DEMO_ORGANIZATION = {
   name: "Acme Corp",
@@ -49,6 +50,7 @@ function dateFromNow(now: Date, days: number, hours = 0): Date {
 }
 
 async function seed(): Promise<void> {
+  requireSafeDemoEnvironment(process.env);
   const now = new Date();
   const organization = await prisma.organization.upsert({
     where: { slug: DEMO_ORGANIZATION.slug },
@@ -75,8 +77,6 @@ async function seed(): Promise<void> {
         passwordHash,
       },
     });
-
-    await prisma.session.deleteMany({ where: { userId: user.id } });
 
     const membership = await prisma.organizationMembership.upsert({
       where: {
@@ -106,6 +106,90 @@ async function seed(): Promise<void> {
 
     if (!id) throw new Error(`Missing seeded membership for ${email}.`);
 
+    return id;
+  };
+
+  // Keep a developer's existing ERPNext endpoint and credential reference intact.
+  // A placeholder integration is created only for a fresh, isolated demo database.
+  const existingDirectoryIntegration =
+    await prisma.employeeDirectoryIntegration.findUnique({
+      where: { organizationId: organization.id },
+    });
+  const directoryIntegration =
+    existingDirectoryIntegration ??
+    (await prisma.employeeDirectoryIntegration.create({
+      data: {
+        organizationId: organization.id,
+        provider: "ERPNEXT",
+        baseUrl: "https://erpnext.demo.invalid",
+        authMethod: "TOKEN",
+        credentialReference: "development-demo-not-configured",
+        statusMapping: {
+          Active: "ACTIVE",
+          Inactive: "INACTIVE",
+          Left: "TERMINATED",
+        },
+        connectionStatus: "NOT_TESTED",
+      },
+    }));
+
+  const employeeMappingIds = new Map<string, string>();
+  for (const [index, email] of [
+    "alice@acme.test",
+    "bob@acme.test",
+    "charlie@acme.test",
+  ].entries()) {
+    const user = DEMO_USERS.find((candidate) => candidate.email === email);
+    if (!user) throw new Error(`Missing seeded user for ${email}.`);
+    const externalEmployeeId = `DEMO-EMP-${String(index + 1).padStart(3, "0")}`;
+    const existingMapping = await prisma.employeeDirectoryMapping.findFirst({
+      where: {
+        organizationId: organization.id,
+        integrationId: directoryIntegration.id,
+        matchedMembershipId: membershipId(email),
+      },
+    });
+    const mapping =
+      existingMapping ??
+      (await prisma.employeeDirectoryMapping.upsert({
+        where: {
+          organizationId_integrationId_externalEmployeeId: {
+            organizationId: organization.id,
+            integrationId: directoryIntegration.id,
+            externalEmployeeId,
+          },
+        },
+        update: {
+          fullName: user.name,
+          email,
+          externalStatus: "Active",
+          normalizedStatus: "ACTIVE",
+          matchStatus: "MATCHED",
+          matchMethod: "UNIQUE_EMAIL",
+          matchedMembershipId: membershipId(email),
+          lastSynchronizedAt: now,
+        },
+        create: {
+          organizationId: organization.id,
+          integrationId: directoryIntegration.id,
+          externalEmployeeId,
+          employeeCode: externalEmployeeId,
+          fullName: user.name,
+          email,
+          externalStatus: "Active",
+          normalizedStatus: "ACTIVE",
+          matchStatus: "MATCHED",
+          matchMethod: "UNIQUE_EMAIL",
+          matchedMembershipId: membershipId(email),
+          lastSynchronizedAt: now,
+        },
+      }));
+    employeeMappingIds.set(email, mapping.id);
+  }
+
+  const employeeMappingId = (email: string): string => {
+    const id = employeeMappingIds.get(email);
+    if (!id) throw new Error(`Missing employee mapping for ${email}.`);
     return id;
   };
 
@@ -438,6 +522,254 @@ async function seed(): Promise<void> {
       },
     });
   }
+
+  const plans = [
+    {
+      id: "55000000-0000-4000-8000-000000000001",
+      loanId: "22000000-0000-4000-8000-000000000001",
+      termMonths: 2,
+      totalRepaymentMinorUnits: 84_000n,
+      consentedAt: dateFromNow(now, -18),
+      installments: [
+        {
+          id: "56000000-0000-4000-8000-000000000001",
+          amount: 42_000n,
+          dueAt: dateFromNow(now, -8),
+        },
+        {
+          id: "56000000-0000-4000-8000-000000000002",
+          amount: 42_000n,
+          dueAt: dateFromNow(now, 2),
+        },
+      ],
+    },
+    {
+      id: "55000000-0000-4000-8000-000000000002",
+      loanId: "22000000-0000-4000-8000-000000000002",
+      termMonths: 3,
+      totalRepaymentMinorUnits: 126_000n,
+      consentedAt: dateFromNow(now, -34),
+      installments: [
+        {
+          id: "56000000-0000-4000-8000-000000000003",
+          amount: 42_000n,
+          dueAt: dateFromNow(now, -24),
+        },
+        {
+          id: "56000000-0000-4000-8000-000000000004",
+          amount: 42_000n,
+          dueAt: dateFromNow(now, -14),
+        },
+        {
+          id: "56000000-0000-4000-8000-000000000005",
+          amount: 42_000n,
+          dueAt: dateFromNow(now, -4),
+        },
+      ],
+    },
+    {
+      id: "55000000-0000-4000-8000-000000000003",
+      loanId: "22000000-0000-4000-8000-000000000003",
+      termMonths: 1,
+      totalRepaymentMinorUnits: 42_000n,
+      consentedAt: dateFromNow(now, -28),
+      installments: [
+        {
+          id: "56000000-0000-4000-8000-000000000006",
+          amount: 42_000n,
+          dueAt: dateFromNow(now, -10),
+        },
+      ],
+    },
+    {
+      id: "55000000-0000-4000-8000-000000000004",
+      loanId: "22000000-0000-4000-8000-000000000004",
+      termMonths: 3,
+      totalRepaymentMinorUnits: 63_000n,
+      consentedAt: dateFromNow(now, -3),
+      installments: [
+        {
+          id: "56000000-0000-4000-8000-000000000007",
+          amount: 21_000n,
+          dueAt: dateFromNow(now, 5),
+        },
+        {
+          id: "56000000-0000-4000-8000-000000000008",
+          amount: 21_000n,
+          dueAt: dateFromNow(now, 13),
+        },
+        {
+          id: "56000000-0000-4000-8000-000000000009",
+          amount: 21_000n,
+          dueAt: dateFromNow(now, 21),
+        },
+      ],
+    },
+  ];
+
+  for (const plan of plans) {
+    await prisma.loanRepaymentPlan.upsert({
+      where: { id: plan.id },
+      update: {
+        organizationId: organization.id,
+        loanId: plan.loanId,
+        status: "ACTIVE",
+        termMonths: plan.termMonths,
+        installmentCount: plan.installments.length,
+        totalRepaymentMinorUnits: plan.totalRepaymentMinorUnits,
+        currency: organization.currency,
+        borrowerConsentedAt: plan.consentedAt,
+        effectiveAt: plan.consentedAt,
+      },
+      create: {
+        id: plan.id,
+        organizationId: organization.id,
+        loanId: plan.loanId,
+        version: 1,
+        status: "ACTIVE",
+        termMonths: plan.termMonths,
+        installmentCount: plan.installments.length,
+        totalRepaymentMinorUnits: plan.totalRepaymentMinorUnits,
+        currency: organization.currency,
+        borrowerConsentedAt: plan.consentedAt,
+        effectiveAt: plan.consentedAt,
+      },
+    });
+    for (const [index, installment] of plan.installments.entries()) {
+      await prisma.loanInstallment.upsert({
+        where: { id: installment.id },
+        update: {
+          organizationId: organization.id,
+          loanId: plan.loanId,
+          planId: plan.id,
+          sequence: index + 1,
+          amountMinorUnits: installment.amount,
+          dueAt: installment.dueAt,
+        },
+        create: {
+          id: installment.id,
+          organizationId: organization.id,
+          loanId: plan.loanId,
+          planId: plan.id,
+          sequence: index + 1,
+          amountMinorUnits: installment.amount,
+          dueAt: installment.dueAt,
+        },
+      });
+    }
+  }
+
+  const allocations = [
+    [
+      "57000000-0000-4000-8000-000000000001",
+      "56000000-0000-4000-8000-000000000001",
+      "33000000-0000-4000-8000-000000000001",
+      14_000n,
+    ],
+    [
+      "57000000-0000-4000-8000-000000000002",
+      "56000000-0000-4000-8000-000000000001",
+      "33000000-0000-4000-8000-000000000002",
+      20_000n,
+    ],
+    [
+      "57000000-0000-4000-8000-000000000003",
+      "56000000-0000-4000-8000-000000000003",
+      "33000000-0000-4000-8000-000000000003",
+      36_000n,
+    ],
+    [
+      "57000000-0000-4000-8000-000000000004",
+      "56000000-0000-4000-8000-000000000006",
+      "33000000-0000-4000-8000-000000000004",
+      42_000n,
+    ],
+  ] as const;
+
+  for (const [
+    id,
+    installmentId,
+    repaymentId,
+    amountMinorUnits,
+  ] of allocations) {
+    await prisma.repaymentAllocation.upsert({
+      where: { id },
+      update: {
+        organizationId: organization.id,
+        installmentId,
+        repaymentId,
+        amountMinorUnits,
+      },
+      create: {
+        id,
+        organizationId: organization.id,
+        installmentId,
+        repaymentId,
+        amountMinorUnits,
+      },
+    });
+  }
+
+  const payrollPeriodStart = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1),
+  );
+  const payrollPeriodEnd = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1) - 1,
+  );
+  await prisma.payrollDeductionProposal.upsert({
+    where: { id: "66000000-0000-4000-8000-000000000001" },
+    update: {
+      organizationId: organization.id,
+      employeeMappingId: employeeMappingId("alice@acme.test"),
+      payrollPeriodStart,
+      payrollPeriodEnd,
+      outstandingAmountMinorUnits: 42_000n,
+      proposedAmountMinorUnits: 42_000n,
+    },
+    create: {
+      id: "66000000-0000-4000-8000-000000000001",
+      organizationId: organization.id,
+      loanId: "22000000-0000-4000-8000-000000000001",
+      installmentId: "56000000-0000-4000-8000-000000000002",
+      employeeMappingId: employeeMappingId("alice@acme.test"),
+      idempotencyKey: "seed:payroll:alice:current-period",
+      payrollPeriodStart,
+      payrollPeriodEnd,
+      scheduledAmountMinorUnits: 42_000n,
+      outstandingAmountMinorUnits: 42_000n,
+      proposedAmountMinorUnits: 42_000n,
+      currency: organization.currency,
+      authorizationStatus: "NOT_RECORDED",
+      status: "PROPOSED",
+    },
+  });
+
+  await prisma.delinquencyCase.upsert({
+    where: { installmentId: "56000000-0000-4000-8000-000000000003" },
+    update: {
+      amountDueMinorUnits: 42_000n,
+      amountPaidMinorUnits: 36_000n,
+      outstandingMinorUnits: 6_000n,
+      daysOverdue: 24,
+      state: "PARTIALLY_PAID",
+      recommendedAction: "EMPLOYER_REVIEW",
+      lastEvaluatedAt: now,
+    },
+    create: {
+      id: "77000000-0000-4000-8000-000000000001",
+      organizationId: organization.id,
+      loanId: "22000000-0000-4000-8000-000000000002",
+      installmentId: "56000000-0000-4000-8000-000000000003",
+      status: "OPEN",
+      amountDueMinorUnits: 42_000n,
+      amountPaidMinorUnits: 36_000n,
+      outstandingMinorUnits: 6_000n,
+      daysOverdue: 24,
+      state: "PARTIALLY_PAID",
+      recommendedAction: "EMPLOYER_REVIEW",
+      lastEvaluatedAt: now,
+    },
+  });
 
   const auditEvents = [
     {

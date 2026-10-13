@@ -34,9 +34,10 @@ stateDiagram-v2
     CANCELLED --> [*]
 ```
 
-`APPROVAL_CONSIDERATION` is only a rules-engine recommendation. It never issues
-an authorization without an immutable employer-admin `APPROVED` review.
-Automatic score-based approval is disabled.
+The active controlled-pilot engine never emits `APPROVAL_CONSIDERATION`; that
+value remains only for historical database compatibility. Historical
+score-based records cannot authorize signing. Every non-ineligible application
+is `REVIEW_REQUIRED` and needs an immutable employer-admin approval.
 
 ## Lifecycle controls
 

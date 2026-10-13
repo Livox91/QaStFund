@@ -94,7 +94,7 @@ function borrowDependencies(chainOfferId: bigint) {
       signature: `0x${"a".repeat(130)}`,
     })),
     evaluateOrigination: vi.fn().mockResolvedValue({
-      status: "APPROVAL_CONSIDERATION",
+      status: "REVIEW_REQUIRED",
       override: { outcome: "APPROVED" },
     }),
   } as never;

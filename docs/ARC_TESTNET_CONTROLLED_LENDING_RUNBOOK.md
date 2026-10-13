@@ -1,8 +1,16 @@
 # First controlled Arc Testnet lending runbook
 
-Last reviewed: 2026-10-11
+Last reviewed: 2026-10-13
 
-Status: **PREPARED — LIVE LENDING TRANSACTION NOT EXECUTED**
+Status: **HISTORICAL FIRST-RUN TRANSACTION REFERENCE**
+
+This document preserves the preparation and transaction boundaries used for the
+first Arc Testnet lifecycle. Its borrower sequence predates the mandatory
+`REQUESTED -> REVIEW_REQUIRED -> APPROVED` workflow and must not be used as the
+current submission script. Use `DEMONSTRATION_RUNBOOK.md` for the current demo
+and `LOAN_ORIGINATION_V1.md` for the implemented state machine. The completed
+historical lifecycle and receipts are recorded in
+`ARC_TESTNET_PILOT_REPORT.md`.
 
 This runbook is the approval boundary for the first end-to-end lending
 transaction. Preparation, preflight, audits, and automated tests are safe to
@@ -11,17 +19,17 @@ has separately approved the live run.
 
 ## Fixed pilot configuration
 
-| Item                    | Required value                                                             |
-| ----------------------- | -------------------------------------------------------------------------- |
-| Chain                   | Arc Testnet (`5042002`)                                                    |
-| RPC                     | `https://rpc.testnet.arc.io`                                               |
-| ERC-20 USDC             | `0x3600000000000000000000000000000000000000` (6 decimals)                  |
-| Escrow                  | `0x46c4a0a877e6967542078A580468b80195c466cC`                               |
-| Escrow deployment block | `66108453`                                                                 |
-| Borrow authorizer       | `0xa9200E14C8BeA07187368232455b2b1c8F2Bc63f`                               |
-| Organization            | Qasim Funds                                                                |
-| Candidate wallet A      | `231572@students.au.edu.pk` — `0x7Ee89f2bE8C1e15C92b4577B3BE3A0bddB5CA957` |
-| Candidate wallet B      | `zhzaidi91@gmail.com` — `0x98d66F9B53f7A71DCC5CDb96E4176fF80a6b1fcD`       |
+| Item                    | Required value                                                          |
+| ----------------------- | ----------------------------------------------------------------------- |
+| Chain                   | Arc Testnet (`5042002`)                                                 |
+| RPC                     | `https://rpc.testnet.arc.io`                                            |
+| ERC-20 USDC             | `0x3600000000000000000000000000000000000000` (6 decimals)               |
+| Escrow                  | `0x46c4a0a877e6967542078A580468b80195c466cC`                            |
+| Escrow deployment block | `66108453`                                                              |
+| Borrow authorizer       | `0xa9200E14C8BeA07187368232455b2b1c8F2Bc63f`                            |
+| Organization            | Qasim Funds                                                             |
+| Candidate wallet A      | Designated pilot identity and wallet; see the private operator brief    |
+| Candidate wallet B      | Distinct designated identity and wallet; see the private operator brief |
 
 Both candidates are active employees with `canLend` and `canBorrow` enabled.
 The operator must record which candidate is the lender and which is the

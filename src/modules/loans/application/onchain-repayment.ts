@@ -139,8 +139,8 @@ export async function prepareOnChainRepayment(
     where: { repaymentRequestId: requestId },
     select: {
       id: true,
-      status: true,
       amountMinorUnits: true,
+      status: true,
       loan: {
         select: {
           id: true,
@@ -431,6 +431,7 @@ export async function confirmOnChainRepayment(
     },
     select: {
       id: true,
+      amountMinorUnits: true,
       status: true,
       paidAt: true,
       submissionTransactionHash: true,
@@ -448,6 +449,10 @@ export async function confirmOnChainRepayment(
           borrowerMembershipId: true,
           lenderMembershipId: true,
           currency: true,
+          principalAmountMinorUnits: true,
+          feeAmountMinorUnits: true,
+          repaymentDueAt: true,
+          activatedAt: true,
         },
       },
     },
@@ -651,6 +656,55 @@ export async function confirmOnChainRepayment(
     await transaction.loanRepayment.update({
       where: { id: repaymentId },
       data: { status: "COMPLETED", paidAt: repaidAt, completedAt: repaidAt },
+    });
+    let installment = await transaction.loanInstallment.findFirst({
+      where: {
+        organizationId: actor.organizationId,
+        loanId,
+        plan: { status: "ACTIVE" },
+      },
+      orderBy: { sequence: "asc" },
+      select: { id: true },
+    });
+    if (!installment) {
+      const totalRepaymentMinorUnits =
+        pending.loan.principalAmountMinorUnits +
+        pending.loan.feeAmountMinorUnits;
+      const plan = await transaction.loanRepaymentPlan.create({
+        data: {
+          organizationId: actor.organizationId,
+          loanId,
+          version: 1,
+          status: "ACTIVE",
+          termMonths: 1,
+          installmentCount: 1,
+          totalRepaymentMinorUnits,
+          currency: pending.loan.currency,
+          borrowerConsentedAt:
+            pending.loan.activatedAt ?? pending.loan.startedAt,
+          effectiveAt: pending.loan.activatedAt ?? pending.loan.startedAt,
+        },
+      });
+      installment = await transaction.loanInstallment.create({
+        data: {
+          organizationId: actor.organizationId,
+          loanId,
+          planId: plan.id,
+          sequence: 1,
+          amountMinorUnits: totalRepaymentMinorUnits,
+          dueAt: pending.loan.repaymentDueAt,
+        },
+        select: { id: true },
+      });
+    }
+    await transaction.repaymentAllocation.createMany({
+      data: {
+        organizationId: actor.organizationId,
+        installmentId: installment.id,
+        repaymentId,
+        amountMinorUnits: pending.amountMinorUnits,
+      },
+      skipDuplicates: true,
     });
     await transaction.auditEvent.createMany({
       data: [

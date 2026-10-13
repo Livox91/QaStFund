@@ -100,7 +100,9 @@ The CI workflow runs this verifier using its isolated PostgreSQL service.
 
 1. Keep user traffic and transaction submission disabled.
 2. Confirm `ARC_CHAIN_ID`, the escrow contract address, RPC URL, confirmation depth, and `ARC_RECONCILIATION_START_BLOCK`. The start block must be the escrow deployment block, not the current head.
-3. Inspect `/api/health/dependencies` and the restored `BlockchainReconciliationCursor`.
+3. Inspect the restored `BlockchainReconciliationCursor` and use an
+   authenticated `GET /api/health/dependencies` with
+   `OPERATIONAL_HEALTH_SECRET`. This health request is read-only.
 4. If the cursor is trustworthy, run bounded reconciliation passes until the cursor catches the finalized chain head:
 
    ```powershell

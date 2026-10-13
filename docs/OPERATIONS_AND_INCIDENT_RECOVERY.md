@@ -6,17 +6,19 @@ or financial transaction submission.
 
 ## Health endpoints and access
 
-| Endpoint                                      | Purpose                                                                      | Data classification                                     |
-| --------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------- |
-| `GET /api/health/live`                        | Process liveness only                                                        | Public-safe                                             |
-| `GET /api/health/ready`                       | Configuration and PostgreSQL readiness                                       | Public-safe                                             |
-| `GET /api/health/dependencies`                | Sanitized integration, transaction, job, incident, and reconciliation health | Operational metadata; restrict at ingress when possible |
-| `GET /api/employer/operations/loans/{loanId}` | Organization-scoped loan evidence trace                                      | Employer administrator only                             |
+| Endpoint                                      | Purpose                                                                                | Data classification            |
+| --------------------------------------------- | -------------------------------------------------------------------------------------- | ------------------------------ |
+| `GET /api/health/live`                        | Process liveness only                                                                  | Public-safe                    |
+| `GET /api/health/ready`                       | Configuration and PostgreSQL readiness                                                 | Public-safe                    |
+| `GET /api/health/dependencies`                | Read-only sanitized integration, transaction, job, incident, and reconciliation health | Operator bearer token required |
+| `POST /api/health/dependencies`               | Observe dependencies and persist/deliver deduplicated incident transitions             | Operator bearer token required |
+| `GET /api/employer/operations/loans/{loanId}` | Organization-scoped loan evidence trace                                                | Employer administrator only    |
 
-The dependency endpoint is read-only with respect to financial state. It may
-evaluate and deliver deduplicated operational incidents. It never runs an
-ERPNext sync, advances a reconciliation cursor, submits an on-chain
-transaction, or changes ledger history.
+Both methods require `Authorization: Bearer <OPERATIONAL_HEALTH_SECRET>`.
+`GET` is fully read-only and does not persist incidents or deliver alerts.
+`POST` evaluates and may persist/deliver deduplicated operational incident
+transitions. Neither method runs an ERPNext sync, advances a reconciliation
+cursor, submits an on-chain transaction, or changes ledger history.
 
 The operator loan trace contains safe record IDs, statuses, timestamps,
 transaction hashes, masked wallet addresses, canonical contract-event evidence,
@@ -166,8 +168,10 @@ and surfaced in health; it is not sent through customer email.
 5. Verify the missed/failing incident recovers.
 
 No in-process component can alert while the application, database, and
-scheduler are all unavailable. An external uptime check must poll liveness,
-readiness, and dependency health to detect that total outage.
+scheduler are all unavailable. An external uptime check must poll public
+liveness/readiness plus authenticated dependency health to detect that total
+outage. Use `GET` for passive polling and a deliberately scheduled `POST` when
+incident transition recording and alert delivery are required.
 
 ## Verification criteria
 

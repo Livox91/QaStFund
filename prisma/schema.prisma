@@ -129,6 +129,13 @@ enum AuditEventType {
   EMPLOYEE_INVITATION_REVOKED
   PASSWORD_CHANGED
   PASSWORD_RESET
+  REPAYMENT_PLAN_CREATED
+  REPAYMENT_PLAN_REVISED
+  PAYROLL_DEDUCTION_PROPOSED
+  PAYROLL_DEDUCTION_REVIEWED
+  PAYROLL_DEDUCTION_RECONCILED
+  DELINQUENCY_NOTIFICATION_CREATED
+  DELINQUENCY_CASE_REVIEWED
 }
 
 enum RepaymentStatus {
@@ -136,6 +143,36 @@ enum RepaymentStatus {
   COMPLETED
   FAILED
   CANCELLED
+}
+
+enum RepaymentPlanStatus {
+  PROPOSED
+  ACTIVE
+  SUPERSEDED
+  REJECTED
+}
+
+enum PayrollDeductionStatus {
+  PROPOSED
+  AWAITING_APPROVAL
+  APPROVED
+  SUBMITTED
+  PARTIALLY_DEDUCTED
+  RECONCILED
+  REJECTED
+  FAILED
+  NOT_AVAILABLE
+}
+
+enum EmployeeDeductionAuthorizationStatus {
+  NOT_RECORDED
+  AUTHORIZED
+  REVOKED
+}
+
+enum DelinquencyCaseStatus {
+  OPEN
+  RESOLVED
 }
 
 enum BlockchainEventName {
@@ -313,6 +350,12 @@ model Organization {
   employeeInvitations          EmployeeInvitation[]
   passwordResetTokens          PasswordResetToken[]
   operationalIncidents         OperationalIncident[]
+  repaymentPlans               LoanRepaymentPlan[]
+  loanInstallments             LoanInstallment[]
+  repaymentAllocations         RepaymentAllocation[]
+  payrollDeductionProposals    PayrollDeductionProposal[]
+  delinquencyCases             DelinquencyCase[]
+  delinquencyNotifications     DelinquencyNotification[]
 }
 
 model ArcWallet {
@@ -381,6 +424,11 @@ model OrganizationMembership {
   employeeInvitations       EmployeeInvitation[]       @relation("EmployeeInvitationEmployee")
   invitationsCreated        EmployeeInvitation[]       @relation("EmployeeInvitationInvitedBy")
   passwordResetTokens       PasswordResetToken[]
+  repaymentPlansApproved    LoanRepaymentPlan[]        @relation("RepaymentPlanApprovedBy")
+  payrollDeductionsReviewed PayrollDeductionProposal[] @relation("PayrollDeductionReviewedBy")
+  delinquencyCasesReviewed  DelinquencyCase[]          @relation("DelinquencyCaseReviewedBy")
+  arrangementsRequested     DelinquencyCase[]          @relation("DelinquencyArrangementRequestedBy")
+  delinquencyNotifications  DelinquencyNotification[]  @relation("DelinquencyNotificationRecipient")
 
   @@unique([organizationId, userId])
   @@unique([organizationId, id])
@@ -496,9 +544,11 @@ model EmployeeDirectoryMapping {
   organization        Organization                  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   integration         EmployeeDirectoryIntegration  @relation(fields: [organizationId, integrationId], references: [organizationId, id], onDelete: Cascade)
   matchedMembership   OrganizationMembership?       @relation("EmployeeDirectoryMatchedMembership", fields: [organizationId, matchedMembershipId], references: [organizationId, id], onDelete: Restrict)
+  payrollDeductions   PayrollDeductionProposal[]
 
   @@unique([organizationId, integrationId, externalEmployeeId])
   @@unique([organizationId, integrationId, matchedMembershipId])
+  @@unique([organizationId, id])
   @@index([organizationId, matchStatus])
 }
 
@@ -593,51 +643,55 @@ model EmployeeBalance {
 }
 
 model Loan {
-  id                             String                    @id @default(uuid()) @db.Uuid
-  organizationId                 String                    @db.Uuid
-  lenderMembershipId             String                    @db.Uuid
-  borrowerMembershipId           String                    @db.Uuid
-  lendingOfferId                 String?                   @db.Uuid
-  borrowRequestId                String?                   @unique @db.Uuid
-  chainLoanId                    String?                   @db.VarChar(78)
-  chainOfferId                   String?                   @db.VarChar(78)
-  contractAddress                String?                   @db.VarChar(42)
-  lenderWalletAddress            String?                   @db.VarChar(42)
-  borrowerWalletAddress          String?                   @db.VarChar(42)
+  id                             String                     @id @default(uuid()) @db.Uuid
+  organizationId                 String                     @db.Uuid
+  lenderMembershipId             String                     @db.Uuid
+  borrowerMembershipId           String                     @db.Uuid
+  lendingOfferId                 String?                    @db.Uuid
+  borrowRequestId                String?                    @unique @db.Uuid
+  chainLoanId                    String?                    @db.VarChar(78)
+  chainOfferId                   String?                    @db.VarChar(78)
+  contractAddress                String?                    @db.VarChar(42)
+  lenderWalletAddress            String?                    @db.VarChar(42)
+  borrowerWalletAddress          String?                    @db.VarChar(42)
   principalBaseUnits             BigInt?
   repaymentBaseUnits             BigInt?
-  acceptanceTransactionHash      String?                   @unique @db.VarChar(66)
-  repaymentTransactionHash       String?                   @unique @db.VarChar(66)
+  acceptanceTransactionHash      String?                    @unique @db.VarChar(66)
+  repaymentTransactionHash       String?                    @unique @db.VarChar(66)
   onChainStartedAt               DateTime?
   onChainDueAt                   DateTime?
   onChainRepaidAt                DateTime?
   principalAmountMinorUnits      BigInt
-  feeAmountMinorUnits            BigInt                    @default(0)
+  feeAmountMinorUnits            BigInt                     @default(0)
   outstandingPrincipalMinorUnits BigInt
-  currency                       String                    @db.VarChar(3)
+  currency                       String                     @db.VarChar(3)
   durationDays                   Int
   feeRateBasisPoints             Int
   status                         LoanStatus
-  requestedAt                    DateTime                  @default(now())
+  requestedAt                    DateTime                   @default(now())
   approvedAt                     DateTime?
   activatedAt                    DateTime?
   closedAt                       DateTime?
-  startedAt                      DateTime                  @default(now())
+  startedAt                      DateTime                   @default(now())
   repaymentDueAt                 DateTime
-  createdAt                      DateTime                  @default(now())
-  updatedAt                      DateTime                  @updatedAt
+  createdAt                      DateTime                   @default(now())
+  updatedAt                      DateTime                   @updatedAt
   policyVersion                  Int?
   policySnapshot                 Json?
-  organization                   Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  lenderMembership               OrganizationMembership    @relation("LoansAsLender", fields: [organizationId, lenderMembershipId], references: [organizationId, id], onDelete: Restrict)
-  borrowerMembership             OrganizationMembership    @relation("LoansAsBorrower", fields: [organizationId, borrowerMembershipId], references: [organizationId, id], onDelete: Restrict)
-  lendingOffer                   LendingOffer?             @relation(fields: [organizationId, lendingOfferId], references: [organizationId, id], onDelete: Restrict)
+  organization                   Organization               @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  lenderMembership               OrganizationMembership     @relation("LoansAsLender", fields: [organizationId, lenderMembershipId], references: [organizationId, id], onDelete: Restrict)
+  borrowerMembership             OrganizationMembership     @relation("LoansAsBorrower", fields: [organizationId, borrowerMembershipId], references: [organizationId, id], onDelete: Restrict)
+  lendingOffer                   LendingOffer?              @relation(fields: [organizationId, lendingOfferId], references: [organizationId, id], onDelete: Restrict)
   repayments                     LoanRepayment[]
   auditEvents                    AuditEvent[]
   decisionEvaluations            LoanDecisionEvaluation[]
   decisionReviews                LoanDecisionReview[]
   originationDecisions           LoanOriginationDecision[]
   employerActionAttempts         EmployerActionAttempt[]
+  repaymentPlans                 LoanRepaymentPlan[]
+  installments                   LoanInstallment[]
+  payrollDeductionProposals      PayrollDeductionProposal[]
+  delinquencyCases               DelinquencyCase[]
 
   @@unique([organizationId, id])
   @@unique([contractAddress, chainLoanId])
@@ -815,23 +869,193 @@ model LedgerEntry {
 }
 
 model LoanRepayment {
-  id                        String          @id @default(uuid()) @db.Uuid
-  organizationId            String          @db.Uuid
-  loanId                    String          @db.Uuid
-  repaymentRequestId        String?         @unique @db.Uuid
-  submissionTransactionHash String?         @unique @db.VarChar(66)
+  id                        String                    @id @default(uuid()) @db.Uuid
+  organizationId            String                    @db.Uuid
+  loanId                    String                    @db.Uuid
+  repaymentRequestId        String?                   @unique @db.Uuid
+  submissionTransactionHash String?                   @unique @db.VarChar(66)
   amountMinorUnits          BigInt
-  currency                  String          @db.VarChar(3)
-  status                    RepaymentStatus @default(COMPLETED)
+  currency                  String                    @db.VarChar(3)
+  status                    RepaymentStatus           @default(COMPLETED)
   paidAt                    DateTime
   completedAt               DateTime?
-  createdAt                 DateTime        @default(now())
-  organization              Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  loan                      Loan            @relation(fields: [organizationId, loanId], references: [organizationId, id], onDelete: Restrict)
+  createdAt                 DateTime                  @default(now())
+  organization              Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  loan                      Loan                      @relation(fields: [organizationId, loanId], references: [organizationId, id], onDelete: Restrict)
   auditEvents               AuditEvent[]
+  allocations               RepaymentAllocation[]
+  payrollDeductionProposal  PayrollDeductionProposal?
 
   @@unique([organizationId, id])
   @@index([organizationId, loanId, paidAt])
+}
+
+model LoanRepaymentPlan {
+  id                       String                  @id @default(uuid()) @db.Uuid
+  organizationId           String                  @db.Uuid
+  loanId                   String                  @db.Uuid
+  version                  Int
+  status                   RepaymentPlanStatus     @default(PROPOSED)
+  termMonths               Int
+  installmentCount         Int
+  totalRepaymentMinorUnits BigInt
+  currency                 String                  @db.VarChar(3)
+  reason                   String?                 @db.VarChar(1000)
+  borrowerConsentedAt      DateTime?
+  approvedByMembershipId   String?                 @db.Uuid
+  approvedAt               DateTime?
+  effectiveAt              DateTime?
+  supersededAt             DateTime?
+  createdAt                DateTime                @default(now())
+  organization             Organization            @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  loan                     Loan                    @relation(fields: [organizationId, loanId], references: [organizationId, id], onDelete: Restrict)
+  approvedByMembership     OrganizationMembership? @relation("RepaymentPlanApprovedBy", fields: [organizationId, approvedByMembershipId], references: [organizationId, id], onDelete: Restrict)
+  installments             LoanInstallment[]
+
+  @@unique([organizationId, id])
+  @@unique([loanId, version])
+  @@index([organizationId, loanId, status])
+}
+
+model LoanInstallment {
+  id                String                     @id @default(uuid()) @db.Uuid
+  organizationId    String                     @db.Uuid
+  loanId            String                     @db.Uuid
+  planId            String                     @db.Uuid
+  sequence          Int
+  amountMinorUnits  BigInt
+  dueAt             DateTime
+  createdAt         DateTime                   @default(now())
+  organization      Organization               @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  loan              Loan                       @relation(fields: [organizationId, loanId], references: [organizationId, id], onDelete: Restrict)
+  plan              LoanRepaymentPlan          @relation(fields: [organizationId, planId], references: [organizationId, id], onDelete: Restrict)
+  allocations       RepaymentAllocation[]
+  payrollDeductions PayrollDeductionProposal[]
+  delinquencyCase   DelinquencyCase?
+
+  @@unique([organizationId, id])
+  @@unique([planId, sequence])
+  @@index([organizationId, dueAt])
+  @@index([organizationId, loanId, dueAt])
+}
+
+model RepaymentAllocation {
+  id               String          @id @default(uuid()) @db.Uuid
+  organizationId   String          @db.Uuid
+  installmentId    String          @db.Uuid
+  repaymentId      String          @db.Uuid
+  amountMinorUnits BigInt
+  createdAt        DateTime        @default(now())
+  organization     Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  installment      LoanInstallment @relation(fields: [organizationId, installmentId], references: [organizationId, id], onDelete: Restrict)
+  repayment        LoanRepayment   @relation(fields: [organizationId, repaymentId], references: [organizationId, id], onDelete: Restrict)
+
+  @@unique([organizationId, id])
+  @@unique([installmentId, repaymentId])
+  @@index([organizationId, installmentId])
+  @@index([organizationId, repaymentId])
+}
+
+model PayrollDeductionProposal {
+  id                          String                               @id @default(uuid()) @db.Uuid
+  organizationId              String                               @db.Uuid
+  loanId                      String                               @db.Uuid
+  installmentId               String                               @db.Uuid
+  employeeMappingId           String                               @db.Uuid
+  idempotencyKey              String                               @db.VarChar(128)
+  payrollPeriodStart          DateTime
+  payrollPeriodEnd            DateTime
+  scheduledAmountMinorUnits   BigInt
+  outstandingAmountMinorUnits BigInt
+  proposedAmountMinorUnits    BigInt
+  actualDeductedMinorUnits    BigInt                               @default(0)
+  currency                    String                               @db.VarChar(3)
+  authorizationStatus         EmployeeDeductionAuthorizationStatus @default(NOT_RECORDED)
+  authorizedAt                DateTime?
+  status                      PayrollDeductionStatus               @default(PROPOSED)
+  reviewedByMembershipId      String?                              @db.Uuid
+  reviewedAt                  DateTime?
+  reviewRationale             String?                              @db.VarChar(1000)
+  erpNextDocumentType         String?                              @db.VarChar(64)
+  erpNextDocumentReference    String?                              @db.VarChar(140)
+  lastSyncErrorCode           String?                              @db.VarChar(64)
+  repaymentId                 String?                              @unique @db.Uuid
+  reconciledAt                DateTime?
+  createdAt                   DateTime                             @default(now())
+  updatedAt                   DateTime                             @updatedAt
+  organization                Organization                         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  loan                        Loan                                 @relation(fields: [organizationId, loanId], references: [organizationId, id], onDelete: Restrict)
+  installment                 LoanInstallment                      @relation(fields: [organizationId, installmentId], references: [organizationId, id], onDelete: Restrict)
+  employeeMapping             EmployeeDirectoryMapping             @relation(fields: [organizationId, employeeMappingId], references: [organizationId, id], onDelete: Restrict)
+  reviewedByMembership        OrganizationMembership?              @relation("PayrollDeductionReviewedBy", fields: [organizationId, reviewedByMembershipId], references: [organizationId, id], onDelete: Restrict)
+  repayment                   LoanRepayment?                       @relation(fields: [organizationId, repaymentId], references: [organizationId, id], onDelete: Restrict)
+
+  @@unique([organizationId, id])
+  @@unique([organizationId, idempotencyKey])
+  @@unique([organizationId, repaymentId])
+  @@unique([organizationId, erpNextDocumentReference], map: "PayrollDeduction_externalReference_key")
+  @@unique([installmentId, payrollPeriodStart, payrollPeriodEnd])
+  @@index([organizationId, status, payrollPeriodStart])
+  @@index([organizationId, employeeMappingId, payrollPeriodStart])
+}
+
+model DelinquencyCase {
+  id                                 String                    @id @default(uuid()) @db.Uuid
+  organizationId                     String                    @db.Uuid
+  loanId                             String                    @db.Uuid
+  installmentId                      String                    @unique @db.Uuid
+  status                             DelinquencyCaseStatus     @default(OPEN)
+  amountDueMinorUnits                BigInt
+  amountPaidMinorUnits               BigInt
+  outstandingMinorUnits              BigInt
+  daysOverdue                        Int
+  state                              String                    @db.VarChar(32)
+  payrollStatus                      String?                   @db.VarChar(32)
+  recommendedAction                  String                    @db.VarChar(64)
+  lastEvaluatedAt                    DateTime
+  reviewedByMembershipId             String?                   @db.Uuid
+  reviewedAt                         DateTime?
+  reviewNote                         String?                   @db.VarChar(1000)
+  employeeContactedAt                DateTime?
+  contactNote                        String?                   @db.VarChar(1000)
+  arrangementRequestedAt             DateTime?
+  arrangementRequestedByMembershipId String?                   @db.Uuid
+  arrangementRequestNote             String?                   @db.VarChar(1000)
+  createdAt                          DateTime                  @default(now())
+  updatedAt                          DateTime                  @updatedAt
+  organization                       Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  loan                               Loan                      @relation(fields: [organizationId, loanId], references: [organizationId, id], onDelete: Restrict)
+  installment                        LoanInstallment           @relation(fields: [organizationId, installmentId], references: [organizationId, id], onDelete: Restrict)
+  reviewedByMembership               OrganizationMembership?   @relation("DelinquencyCaseReviewedBy", fields: [organizationId, reviewedByMembershipId], references: [organizationId, id], onDelete: Restrict)
+  arrangementRequestedBy             OrganizationMembership?   @relation("DelinquencyArrangementRequestedBy", fields: [organizationId, arrangementRequestedByMembershipId], references: [organizationId, id], onDelete: Restrict)
+  notifications                      DelinquencyNotification[]
+
+  @@unique([organizationId, id])
+  @@unique([organizationId, installmentId])
+  @@index([organizationId, status, daysOverdue])
+  @@index([organizationId, loanId])
+}
+
+model DelinquencyNotification {
+  id                    String                 @id @default(uuid()) @db.Uuid
+  organizationId        String                 @db.Uuid
+  caseId                String                 @db.Uuid
+  recipientMembershipId String                 @db.Uuid
+  idempotencyKey        String                 @unique @db.VarChar(160)
+  thresholdKey          String                 @db.VarChar(64)
+  deliveryStatus        EmailDeliveryStatus    @default(CREATED)
+  deliveryAttempts      Int                    @default(0)
+  lastFailureCode       String?                @db.VarChar(64)
+  sentAt                DateTime?
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  organization          Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  case                  DelinquencyCase        @relation(fields: [organizationId, caseId], references: [organizationId, id], onDelete: Cascade)
+  recipientMembership   OrganizationMembership @relation("DelinquencyNotificationRecipient", fields: [organizationId, recipientMembershipId], references: [organizationId, id], onDelete: Restrict)
+
+  @@unique([organizationId, id])
+  @@unique([caseId, thresholdKey])
+  @@index([organizationId, deliveryStatus, createdAt])
 }
 
 model AuditEvent {

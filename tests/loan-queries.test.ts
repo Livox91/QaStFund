@@ -9,7 +9,10 @@ import {
   listBorrowedLoans,
   listFundedLoans,
 } from "@/modules/loans/application/query-loans";
-import type { LoanView } from "@/modules/loans/domain/loan-query";
+import {
+  calculateLenderLoanAmounts,
+  type LoanView,
+} from "@/modules/loans/domain/loan-query";
 
 const employee: AuthenticatedActor = {
   userId: "employee-a",
@@ -50,6 +53,22 @@ function repository(): LoanQueryRepository {
 }
 
 describe("organization-scoped loan queries", () => {
+  it.each([
+    ["REQUESTED", [5_000n, 0n, 0n, 0n, 0n, 0n]],
+    ["APPROVED", [0n, 5_000n, 0n, 0n, 0n, 0n]],
+    ["ACTIVE", [0n, 0n, 0n, 5_000n, 1_000n, 4_150n]],
+    ["REPAID", [0n, 0n, 0n, 5_000n, 5_150n, 0n]],
+  ] as const)("separates lender amounts for %s loans", (status, expected) => {
+    const amounts = calculateLenderLoanAmounts({
+      ...loan,
+      status,
+      totalRepaidMinorUnits: expected[4],
+      remainingBalanceMinorUnits: expected[5],
+    });
+
+    expect(Object.values(amounts)).toEqual(expected);
+  });
+
   it("lists borrower and lender loans using identity-derived scope", async () => {
     const repo = repository();
 

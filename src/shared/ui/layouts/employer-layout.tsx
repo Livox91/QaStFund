@@ -8,6 +8,12 @@ const employerNavigation: ReadonlyArray<NavigationItem> = [
   { href: "/employer/employees", icon: "employees", label: "Employees" },
   { href: "/employer/loans", icon: "loans", label: "Loans" },
   { href: "/employer/monitoring", icon: "reports", label: "Monitoring" },
+  { href: "/employer/payroll", icon: "reports", label: "Payroll" },
+  {
+    href: "/employer/delinquency",
+    icon: "reports",
+    label: "Repayment exceptions",
+  },
   { href: "/employer/policies", icon: "policies", label: "Policies" },
   { href: "/employer/reports", icon: "reports", label: "Reports" },
   {

@@ -20,6 +20,7 @@ import {
   type CreatedBorrowingLoan,
 } from "@/modules/loans/domain/borrow-loan";
 import {
+  borrowOfferApiSchema,
   borrowOfferAmountSchema,
   confirmBorrowOfferSchema,
 } from "@/modules/loans/schemas/borrow-from-offer.schema";
@@ -80,6 +81,31 @@ describe("borrowing validation and calculations", () => {
         amount: "100.001",
         requestId: command.requestId,
       }).success,
+    ).toBe(false);
+  });
+
+  it("requires an idempotency key and a supported repayment term", () => {
+    expect(
+      borrowOfferApiSchema.parse({
+        amount: "40.00",
+        termMonths: 3,
+        requestId: command.requestId,
+      }),
+    ).toEqual({
+      amount: 4_000n,
+      termMonths: 3,
+      requestId: command.requestId,
+    });
+    expect(
+      borrowOfferApiSchema.safeParse({
+        amount: "40.00",
+        termMonths: 4,
+        requestId: command.requestId,
+      }).success,
+    ).toBe(false);
+    expect(
+      borrowOfferApiSchema.safeParse({ amount: "40.00", termMonths: 1 })
+        .success,
     ).toBe(false);
   });
 

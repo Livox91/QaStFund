@@ -7,14 +7,20 @@ A production-oriented foundation for an employee peer-to-peer lending applicatio
 
 Operations documentation: [database backup and disaster recovery](./DATABASE_BACKUP_AND_DISASTER_RECOVERY.md), [operational health](./OPERATIONAL_HEALTH.md), [operations and incident recovery](./OPERATIONS_AND_INCIDENT_RECOVERY.md), and the [employee onboarding and lending experience](./EMPLOYEE_ONBOARDING_AND_LENDING.md).
 
-The versioned scoring policy, audited data sources, mandatory gates, and API
-boundaries are documented in the [explainable loan decision engine v1](./LOAN_DECISION_ENGINE_V1.md).
+The versioned deterministic manual-review policy, audited data sources,
+mandatory gates, and API boundaries are documented in the
+[loan decision engine v1](./LOAN_DECISION_ENGINE_V1.md).
 The underlying field-by-field readiness assessment is recorded in the
 [loan decision data audit](./LOAN_DECISION_DATA_AUDIT.md).
 The integrated application, review, authorization, confirmation, and recovery
 state machine is documented in [end-to-end loan origination v1](./LOAN_ORIGINATION_V1.md).
 
 Arc Testnet pilot evidence and current blockers are recorded in the [Arc Testnet pilot report](./ARC_TESTNET_PILOT_REPORT.md).
+
+For submission and demonstration, begin with the repository-root
+[`README.md`](../README.md), the current [technical architecture](./ARCHITECTURE.md),
+the [demonstration runbook](./DEMONSTRATION_RUNBOOK.md), and the
+[submission summary](./SUBMISSION_SUMMARY.md).
 
 ## Prerequisites
 
@@ -60,7 +66,7 @@ Open:
 - `http://localhost:3000/profile` — authenticated profile
 - `http://localhost:3000/api/health/live` — process liveness
 - `http://localhost:3000/api/health/ready` — configuration and database readiness
-- `http://localhost:3000/api/health/dependencies` — sanitized dependency and worker health
+- `http://localhost:3000/api/health/dependencies` — operator-bearer-protected, sanitized dependency and worker health (`GET` is read-only; `POST` records incident transitions)
 - `http://localhost:3000/api/employer/operations/loans/[loanId]` — employer-admin operational evidence trace
 
 Verify the health endpoint from another terminal:

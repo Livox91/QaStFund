@@ -115,11 +115,14 @@ lifecycle test exposed and now covers these boundaries.
 - A dedicated `RATE_LIMIT_HASH_SECRET` is recommended but not required by base
   startup validation; local development falls back to `DATABASE_URL` as the
   HMAC key. Deployed environments should enforce a separate managed secret.
-- No explicit Content-Security-Policy is configured. Adding one requires a
-  Next.js-compatible nonce/hash design and testing with the Circle wallet SDK.
-- The dependency-health response exposes aggregate operational counts. It does
-  not expose credentials, but production ingress should decide whether those
-  metrics should remain public.
+- The checked-in Caddy configuration now supplies a narrow baseline CSP for
+  base URI, form actions, and frame ancestors. A script/style CSP still requires
+  a Next.js-compatible nonce/hash design and Circle wallet SDK testing; the
+  checked-in headers have not yet been verified on the live deployment.
+- The dependency-health response exposes aggregate operational counts only
+  after constant-time bearer authentication. `GET` is read-only and `POST` is
+  the explicit incident-recording surface. This change still requires
+  production deployment and external verification.
 - Circle passkey relying-party/origin configuration lives partly outside this
   repository. The configured production hostname must be verified in Circle
   Console; unit tests cannot prove that external setting.

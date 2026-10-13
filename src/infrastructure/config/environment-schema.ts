@@ -195,6 +195,10 @@ const environmentSchema = z
       (value) => (value === "" ? undefined : value),
       z.string().min(16).optional(),
     ),
+    OPERATIONAL_HEALTH_SECRET: z.preprocess(
+      (value) => (value === "" ? undefined : value),
+      z.string().min(32).optional(),
+    ),
     LOAN_DECISION_PROVIDER: z.enum(["rules", "model"]).default("rules"),
     EMPLOYER_ACTION_PROVIDER: z.enum(["mock"]).default("mock"),
     ERP_NEXT_ALLOW_LOCAL_HTTP: z
@@ -431,6 +435,7 @@ export function parseEnvironment(
     ARC_RECONCILIATION_CRON_SECRET?: NodeJS.ProcessEnv[string];
     OPERATIONAL_ALERT_WEBHOOK_URL?: NodeJS.ProcessEnv[string];
     OPERATIONAL_ALERT_WEBHOOK_BEARER_TOKEN?: NodeJS.ProcessEnv[string];
+    OPERATIONAL_HEALTH_SECRET?: NodeJS.ProcessEnv[string];
   },
 ): Environment {
   const result = environmentSchema.safeParse(environment);

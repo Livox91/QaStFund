@@ -194,6 +194,15 @@ try {
       await transaction.ledgerTransaction.deleteMany({
         where: { organizationId },
       });
+      await transaction.repaymentAllocation.deleteMany({
+        where: { organizationId },
+      });
+      await transaction.loanInstallment.deleteMany({
+        where: { organizationId },
+      });
+      await transaction.loanRepaymentPlan.deleteMany({
+        where: { organizationId },
+      });
       await transaction.loan.deleteMany({ where: { organizationId } });
       await transaction.lendingOffer.deleteMany({ where: { organizationId } });
       await transaction.ledgerAccount.deleteMany({ where: { organizationId } });

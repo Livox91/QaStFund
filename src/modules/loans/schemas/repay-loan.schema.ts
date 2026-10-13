@@ -15,7 +15,7 @@ const repaymentAmount = z
 export const employeeLoanIdSchema = z.uuid();
 
 export const repayLoanApiSchema = z
-  .object({ amount: repaymentAmount })
+  .object({ amount: repaymentAmount, requestId: z.uuid() })
   .strict();
 
 export const repaymentIdempotencyKeySchema = z.uuid();

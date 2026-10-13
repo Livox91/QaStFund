@@ -58,6 +58,7 @@ second deployment mechanism.
    ARC_RECONCILIATION_ENABLED="true"
    ARC_RECONCILIATION_INTERVAL_SECONDS="60"
    ARC_RECONCILIATION_CRON_SECRET="a-dedicated-random-value-of-at-least-32-characters"
+   OPERATIONAL_HEALTH_SECRET="a-third-random-value-of-at-least-32-characters"
    OPERATIONAL_ALERT_WEBHOOK_URL="https://alerts.example.com/arc"
    OPERATIONAL_ALERT_WEBHOOK_BEARER_TOKEN="a-dedicated-receiver-token"
    ERP_NEXT_SYNC_ENABLED="true"
@@ -81,7 +82,7 @@ second deployment mechanism.
     ```shell
     docker compose -f compose.production.yaml --env-file deploy/.env.production ps
     docker compose -f compose.production.yaml --env-file deploy/.env.production logs --since=5m reconciliation-scheduler app
-    curl --fail https://YOUR_DOMAIN/api/health/dependencies
+    curl --fail --header "Authorization: Bearer ${OPERATIONAL_HEALTH_SECRET}" https://YOUR_DOMAIN/api/health/dependencies
     ```
 
     Retain evidence that scheduler logs show repeated `COMPLETED` passes,

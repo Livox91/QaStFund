@@ -1007,6 +1007,74 @@ export type EnumRepaymentStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumRepaymentStatusFilter<$PrismaModel>
 }
 
+export type EnumRepaymentPlanStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.RepaymentPlanStatus | Prisma.EnumRepaymentPlanStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RepaymentPlanStatus[] | Prisma.ListEnumRepaymentPlanStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RepaymentPlanStatus[] | Prisma.ListEnumRepaymentPlanStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRepaymentPlanStatusFilter<$PrismaModel> | $Enums.RepaymentPlanStatus
+}
+
+export type EnumRepaymentPlanStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RepaymentPlanStatus | Prisma.EnumRepaymentPlanStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RepaymentPlanStatus[] | Prisma.ListEnumRepaymentPlanStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RepaymentPlanStatus[] | Prisma.ListEnumRepaymentPlanStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRepaymentPlanStatusWithAggregatesFilter<$PrismaModel> | $Enums.RepaymentPlanStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRepaymentPlanStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRepaymentPlanStatusFilter<$PrismaModel>
+}
+
+export type EnumEmployeeDeductionAuthorizationStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.EmployeeDeductionAuthorizationStatus | Prisma.EnumEmployeeDeductionAuthorizationStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.EmployeeDeductionAuthorizationStatus[] | Prisma.ListEnumEmployeeDeductionAuthorizationStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.EmployeeDeductionAuthorizationStatus[] | Prisma.ListEnumEmployeeDeductionAuthorizationStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumEmployeeDeductionAuthorizationStatusFilter<$PrismaModel> | $Enums.EmployeeDeductionAuthorizationStatus
+}
+
+export type EnumPayrollDeductionStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.PayrollDeductionStatus | Prisma.EnumPayrollDeductionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PayrollDeductionStatus[] | Prisma.ListEnumPayrollDeductionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PayrollDeductionStatus[] | Prisma.ListEnumPayrollDeductionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPayrollDeductionStatusFilter<$PrismaModel> | $Enums.PayrollDeductionStatus
+}
+
+export type EnumEmployeeDeductionAuthorizationStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.EmployeeDeductionAuthorizationStatus | Prisma.EnumEmployeeDeductionAuthorizationStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.EmployeeDeductionAuthorizationStatus[] | Prisma.ListEnumEmployeeDeductionAuthorizationStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.EmployeeDeductionAuthorizationStatus[] | Prisma.ListEnumEmployeeDeductionAuthorizationStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumEmployeeDeductionAuthorizationStatusWithAggregatesFilter<$PrismaModel> | $Enums.EmployeeDeductionAuthorizationStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumEmployeeDeductionAuthorizationStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumEmployeeDeductionAuthorizationStatusFilter<$PrismaModel>
+}
+
+export type EnumPayrollDeductionStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PayrollDeductionStatus | Prisma.EnumPayrollDeductionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PayrollDeductionStatus[] | Prisma.ListEnumPayrollDeductionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PayrollDeductionStatus[] | Prisma.ListEnumPayrollDeductionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPayrollDeductionStatusWithAggregatesFilter<$PrismaModel> | $Enums.PayrollDeductionStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPayrollDeductionStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPayrollDeductionStatusFilter<$PrismaModel>
+}
+
+export type EnumDelinquencyCaseStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.DelinquencyCaseStatus | Prisma.EnumDelinquencyCaseStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.DelinquencyCaseStatus[] | Prisma.ListEnumDelinquencyCaseStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DelinquencyCaseStatus[] | Prisma.ListEnumDelinquencyCaseStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDelinquencyCaseStatusFilter<$PrismaModel> | $Enums.DelinquencyCaseStatus
+}
+
+export type EnumDelinquencyCaseStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DelinquencyCaseStatus | Prisma.EnumDelinquencyCaseStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.DelinquencyCaseStatus[] | Prisma.ListEnumDelinquencyCaseStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DelinquencyCaseStatus[] | Prisma.ListEnumDelinquencyCaseStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDelinquencyCaseStatusWithAggregatesFilter<$PrismaModel> | $Enums.DelinquencyCaseStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDelinquencyCaseStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDelinquencyCaseStatusFilter<$PrismaModel>
+}
+
 export type EnumAuditEventTypeFilter<$PrismaModel = never> = {
   equals?: $Enums.AuditEventType | Prisma.EnumAuditEventTypeFieldRefInput<$PrismaModel>
   in?: $Enums.AuditEventType[] | Prisma.ListEnumAuditEventTypeFieldRefInput<$PrismaModel>
@@ -2055,6 +2123,74 @@ export type NestedEnumRepaymentStatusWithAggregatesFilter<$PrismaModel = never> 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumRepaymentStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumRepaymentStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumRepaymentPlanStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.RepaymentPlanStatus | Prisma.EnumRepaymentPlanStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RepaymentPlanStatus[] | Prisma.ListEnumRepaymentPlanStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RepaymentPlanStatus[] | Prisma.ListEnumRepaymentPlanStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRepaymentPlanStatusFilter<$PrismaModel> | $Enums.RepaymentPlanStatus
+}
+
+export type NestedEnumRepaymentPlanStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RepaymentPlanStatus | Prisma.EnumRepaymentPlanStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RepaymentPlanStatus[] | Prisma.ListEnumRepaymentPlanStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RepaymentPlanStatus[] | Prisma.ListEnumRepaymentPlanStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRepaymentPlanStatusWithAggregatesFilter<$PrismaModel> | $Enums.RepaymentPlanStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRepaymentPlanStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRepaymentPlanStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumEmployeeDeductionAuthorizationStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.EmployeeDeductionAuthorizationStatus | Prisma.EnumEmployeeDeductionAuthorizationStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.EmployeeDeductionAuthorizationStatus[] | Prisma.ListEnumEmployeeDeductionAuthorizationStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.EmployeeDeductionAuthorizationStatus[] | Prisma.ListEnumEmployeeDeductionAuthorizationStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumEmployeeDeductionAuthorizationStatusFilter<$PrismaModel> | $Enums.EmployeeDeductionAuthorizationStatus
+}
+
+export type NestedEnumPayrollDeductionStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.PayrollDeductionStatus | Prisma.EnumPayrollDeductionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PayrollDeductionStatus[] | Prisma.ListEnumPayrollDeductionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PayrollDeductionStatus[] | Prisma.ListEnumPayrollDeductionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPayrollDeductionStatusFilter<$PrismaModel> | $Enums.PayrollDeductionStatus
+}
+
+export type NestedEnumEmployeeDeductionAuthorizationStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.EmployeeDeductionAuthorizationStatus | Prisma.EnumEmployeeDeductionAuthorizationStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.EmployeeDeductionAuthorizationStatus[] | Prisma.ListEnumEmployeeDeductionAuthorizationStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.EmployeeDeductionAuthorizationStatus[] | Prisma.ListEnumEmployeeDeductionAuthorizationStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumEmployeeDeductionAuthorizationStatusWithAggregatesFilter<$PrismaModel> | $Enums.EmployeeDeductionAuthorizationStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumEmployeeDeductionAuthorizationStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumEmployeeDeductionAuthorizationStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumPayrollDeductionStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PayrollDeductionStatus | Prisma.EnumPayrollDeductionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PayrollDeductionStatus[] | Prisma.ListEnumPayrollDeductionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PayrollDeductionStatus[] | Prisma.ListEnumPayrollDeductionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPayrollDeductionStatusWithAggregatesFilter<$PrismaModel> | $Enums.PayrollDeductionStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPayrollDeductionStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPayrollDeductionStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumDelinquencyCaseStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.DelinquencyCaseStatus | Prisma.EnumDelinquencyCaseStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.DelinquencyCaseStatus[] | Prisma.ListEnumDelinquencyCaseStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DelinquencyCaseStatus[] | Prisma.ListEnumDelinquencyCaseStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDelinquencyCaseStatusFilter<$PrismaModel> | $Enums.DelinquencyCaseStatus
+}
+
+export type NestedEnumDelinquencyCaseStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DelinquencyCaseStatus | Prisma.EnumDelinquencyCaseStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.DelinquencyCaseStatus[] | Prisma.ListEnumDelinquencyCaseStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DelinquencyCaseStatus[] | Prisma.ListEnumDelinquencyCaseStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDelinquencyCaseStatusWithAggregatesFilter<$PrismaModel> | $Enums.DelinquencyCaseStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDelinquencyCaseStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDelinquencyCaseStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumAuditEventTypeFilter<$PrismaModel = never> = {

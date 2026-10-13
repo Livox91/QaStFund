@@ -20,7 +20,10 @@ import { createOperationalIncidentSender } from "@/modules/operations/applicatio
 import { prismaOperationalIncidentRepository } from "@/modules/operations/infrastructure/prisma-operational-incident-repository";
 import { buildDependencyHealth } from "@/server/application/health/build-dependency-health";
 
-export async function getConfiguredDependencyHealth() {
+export async function getConfiguredDependencyHealth(options?: {
+  mode?: "observe-and-record" | "read-only";
+}) {
+  const recordOperationalState = options?.mode !== "read-only";
   const environment = validateEnvironment();
   const now = new Date();
   const contractAddress = getConfiguredEscrowAddress();
@@ -54,18 +57,21 @@ export async function getConfiguredDependencyHealth() {
         contractConfigured: code !== undefined && code !== "0x",
       };
       latestChainBlock = latestBlock;
-      if (arc.status === "healthy") recordOperationalSuccess("arc_rpc", now);
-      else {
+      if (recordOperationalState && arc.status === "healthy") {
+        recordOperationalSuccess("arc_rpc", now);
+      } else if (recordOperationalState) {
         recordOperationalFailure("arc_rpc", {
           alertThreshold: environment.OBSERVABILITY_FAILURE_ALERT_THRESHOLD,
           occurredAt: now,
         });
       }
     } catch {
-      recordOperationalFailure("arc_rpc", {
-        alertThreshold: environment.OBSERVABILITY_FAILURE_ALERT_THRESHOLD,
-        occurredAt: now,
-      });
+      if (recordOperationalState) {
+        recordOperationalFailure("arc_rpc", {
+          alertThreshold: environment.OBSERVABILITY_FAILURE_ALERT_THRESHOLD,
+          occurredAt: now,
+        });
+      }
     }
   }
 
@@ -181,7 +187,7 @@ export async function getConfiguredDependencyHealth() {
     metrics: snapshot.counters,
     timers: snapshot.timers,
   });
-  if (reconciliationState) {
+  if (recordOperationalState && reconciliationState) {
     evaluateOperationalThreshold(
       "unmatched_blockchain_events",
       reconciliationState.unmatchedEvents,
@@ -189,27 +195,35 @@ export async function getConfiguredDependencyHealth() {
       { chainId: ARC_TESTNET_CHAIN_ID },
     );
   }
-  if (report.dependencies.reconciliation.status === "stale") {
+  if (
+    recordOperationalState &&
+    report.dependencies.reconciliation.status === "stale"
+  ) {
     recordOperationalFailure("reconciliation", {
       alertThreshold: environment.OBSERVABILITY_FAILURE_ALERT_THRESHOLD,
       context: { reason: "stale" },
       occurredAt: now,
     });
-  } else if (report.dependencies.reconciliation.status === "healthy") {
+  } else if (
+    recordOperationalState &&
+    report.dependencies.reconciliation.status === "healthy"
+  ) {
     recordOperationalSuccess("reconciliation", now);
   }
-  await evaluateOperationalIncidents({
-    report,
-    failureThreshold: environment.OBSERVABILITY_FAILURE_ALERT_THRESHOLD,
-    unmatchedEventThreshold:
-      environment.OBSERVABILITY_UNMATCHED_EVENT_ALERT_THRESHOLD,
-    retryAfterMs: environment.OBSERVABILITY_ALERT_RETRY_MINUTES * 60_000,
-    now,
-    repository: prismaOperationalIncidentRepository,
-    sender: createOperationalIncidentSender({
-      webhookUrl: environment.OPERATIONAL_ALERT_WEBHOOK_URL,
-      bearerToken: environment.OPERATIONAL_ALERT_WEBHOOK_BEARER_TOKEN,
-    }),
-  });
+  if (recordOperationalState) {
+    await evaluateOperationalIncidents({
+      report,
+      failureThreshold: environment.OBSERVABILITY_FAILURE_ALERT_THRESHOLD,
+      unmatchedEventThreshold:
+        environment.OBSERVABILITY_UNMATCHED_EVENT_ALERT_THRESHOLD,
+      retryAfterMs: environment.OBSERVABILITY_ALERT_RETRY_MINUTES * 60_000,
+      now,
+      repository: prismaOperationalIncidentRepository,
+      sender: createOperationalIncidentSender({
+        webhookUrl: environment.OPERATIONAL_ALERT_WEBHOOK_URL,
+        bearerToken: environment.OPERATIONAL_ALERT_WEBHOOK_BEARER_TOKEN,
+      }),
+    });
+  }
   return report;
 }

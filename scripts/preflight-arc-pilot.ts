@@ -248,7 +248,7 @@ await check("Reconciliation health (read-only)", async () => {
       "reconciliation, deployment block, and RPC checks must pass first",
     );
   }
-  const health = await getConfiguredDependencyHealth();
+  const health = await getConfiguredDependencyHealth({ mode: "read-only" });
   if (health.dependencies.arc.status !== "healthy") {
     throw new Error("Arc dependency health is not healthy");
   }

@@ -1,6 +1,8 @@
 import Link from "next/link";
 
 import { RepaymentForm } from "@/app/(employee)/app/loans/[loanId]/repayment-form";
+import { LegacyRepaymentForm } from "@/app/(employee)/app/loans/[loanId]/legacy-repayment-form";
+import { EmployeePayrollAuthorization } from "@/modules/payroll-operations/ui/employee-payroll-authorization";
 import {
   calculateDaysOverdue,
   type LoanDecision,
@@ -219,6 +221,93 @@ export function EmployeeLoanDetails({
         </Card>
       </section>
 
+      {loan.repaymentPlans?.[0] ? (
+        <Card className="mt-6 overflow-hidden">
+          <CardHeader>
+            <CardTitle>Installment schedule</CardTitle>
+            <CardDescription>
+              Version {loan.repaymentPlans[0].version} ·{" "}
+              {loan.repaymentPlans[0].termMonths} month
+              {loan.repaymentPlans[0].termMonths === 1 ? "" : "s"}. Payments are
+              allocated oldest-first.
+            </CardDescription>
+          </CardHeader>
+          <TableContainer className="rounded-none border-x-0 border-b-0 shadow-none">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Installment</TableHead>
+                  <TableHead>Due</TableHead>
+                  <TableHead className="text-right">Scheduled</TableHead>
+                  <TableHead className="text-right">Paid</TableHead>
+                  <TableHead className="text-right">Remaining</TableHead>
+                  <TableHead>Payroll proposal</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {loan.repaymentPlans[0].installments.map((installment) => {
+                  const paid = installment.allocations.reduce(
+                    (sum, allocation) => sum + allocation.amountMinorUnits,
+                    0n,
+                  );
+                  return (
+                    <TableRow key={installment.id}>
+                      <TableCell className="font-semibold">
+                        {installment.sequence}
+                      </TableCell>
+                      <TableCell>
+                        {dateFormatter.format(installment.dueAt)}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <CurrencyDisplay
+                          amountMinorUnits={installment.amountMinorUnits}
+                          currency={loan.currency}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        {installment.payrollDeductions[0] ? (
+                          <div className="space-y-1 text-xs">
+                            <p>
+                              {installment.payrollDeductions[0].status} ·{" "}
+                              {
+                                installment.payrollDeductions[0]
+                                  .authorizationStatus
+                              }
+                            </p>
+                            {installment.payrollDeductions[0]
+                              .authorizationStatus === "NOT_RECORDED" &&
+                            installment.payrollDeductions[0].status ===
+                              "PROPOSED" ? (
+                              <EmployeePayrollAuthorization
+                                proposalId={installment.payrollDeductions[0].id}
+                              />
+                            ) : null}
+                          </div>
+                        ) : (
+                          <span className="text-xs text-slate-500">None</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <CurrencyDisplay
+                          amountMinorUnits={paid}
+                          currency={loan.currency}
+                        />
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <CurrencyDisplay
+                          amountMinorUnits={installment.amountMinorUnits - paid}
+                          currency={loan.currency}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Card>
+      ) : null}
+
       <section className="mt-6 grid items-start gap-6 lg:grid-cols-[0.85fr_1.15fr]">
         <Card>
           <CardHeader>
@@ -227,21 +316,32 @@ export function EmployeeLoanDetails({
             </CardTitle>
             <CardDescription>
               {loan.canRepay
-                ? "Repay the full agreed amount to your lender."
+                ? loan.repaymentBaseUnits === null
+                  ? "Make a partial or final payment against the oldest installment."
+                  : "Repay the full agreed amount to your lender."
                 : "This loan does not accept additional repayments."}
             </CardDescription>
           </CardHeader>
           <CardContent>
             {loan.canRepay ? (
               <>
-                <RepaymentForm
-                  lenderName={loan.lenderName}
-                  loanId={loan.id}
-                  repaymentBaseUnits={loan.repaymentBaseUnits!.toString()}
-                />
+                {loan.repaymentBaseUnits === null ? (
+                  <LegacyRepaymentForm
+                    currency={loan.currency}
+                    loanId={loan.id}
+                    remainingAmountMinorUnits={loan.remainingAmountMinorUnits.toString()}
+                  />
+                ) : (
+                  <RepaymentForm
+                    lenderName={loan.lenderName}
+                    loanId={loan.id}
+                    repaymentBaseUnits={loan.repaymentBaseUnits.toString()}
+                  />
+                )}
                 <p className="mt-5 border-t border-slate-100 pt-4 text-xs leading-5 text-slate-500">
-                  You will authorize the exact amount due. The payment and loan
-                  completion happen together.
+                  {loan.repaymentBaseUnits === null
+                    ? "Each successful payment is recorded separately and cannot exceed the remaining scheduled balance."
+                    : "You will authorize the exact amount due. The payment and loan completion happen together."}
                 </p>
               </>
             ) : (

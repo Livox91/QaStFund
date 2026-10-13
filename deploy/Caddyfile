@@ -1,11 +1,20 @@
 {$SITE_ADDRESS} {
-  encode zstd gzip
-  reverse_proxy app:3000
+	encode zstd gzip
 
-  header {
-    -Server
-    X-Content-Type-Options nosniff
-    Referrer-Policy strict-origin-when-cross-origin
-    Permissions-Policy "camera=(), microphone=(), geolocation=()"
-  }
+	# Schedulers call these routes directly over Docker's private `internal`
+	# network. They must not be reachable through the public reverse proxy.
+	@internal_api path /api/internal/*
+	respond @internal_api 404
+
+	reverse_proxy app:3000
+
+	header {
+		-Server
+		Strict-Transport-Security "max-age=31536000"
+		Content-Security-Policy "base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+		X-Frame-Options DENY
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+	}
 }

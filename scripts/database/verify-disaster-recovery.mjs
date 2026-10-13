@@ -1,3 +1,5 @@
+import "dotenv/config";
+
 import { mkdtemp, rm } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -153,12 +155,10 @@ try {
   }
 
   await runCommand(
-    npmCommand,
+    nodeCommand,
     [
-      ...npmPrefix,
-      "test",
-      "--",
-      "--run",
+      path.join(repositoryRoot, "node_modules", "vitest", "vitest.mjs"),
+      "run",
       "tests/disaster-recovery-database.test.ts",
       "tests/blockchain-reconciliation-database.test.ts",
     ],

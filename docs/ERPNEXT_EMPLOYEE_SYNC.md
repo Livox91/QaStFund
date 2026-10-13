@@ -153,5 +153,7 @@ build passed. `npm run audit:erpnext` inspected the real persisted state without
 printing employee details or credentials. After HR corrected the trusted source
 email, a manual run completed successfully on 2026-10-11 with all three records
 matched and zero reviews or errors. Current SMTP authentication and both
-persisted invitation lifecycles are healthy. The runtime scheduler remains
-disabled and has not produced a live `SCHEDULED/SUCCESS` run.
+persisted invitation lifecycles are healthy. That 2026-10-11 checkpoint
+predated scheduler activation. The later 2026-10-12 evidence freeze in
+`CONTROLLED_PILOT_READINESS.md` records a fresh live `SCHEDULED/SUCCESS` run,
+3/3 matched mappings, and zero review records.

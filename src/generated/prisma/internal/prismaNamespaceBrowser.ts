@@ -74,6 +74,12 @@ export const ModelName = {
   LedgerTransaction: 'LedgerTransaction',
   LedgerEntry: 'LedgerEntry',
   LoanRepayment: 'LoanRepayment',
+  LoanRepaymentPlan: 'LoanRepaymentPlan',
+  LoanInstallment: 'LoanInstallment',
+  RepaymentAllocation: 'RepaymentAllocation',
+  PayrollDeductionProposal: 'PayrollDeductionProposal',
+  DelinquencyCase: 'DelinquencyCase',
+  DelinquencyNotification: 'DelinquencyNotification',
   AuditEvent: 'AuditEvent',
   OrganizationLendingPolicy: 'OrganizationLendingPolicy',
   Session: 'Session',
@@ -533,6 +539,133 @@ export const LoanRepaymentScalarFieldEnum = {
 } as const
 
 export type LoanRepaymentScalarFieldEnum = (typeof LoanRepaymentScalarFieldEnum)[keyof typeof LoanRepaymentScalarFieldEnum]
+
+
+export const LoanRepaymentPlanScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  loanId: 'loanId',
+  version: 'version',
+  status: 'status',
+  termMonths: 'termMonths',
+  installmentCount: 'installmentCount',
+  totalRepaymentMinorUnits: 'totalRepaymentMinorUnits',
+  currency: 'currency',
+  reason: 'reason',
+  borrowerConsentedAt: 'borrowerConsentedAt',
+  approvedByMembershipId: 'approvedByMembershipId',
+  approvedAt: 'approvedAt',
+  effectiveAt: 'effectiveAt',
+  supersededAt: 'supersededAt',
+  createdAt: 'createdAt'
+} as const
+
+export type LoanRepaymentPlanScalarFieldEnum = (typeof LoanRepaymentPlanScalarFieldEnum)[keyof typeof LoanRepaymentPlanScalarFieldEnum]
+
+
+export const LoanInstallmentScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  loanId: 'loanId',
+  planId: 'planId',
+  sequence: 'sequence',
+  amountMinorUnits: 'amountMinorUnits',
+  dueAt: 'dueAt',
+  createdAt: 'createdAt'
+} as const
+
+export type LoanInstallmentScalarFieldEnum = (typeof LoanInstallmentScalarFieldEnum)[keyof typeof LoanInstallmentScalarFieldEnum]
+
+
+export const RepaymentAllocationScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  installmentId: 'installmentId',
+  repaymentId: 'repaymentId',
+  amountMinorUnits: 'amountMinorUnits',
+  createdAt: 'createdAt'
+} as const
+
+export type RepaymentAllocationScalarFieldEnum = (typeof RepaymentAllocationScalarFieldEnum)[keyof typeof RepaymentAllocationScalarFieldEnum]
+
+
+export const PayrollDeductionProposalScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  loanId: 'loanId',
+  installmentId: 'installmentId',
+  employeeMappingId: 'employeeMappingId',
+  idempotencyKey: 'idempotencyKey',
+  payrollPeriodStart: 'payrollPeriodStart',
+  payrollPeriodEnd: 'payrollPeriodEnd',
+  scheduledAmountMinorUnits: 'scheduledAmountMinorUnits',
+  outstandingAmountMinorUnits: 'outstandingAmountMinorUnits',
+  proposedAmountMinorUnits: 'proposedAmountMinorUnits',
+  actualDeductedMinorUnits: 'actualDeductedMinorUnits',
+  currency: 'currency',
+  authorizationStatus: 'authorizationStatus',
+  authorizedAt: 'authorizedAt',
+  status: 'status',
+  reviewedByMembershipId: 'reviewedByMembershipId',
+  reviewedAt: 'reviewedAt',
+  reviewRationale: 'reviewRationale',
+  erpNextDocumentType: 'erpNextDocumentType',
+  erpNextDocumentReference: 'erpNextDocumentReference',
+  lastSyncErrorCode: 'lastSyncErrorCode',
+  repaymentId: 'repaymentId',
+  reconciledAt: 'reconciledAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PayrollDeductionProposalScalarFieldEnum = (typeof PayrollDeductionProposalScalarFieldEnum)[keyof typeof PayrollDeductionProposalScalarFieldEnum]
+
+
+export const DelinquencyCaseScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  loanId: 'loanId',
+  installmentId: 'installmentId',
+  status: 'status',
+  amountDueMinorUnits: 'amountDueMinorUnits',
+  amountPaidMinorUnits: 'amountPaidMinorUnits',
+  outstandingMinorUnits: 'outstandingMinorUnits',
+  daysOverdue: 'daysOverdue',
+  state: 'state',
+  payrollStatus: 'payrollStatus',
+  recommendedAction: 'recommendedAction',
+  lastEvaluatedAt: 'lastEvaluatedAt',
+  reviewedByMembershipId: 'reviewedByMembershipId',
+  reviewedAt: 'reviewedAt',
+  reviewNote: 'reviewNote',
+  employeeContactedAt: 'employeeContactedAt',
+  contactNote: 'contactNote',
+  arrangementRequestedAt: 'arrangementRequestedAt',
+  arrangementRequestedByMembershipId: 'arrangementRequestedByMembershipId',
+  arrangementRequestNote: 'arrangementRequestNote',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DelinquencyCaseScalarFieldEnum = (typeof DelinquencyCaseScalarFieldEnum)[keyof typeof DelinquencyCaseScalarFieldEnum]
+
+
+export const DelinquencyNotificationScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  caseId: 'caseId',
+  recipientMembershipId: 'recipientMembershipId',
+  idempotencyKey: 'idempotencyKey',
+  thresholdKey: 'thresholdKey',
+  deliveryStatus: 'deliveryStatus',
+  deliveryAttempts: 'deliveryAttempts',
+  lastFailureCode: 'lastFailureCode',
+  sentAt: 'sentAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DelinquencyNotificationScalarFieldEnum = (typeof DelinquencyNotificationScalarFieldEnum)[keyof typeof DelinquencyNotificationScalarFieldEnum]
 
 
 export const AuditEventScalarFieldEnum = {

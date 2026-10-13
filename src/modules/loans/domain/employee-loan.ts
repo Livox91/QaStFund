@@ -27,6 +27,32 @@ export type EmployeeBorrowedLoanRecord = Readonly<{
   startedAt: Date;
   repaymentDueAt: Date;
   repayments: ReadonlyArray<EmployeeLoanRepayment>;
+  repaymentPlans?: ReadonlyArray<
+    Readonly<{
+      id: string;
+      version: number;
+      termMonths: number;
+      installments: ReadonlyArray<
+        Readonly<{
+          id: string;
+          sequence: number;
+          amountMinorUnits: bigint;
+          dueAt: Date;
+          allocations: ReadonlyArray<Readonly<{ amountMinorUnits: bigint }>>;
+          payrollDeductions: ReadonlyArray<
+            Readonly<{
+              id: string;
+              status: string;
+              authorizationStatus: string;
+              proposedAmountMinorUnits: bigint;
+              payrollPeriodStart: Date;
+              payrollPeriodEnd: Date;
+            }>
+          >;
+        }>
+      >;
+    }>
+  >;
 }>;
 
 export type EmployeeBorrowedLoanDetails = EmployeeBorrowedLoanRecord &
@@ -70,7 +96,6 @@ export function toEmployeeBorrowedLoanDetails(
     ...progress,
     canRepay:
       (loan.status === "ACTIVE" || loan.status === "OVERDUE") &&
-      loan.repaymentBaseUnits !== null &&
       progress.remainingAmountMinorUnits > 0n,
   };
 }

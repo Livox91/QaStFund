@@ -7,6 +7,10 @@ import {
   formatBasisPointsAsPercent,
 } from "@/modules/lending/domain/lending-offer";
 import { CreateLendingOfferForm } from "@/modules/lending/ui/create-lending-offer-form";
+import {
+  calculateLenderLoanAmounts,
+  type LoanView,
+} from "@/modules/loans/domain/loan-query";
 import { Button, buttonStyles } from "@/shared/ui/button";
 import {
   Card,
@@ -58,11 +62,13 @@ function BalanceItem({
 
 export function MyLending({
   created,
+  fundedLoans,
   offerUpdated,
   overview,
   statusError,
 }: {
   created: boolean;
+  fundedLoans: ReadonlyArray<LoanView>;
   offerUpdated: boolean;
   overview: EmployeeLendingOverview;
   statusError: boolean;
@@ -159,6 +165,7 @@ export function MyLending({
               <TableHeader>
                 <TableRow className="hover:bg-slate-50/80">
                   <TableHead>Offer amount</TableHead>
+                  <TableHead>Accepted</TableHead>
                   <TableHead>Currently available</TableHead>
                   <TableHead>Loan range</TableHead>
                   <TableHead>Duration</TableHead>
@@ -176,6 +183,15 @@ export function MyLending({
                     <TableCell>
                       <CurrencyDisplay
                         amountMinorUnits={offer.amountMinorUnits}
+                        currency={offer.currency}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <CurrencyDisplay
+                        amountMinorUnits={
+                          offer.amountMinorUnits -
+                          offer.availableAmountMinorUnits
+                        }
                         currency={offer.currency}
                       />
                     </TableCell>
@@ -265,6 +281,113 @@ export function MyLending({
                     </TableCell>
                   </TableRow>
                 ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+      </Card>
+
+      <Card className="mt-6 overflow-hidden">
+        <CardHeader className="pb-5">
+          <CardTitle>Funded loans</CardTitle>
+          <CardDescription>
+            Loan state, principal movement, outstanding balance, and recorded
+            repayments for offers you funded. Approval does not reserve funds;
+            reservation remains zero until confirmed disbursement.
+          </CardDescription>
+        </CardHeader>
+        {fundedLoans.length === 0 ? (
+          <EmptyState
+            className="min-h-48 rounded-none border-0 border-t"
+            description="Accepted applications and their repayment history will appear here."
+            title="No funded loans yet"
+          />
+        ) : (
+          <TableContainer className="rounded-none border-x-0 border-b-0 shadow-none">
+            <Table className="min-w-[1120px]">
+              <TableHeader>
+                <TableRow className="hover:bg-slate-50/80">
+                  <TableHead>Borrower</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Pending</TableHead>
+                  <TableHead>Approved</TableHead>
+                  <TableHead>Reserved</TableHead>
+                  <TableHead>Disbursed principal</TableHead>
+                  <TableHead>Repaid</TableHead>
+                  <TableHead>Outstanding</TableHead>
+                  <TableHead>Repayment history</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {fundedLoans.map((loan) => {
+                  const amounts = calculateLenderLoanAmounts(loan);
+                  return (
+                    <TableRow key={loan.id}>
+                      <TableCell className="font-medium text-slate-900">
+                        {loan.borrower.name}
+                      </TableCell>
+                      <TableCell>
+                        <StatusDisplay status={loan.status} />
+                      </TableCell>
+                      <TableCell>
+                        <CurrencyDisplay
+                          amountMinorUnits={amounts.pendingMinorUnits}
+                          currency={loan.currency}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <CurrencyDisplay
+                          amountMinorUnits={amounts.approvedMinorUnits}
+                          currency={loan.currency}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <CurrencyDisplay
+                          amountMinorUnits={amounts.reservedMinorUnits}
+                          currency={loan.currency}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <CurrencyDisplay
+                          amountMinorUnits={amounts.disbursedMinorUnits}
+                          currency={loan.currency}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <CurrencyDisplay
+                          amountMinorUnits={amounts.repaidMinorUnits}
+                          currency={loan.currency}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <CurrencyDisplay
+                          amountMinorUnits={amounts.outstandingMinorUnits}
+                          currency={loan.currency}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        {loan.repayments.length === 0 ? (
+                          <span className="text-xs text-slate-500">
+                            None recorded
+                          </span>
+                        ) : (
+                          <ul className="space-y-1 text-xs text-slate-600">
+                            {loan.repayments.map((repayment) => (
+                              <li key={repayment.id}>
+                                <CurrencyDisplay
+                                  amountMinorUnits={repayment.amountMinorUnits}
+                                  currency={repayment.currency}
+                                />{" "}
+                                · {repayment.status.toLowerCase()} ·{" "}
+                                {dateFormatter.format(repayment.createdAt)}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </TableContainer>

@@ -392,6 +392,16 @@ describe("on-chain borrowing values", () => {
     ).toEqual(new Date("2026-10-04T12:00:01.000Z"));
   });
 
+  it("does not place chain activation before human approval", () => {
+    const requestedAt = new Date("2026-10-04T12:00:00.100Z");
+    const approvedAt = new Date("2026-10-04T12:00:01.900Z");
+    const onChainStartedAt = new Date("2026-10-04T12:00:01.000Z");
+
+    expect(
+      resolveLifecycleStartedAt(onChainStartedAt, requestedAt, approvedAt),
+    ).toBe(approvedAt);
+  });
+
   it("keeps application repayment timestamps monotonic", () => {
     const onChainRepaidAt = new Date("2026-10-04T12:00:00.000Z");
     const loanStartedAt = new Date("2026-10-04T12:00:00.750Z");

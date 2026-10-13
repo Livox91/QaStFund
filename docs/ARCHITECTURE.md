@@ -1,176 +1,263 @@
-# MVP Architecture
+# QastFund technical architecture
 
-Status: Proposed architecture for the modular-monolith MVP. This document defines boundaries; it does not imply that the product modules or integrations are implemented.
+Status: implemented architecture reviewed for the controlled Arc Testnet pilot.
 
-## 1. Architectural shape
+This document describes the repository as it exists for the accepted two-user,
+test-fund-only validation scope. It does not represent production security or
+regulatory certification.
 
-Deploy one Next.js application and one PostgreSQL database:
+## System context
 
 ```text
-Public site ───────┐
-Employee portal ──┼─> Next.js entry points ─> application modules ─> PostgreSQL
-Employer portal ──┘              │                       │
-                                 └──────── integration ports ─> external adapters
+Public browser ── HTTPS ──> Caddy edge
+                              │
+                              │ private `web` network
+                              ▼
+Employee portal ───────┐   Next.js application
+Employer portal ───────┼──> routes + application services
+Public pages ──────────┘            │
+                                    ├── PostgreSQL (`internal` network)
+                                    ├── ERPNext HTTPS API (read-only employee data)
+                                    ├── Circle Modular Wallet service
+                                    └── Arc Testnet RPC / escrow contract
+
+Internal scheduler ── bearer-authenticated calls ──> Next.js internal routes
+                                    │
+                                    └── reconciliation and ERPNext job state
 ```
 
-Next.js serves the three web experiences, Route Handlers, and server-side application code. PostgreSQL is the system of record. The MVP does not require microservices, Redis, queues, or a separate API deployment.
+The production Compose file publishes only Caddy ports 80/443. PostgreSQL and
+the scheduler attach only to the internal Docker network; the application joins
+the internal and web networks; Caddy joins the web network. The target host's
+firewall and container bindings require separate operator evidence, as recorded
+in `CONTROLLED_PILOT_READINESS.md`.
 
-Module boundaries are enforced in code and data ownership even though all modules run in one process. This keeps deployment simple while allowing a module to be extracted later if scale or team ownership justifies it.
+## Application shape
 
-## 2. Application boundaries
+QastFund is a Next.js modular monolith backed by one PostgreSQL database. It
+serves:
 
-### User-facing applications
+- a public product and authentication experience;
+- an employee portal under `/app`;
+- an employer-administrator portal under `/employer`;
+- Route Handlers under `/api` for authenticated commands and queries;
+- bearer-authenticated internal scheduler routes for ERPNext synchronization
+  and Arc reconciliation.
 
-- **Public site (`/`)**: product education, company lead capture, and future onboarding entry points. It must not depend on authenticated portal layouts.
-- **Employee portal (`/app`)**: employee-only workflows within one active organization.
-- **Employer portal (`/employer`)**: organization administration for authorized HR, finance, and administrator users.
-- **Backend/API (`/api`)**: HTTP entry points, authentication callbacks, and future webhooks. Handlers validate and translate HTTP input, invoke application use cases, and translate results to responses. They contain no material business logic or direct Prisma queries.
-
-The browser is never a security boundary. Server Components, Server Actions, and Route Handlers must all invoke the same authenticated application services and authorization policies.
-
-### Backend dependency rule
+The dependency direction is:
 
 ```text
 UI / Route Handler
         ↓
 Application use case
         ↓
-Domain rules + repository/integration interfaces
+Domain rules + repository/integration ports
         ↓
-Infrastructure adapters (Prisma, auth provider, external systems)
+Infrastructure adapters
+        ↓
+PostgreSQL / ERPNext / Circle / Arc
 ```
 
-Dependencies point inward. Domain code does not import Next.js, Prisma, or provider SDKs. Cross-module behavior goes through a module's public application interface rather than another module's repository or internal domain objects.
+Route handlers translate HTTP input and output. Application services coordinate
+workflows. Domain modules hold rules and state transitions. Infrastructure
+adapters implement persistence and provider access. UI code does not directly
+query Prisma or decide authorization.
 
-## 3. Major backend modules
+## Frontend and API
 
-Each module may contain `domain/`, `application/`, `infrastructure/`, and `schemas/`; only add a layer when it is needed.
+Next.js App Router route groups separate the public, employee, employer, and
+shared authenticated experiences. Server Components load authorized view
+models; Client Components are limited to browser interaction such as Circle
+wallet operations and form submission.
 
-| Module          | Owns                                                                                                                                      |
-| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `auth`          | Local user identity, external identity links, sessions/authentication adapter, and actor resolution.                                      |
-| `organizations` | Tenant lifecycle, memberships, employer roles, organization status, and organization-level settings.                                      |
-| `employees`     | Organization-scoped employee profiles, verification state, and employment status.                                                         |
-| `lending`       | Lending policies, lender offers, marketplace availability, and deterministic offer eligibility rules.                                     |
-| `loans`         | Loan lifecycle, terms snapshot, repayment schedule, repayment commands, and loan status transitions.                                      |
-| `ledger`        | Immutable accounts, transactions, and balanced entries when financial movement is introduced. Derived balances are never edited directly. |
-| `audit`         | Append-only records of security-sensitive, administrative, and financial actions.                                                         |
+External input is validated with Zod. APIs return a shared error envelope and
+do not expose stack traces, raw provider responses, or configuration secrets.
+Financially meaningful commands use request identifiers, persisted intents,
+transaction-hash binding, and database constraints so retries do not create a
+second operation.
 
-`integrations` contains adapters, not product policy. Reporting begins as read queries owned by the relevant module; it should not become a separate write model in the MVP.
+## Authentication, tenancy, and authorization
 
-System-level concerns such as health checks, configuration, logging, API responses, and the Prisma client remain under `infrastructure`, `server`, and `shared`. New product behavior belongs under `modules`, so the generic `server` directories do not become a catch-all.
+Local email/password authentication is behind the auth module. Passwords use
+scrypt hashes. Sessions use random bearer tokens; only a SHA-256 token hash is
+stored in PostgreSQL. The session cookie is `HttpOnly`, `SameSite=Lax`, and
+`Secure` when `NODE_ENV=production`.
 
-## 4. Frontend structure
+Every protected request resolves the session, active organization membership,
+and role from the database. The browser cannot supply a trusted organization or
+role. Tenant-owned repository operations require `organizationId`; resource
+ownership and lifecycle status are checked in addition to role. Employer loan
+review requires an active `EMPLOYER_ADMIN` in the same organization.
 
-Keep route entry points small and organize them by audience:
+State-changing browser routes validate the request origin against `APP_URL`.
+Internal scheduler routes require dedicated bearer secrets and compare them in
+constant time. Authentication and role checks remain server-side even when the
+UI hides an unavailable action.
 
-```text
-src/app/
-  (public)/                 # public layout and pages
-  (employee)/app/           # employee layout and pages
-  (employer)/employer/      # employer layout and pages
-  api/                      # HTTP/auth/webhook adapters
-src/modules/<module>/
-  ui/                       # module-specific components when needed
-  application/
-  domain/
-  infrastructure/
-  schemas/
-src/shared/
-  ui/                       # genuinely reusable primitives only
+## PostgreSQL and financial records
+
+PostgreSQL is the system of record for users, organizations, memberships,
+employee profiles, integration mappings, policies, offers, loans, decisions,
+transaction intents, repayments, reconciliation journals, operational health,
+ledger records, and audit events.
+
+Money uses integer minor units in application records and integer token base
+units for Arc. Rates use basis points. Database constraints cover positive
+amounts, offer capacity, lifecycle ordering, canonical chain identifiers, and
+repayment submission uniqueness. Local/historical ledger transactions must
+balance; Arc-backed settlement instead relies on verified receipts, persisted
+transaction hashes, and the reconciliation journal.
+
+Audit and financial records are append-only by application convention. A
+restricted database role or database trigger preventing direct update/delete
+has not been verified and remains a production-readiness limitation.
+
+## ERPNext employee synchronization
+
+ERPNext is a read-only eligibility source. Each organization stores a scoped
+integration and stable mappings from ERPNext employee identifiers to QastFund
+employees. Credentials are encrypted at rest when saved through the employer
+UI, or supplied through the legacy server-managed credential source.
+
+The sync worker retrieves a complete, bounded snapshot before committing any
+directory change. Pagination, timeouts, authentication, malformed responses,
+unknown statuses, ambiguous mappings, and incomplete snapshots fail closed.
+Provisioning, mapping changes, lifecycle changes, session revocation, counters,
+health state, and audit events commit in one PostgreSQL transaction.
+
+Fresh, active employment and resolved identity mappings are prerequisites for
+new lending and borrowing. ERPNext does not approve loans, write payroll data,
+deduct salary, or move funds.
+
+## Application and deterministic review
+
+An employee selects an already funded Arc offer and submits an acceptance
+application. The server validates organization membership, employee freshness,
+borrowing permission, wallet ownership, current policy/exposure, offer status,
+and live contract state before creating a `REQUESTED` loan.
+
+The active policy is `loan-decision-manual-review-v1`:
+
+- hard eligibility failures are ineligible and cannot be overridden;
+- no credit score is calculated (`score` is `null`);
+- missing or unverified income/tenure is explicitly recorded;
+- every otherwise eligible controlled-pilot application is
+  `REVIEW_REQUIRED`;
+- an employer administrator must approve or reject it with a 20–1000 character
+  rationale;
+- the review is immutable, tenant-scoped, and audited.
+
+Approval changes the application to `APPROVED`; it does not sign a transaction,
+move funds, or prove an on-chain loan. The employee must return and retry the
+same application before the server can issue a short-lived authorization.
+
+```mermaid
+stateDiagram-v2
+    [*] --> REQUESTED: employee applies
+    REQUESTED --> REVIEW_REQUIRED: deterministic policy
+    REVIEW_REQUIRED --> CANCELLED: employer rejects
+    REVIEW_REQUIRED --> APPROVED: employer approves
+    APPROVED --> SUBMITTED: employee passkey authorizes
+    SUBMITTED --> ACTIVE: receipt + LoanStarted verified
+    SUBMITTED --> APPROVED: confirmation unresolved
+    ACTIVE --> REPAID: receipt + LoanRepaid verified
+    ACTIVE --> OVERDUE: due date passes
+    OVERDUE --> REPAID: full repayment verified
 ```
 
-Pages compose module UI and load data through server-side application use cases. Client Components are used only for browser interaction. Zod schemas may be shared between forms and HTTP boundaries, but database records are not passed directly to the UI; use explicit view models.
+## Circle wallet boundary
 
-The public, employee, and employer route groups retain separate layouts so their navigation, branding, loading states, and error boundaries can evolve independently.
+Circle Modular Wallets provide user-controlled smart accounts and passkey
+confirmation. Enrollment binds one verified Arc Testnet address to the
+authenticated QastFund user through a consumed ownership challenge. Public
+Circle client configuration is browser-visible; private authorizer and
+deployment keys remain server-side.
 
-## 5. Authentication
+The browser asks the connected wallet to submit user operations. The server
+never treats wallet submission alone as success: it binds the returned Arc
+transaction hash to the existing intent and verifies the receipt, exact event,
+participants, amounts, chain, contract, and current contract state.
 
-The initial MVP uses local email/password credentials behind an adapter owned by `auth`. Passwords are stored only as memory-hard scrypt hashes. Sessions are opaque random tokens: the browser receives the raw token in a secure cookie while PostgreSQL stores only its SHA-256 hash. This keeps session revocation server-side and avoids placing roles or personal data in browser-readable state.
+Circle relying-party/origin, callback allowlist, client-key restrictions, and
+account-recovery settings are external console controls. Their exact deployed
+configuration was not independently inspected and remains a broader-release
+gate.
 
-A future managed OpenID Connect provider will be introduced as another auth adapter. Provider-specific identity must remain outside domain and application code so SSO can replace credential verification without changing organization memberships or authorization policies.
+## Arc escrow lifecycle
 
-Authentication flow:
+The deployed `EmployeeLendingEscrow` supports one-time lender offers, authorized
+borrowing, and full repayment in canonical Arc Testnet USDC.
 
-1. The server validates submitted credentials and verifies the password hash.
-2. It resolves one active `OrganizationMembership` and creates an organization-scoped database session.
-3. It establishes an `HttpOnly`, `Secure` in production, `SameSite=Lax` session cookie.
-4. Every protected data access resolves the session and membership from PostgreSQL. Cookie presence alone is only an optimistic routing check.
+1. The lender creates a funding intent. A passkey-approved batched operation
+   approves USDC and calls `createOffer`.
+2. The server confirms the successful receipt and exact `OfferCreated` event
+   before marking the offer funded and active.
+3. After employer approval, the server revalidates every gate and creates a
+   five-minute EIP-712 borrow authorization bound to chain, escrow, offer,
+   borrower wallet, expiry, and one-time authorization ID.
+4. The employee passkey authorizes `acceptOffer`; only a verified
+   `LoanStarted` receipt and contract state activate the application.
+5. Repayment creates a persisted intent and passkey-approved USDC operation;
+   only a verified `LoanRepaid` receipt and state complete the repayment.
 
-Sessions are resolved server-side on every protected request. Do not store authorization state in browser-readable tokens. Login, logout, session rotation, request-origin protection, ERPNext employee invitations, password changes, and password resets remain within the auth boundary. Invitation and reset tokens are random bearer secrets stored only as hashes and bound to server-derived organization memberships. SSO, MFA, and multi-organization selection are deferred explicitly.
+The contract signer is immutable. Changing or compromising it requires a new
+escrow plus an approved wind-down/migration procedure; managed custody and a
+rotation rehearsal are not yet evidenced.
 
-## 6. Authorization and tenancy
+## Reconciliation and recovery
 
-`OrganizationMembership` is the tenant access boundary between a user and an organization. A user may belong to more than one organization, but each request operates against one explicitly resolved active organization.
+The scheduler scans finalized Arc event ranges from the deployment block with a
+confirmation delay and reorg replay window. Journal identities make repeated
+events idempotent. Events are applied only when their transaction receipt and
+expected application intent agree. Unmatched or conflicting events remain
+visible for investigation and are never converted into fabricated records.
 
-Initial roles should remain small:
+Ambiguous submissions retain the intent and transaction hash. Operators query
+the stored hash and allow receipt confirmation or finalized-event
+reconciliation to recover the state; they do not submit a replacement merely
+because a client timed out.
 
-- `EMPLOYEE`
-- `EMPLOYER_ADMIN`
-- `PLATFORM_ADMIN` for tightly controlled platform operations, not normal tenant access
+PostgreSQL backup tooling produces custom-format dumps and SHA-256 sidecars.
+Restore requires an exact target-database confirmation and is destructive to
+that target schema. Disposable restore evidence exists; no restore over live
+data is permitted, and a target-host restore/rollback rehearsal remains open.
 
-Add HR/finance capabilities only when workflows require distinct permissions. Authorization policies should evaluate an `Actor` containing `userId`, `organizationId`, membership status, and roles. Application use cases perform the policy check before reading or mutating tenant data.
+## Deployment topology
 
-Rules:
+The production container stack consists of PostgreSQL, a one-shot migration
+tool profile, the Next.js application, the reconciliation/synchronization
+scheduler, and Caddy. The application image runs as a non-root user and exposes
+an internal liveness health check. Caddy terminates public TLS and proxies to the
+application over the web Docker network.
 
-- Never trust an `organizationId`, employee ID, or role supplied by the browser.
-- Resolve the active organization from the authenticated membership, then verify any route-scoped organization against it.
-- Use the shared authorization policies for authentication, role checks, and organization access. A cross-organization request returns the same generic `404 ORGANIZATION_NOT_FOUND` response whether or not the foreign organization exists.
-- Repository methods for tenant-owned data require `organizationId`; unscoped methods are reserved for explicit platform administration.
-- Check resource ownership and current status in addition to role. For example, an employee role alone does not authorize access to another employee's loan.
-- Employer actions and financial state transitions create audit events.
-- Hiding UI controls improves usability but never replaces server-side authorization.
+Operational endpoints distinguish liveness, readiness, and dependency health.
+The dependency report is sanitized, but its current public exposure and side
+effects are documented as an unresolved broader-release control.
 
-PostgreSQL row-level security is not required for the first MVP. Application enforcement plus tenant-safe constraints is simpler initially; RLS can be added later as defense in depth without changing the domain contracts.
+## Trust boundaries and limitations
 
-## 7. Database ownership and financial data
+| Boundary                      | Enforced control                                                                                                    | Remaining limitation                                                                                           |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Browser to application        | HTTPS edge, sessions, exact-origin checks, Zod, rate limits; checked-in Caddy HSTS, frame, and baseline CSP headers | Deployed cookie flags and deployed headers need captured evidence; Circle-compatible CSP needs live validation |
+| Employee to employer data     | Database-resolved tenant and role checks                                                                            | No independently tested database RLS boundary                                                                  |
+| Employer review to funds      | Review cannot submit a wallet operation; employee passkey remains required                                          | Human review policy and legal process need external assurance                                                  |
+| Application to ERPNext        | Read-only credentials, complete snapshot, fail-closed freshness                                                     | Source availability and operational ownership are external                                                     |
+| Browser/application to Circle | Ownership challenge, passkey, receipt verification                                                                  | Console origin/callback/recovery settings are not independently verified                                       |
+| Application to Arc            | Fixed chain/contract/USDC, EIP-712 authorization, exact receipt/event checks                                        | Immutable signer rotation and independent contract audit remain open                                           |
+| Arc to PostgreSQL             | Finality window, journal idempotency, conflict preservation                                                         | Audit command is bounded; target recovery exercise remains open                                                |
+| Operator to secrets           | Ignored environment files and server-only variables                                                                 | Managed KMS/HSM custody and access evidence are incomplete                                                     |
 
-Use one PostgreSQL database, one Prisma schema, and one migration history. Tables have one logical owner:
+## Verification references
 
-| Owner                | Likely records                                                 |
-| -------------------- | -------------------------------------------------------------- |
-| `auth`               | users, external identities, sessions if locally persisted      |
-| `organizations`      | organizations, memberships, organization settings              |
-| `employees`          | employee profiles and verification/employment state            |
-| `lending`            | policies and lending offers                                    |
-| `loans`              | loans, term snapshots, repayment schedule items, repayments    |
-| `ledger`             | accounts, transactions, entries                                |
-| `audit`              | append-only audit events                                       |
-| integration adapters | integration connections, external references, webhook receipts |
-
-Only the owning module mutates its tables. A cross-module workflow is coordinated by an application use case and, when atomicity is required, one database transaction. Read-oriented joins are allowed through explicit query services, but they must not bypass ownership for writes.
-
-Every tenant-owned row includes `organizationId`. Use composite uniqueness and, where practical, composite foreign keys containing `organizationId` so the database cannot link records across tenants. Use stable opaque IDs and timestamps. Financial and audit records use status transitions or reversal records rather than destructive updates or deletion.
-
-Money is never represented with floating point. Store fiat amounts as integer minor units plus currency and token amounts as integer base units plus asset/scale. Store rates as integers with an explicit scale (for example basis points), snapshot agreed terms on the loan, and define deterministic rounding rules in tested domain functions.
-
-When ledger functionality is introduced, balances are derived from immutable, balanced ledger entries. A provider transfer ID is an external reference, not the internal source of financial truth.
-
-## 8. External integration boundaries
-
-Core modules depend on narrow interfaces; provider adapters depend on SDKs and external payloads:
-
-- `SettlementProvider`: future wallet/address, transfer, transfer-status, and webhook operations. A mock implementation is used until Circle/Arc work is explicitly requested.
-- `PayrollProvider`: employee/payroll data import and future repayment instruction capabilities. Provider-specific fields are translated to internal DTOs.
-- `ErpProvider`: future organization/accounting export or synchronization operations.
-- `IdentityProvider`: OIDC login, callback validation, and logout integration for authentication.
-
-Provider credentials and external IDs never enter domain entities unless represented as opaque references. Webhook routes verify signatures, persist an idempotency key/webhook receipt, and then invoke an application command. Retries must be safe. When real asynchronous money movement is introduced, add a transactional outbox and worker deliberately; do not add queue infrastructure before that need exists.
-
-## 9. API, errors, and validation
-
-- Validate all external input with Zod at the entry boundary.
-- Use explicit command/query DTOs rather than Prisma-generated types as API contracts.
-- Return the shared error envelope with stable codes and safe messages.
-- Log internal context server-side without exposing stack traces, SQL errors, provider responses, or secrets.
-- Require idempotency keys for future commands that can create loans, repayments, ledger transactions, or external transfers.
-
-## 10. Testing and evolution
-
-- Unit-test domain rules and monetary calculations without Next.js or PostgreSQL.
-- Test application use cases with in-memory/mock repository and integration interfaces.
-- Add PostgreSQL integration tests for repository scoping, constraints, and transactions.
-- Add route contract tests for authentication, authorization, validation, and error shapes.
-- Add end-to-end tests only for critical cross-boundary user journeys.
-
-This architecture scales first by adding application instances and database capacity. Modules can later publish events through an outbox, gain separate workers, or be extracted behind their existing interfaces. Those changes are evolutionary options, not MVP prerequisites.
+- [`CONTROLLED_PILOT_READINESS.md`](./CONTROLLED_PILOT_READINESS.md) — frozen
+  results, topology evidence, risks, and release gates.
+- [`LOAN_ORIGINATION_V1.md`](./LOAN_ORIGINATION_V1.md) — detailed application,
+  review, authorization, and recovery state machine.
+- [`ARC_TESTNET_PILOT_REPORT.md`](./ARC_TESTNET_PILOT_REPORT.md) — recorded live
+  Arc lifecycle evidence.
+- [`ERPNEXT_EMPLOYEE_SYNC.md`](./ERPNEXT_EMPLOYEE_SYNC.md) — synchronization
+  semantics and operator procedure.
+- [`FINANCIAL_INVARIANTS_AND_THREAT_MODEL.md`](./FINANCIAL_INVARIANTS_AND_THREAT_MODEL.md)
+  — financial invariants and failure handling.
+- [`DATABASE_BACKUP_AND_DISASTER_RECOVERY.md`](./DATABASE_BACKUP_AND_DISASTER_RECOVERY.md)
+  — backup, restore, and recovery boundaries.

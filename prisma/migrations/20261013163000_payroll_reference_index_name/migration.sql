@@ -1,0 +1,2 @@
+ALTER INDEX "PayrollDeductionProposal_organizationId_erpNextDocumentReferenc"
+RENAME TO "PayrollDeduction_externalReference_key";

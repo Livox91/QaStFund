@@ -12,6 +12,7 @@ import {
   type EmployeeBorrowedLoanRecord,
   type RecordedLoanRepayment,
 } from "@/modules/loans/domain/employee-loan";
+import { allocateRepaymentOldestFirst } from "@/modules/repayment-plans/domain/repayment-plan";
 
 const repaymentSelection = {
   id: true,
@@ -40,6 +41,39 @@ const borrowedLoanSelection = {
     where: { status: "COMPLETED" as const },
     orderBy: { paidAt: "asc" as const },
     select: repaymentSelection,
+  },
+  repaymentPlans: {
+    where: { status: "ACTIVE" as const },
+    take: 1,
+    select: {
+      id: true,
+      version: true,
+      termMonths: true,
+      installments: {
+        orderBy: { sequence: "asc" as const },
+        select: {
+          id: true,
+          sequence: true,
+          amountMinorUnits: true,
+          dueAt: true,
+          allocations: {
+            where: { repayment: { status: "COMPLETED" as const } },
+            select: { amountMinorUnits: true },
+          },
+          payrollDeductions: {
+            orderBy: { createdAt: "desc" as const },
+            select: {
+              id: true,
+              status: true,
+              authorizationStatus: true,
+              proposedAmountMinorUnits: true,
+              payrollPeriodStart: true,
+              payrollPeriodEnd: true,
+            },
+          },
+        },
+      },
+    },
   },
 } as const;
 
@@ -174,21 +208,43 @@ export const prismaEmployeeLoanRepository: EmployeeLoanRepository = {
         },
         select: {
           id: true,
+          chainLoanId: true,
           lenderMembershipId: true,
           borrowerMembershipId: true,
           principalAmountMinorUnits: true,
           feeAmountMinorUnits: true,
           outstandingPrincipalMinorUnits: true,
+          repaymentDueAt: true,
+          activatedAt: true,
+          startedAt: true,
           currency: true,
           status: true,
           repayments: {
             where: { status: "COMPLETED" },
             select: { amountMinorUnits: true },
           },
+          repaymentPlans: {
+            where: { status: "ACTIVE" },
+            take: 1,
+            include: {
+              installments: {
+                orderBy: { sequence: "asc" },
+                include: {
+                  allocations: {
+                    where: { repayment: { status: "COMPLETED" } },
+                    select: { amountMinorUnits: true },
+                  },
+                },
+              },
+            },
+          },
         },
       });
 
       if (!loan) return { kind: "LOAN_NOT_FOUND" } as const;
+      if (loan.chainLoanId !== null) {
+        return { kind: "LOAN_NOT_REPAYABLE" } as const;
+      }
       if (loan.status !== "ACTIVE" && loan.status !== "OVERDUE") {
         return { kind: "LOAN_NOT_REPAYABLE" } as const;
       }
@@ -244,6 +300,60 @@ export const prismaEmployeeLoanRepository: EmployeeLoanRepository = {
       const isFullyRepaid =
         command.amountMinorUnits === remainingAmountMinorUnits;
 
+      let plan = loan.repaymentPlans[0];
+      if (!plan) {
+        const createdPlan = await transaction.loanRepaymentPlan.create({
+          data: {
+            organizationId,
+            loanId: loan.id,
+            version: 1,
+            status: "ACTIVE",
+            termMonths: 1,
+            installmentCount: 1,
+            totalRepaymentMinorUnits: totalAgreedAmountMinorUnits,
+            currency: loan.currency,
+            borrowerConsentedAt: loan.activatedAt ?? loan.startedAt,
+            effectiveAt: now,
+          },
+        });
+        await transaction.loanInstallment.create({
+          data: {
+            organizationId,
+            loanId: loan.id,
+            planId: createdPlan.id,
+            sequence: 1,
+            amountMinorUnits: totalAgreedAmountMinorUnits,
+            dueAt: loan.repaymentDueAt,
+          },
+        });
+        plan = await transaction.loanRepaymentPlan.findUniqueOrThrow({
+          where: { id: createdPlan.id },
+          include: {
+            installments: {
+              orderBy: { sequence: "asc" },
+              include: {
+                allocations: {
+                  where: { repayment: { status: "COMPLETED" } },
+                  select: { amountMinorUnits: true },
+                },
+              },
+            },
+          },
+        });
+      }
+      const allocations = allocateRepaymentOldestFirst({
+        repaymentAmountMinorUnits: command.amountMinorUnits,
+        installments: plan.installments.map((installment) => ({
+          id: installment.id,
+          sequence: installment.sequence,
+          amountMinorUnits: installment.amountMinorUnits,
+          paidMinorUnits: installment.allocations.reduce(
+            (sum, allocation) => sum + allocation.amountMinorUnits,
+            0n,
+          ),
+        })),
+      });
+
       const repayment = await transaction.loanRepayment.create({
         data: {
           organizationId,
@@ -256,6 +366,14 @@ export const prismaEmployeeLoanRepository: EmployeeLoanRepository = {
           completedAt: now,
         },
         select: repaymentSelection,
+      });
+      await transaction.repaymentAllocation.createMany({
+        data: allocations.map((allocation) => ({
+          organizationId,
+          repaymentId: repayment.id,
+          installmentId: allocation.installmentId,
+          amountMinorUnits: allocation.amountMinorUnits,
+        })),
       });
 
       await postLedgerTransaction(transaction, {

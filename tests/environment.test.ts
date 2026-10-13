@@ -153,6 +153,23 @@ describe("environment validation", () => {
     ).toBe(60);
   });
 
+  it("requires a strong operational-health bearer secret when configured", () => {
+    expect(() =>
+      parseEnvironment({
+        ...startupEnvironment,
+        OPERATIONAL_HEALTH_SECRET: "too-short",
+      }),
+    ).toThrow(/OPERATIONAL_HEALTH_SECRET/);
+
+    expect(
+      parseEnvironment({
+        ...startupEnvironment,
+        OPERATIONAL_HEALTH_SECRET:
+          "test-only-operational-health-secret-32-characters",
+      }).OPERATIONAL_HEALTH_SECRET,
+    ).toBe("test-only-operational-health-secret-32-characters");
+  });
+
   it("never returns server-only values from browser configuration", () => {
     const serverSecret = `0x${"cd".repeat(32)}`;
     const publicConfiguration = parsePublicTestnetEnvironment({

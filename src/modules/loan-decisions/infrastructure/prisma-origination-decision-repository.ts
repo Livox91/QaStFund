@@ -65,11 +65,10 @@ function affordabilitySnapshot(
       decision.affordability.totalMonthlyObligationsMinorUnits.toString(),
     burdenRatioBasisPoints: decision.affordability.burdenRatioBasisPoints,
     maximumBurdenBasisPoints: decision.affordability.maximumBurdenBasisPoints,
-    maximumPermittedPrincipalMinorUnits:
-      decision.affordability.maximumPermittedPrincipalMinorUnits?.toString() ??
-      null,
+    maximumPermittedPrincipalMinorUnits: null,
     passed: decision.affordability.passed,
-    featureScores: { ...decision.featureScores },
+    policyNote:
+      "No affordability threshold or score is approved for the controlled pilot.",
   };
 }
 
@@ -311,12 +310,12 @@ export async function evaluateAndPersistLoanOrigination(input: {
 
 export function isOriginationAuthorized(decision: {
   status: string;
-  reasonCodes?: string[];
+  reasonCodes?: readonly string[];
   override: { outcome: string } | null;
 }): boolean {
   if (decision.override?.outcome === "APPROVED") {
     return (
-      ["APPROVAL_CONSIDERATION", "REVIEW_REQUIRED"].includes(decision.status) &&
+      decision.status === "REVIEW_REQUIRED" &&
       !(decision.reasonCodes ?? []).some((reason) =>
         [
           "APPLICATION_INVALID",
@@ -337,8 +336,8 @@ export function isOriginationAuthorized(decision: {
       )
     );
   }
-  // APPROVAL_CONSIDERATION is a recommendation, not approval. The controlled
-  // pilot always requires an immutable employer-admin review before signing.
+  // The controlled pilot always requires an immutable employer-admin review.
+  // Historical score-based approval-consideration records are not eligible.
   return false;
 }
 

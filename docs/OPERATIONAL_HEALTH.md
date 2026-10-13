@@ -1,13 +1,21 @@
 # Operational health
 
-The application exposes three uncached, read-only health checks:
+The application exposes two public probes and one protected operational-health
+endpoint:
 
 - `GET /api/health/live` only confirms that the process can answer HTTP.
 - `GET /api/health/ready` (and compatibility route `GET /api/health`) validates required configuration and PostgreSQL connectivity. A failed check returns `503`.
-- `GET /api/health/dependencies` reports sanitized Arc RPC/contract, Circle configuration, optional ERPNext state, reconciliation progress, pending transaction count, and the lightweight metric snapshot. Optional dependency failures degrade this report but do not fail readiness.
+- Authenticated `GET /api/health/dependencies` reports sanitized Arc RPC/contract, Circle configuration, optional ERPNext state, reconciliation progress, pending transaction count, and the lightweight metric snapshot without persisting incident transitions or delivering alerts. Optional dependency failures degrade this report but do not fail readiness.
+- Authenticated `POST /api/health/dependencies` performs the same observation in `observe-and-record` mode, including deduplicated incident persistence and configured alert delivery.
 - `GET /api/employer/operations/loans/{loanId}` provides an employer-admin-only, organization-scoped, redacted evidence trace for incident investigation.
 
-Responses contain statuses, timestamps, counters, block numbers, and safe configuration booleans. They never include URLs, credentials, tokens, signatures, private keys, or raw provider errors. Operators should restrict dependency-health routes at the ingress if their deployment does not permit public operational metadata.
+Both dependency-health methods require `Authorization: Bearer
+<OPERATIONAL_HEALTH_SECRET>`. Missing or invalid credentials receive a
+sanitized `401` before dependency inspection. Responses contain statuses,
+timestamps, counters, block numbers, and safe configuration booleans. They
+never include URLs, credentials, tokens, signatures, private keys, or raw
+provider errors. Keep the secret distinct from scheduler and alert-webhook
+credentials and supply it only to trusted monitoring or operator clients.
 
 ## Alerts and thresholds
 

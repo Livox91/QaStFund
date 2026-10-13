@@ -30,6 +30,8 @@ const reasonLabels: Record<string, string> = {
   NEW_TO_CREDIT: "No completed repayment history is available.",
   PRIOR_LATE_REPAYMENT: "Prior late repayment was identified.",
   PRIOR_DEFAULT: "A prior default was identified.",
+  MANUAL_REVIEW_REQUIRED:
+    "Controlled-pilot policy requires an authorized human review.",
   SCORE_APPROVAL_BAND:
     "The calculated score is in the approval-consideration band.",
   SCORE_REVIEW_BAND: "The calculated score requires manual review.",
@@ -56,9 +58,7 @@ export function EmployerOriginationDecision({
 }: {
   decision: EmployerOriginationDecisionView;
 }) {
-  const pending =
-    ["APPROVAL_CONSIDERATION", "REVIEW_REQUIRED"].includes(decision.status) &&
-    !decision.override;
+  const pending = decision.status === "REVIEW_REQUIRED" && !decision.override;
   const displayStatus = decision.override?.outcome ?? decision.status;
 
   return (

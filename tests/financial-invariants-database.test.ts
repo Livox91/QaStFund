@@ -16,6 +16,20 @@ describe("database financial invariants", () => {
         'LendingOffer_terms_check',
         'Loan_financial_terms_check',
         'LoanRepayment_amount_positive_check',
+        'LoanRepaymentPlan_termMonths_check',
+        'LoanRepaymentPlan_installmentCount_check',
+        'LoanRepaymentPlan_total_check',
+        'LoanRepaymentPlan_activation_check',
+        'LoanInstallment_sequence_check',
+        'LoanInstallment_amount_check',
+        'RepaymentAllocation_amount_check',
+        'PayrollDeduction_period_check',
+        'PayrollDeduction_amounts_check',
+        'PayrollDeduction_authorization_check',
+        'PayrollDeduction_review_check',
+        'DelinquencyCase_amounts_check',
+        'DelinquencyCase_days_check',
+        'DelinquencyNotification_attempts_check',
         'LedgerEntry_amount_positive_check'
       )
     `;
@@ -28,6 +42,20 @@ describe("database financial invariants", () => {
         "LendingOffer_terms_check",
         "Loan_financial_terms_check",
         "LoanRepayment_amount_positive_check",
+        "LoanRepaymentPlan_termMonths_check",
+        "LoanRepaymentPlan_installmentCount_check",
+        "LoanRepaymentPlan_total_check",
+        "LoanRepaymentPlan_activation_check",
+        "LoanInstallment_sequence_check",
+        "LoanInstallment_amount_check",
+        "RepaymentAllocation_amount_check",
+        "PayrollDeduction_period_check",
+        "PayrollDeduction_amounts_check",
+        "PayrollDeduction_authorization_check",
+        "PayrollDeduction_review_check",
+        "DelinquencyCase_amounts_check",
+        "DelinquencyCase_days_check",
+        "DelinquencyNotification_attempts_check",
         "LedgerEntry_amount_positive_check",
       ]),
     );
@@ -40,7 +68,12 @@ describe("database financial invariants", () => {
       WHERE schemaname = current_schema()
         AND indexname IN (
           'LendingOffer_contractAddress_chainOfferId_key',
-          'LoanRepayment_submissionTransactionHash_key'
+          'LoanRepayment_submissionTransactionHash_key',
+          'LoanRepaymentPlan_one_active_per_loan_idx',
+          'RepaymentAllocation_installmentId_repaymentId_key',
+          'PayrollDeductionProposal_organizationId_idempotencyKey_key',
+          'PayrollDeduction_externalReference_key',
+          'DelinquencyNotification_caseId_thresholdKey_key'
         )
     `;
 
@@ -48,6 +81,11 @@ describe("database financial invariants", () => {
       new Set([
         "LendingOffer_contractAddress_chainOfferId_key",
         "LoanRepayment_submissionTransactionHash_key",
+        "LoanRepaymentPlan_one_active_per_loan_idx",
+        "RepaymentAllocation_installmentId_repaymentId_key",
+        "PayrollDeductionProposal_organizationId_idempotencyKey_key",
+        "PayrollDeduction_externalReference_key",
+        "DelinquencyNotification_caseId_thresholdKey_key",
       ]),
     );
   });
