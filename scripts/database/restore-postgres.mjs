@@ -52,6 +52,9 @@ if (dockerService) {
 }
 
 try {
+  await runPostgresTool("pg_restore", ["--list", toolBackupFile], restoreUrl, {
+    displayName: "validate restore archive before clearing target",
+  });
   await runPostgresTool(
     "psql",
     [

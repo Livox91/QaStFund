@@ -33,8 +33,10 @@
     "reconcile:arc": "tsx --conditions=react-server scripts/reconcile-arc.ts",
     "audit:arc": "tsx --conditions=react-server scripts/audit-arc-reconciliation.ts",
     "audit:erpnext": "tsx --conditions=react-server scripts/audit-erpnext-readiness.ts",
+    "audit:dependencies": "node scripts/testing/verify-dependency-audit.mjs",
     "verify:email-provider": "tsx scripts/verify-email-provider.ts",
     "verify:erpnext-source": "tsx --conditions=react-server scripts/verify-erpnext-source.ts",
+    "verify:edge": "node scripts/testing/verify-edge-security.mjs",
     "db:backup": "node scripts/database/backup-postgres.mjs",
     "db:restore": "node scripts/database/restore-postgres.mjs",
     "dr:verify": "node scripts/database/verify-disaster-recovery.mjs",
@@ -80,5 +82,8 @@
     "tsx": "^4.23.15",
     "typescript": "^5",
     "vitest": "^5.0.2"
+  },
+  "overrides": {
+    "mysql2": "3.24.6"
   }
 }

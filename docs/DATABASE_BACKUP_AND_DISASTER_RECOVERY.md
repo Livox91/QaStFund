@@ -68,18 +68,23 @@ $env:DATABASE_ADMIN_URL = '<loaded from the test secret manager>'
 npm run dr:verify
 ```
 
+Set `DR_ARTIFACT_DIRECTORY` to a new, protected directory when the verified
+fixture backup and checksum must be retained as evidence. The backup command
+refuses to overwrite an existing dump or checksum.
+
 Only environment variable names—not their values—are passed in Docker command arguments.
 
 The verifier performs these checks:
 
 1. Creates an empty source database and applies every Prisma migration.
-2. Confirms migration status and inserts a non-sensitive reconciliation cursor fixture.
+2. Confirms migration status and inserts non-sensitive organization, user, membership, and reconciliation-cursor fixtures.
 3. Creates and checksum-validates a custom-format backup.
-4. Restores into a different empty disposable database.
-5. Confirms the restored Prisma migration history and exact cursor values.
-6. Runs the restored-cursor and database reconciliation tests against the restored database.
-7. Proves a restored cursor resumes at its saved block and that applying a duplicate finalized event does not create duplicate loans, repayments, or audit records.
-8. Drops both disposable databases unless `KEEP_DR_DATABASES=true`.
+4. Proves corrupt, missing-checksum, interrupted-transfer, and unavailable-dependency failures do not clear the target database.
+5. Restores into a different empty disposable database and records restore and total elapsed time.
+6. Confirms the restored Prisma migration history, essential identity fixtures, and exact cursor values.
+7. Runs the restored-cursor and database reconciliation tests against the restored database.
+8. Proves a restored cursor resumes at its saved block and that applying a duplicate finalized event does not create duplicate loans, repayments, or audit records.
+9. Drops both disposable databases unless `KEEP_DR_DATABASES=true`.
 
 The CI workflow runs this verifier using its isolated PostgreSQL service.
 
@@ -150,6 +155,24 @@ The CI workflow runs this verifier using its isolated PostgreSQL service.
 2. If the database is intact, restart or roll back the application without restoring data.
 3. Confirm workers resume and no stale reconciliation alert remains before reopening traffic.
 
+The supported deployment preserves the previously deployed application and
+scheduler as `qastfund-app:rollback` and
+`qastfund-reconciliation-scheduler:rollback`. After confirming that the
+previous application is compatible with the current database schema, roll back
+on the target host with:
+
+```sh
+cd "$HOME/QaStFund"
+docker tag qastfund-app:rollback qastfund-app:current
+docker tag qastfund-reconciliation-scheduler:rollback qastfund-reconciliation-scheduler:current
+docker compose -f compose.production.yaml --env-file deploy/.env.production up -d --no-build app reconciliation-scheduler
+docker compose -f compose.production.yaml --env-file deploy/.env.production images
+```
+
+The PostgreSQL and Caddy base images currently use major-version tags rather
+than immutable digests. Record the image IDs printed by each deployment before
+relying on them for a rollback decision.
+
 ### Lost reconciliation state
 
 1. Preserve the current event journal and cursor for investigation.
@@ -181,3 +204,23 @@ The following checks were actually run in the repository workspace:
   ```
 
 The final proof passed against PostgreSQL 17.11 in 86.7 seconds. It applied all 28 migrations to an empty source database, confirmed migration status, created and checksum-validated a 123,453-byte custom-format backup, restored it into a separate disposable database, verified the exact reconciliation cursor, and ran two restored-database reconciliation tests. Both tests passed, including cursor resume and duplicate-event financial idempotency. Both disposable databases were dropped afterward.
+
+### 2026-10-14 isolated rehearsal
+
+The supported verifier ran with the existing Compose PostgreSQL 17.11 tools and
+an explicit new `DR_ARTIFACT_DIRECTORY`. It applied all 53 migrations, created a
+204,528-byte custom-format backup and SHA-256 sidecar, restored it into a
+separate disposable database, verified the essential identity fixtures and
+cursor `4243:4237:4242`, and passed 4/4 restored-state reconciliation tests.
+Corrupt-checksum, missing-checksum, truncated-archive, and unavailable-service
+cases all failed safely while a marker in the target remained intact. The
+successful restore took 18.5 seconds and the complete rehearsal took 118.3
+seconds. Both disposable databases were dropped; the fixture artifact was
+retained under the ignored local `artifacts/` directory.
+
+This run did not establish RPO: no production backup timestamp, off-host
+inventory, retention evidence, provider PITR state, or restore-credential
+availability was accessible. No production database was restored, no live Arc
+cursor was reset, and no blockchain transaction was sent. A target-host image
+rollback was not rehearsed because no isolated target deployment exists; the
+exact supported rollback commands are documented above.

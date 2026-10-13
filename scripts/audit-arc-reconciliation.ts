@@ -19,6 +19,7 @@ import {
   fundingRequestIdToBytes32,
   getConfiguredEscrowAddress,
 } from "@/integrations/arc/employee-lending-escrow";
+import { enforceAuditRecordBound } from "./audit-record-bound";
 
 type AuditIssue = Readonly<{
   code: string;
@@ -71,82 +72,111 @@ if (actualChainId !== ARC_TESTNET_CHAIN_ID) {
   });
 }
 
-const [configuredToken, configuredSigner, offers, loans, journalProblems] =
-  await Promise.all([
-    client.readContract({
-      address: contractAddress,
-      abi: employeeLendingEscrowAbi,
-      functionName: "usdc",
-    }),
-    client.readContract({
-      address: contractAddress,
-      abi: employeeLendingEscrowAbi,
-      functionName: "authorizationSigner",
-    }),
-    prisma.lendingOffer.findMany({
-      where: {
-        contractAddress: normalizedContract,
-        fundingStatus: "FUNDED",
-        chainOfferId: { not: null },
+const [
+  configuredToken,
+  configuredSigner,
+  unboundedOffers,
+  unboundedLoans,
+  unboundedJournalProblems,
+] = await Promise.all([
+  client.readContract({
+    address: contractAddress,
+    abi: employeeLendingEscrowAbi,
+    functionName: "usdc",
+  }),
+  client.readContract({
+    address: contractAddress,
+    abi: employeeLendingEscrowAbi,
+    functionName: "authorizationSigner",
+  }),
+  prisma.lendingOffer.findMany({
+    where: {
+      contractAddress: normalizedContract,
+      fundingStatus: "FUNDED",
+      chainOfferId: { not: null },
+    },
+    select: {
+      id: true,
+      status: true,
+      chainOfferId: true,
+      fundingRequestId: true,
+      lenderWalletAddress: true,
+      principalBaseUnits: true,
+      feeRateBasisPoints: true,
+      durationDays: true,
+      fundingTransactionHash: true,
+      fundedAt: true,
+    },
+    orderBy: { createdAt: "asc" },
+    take: MAX_RECORDS + 1,
+  }),
+  prisma.loan.findMany({
+    where: {
+      contractAddress: normalizedContract,
+      chainLoanId: { not: null },
+    },
+    select: {
+      id: true,
+      status: true,
+      chainLoanId: true,
+      chainOfferId: true,
+      lenderWalletAddress: true,
+      borrowerWalletAddress: true,
+      principalBaseUnits: true,
+      repaymentBaseUnits: true,
+      acceptanceTransactionHash: true,
+      repaymentTransactionHash: true,
+      onChainStartedAt: true,
+      onChainRepaidAt: true,
+      repayments: {
+        where: { status: "COMPLETED" },
+        select: { id: true },
+        take: 1,
       },
-      select: {
-        id: true,
-        status: true,
-        chainOfferId: true,
-        fundingRequestId: true,
-        lenderWalletAddress: true,
-        principalBaseUnits: true,
-        feeRateBasisPoints: true,
-        durationDays: true,
-        fundingTransactionHash: true,
-        fundedAt: true,
-      },
-      orderBy: { createdAt: "asc" },
-      take: MAX_RECORDS,
-    }),
-    prisma.loan.findMany({
-      where: {
-        contractAddress: normalizedContract,
-        chainLoanId: { not: null },
-      },
-      select: {
-        id: true,
-        status: true,
-        chainLoanId: true,
-        chainOfferId: true,
-        lenderWalletAddress: true,
-        borrowerWalletAddress: true,
-        principalBaseUnits: true,
-        repaymentBaseUnits: true,
-        acceptanceTransactionHash: true,
-        repaymentTransactionHash: true,
-        onChainStartedAt: true,
-        onChainRepaidAt: true,
-        repayments: {
-          where: { status: "COMPLETED" },
-          select: { id: true },
-          take: 1,
-        },
-      },
-      orderBy: { createdAt: "asc" },
-      take: MAX_RECORDS,
-    }),
-    prisma.blockchainEvent.findMany({
-      where: {
-        chainId: ARC_TESTNET_CHAIN_ID,
-        contractAddress: normalizedContract,
-        status: { in: ["UNMATCHED", "CONFLICT", "REORGED"] },
-      },
-      select: {
-        id: true,
-        status: true,
-        investigationCode: true,
-        investigationNote: true,
-      },
-      orderBy: { blockNumber: "asc" },
-      take: MAX_RECORDS,
-    }),
-  ]);
+    },
+    orderBy: { createdAt: "asc" },
+    take: MAX_RECORDS + 1,
+  }),
+  prisma.blockchainEvent.findMany({
+    where: {
+      chainId: ARC_TESTNET_CHAIN_ID,
+      contractAddress: normalizedContract,
+      status: { in: ["UNMATCHED", "CONFLICT", "REORGED"] },
+    },
+    select: {
+      id: true,
+      status: true,
+      investigationCode: true,
+      investigationNote: true,
+    },
+    orderBy: { blockNumber: "asc" },
+    take: MAX_RECORDS + 1,
+  }),
+]);
+
+const boundedCategories = {
+  offers: enforceAuditRecordBound(unboundedOffers, MAX_RECORDS),
+  loans: enforceAuditRecordBound(unboundedLoans, MAX_RECORDS),
+  journalProblems: enforceAuditRecordBound(
+    unboundedJournalProblems,
+    MAX_RECORDS,
+  ),
+};
+const {
+  offers: { records: offers },
+  loans: { records: loans },
+  journalProblems: { records: journalProblems },
+} = boundedCategories;
+
+for (const [category, result] of Object.entries(boundedCategories)) {
+  if (!result.overflowed) continue;
+  issue({
+    code: "AUDIT_RECORD_LIMIT_EXCEEDED",
+    recordType: "configuration",
+    recordId: category,
+    detail: `${category} contains more than ${MAX_RECORDS} records; the bounded audit refuses to report success until pagination is implemented.`,
+  });
+}
 
 if (configuredToken.toLowerCase() !== ARC_USDC_ADDRESS.toLowerCase()) {
   issue({
@@ -480,35 +510,59 @@ for (const loan of loans) {
 }
 
 const staleBefore = new Date(Date.now() - 15 * 60_000);
-const [staleOffers, staleLoans, staleRepayments] = await Promise.all([
-  prisma.lendingOffer.findMany({
-    where: {
-      contractAddress: normalizedContract,
-      fundingStatus: "PENDING",
-      updatedAt: { lt: staleBefore },
-    },
-    select: { id: true },
-    take: MAX_RECORDS,
-  }),
-  prisma.loan.findMany({
-    where: {
-      contractAddress: normalizedContract,
-      status: { in: ["REQUESTED", "APPROVED"] },
-      updatedAt: { lt: staleBefore },
-    },
-    select: { id: true },
-    take: MAX_RECORDS,
-  }),
-  prisma.loanRepayment.findMany({
-    where: {
-      status: "PENDING",
-      createdAt: { lt: staleBefore },
-      loan: { contractAddress: normalizedContract },
-    },
-    select: { id: true },
-    take: MAX_RECORDS,
-  }),
-]);
+const [unboundedStaleOffers, unboundedStaleLoans, unboundedStaleRepayments] =
+  await Promise.all([
+    prisma.lendingOffer.findMany({
+      where: {
+        contractAddress: normalizedContract,
+        fundingStatus: "PENDING",
+        updatedAt: { lt: staleBefore },
+      },
+      select: { id: true },
+      take: MAX_RECORDS + 1,
+    }),
+    prisma.loan.findMany({
+      where: {
+        contractAddress: normalizedContract,
+        status: { in: ["REQUESTED", "APPROVED"] },
+        updatedAt: { lt: staleBefore },
+      },
+      select: { id: true },
+      take: MAX_RECORDS + 1,
+    }),
+    prisma.loanRepayment.findMany({
+      where: {
+        status: "PENDING",
+        createdAt: { lt: staleBefore },
+        loan: { contractAddress: normalizedContract },
+      },
+      select: { id: true },
+      take: MAX_RECORDS + 1,
+    }),
+  ]);
+const boundedStaleCategories = {
+  staleOffers: enforceAuditRecordBound(unboundedStaleOffers, MAX_RECORDS),
+  staleLoans: enforceAuditRecordBound(unboundedStaleLoans, MAX_RECORDS),
+  staleRepayments: enforceAuditRecordBound(
+    unboundedStaleRepayments,
+    MAX_RECORDS,
+  ),
+};
+const {
+  staleOffers: { records: staleOffers },
+  staleLoans: { records: staleLoans },
+  staleRepayments: { records: staleRepayments },
+} = boundedStaleCategories;
+
+for (const [category, result] of Object.entries(boundedStaleCategories)) {
+  if (!result.overflowed) continue;
+  issue({
+    code: "AUDIT_RECORD_LIMIT_EXCEEDED",
+    recordType: "configuration",
+    recordId: category,
+    detail: `${category} contains more than ${MAX_RECORDS} records; the bounded audit refuses to report success until pagination is implemented.`,
+  });
+}
 for (const record of [
   ...staleOffers.map((row) => ({ ...row, kind: "offer" as const })),
   ...staleLoans.map((row) => ({ ...row, kind: "loan" as const })),

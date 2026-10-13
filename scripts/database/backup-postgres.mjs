@@ -2,7 +2,11 @@ import { createHash } from "node:crypto";
 import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { runCommand, runPostgresTool } from "./postgres-tools.mjs";
+import {
+  assertPathsDoNotExist,
+  runCommand,
+  runPostgresTool,
+} from "./postgres-tools.mjs";
 
 const databaseUrl = process.env.DATABASE_URL;
 const configuredBackupFile = process.env.BACKUP_FILE;
@@ -11,6 +15,7 @@ if (!databaseUrl) throw new Error("DATABASE_URL is required.");
 if (!configuredBackupFile) throw new Error("BACKUP_FILE is required.");
 
 const backupFile = path.resolve(configuredBackupFile);
+await assertPathsDoNotExist([backupFile, `${backupFile}.sha256`]);
 await mkdir(path.dirname(backupFile), { recursive: true });
 const dockerService = process.env.POSTGRES_TOOLS_DOCKER_SERVICE;
 const toolBackupFile = dockerService

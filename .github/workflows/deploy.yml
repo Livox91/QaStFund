@@ -34,9 +34,19 @@ jobs:
             git checkout master
             git merge --ff-only ${{ github.event.workflow_run.head_sha }}
 
-            # 2. Reclaim unused Docker storage before building on the 8 GB host
+            # 2. Preserve the currently deployed application images for rollback,
+            # then reclaim build cache without deleting the rollback artifacts.
+            if docker image inspect qastfund-app:current >/dev/null 2>&1; then
+              docker tag qastfund-app:current qastfund-app:rollback
+            elif docker image inspect p2p-lending-app:latest >/dev/null 2>&1; then
+              docker tag p2p-lending-app:latest qastfund-app:rollback
+            fi
+            if docker image inspect qastfund-reconciliation-scheduler:current >/dev/null 2>&1; then
+              docker tag qastfund-reconciliation-scheduler:current qastfund-reconciliation-scheduler:rollback
+            elif docker image inspect p2p-lending-reconciliation-scheduler:latest >/dev/null 2>&1; then
+              docker tag p2p-lending-reconciliation-scheduler:latest qastfund-reconciliation-scheduler:rollback
+            fi
             docker builder prune --all --force
-            docker image prune --all --force
 
             # 3. Start the database first so it is ready for migrations
             docker compose -f compose.production.yaml --env-file deploy/.env.production up -d database
@@ -46,6 +56,15 @@ jobs:
 
             # 5. Build and start the Next.js app, scheduler, and Caddy reverse proxy
             docker compose -f compose.production.yaml --env-file deploy/.env.production up -d --build
+
+            # Caddy does not automatically reload a changed bind-mounted Caddyfile.
+            # Recreate it on every release, then validate the exact mounted config.
+            docker compose -f compose.production.yaml --env-file deploy/.env.production up -d --force-recreate caddy
+            docker compose -f compose.production.yaml --env-file deploy/.env.production exec -T caddy caddy validate --config /etc/caddy/Caddyfile
+            docker compose -f compose.production.yaml --env-file deploy/.env.production images
+
+            # Run external HTTPS probes without printing credentials or bodies.
+            docker compose -f compose.production.yaml --env-file deploy/.env.production exec -T app node --input-type=module - < scripts/testing/verify-edge-security.mjs
 
             # 6. Clean up dangling images created during the deployment
             docker image prune -f

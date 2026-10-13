@@ -48,6 +48,15 @@ describe("protected dependency health route", () => {
     expect(mocks.getConfiguredDependencyHealth).not.toHaveBeenCalled();
   });
 
+  it("fails closed when the server health secret is not configured", async () => {
+    vi.stubEnv("OPERATIONAL_HEALTH_SECRET", "");
+
+    const response = await GET(request("GET", `Bearer ${secret}`));
+
+    expect(response.status).toBe(401);
+    expect(mocks.getConfiguredDependencyHealth).not.toHaveBeenCalled();
+  });
+
   it("keeps authenticated GET read-only", async () => {
     const response = await GET(request("GET", `Bearer ${secret}`));
 

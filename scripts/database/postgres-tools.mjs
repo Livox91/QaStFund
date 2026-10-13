@@ -1,4 +1,17 @@
 import { spawn } from "node:child_process";
+import { access } from "node:fs/promises";
+
+export async function assertPathsDoNotExist(paths) {
+  for (const candidate of paths) {
+    try {
+      await access(candidate);
+    } catch (error) {
+      if (error?.code === "ENOENT") continue;
+      throw error;
+    }
+    throw new Error(`Refusing to overwrite existing file: ${candidate}`);
+  }
+}
 
 export function redactCommandOutput(value) {
   return value

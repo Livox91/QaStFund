@@ -35,6 +35,7 @@ services:
       - internal
 
   app:
+    image: qastfund-app:${APP_IMAGE_TAG:-current}
     build:
       context: .
       target: runner
@@ -58,15 +59,22 @@ services:
       - web
 
   reconciliation-scheduler:
+    image: qastfund-reconciliation-scheduler:${APP_IMAGE_TAG:-current}
     build:
       context: .
       target: reconciliation-scheduler
     restart: unless-stopped
-    env_file:
-      - ${APP_ENV_FILE:-deploy/.env.production}
     environment:
+      ARC_RECONCILIATION_CRON_SECRET: ${ARC_RECONCILIATION_CRON_SECRET}
+      ARC_RECONCILIATION_INTERVAL_SECONDS: ${ARC_RECONCILIATION_INTERVAL_SECONDS:-60}
       ARC_RECONCILIATION_SCHEDULER_URL: http://app:3000/api/internal/arc-reconciliation
+      ERP_NEXT_SYNC_ENABLED: ${ERP_NEXT_SYNC_ENABLED:-false}
+      ERP_NEXT_SYNC_CRON_SECRET: ${ERP_NEXT_SYNC_CRON_SECRET:-}
+      ERP_NEXT_SYNC_INTERVAL_MINUTES: ${ERP_NEXT_SYNC_INTERVAL_MINUTES:-1440}
       ERP_NEXT_SYNC_SCHEDULER_URL: http://app:3000/api/internal/erpnext-sync
+      OBSERVABILITY_FAILURE_ALERT_THRESHOLD: ${OBSERVABILITY_FAILURE_ALERT_THRESHOLD:-3}
+      OPERATIONAL_ALERT_WEBHOOK_URL: ${OPERATIONAL_ALERT_WEBHOOK_URL:-}
+      OPERATIONAL_ALERT_WEBHOOK_BEARER_TOKEN: ${OPERATIONAL_ALERT_WEBHOOK_BEARER_TOKEN:-}
     depends_on:
       app:
         condition: service_healthy

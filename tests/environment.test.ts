@@ -55,6 +55,16 @@ describe("environment validation", () => {
     ).toThrowError(/ARC_CHAIN_ID must be 5042002 for Arc Testnet/);
   });
 
+  it("fails closed when the borrow authorizer signer is missing", () => {
+    const environmentWithoutSigner = { ...testnetEnvironment };
+    delete (environmentWithoutSigner as Partial<typeof testnetEnvironment>)
+      .ARC_BORROW_AUTHORIZER_PRIVATE_KEY;
+
+    expect(() => parseTestnetEnvironment(environmentWithoutSigner)).toThrow(
+      /ARC_BORROW_AUTHORIZER_PRIVATE_KEY/,
+    );
+  });
+
   it.each([
     ["ARC_USDC_ADDRESS", "not-an-address"],
     ["NEXT_PUBLIC_ARC_LENDING_CONTRACT_ADDRESS", "0x1234"],

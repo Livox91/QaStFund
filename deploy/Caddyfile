@@ -3,7 +3,7 @@
 
 	# Schedulers call these routes directly over Docker's private `internal`
 	# network. They must not be reachable through the public reverse proxy.
-	@internal_api path /api/internal/*
+	@internal_api path /api/internal /api/internal/*
 	respond @internal_api 404
 
 	reverse_proxy app:3000
