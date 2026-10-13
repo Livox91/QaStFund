@@ -34,6 +34,15 @@ jobs:
             git checkout master
             git merge --ff-only ${{ github.event.workflow_run.head_sha }}
 
+            # Authentication for dependency diagnostics is mandatory. Validate
+            # it before mutating any running service, without printing its value.
+            health_secret="$(sed -n 's/^OPERATIONAL_HEALTH_SECRET=//p' deploy/.env.production | tail -n 1 | tr -d '\r')"
+            if [ "${#health_secret}" -lt 32 ]; then
+              echo "OPERATIONAL_HEALTH_SECRET is missing or shorter than 32 characters on the target host." >&2
+              exit 1
+            fi
+            unset health_secret
+
             # 2. Preserve the currently deployed application images for rollback,
             # then reclaim build cache without deleting the rollback artifacts.
             if docker image inspect qastfund-app:current >/dev/null 2>&1; then

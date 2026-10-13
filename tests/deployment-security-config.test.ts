@@ -75,6 +75,12 @@ describe("production deployment security configuration", () => {
     expect(workflow).toContain(
       "exec -T app node --input-type=module - < scripts/testing/verify-edge-security.mjs",
     );
+    expect(workflow).toContain(
+      "OPERATIONAL_HEALTH_SECRET is missing or shorter than 32 characters",
+    );
+    expect(workflow.indexOf("health_secret=")).toBeLessThan(
+      workflow.indexOf("up -d database"),
+    );
   });
 
   it("retains explicit application rollback images", () => {
