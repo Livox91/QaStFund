@@ -27,6 +27,7 @@ describe("QastFund public branding", () => {
       token: "reset-token",
       organizationName: "Acme",
       email: "employee@example.test",
+      expiresAt: new Date("2026-10-13T13:00:00.000Z"),
     });
 
     expect(invitation.subject).toBe("Join Acme on QastFund");

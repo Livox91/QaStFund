@@ -417,6 +417,7 @@ export async function requestPasswordReset(input: {
         token: secureToken.token,
         organizationName: membership.organization.name,
         email,
+        expiresAt: reset.expiresAt,
       }),
       idempotencyKey: `password-reset:${reset.id}`,
     });

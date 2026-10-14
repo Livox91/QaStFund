@@ -12,6 +12,10 @@ import {
   postLedgerTransaction,
 } from "@/modules/ledger/infrastructure/ledger-posting";
 import { calculatePrincipalReduction } from "@/modules/loans/domain/employee-loan";
+import {
+  escapeHtml,
+  transactionalEmailHtml,
+} from "@/modules/notifications/domain/transactional-email";
 import { emailSender } from "@/modules/notifications/infrastructure/http-email-sender";
 import {
   allocateRepaymentOldestFirst,
@@ -598,6 +602,7 @@ async function deliverNotification(notificationId: string) {
   });
   if (!notification || notification.deliveryStatus === "SENT") return;
   const item = notification.case;
+  const reviewUrl = `${process.env.APP_URL ?? ""}/employer/delinquency`;
   const text = [
     `Loan reference: ${item.loanId}`,
     `Installment due: ${item.installment.dueAt.toISOString()}`,
@@ -606,14 +611,47 @@ async function deliverNotification(notificationId: string) {
     `Outstanding: ${money(item.outstandingMinorUnits, item.loan.currency)}`,
     `Days overdue: ${item.daysOverdue}`,
     `Recommended action: ${item.recommendedAction}`,
-    `${process.env.APP_URL ?? ""}/employer/delinquency`,
+    reviewUrl,
   ].join("\n");
   try {
     await emailSender.send({
       to: notification.recipientMembership.user.email,
       subject: `QastFund repayment review: ${notification.thresholdKey}`,
       text,
-      html: `<p>Repayment review required.</p><pre>${text}</pre>`,
+      html: transactionalEmailHtml({
+        preheader: `Repayment review required for loan ${item.loanId}.`,
+        eyebrow: "Repayment operations",
+        title: "Repayment review required",
+        bodyHtml: `<p style="margin:0 0 20px;color:#64748B;">A repayment exception needs your attention. Review the account details and recommended next step below.</p>
+          <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+            ${[
+              ["Loan reference", item.loanId],
+              ["Installment due", item.installment.dueAt.toISOString()],
+              [
+                "Originally due",
+                money(item.amountDueMinorUnits, item.loan.currency),
+              ],
+              ["Paid", money(item.amountPaidMinorUnits, item.loan.currency)],
+              [
+                "Outstanding",
+                money(item.outstandingMinorUnits, item.loan.currency),
+              ],
+              ["Days overdue", String(item.daysOverdue)],
+              ["Recommended action", item.recommendedAction],
+            ]
+              .map(
+                ([label, value]) =>
+                  `<tr><td style="padding:8px 12px 8px 0;border-bottom:1px solid #E5EAF1;color:#64748B;font-size:13px;">${escapeHtml(label)}</td><td style="padding:8px 0;border-bottom:1px solid #E5EAF1;color:#172033;font-size:13px;font-weight:700;">${escapeHtml(value)}</td></tr>`,
+              )
+              .join("")}
+          </table>`,
+        action: { label: "Review repayment", url: reviewUrl },
+        notice: {
+          title: "Operational notice",
+          bodyHtml:
+            '<p style="margin:0;">Handle this case according to your organization\'s repayment review policy.</p>',
+        },
+      }),
       idempotencyKey: notification.idempotencyKey,
     });
     await prisma.delinquencyNotification.update({

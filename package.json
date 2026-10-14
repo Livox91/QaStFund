@@ -35,6 +35,7 @@
     "audit:erpnext": "tsx --conditions=react-server scripts/audit-erpnext-readiness.ts",
     "audit:dependencies": "node scripts/testing/verify-dependency-audit.mjs",
     "verify:email-provider": "tsx scripts/verify-email-provider.ts",
+    "email:preview": "tsx scripts/email/preview-transactional-emails.ts",
     "verify:erpnext-source": "tsx --conditions=react-server scripts/verify-erpnext-source.ts",
     "verify:edge": "node scripts/testing/verify-edge-security.mjs",
     "db:backup": "node scripts/database/backup-postgres.mjs",
