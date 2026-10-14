@@ -221,6 +221,7 @@ export type OrganizationWhereInput = {
   employeeInvitations?: Prisma.EmployeeInvitationListRelationFilter
   passwordResetTokens?: Prisma.PasswordResetTokenListRelationFilter
   operationalIncidents?: Prisma.OperationalIncidentListRelationFilter
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferListRelationFilter
   repaymentPlans?: Prisma.LoanRepaymentPlanListRelationFilter
   loanInstallments?: Prisma.LoanInstallmentListRelationFilter
   repaymentAllocations?: Prisma.RepaymentAllocationListRelationFilter
@@ -260,6 +261,7 @@ export type OrganizationOrderByWithRelationInput = {
   employeeInvitations?: Prisma.EmployeeInvitationOrderByRelationAggregateInput
   passwordResetTokens?: Prisma.PasswordResetTokenOrderByRelationAggregateInput
   operationalIncidents?: Prisma.OperationalIncidentOrderByRelationAggregateInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferOrderByRelationAggregateInput
   repaymentPlans?: Prisma.LoanRepaymentPlanOrderByRelationAggregateInput
   loanInstallments?: Prisma.LoanInstallmentOrderByRelationAggregateInput
   repaymentAllocations?: Prisma.RepaymentAllocationOrderByRelationAggregateInput
@@ -302,6 +304,7 @@ export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
   employeeInvitations?: Prisma.EmployeeInvitationListRelationFilter
   passwordResetTokens?: Prisma.PasswordResetTokenListRelationFilter
   operationalIncidents?: Prisma.OperationalIncidentListRelationFilter
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferListRelationFilter
   repaymentPlans?: Prisma.LoanRepaymentPlanListRelationFilter
   loanInstallments?: Prisma.LoanInstallmentListRelationFilter
   repaymentAllocations?: Prisma.RepaymentAllocationListRelationFilter
@@ -367,6 +370,7 @@ export type OrganizationCreateInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -406,6 +410,7 @@ export type OrganizationUncheckedCreateInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -445,6 +450,7 @@ export type OrganizationUpdateInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -484,6 +490,7 @@ export type OrganizationUncheckedUpdateInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -564,6 +571,20 @@ export type OrganizationNullableScalarRelationFilter = {
 
 export type BoolFieldUpdateOperationsInput = {
   set?: boolean
+}
+
+export type OrganizationCreateNestedOneWithoutArcUsdcTransfersInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutArcUsdcTransfersInput, Prisma.OrganizationUncheckedCreateWithoutArcUsdcTransfersInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutArcUsdcTransfersInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutArcUsdcTransfersNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutArcUsdcTransfersInput, Prisma.OrganizationUncheckedCreateWithoutArcUsdcTransfersInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutArcUsdcTransfersInput
+  upsert?: Prisma.OrganizationUpsertWithoutArcUsdcTransfersInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutArcUsdcTransfersInput, Prisma.OrganizationUpdateWithoutArcUsdcTransfersInput>, Prisma.OrganizationUncheckedUpdateWithoutArcUsdcTransfersInput>
 }
 
 export type OrganizationCreateNestedOneWithoutArcWalletChallengesInput = {
@@ -974,6 +995,178 @@ export type OrganizationUpdateOneWithoutOperationalIncidentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutOperationalIncidentsInput, Prisma.OrganizationUpdateWithoutOperationalIncidentsInput>, Prisma.OrganizationUncheckedUpdateWithoutOperationalIncidentsInput>
 }
 
+export type OrganizationCreateWithoutArcUsdcTransfersInput = {
+  id?: string
+  name: string
+  slug: string
+  currency?: string
+  erpNextEnabled?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.OrganizationMembershipCreateNestedManyWithoutOrganizationInput
+  lendingOffers?: Prisma.LendingOfferCreateNestedManyWithoutOrganizationInput
+  loans?: Prisma.LoanCreateNestedManyWithoutOrganizationInput
+  repayments?: Prisma.LoanRepaymentCreateNestedManyWithoutOrganizationInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  balances?: Prisma.EmployeeBalanceCreateNestedManyWithoutOrganizationInput
+  ledgerAccounts?: Prisma.LedgerAccountCreateNestedManyWithoutOrganizationInput
+  ledgerTransactions?: Prisma.LedgerTransactionCreateNestedManyWithoutOrganizationInput
+  ledgerEntries?: Prisma.LedgerEntryCreateNestedManyWithoutOrganizationInput
+  lendingPolicy?: Prisma.OrganizationLendingPolicyCreateNestedOneWithoutOrganizationInput
+  arcWalletChallenges?: Prisma.ArcWalletChallengeCreateNestedManyWithoutOrganizationInput
+  loanDecisionEvaluations?: Prisma.LoanDecisionEvaluationCreateNestedManyWithoutOrganizationInput
+  loanDecisionReviews?: Prisma.LoanDecisionReviewCreateNestedManyWithoutOrganizationInput
+  loanOriginationDecisions?: Prisma.LoanOriginationDecisionCreateNestedManyWithoutOrganizationInput
+  loanOriginationOverrides?: Prisma.LoanOriginationOverrideCreateNestedManyWithoutOrganizationInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptCreateNestedManyWithoutOrganizationInput
+  employeeDirectoryIntegration?: Prisma.EmployeeDirectoryIntegrationCreateNestedOneWithoutOrganizationInput
+  employeeDirectorySecrets?: Prisma.EmployeeDirectoryCredentialSecretCreateNestedManyWithoutOrganizationInput
+  employeeDirectoryMappings?: Prisma.EmployeeDirectoryMappingCreateNestedManyWithoutOrganizationInput
+  employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunCreateNestedManyWithoutOrganizationInput
+  employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
+  operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
+  loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
+  repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
+  payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
+  delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
+  delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutArcUsdcTransfersInput = {
+  id?: string
+  name: string
+  slug: string
+  currency?: string
+  erpNextEnabled?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput
+  lendingOffers?: Prisma.LendingOfferUncheckedCreateNestedManyWithoutOrganizationInput
+  loans?: Prisma.LoanUncheckedCreateNestedManyWithoutOrganizationInput
+  repayments?: Prisma.LoanRepaymentUncheckedCreateNestedManyWithoutOrganizationInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  balances?: Prisma.EmployeeBalanceUncheckedCreateNestedManyWithoutOrganizationInput
+  ledgerAccounts?: Prisma.LedgerAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  ledgerTransactions?: Prisma.LedgerTransactionUncheckedCreateNestedManyWithoutOrganizationInput
+  ledgerEntries?: Prisma.LedgerEntryUncheckedCreateNestedManyWithoutOrganizationInput
+  lendingPolicy?: Prisma.OrganizationLendingPolicyUncheckedCreateNestedOneWithoutOrganizationInput
+  arcWalletChallenges?: Prisma.ArcWalletChallengeUncheckedCreateNestedManyWithoutOrganizationInput
+  loanDecisionEvaluations?: Prisma.LoanDecisionEvaluationUncheckedCreateNestedManyWithoutOrganizationInput
+  loanDecisionReviews?: Prisma.LoanDecisionReviewUncheckedCreateNestedManyWithoutOrganizationInput
+  loanOriginationDecisions?: Prisma.LoanOriginationDecisionUncheckedCreateNestedManyWithoutOrganizationInput
+  loanOriginationOverrides?: Prisma.LoanOriginationOverrideUncheckedCreateNestedManyWithoutOrganizationInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeDirectoryIntegration?: Prisma.EmployeeDirectoryIntegrationUncheckedCreateNestedOneWithoutOrganizationInput
+  employeeDirectorySecrets?: Prisma.EmployeeDirectoryCredentialSecretUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeDirectoryMappings?: Prisma.EmployeeDirectoryMappingUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
+  operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
+  loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
+  payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
+  delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
+  delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutArcUsdcTransfersInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutArcUsdcTransfersInput, Prisma.OrganizationUncheckedCreateWithoutArcUsdcTransfersInput>
+}
+
+export type OrganizationUpsertWithoutArcUsdcTransfersInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutArcUsdcTransfersInput, Prisma.OrganizationUncheckedUpdateWithoutArcUsdcTransfersInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutArcUsdcTransfersInput, Prisma.OrganizationUncheckedCreateWithoutArcUsdcTransfersInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutArcUsdcTransfersInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutArcUsdcTransfersInput, Prisma.OrganizationUncheckedUpdateWithoutArcUsdcTransfersInput>
+}
+
+export type OrganizationUpdateWithoutArcUsdcTransfersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  erpNextEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.OrganizationMembershipUpdateManyWithoutOrganizationNestedInput
+  lendingOffers?: Prisma.LendingOfferUpdateManyWithoutOrganizationNestedInput
+  loans?: Prisma.LoanUpdateManyWithoutOrganizationNestedInput
+  repayments?: Prisma.LoanRepaymentUpdateManyWithoutOrganizationNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  balances?: Prisma.EmployeeBalanceUpdateManyWithoutOrganizationNestedInput
+  ledgerAccounts?: Prisma.LedgerAccountUpdateManyWithoutOrganizationNestedInput
+  ledgerTransactions?: Prisma.LedgerTransactionUpdateManyWithoutOrganizationNestedInput
+  ledgerEntries?: Prisma.LedgerEntryUpdateManyWithoutOrganizationNestedInput
+  lendingPolicy?: Prisma.OrganizationLendingPolicyUpdateOneWithoutOrganizationNestedInput
+  arcWalletChallenges?: Prisma.ArcWalletChallengeUpdateManyWithoutOrganizationNestedInput
+  loanDecisionEvaluations?: Prisma.LoanDecisionEvaluationUpdateManyWithoutOrganizationNestedInput
+  loanDecisionReviews?: Prisma.LoanDecisionReviewUpdateManyWithoutOrganizationNestedInput
+  loanOriginationDecisions?: Prisma.LoanOriginationDecisionUpdateManyWithoutOrganizationNestedInput
+  loanOriginationOverrides?: Prisma.LoanOriginationOverrideUpdateManyWithoutOrganizationNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUpdateManyWithoutOrganizationNestedInput
+  employeeDirectoryIntegration?: Prisma.EmployeeDirectoryIntegrationUpdateOneWithoutOrganizationNestedInput
+  employeeDirectorySecrets?: Prisma.EmployeeDirectoryCredentialSecretUpdateManyWithoutOrganizationNestedInput
+  employeeDirectoryMappings?: Prisma.EmployeeDirectoryMappingUpdateManyWithoutOrganizationNestedInput
+  employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunUpdateManyWithoutOrganizationNestedInput
+  employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
+  operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
+  loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
+  repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
+  payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
+  delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
+  delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutArcUsdcTransfersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  erpNextEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput
+  lendingOffers?: Prisma.LendingOfferUncheckedUpdateManyWithoutOrganizationNestedInput
+  loans?: Prisma.LoanUncheckedUpdateManyWithoutOrganizationNestedInput
+  repayments?: Prisma.LoanRepaymentUncheckedUpdateManyWithoutOrganizationNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  balances?: Prisma.EmployeeBalanceUncheckedUpdateManyWithoutOrganizationNestedInput
+  ledgerAccounts?: Prisma.LedgerAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+  ledgerTransactions?: Prisma.LedgerTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
+  ledgerEntries?: Prisma.LedgerEntryUncheckedUpdateManyWithoutOrganizationNestedInput
+  lendingPolicy?: Prisma.OrganizationLendingPolicyUncheckedUpdateOneWithoutOrganizationNestedInput
+  arcWalletChallenges?: Prisma.ArcWalletChallengeUncheckedUpdateManyWithoutOrganizationNestedInput
+  loanDecisionEvaluations?: Prisma.LoanDecisionEvaluationUncheckedUpdateManyWithoutOrganizationNestedInput
+  loanDecisionReviews?: Prisma.LoanDecisionReviewUncheckedUpdateManyWithoutOrganizationNestedInput
+  loanOriginationDecisions?: Prisma.LoanOriginationDecisionUncheckedUpdateManyWithoutOrganizationNestedInput
+  loanOriginationOverrides?: Prisma.LoanOriginationOverrideUncheckedUpdateManyWithoutOrganizationNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeDirectoryIntegration?: Prisma.EmployeeDirectoryIntegrationUncheckedUpdateOneWithoutOrganizationNestedInput
+  employeeDirectorySecrets?: Prisma.EmployeeDirectoryCredentialSecretUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeDirectoryMappings?: Prisma.EmployeeDirectoryMappingUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
+  operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
+  loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
+  delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
+  delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
 export type OrganizationCreateWithoutArcWalletChallengesInput = {
   id?: string
   name: string
@@ -1004,6 +1197,7 @@ export type OrganizationCreateWithoutArcWalletChallengesInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -1042,6 +1236,7 @@ export type OrganizationUncheckedCreateWithoutArcWalletChallengesInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1096,6 +1291,7 @@ export type OrganizationUpdateWithoutArcWalletChallengesInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -1134,6 +1330,7 @@ export type OrganizationUncheckedUpdateWithoutArcWalletChallengesInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1172,6 +1369,7 @@ export type OrganizationCreateWithoutMembershipsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -1210,6 +1408,7 @@ export type OrganizationUncheckedCreateWithoutMembershipsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1264,6 +1463,7 @@ export type OrganizationUpdateWithoutMembershipsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -1302,6 +1502,7 @@ export type OrganizationUncheckedUpdateWithoutMembershipsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1340,6 +1541,7 @@ export type OrganizationCreateWithoutEmployeeInvitationsInput = {
   employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -1378,6 +1580,7 @@ export type OrganizationUncheckedCreateWithoutEmployeeInvitationsInput = {
   employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1432,6 +1635,7 @@ export type OrganizationUpdateWithoutEmployeeInvitationsInput = {
   employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -1470,6 +1674,7 @@ export type OrganizationUncheckedUpdateWithoutEmployeeInvitationsInput = {
   employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1508,6 +1713,7 @@ export type OrganizationCreateWithoutPasswordResetTokensInput = {
   employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunCreateNestedManyWithoutOrganizationInput
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -1546,6 +1752,7 @@ export type OrganizationUncheckedCreateWithoutPasswordResetTokensInput = {
   employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunUncheckedCreateNestedManyWithoutOrganizationInput
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1600,6 +1807,7 @@ export type OrganizationUpdateWithoutPasswordResetTokensInput = {
   employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunUpdateManyWithoutOrganizationNestedInput
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -1638,6 +1846,7 @@ export type OrganizationUncheckedUpdateWithoutPasswordResetTokensInput = {
   employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1676,6 +1885,7 @@ export type OrganizationCreateWithoutEmployeeDirectoryIntegrationInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -1714,6 +1924,7 @@ export type OrganizationUncheckedCreateWithoutEmployeeDirectoryIntegrationInput 
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1768,6 +1979,7 @@ export type OrganizationUpdateWithoutEmployeeDirectoryIntegrationInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -1806,6 +2018,7 @@ export type OrganizationUncheckedUpdateWithoutEmployeeDirectoryIntegrationInput 
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1844,6 +2057,7 @@ export type OrganizationCreateWithoutEmployeeDirectorySecretsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -1882,6 +2096,7 @@ export type OrganizationUncheckedCreateWithoutEmployeeDirectorySecretsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1936,6 +2151,7 @@ export type OrganizationUpdateWithoutEmployeeDirectorySecretsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -1974,6 +2190,7 @@ export type OrganizationUncheckedUpdateWithoutEmployeeDirectorySecretsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2012,6 +2229,7 @@ export type OrganizationCreateWithoutEmployeeDirectoryMappingsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -2050,6 +2268,7 @@ export type OrganizationUncheckedCreateWithoutEmployeeDirectoryMappingsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2104,6 +2323,7 @@ export type OrganizationUpdateWithoutEmployeeDirectoryMappingsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -2142,6 +2362,7 @@ export type OrganizationUncheckedUpdateWithoutEmployeeDirectoryMappingsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2180,6 +2401,7 @@ export type OrganizationCreateWithoutEmployeeDirectorySyncRunsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -2218,6 +2440,7 @@ export type OrganizationUncheckedCreateWithoutEmployeeDirectorySyncRunsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2272,6 +2495,7 @@ export type OrganizationUpdateWithoutEmployeeDirectorySyncRunsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -2310,6 +2534,7 @@ export type OrganizationUncheckedUpdateWithoutEmployeeDirectorySyncRunsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2348,6 +2573,7 @@ export type OrganizationCreateWithoutLendingOffersInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -2386,6 +2612,7 @@ export type OrganizationUncheckedCreateWithoutLendingOffersInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2440,6 +2667,7 @@ export type OrganizationUpdateWithoutLendingOffersInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -2478,6 +2706,7 @@ export type OrganizationUncheckedUpdateWithoutLendingOffersInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2516,6 +2745,7 @@ export type OrganizationCreateWithoutBalancesInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -2554,6 +2784,7 @@ export type OrganizationUncheckedCreateWithoutBalancesInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2608,6 +2839,7 @@ export type OrganizationUpdateWithoutBalancesInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -2646,6 +2878,7 @@ export type OrganizationUncheckedUpdateWithoutBalancesInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2684,6 +2917,7 @@ export type OrganizationCreateWithoutLoansInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -2722,6 +2956,7 @@ export type OrganizationUncheckedCreateWithoutLoansInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2776,6 +3011,7 @@ export type OrganizationUpdateWithoutLoansInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -2814,6 +3050,7 @@ export type OrganizationUncheckedUpdateWithoutLoansInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2852,6 +3089,7 @@ export type OrganizationCreateWithoutLoanDecisionEvaluationsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -2890,6 +3128,7 @@ export type OrganizationUncheckedCreateWithoutLoanDecisionEvaluationsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2944,6 +3183,7 @@ export type OrganizationUpdateWithoutLoanDecisionEvaluationsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -2982,6 +3222,7 @@ export type OrganizationUncheckedUpdateWithoutLoanDecisionEvaluationsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3020,6 +3261,7 @@ export type OrganizationCreateWithoutLoanDecisionReviewsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -3058,6 +3300,7 @@ export type OrganizationUncheckedCreateWithoutLoanDecisionReviewsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3112,6 +3355,7 @@ export type OrganizationUpdateWithoutLoanDecisionReviewsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -3150,6 +3394,7 @@ export type OrganizationUncheckedUpdateWithoutLoanDecisionReviewsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3188,6 +3433,7 @@ export type OrganizationCreateWithoutLoanOriginationDecisionsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -3226,6 +3472,7 @@ export type OrganizationUncheckedCreateWithoutLoanOriginationDecisionsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3280,6 +3527,7 @@ export type OrganizationUpdateWithoutLoanOriginationDecisionsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -3318,6 +3566,7 @@ export type OrganizationUncheckedUpdateWithoutLoanOriginationDecisionsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3356,6 +3605,7 @@ export type OrganizationCreateWithoutLoanOriginationOverridesInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -3394,6 +3644,7 @@ export type OrganizationUncheckedCreateWithoutLoanOriginationOverridesInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3448,6 +3699,7 @@ export type OrganizationUpdateWithoutLoanOriginationOverridesInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -3486,6 +3738,7 @@ export type OrganizationUncheckedUpdateWithoutLoanOriginationOverridesInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3524,6 +3777,7 @@ export type OrganizationCreateWithoutEmployerActionAttemptsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -3562,6 +3816,7 @@ export type OrganizationUncheckedCreateWithoutEmployerActionAttemptsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3616,6 +3871,7 @@ export type OrganizationUpdateWithoutEmployerActionAttemptsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -3654,6 +3910,7 @@ export type OrganizationUncheckedUpdateWithoutEmployerActionAttemptsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3692,6 +3949,7 @@ export type OrganizationCreateWithoutLedgerAccountsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -3730,6 +3988,7 @@ export type OrganizationUncheckedCreateWithoutLedgerAccountsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3784,6 +4043,7 @@ export type OrganizationUpdateWithoutLedgerAccountsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -3822,6 +4082,7 @@ export type OrganizationUncheckedUpdateWithoutLedgerAccountsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3860,6 +4121,7 @@ export type OrganizationCreateWithoutLedgerTransactionsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -3898,6 +4160,7 @@ export type OrganizationUncheckedCreateWithoutLedgerTransactionsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3952,6 +4215,7 @@ export type OrganizationUpdateWithoutLedgerTransactionsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -3990,6 +4254,7 @@ export type OrganizationUncheckedUpdateWithoutLedgerTransactionsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -4028,6 +4293,7 @@ export type OrganizationCreateWithoutLedgerEntriesInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -4066,6 +4332,7 @@ export type OrganizationUncheckedCreateWithoutLedgerEntriesInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -4120,6 +4387,7 @@ export type OrganizationUpdateWithoutLedgerEntriesInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -4158,6 +4426,7 @@ export type OrganizationUncheckedUpdateWithoutLedgerEntriesInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -4196,6 +4465,7 @@ export type OrganizationCreateWithoutRepaymentsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -4234,6 +4504,7 @@ export type OrganizationUncheckedCreateWithoutRepaymentsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -4288,6 +4559,7 @@ export type OrganizationUpdateWithoutRepaymentsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -4326,6 +4598,7 @@ export type OrganizationUncheckedUpdateWithoutRepaymentsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -4365,6 +4638,7 @@ export type OrganizationCreateWithoutRepaymentPlansInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
@@ -4403,6 +4677,7 @@ export type OrganizationUncheckedCreateWithoutRepaymentPlansInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
@@ -4457,6 +4732,7 @@ export type OrganizationUpdateWithoutRepaymentPlansInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
@@ -4495,6 +4771,7 @@ export type OrganizationUncheckedUpdateWithoutRepaymentPlansInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -4533,6 +4810,7 @@ export type OrganizationCreateWithoutLoanInstallmentsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
@@ -4571,6 +4849,7 @@ export type OrganizationUncheckedCreateWithoutLoanInstallmentsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
@@ -4625,6 +4904,7 @@ export type OrganizationUpdateWithoutLoanInstallmentsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
@@ -4663,6 +4943,7 @@ export type OrganizationUncheckedUpdateWithoutLoanInstallmentsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -4701,6 +4982,7 @@ export type OrganizationCreateWithoutRepaymentAllocationsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
@@ -4739,6 +5021,7 @@ export type OrganizationUncheckedCreateWithoutRepaymentAllocationsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
@@ -4793,6 +5076,7 @@ export type OrganizationUpdateWithoutRepaymentAllocationsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
@@ -4831,6 +5115,7 @@ export type OrganizationUncheckedUpdateWithoutRepaymentAllocationsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -4869,6 +5154,7 @@ export type OrganizationCreateWithoutPayrollDeductionProposalsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -4907,6 +5193,7 @@ export type OrganizationUncheckedCreateWithoutPayrollDeductionProposalsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -4961,6 +5248,7 @@ export type OrganizationUpdateWithoutPayrollDeductionProposalsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -4999,6 +5287,7 @@ export type OrganizationUncheckedUpdateWithoutPayrollDeductionProposalsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -5037,6 +5326,7 @@ export type OrganizationCreateWithoutDelinquencyCasesInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -5075,6 +5365,7 @@ export type OrganizationUncheckedCreateWithoutDelinquencyCasesInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -5129,6 +5420,7 @@ export type OrganizationUpdateWithoutDelinquencyCasesInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -5167,6 +5459,7 @@ export type OrganizationUncheckedUpdateWithoutDelinquencyCasesInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -5205,6 +5498,7 @@ export type OrganizationCreateWithoutDelinquencyNotificationsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -5243,6 +5537,7 @@ export type OrganizationUncheckedCreateWithoutDelinquencyNotificationsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -5297,6 +5592,7 @@ export type OrganizationUpdateWithoutDelinquencyNotificationsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -5335,6 +5631,7 @@ export type OrganizationUncheckedUpdateWithoutDelinquencyNotificationsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -5372,6 +5669,7 @@ export type OrganizationCreateWithoutAuditEventsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -5410,6 +5708,7 @@ export type OrganizationUncheckedCreateWithoutAuditEventsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -5464,6 +5763,7 @@ export type OrganizationUpdateWithoutAuditEventsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -5502,6 +5802,7 @@ export type OrganizationUncheckedUpdateWithoutAuditEventsInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -5540,6 +5841,7 @@ export type OrganizationCreateWithoutLendingPolicyInput = {
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -5578,6 +5880,7 @@ export type OrganizationUncheckedCreateWithoutLendingPolicyInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -5632,6 +5935,7 @@ export type OrganizationUpdateWithoutLendingPolicyInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -5670,6 +5974,7 @@ export type OrganizationUncheckedUpdateWithoutLendingPolicyInput = {
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
   operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -5708,6 +6013,7 @@ export type OrganizationCreateWithoutOperationalIncidentsInput = {
   employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunCreateNestedManyWithoutOrganizationInput
   employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
@@ -5746,6 +6052,7 @@ export type OrganizationUncheckedCreateWithoutOperationalIncidentsInput = {
   employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunUncheckedCreateNestedManyWithoutOrganizationInput
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
@@ -5800,6 +6107,7 @@ export type OrganizationUpdateWithoutOperationalIncidentsInput = {
   employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunUpdateManyWithoutOrganizationNestedInput
   employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
@@ -5838,6 +6146,7 @@ export type OrganizationUncheckedUpdateWithoutOperationalIncidentsInput = {
   employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
   loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -5873,6 +6182,7 @@ export type OrganizationCountOutputType = {
   employeeInvitations: number
   passwordResetTokens: number
   operationalIncidents: number
+  arcUsdcTransfers: number
   repaymentPlans: number
   loanInstallments: number
   repaymentAllocations: number
@@ -5903,6 +6213,7 @@ export type OrganizationCountOutputTypeSelect<ExtArgs extends runtime.Types.Exte
   employeeInvitations?: boolean | OrganizationCountOutputTypeCountEmployeeInvitationsArgs
   passwordResetTokens?: boolean | OrganizationCountOutputTypeCountPasswordResetTokensArgs
   operationalIncidents?: boolean | OrganizationCountOutputTypeCountOperationalIncidentsArgs
+  arcUsdcTransfers?: boolean | OrganizationCountOutputTypeCountArcUsdcTransfersArgs
   repaymentPlans?: boolean | OrganizationCountOutputTypeCountRepaymentPlansArgs
   loanInstallments?: boolean | OrganizationCountOutputTypeCountLoanInstallmentsArgs
   repaymentAllocations?: boolean | OrganizationCountOutputTypeCountRepaymentAllocationsArgs
@@ -6071,6 +6382,13 @@ export type OrganizationCountOutputTypeCountOperationalIncidentsArgs<ExtArgs ext
 /**
  * OrganizationCountOutputType without action
  */
+export type OrganizationCountOutputTypeCountArcUsdcTransfersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ArcUsdcTransferWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
 export type OrganizationCountOutputTypeCountRepaymentPlansArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.LoanRepaymentPlanWhereInput
 }
@@ -6142,6 +6460,7 @@ export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   employeeInvitations?: boolean | Prisma.Organization$employeeInvitationsArgs<ExtArgs>
   passwordResetTokens?: boolean | Prisma.Organization$passwordResetTokensArgs<ExtArgs>
   operationalIncidents?: boolean | Prisma.Organization$operationalIncidentsArgs<ExtArgs>
+  arcUsdcTransfers?: boolean | Prisma.Organization$arcUsdcTransfersArgs<ExtArgs>
   repaymentPlans?: boolean | Prisma.Organization$repaymentPlansArgs<ExtArgs>
   loanInstallments?: boolean | Prisma.Organization$loanInstallmentsArgs<ExtArgs>
   repaymentAllocations?: boolean | Prisma.Organization$repaymentAllocationsArgs<ExtArgs>
@@ -6206,6 +6525,7 @@ export type OrganizationInclude<ExtArgs extends runtime.Types.Extensions.Interna
   employeeInvitations?: boolean | Prisma.Organization$employeeInvitationsArgs<ExtArgs>
   passwordResetTokens?: boolean | Prisma.Organization$passwordResetTokensArgs<ExtArgs>
   operationalIncidents?: boolean | Prisma.Organization$operationalIncidentsArgs<ExtArgs>
+  arcUsdcTransfers?: boolean | Prisma.Organization$arcUsdcTransfersArgs<ExtArgs>
   repaymentPlans?: boolean | Prisma.Organization$repaymentPlansArgs<ExtArgs>
   loanInstallments?: boolean | Prisma.Organization$loanInstallmentsArgs<ExtArgs>
   repaymentAllocations?: boolean | Prisma.Organization$repaymentAllocationsArgs<ExtArgs>
@@ -6243,6 +6563,7 @@ export type $OrganizationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     employeeInvitations: Prisma.$EmployeeInvitationPayload<ExtArgs>[]
     passwordResetTokens: Prisma.$PasswordResetTokenPayload<ExtArgs>[]
     operationalIncidents: Prisma.$OperationalIncidentPayload<ExtArgs>[]
+    arcUsdcTransfers: Prisma.$ArcUsdcTransferPayload<ExtArgs>[]
     repaymentPlans: Prisma.$LoanRepaymentPlanPayload<ExtArgs>[]
     loanInstallments: Prisma.$LoanInstallmentPayload<ExtArgs>[]
     repaymentAllocations: Prisma.$RepaymentAllocationPayload<ExtArgs>[]
@@ -6675,6 +6996,7 @@ export interface Prisma__OrganizationClient<T, Null = never, ExtArgs extends run
   employeeInvitations<T extends Prisma.Organization$employeeInvitationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$employeeInvitationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeInvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   passwordResetTokens<T extends Prisma.Organization$passwordResetTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$passwordResetTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   operationalIncidents<T extends Prisma.Organization$operationalIncidentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$operationalIncidentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OperationalIncidentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  arcUsdcTransfers<T extends Prisma.Organization$arcUsdcTransfersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$arcUsdcTransfersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ArcUsdcTransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   repaymentPlans<T extends Prisma.Organization$repaymentPlansArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$repaymentPlansArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LoanRepaymentPlanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   loanInstallments<T extends Prisma.Organization$loanInstallmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$loanInstallmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LoanInstallmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   repaymentAllocations<T extends Prisma.Organization$repaymentAllocationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$repaymentAllocationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RepaymentAllocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -7649,6 +7971,30 @@ export type Organization$operationalIncidentsArgs<ExtArgs extends runtime.Types.
   take?: number
   skip?: number
   distinct?: Prisma.OperationalIncidentScalarFieldEnum | Prisma.OperationalIncidentScalarFieldEnum[]
+}
+
+/**
+ * Organization.arcUsdcTransfers
+ */
+export type Organization$arcUsdcTransfersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ArcUsdcTransfer
+   */
+  select?: Prisma.ArcUsdcTransferSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ArcUsdcTransfer
+   */
+  omit?: Prisma.ArcUsdcTransferOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ArcUsdcTransferInclude<ExtArgs> | null
+  where?: Prisma.ArcUsdcTransferWhereInput
+  orderBy?: Prisma.ArcUsdcTransferOrderByWithRelationInput | Prisma.ArcUsdcTransferOrderByWithRelationInput[]
+  cursor?: Prisma.ArcUsdcTransferWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ArcUsdcTransferScalarFieldEnum | Prisma.ArcUsdcTransferScalarFieldEnum[]
 }
 
 /**

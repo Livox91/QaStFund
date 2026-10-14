@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 import { useCircleWallet } from "@/modules/arc-wallet/ui/circle-wallet-provider";
 import type { Employee } from "@/modules/employees/domain/employee";
@@ -47,11 +48,36 @@ export function ArcWalletPanel({ employee }: { employee: Employee }) {
   const wallet = useCircleWallet();
   const [actionError, setActionError] = useState<string | null>(null);
   const [addressCopied, setAddressCopied] = useState(false);
+  const [recentTransfers, setRecentTransfers] = useState<
+    ReadonlyArray<{
+      id: string;
+      status: string;
+      amount: string;
+      recipientAddress: string;
+      createdAt: string;
+    }>
+  >([]);
   const walletAddress = wallet.walletAddress ?? employee.walletAddress ?? null;
   const walletStatus =
     wallet.isLoading && wallet.walletStatus === "NOT_CONFIGURED"
       ? persistedWalletStatus(employee.walletStatus)
       : wallet.walletStatus;
+
+  useEffect(() => {
+    if (walletStatus !== "ACTIVE") return;
+    void fetch("/api/wallet/arc/transfers", {
+      credentials: "include",
+      cache: "no-store",
+    })
+      .then(async (response) => {
+        if (!response.ok) return { transfers: [] };
+        return (await response.json()) as {
+          transfers: typeof recentTransfers;
+        };
+      })
+      .then((body) => setRecentTransfers(body.transfers.slice(0, 5)))
+      .catch(() => undefined);
+  }, [walletStatus]);
 
   const run = async (action: () => Promise<void>) => {
     setActionError(null);
@@ -144,8 +170,14 @@ export function ArcWalletPanel({ employee }: { employee: Employee }) {
                   size="sm"
                   variant="outline"
                 >
-                  {addressCopied ? "Copied" : "Copy address"}
+                  {addressCopied ? "Copied" : "Receive USDC / copy address"}
                 </Button>
+                <Link
+                  className={buttonStyles({ size: "sm", variant: "secondary" })}
+                  href="/app/wallet/send"
+                >
+                  Send USDC
+                </Link>
                 <a
                   className={buttonStyles({ size: "sm", variant: "outline" })}
                   href={`${arcTestnet.blockExplorers.default.url}/address/${walletAddress}`}
@@ -181,6 +213,39 @@ export function ArcWalletPanel({ employee }: { employee: Employee }) {
           <p className="mt-4 text-sm text-rose-700" role="alert">
             {actionError ?? wallet.error}
           </p>
+        ) : null}
+        {recentTransfers.length > 0 ? (
+          <div className="mt-6 border-t border-slate-200 pt-5">
+            <h3 className="text-sm font-semibold text-slate-900">
+              Recent outgoing transfers
+            </h3>
+            <ul className="mt-3 divide-y divide-slate-100">
+              {recentTransfers.map((transfer) => (
+                <li
+                  className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm"
+                  key={transfer.id}
+                >
+                  <div>
+                    <p className="font-medium text-slate-900">
+                      {transfer.amount} USDC
+                    </p>
+                    <p className="font-mono text-xs text-slate-500">
+                      to {transfer.recipientAddress.slice(0, 7)}…
+                      {transfer.recipientAddress.slice(-5)}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-medium text-slate-700">
+                      {transfer.status.replaceAll("_", " ")}
+                    </p>
+                    <p className="text-xs text-slate-500">
+                      {new Date(transfer.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
         ) : null}
       </CardContent>
     </Card>

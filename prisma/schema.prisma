@@ -306,6 +306,15 @@ enum ArcWalletEnrollmentState {
   FAILED_RECOVERABLE
 }
 
+enum ArcUsdcTransferStatus {
+  DRAFT
+  AWAITING_CONFIRMATION
+  SUBMITTED
+  CONFIRMED
+  FAILED
+  UNKNOWN
+}
+
 model User {
   id                  String                   @id @default(uuid()) @db.Uuid
   email               String                   @unique
@@ -316,6 +325,7 @@ model User {
   memberships         OrganizationMembership[]
   arcWallets          ArcWallet[]
   arcWalletChallenges ArcWalletChallenge[]
+  arcUsdcTransfers    ArcUsdcTransfer[]
   passwordResetTokens PasswordResetToken[]
 }
 
@@ -350,6 +360,7 @@ model Organization {
   employeeInvitations          EmployeeInvitation[]
   passwordResetTokens          PasswordResetToken[]
   operationalIncidents         OperationalIncident[]
+  arcUsdcTransfers             ArcUsdcTransfer[]
   repaymentPlans               LoanRepaymentPlan[]
   loanInstallments             LoanInstallment[]
   repaymentAllocations         RepaymentAllocation[]
@@ -370,9 +381,42 @@ model ArcWallet {
   createdAt       DateTime                 @default(now())
   updatedAt       DateTime                 @updatedAt
   user            User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transfers       ArcUsdcTransfer[]
 
   @@unique([userId, network])
   @@index([status])
+}
+
+model ArcUsdcTransfer {
+  id                String                @id @default(uuid()) @db.Uuid
+  organizationId    String                @db.Uuid
+  userId            String                @db.Uuid
+  walletId          String                @db.Uuid
+  idempotencyKey    String                @db.VarChar(64)
+  senderAddress     String                @db.VarChar(42)
+  recipientAddress  String                @db.VarChar(42)
+  amountBaseUnits   BigInt
+  chainId           Int                   @default(5042002)
+  tokenAddress      String                @db.VarChar(42)
+  callDataHash      String                @db.VarChar(66)
+  status            ArcUsdcTransferStatus @default(AWAITING_CONFIRMATION)
+  userOperationHash String?               @unique @db.VarChar(66)
+  transactionHash   String?               @unique @db.VarChar(66)
+  errorCode         String?               @db.VarChar(64)
+  expiresAt         DateTime
+  submittedAt       DateTime?
+  confirmedAt       DateTime?
+  failedAt          DateTime?
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+  organization      Organization          @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  user              User                  @relation(fields: [userId], references: [id], onDelete: Restrict)
+  wallet            ArcWallet             @relation(fields: [walletId], references: [id], onDelete: Restrict)
+
+  @@unique([userId, idempotencyKey])
+  @@index([userId, createdAt])
+  @@index([status, updatedAt])
+  @@index([walletId, createdAt])
 }
 
 model ArcWalletChallenge {

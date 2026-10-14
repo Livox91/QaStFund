@@ -15,6 +15,7 @@ import {
   getArcModularClientUrl,
 } from "@/integrations/arc/arc-testnet";
 import { employeeLendingEscrowAbi } from "@/integrations/arc/employee-lending-escrow";
+import { hasExactSingleOutgoingUsdcTransfer } from "@/modules/arc-wallet/domain/arc-usdc-transfer";
 
 function required(name: string): string {
   const value = process.env[name]?.trim();
@@ -91,4 +92,30 @@ describe("live Circle Modular Wallet and Arc Testnet configuration", () => {
     expect(contractUsdc).toBe(getAddress(ARC_USDC_ADDRESS));
     expect(contractSigner).toBe(expectedSigner);
   });
+
+  it.skipIf(!process.env.ARC_SEND_TEST_TRANSACTION_HASH)(
+    "verifies a real passkey-authorized Arc Testnet USDC transfer",
+    async () => {
+      const transactionHash = required(
+        "ARC_SEND_TEST_TRANSACTION_HASH",
+      ) as `0x${string}`;
+      const sender = requiredAddress("ARC_SEND_TEST_SENDER");
+      const recipient = requiredAddress("ARC_SEND_TEST_RECIPIENT");
+      const amountBaseUnits = BigInt(
+        required("ARC_SEND_TEST_AMOUNT_BASE_UNITS"),
+      );
+      const receipt = await client.getTransactionReceipt({
+        hash: transactionHash,
+      });
+
+      expect(receipt.status).toBe("success");
+      expect(
+        hasExactSingleOutgoingUsdcTransfer(receipt.logs, {
+          sender,
+          recipient,
+          amountBaseUnits,
+        }),
+      ).toBe(true);
+    },
+  );
 });

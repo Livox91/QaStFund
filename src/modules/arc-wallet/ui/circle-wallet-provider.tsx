@@ -64,6 +64,12 @@ type CircleWalletContextValue = Readonly<{
   sendUserOperation: (
     calls: ReadonlyArray<{ to: Address; data: Hex; value?: bigint }>,
   ) => Promise<Hex>;
+  submitUserOperation: (call: {
+    to: Address;
+    data: Hex;
+    value?: bigint;
+  }) => Promise<Hex>;
+  waitForUserOperation: (hash: Hex) => Promise<Hex>;
 }>;
 
 const CircleWalletContext = createContext<CircleWalletContextValue | null>(
@@ -312,6 +318,49 @@ export function CircleWalletProvider({
         });
         const result = await bundlerClient.waitForUserOperationReceipt({
           hash: userOperationHash,
+        });
+        return result.receipt.transactionHash;
+      },
+      async submitUserOperation(call) {
+        if (!smartAccount) throw new Error("Reconnect the Arc wallet first.");
+        const clientKey = process.env.NEXT_PUBLIC_CIRCLE_CLIENT_KEY;
+        const clientUrl = process.env.NEXT_PUBLIC_CIRCLE_CLIENT_URL;
+        if (!clientKey || !clientUrl) {
+          throw new Error("Circle Modular Wallet configuration is missing.");
+        }
+        const transport = toModularTransport(
+          getArcModularClientUrl(clientUrl),
+          clientKey,
+        );
+        const publicClient = createPublicClient({
+          chain: arcTestnet,
+          transport,
+        });
+        const bundlerClient = createBundlerClient({
+          account: smartAccount,
+          chain: arcTestnet,
+          client: publicClient,
+          transport,
+          paymaster: true,
+        });
+        return bundlerClient.sendUserOperation({ calls: [call] });
+      },
+      async waitForUserOperation(hash) {
+        const clientKey = process.env.NEXT_PUBLIC_CIRCLE_CLIENT_KEY;
+        const clientUrl = process.env.NEXT_PUBLIC_CIRCLE_CLIENT_URL;
+        if (!clientKey || !clientUrl) {
+          throw new Error("Circle Modular Wallet configuration is missing.");
+        }
+        const transport = toModularTransport(
+          getArcModularClientUrl(clientUrl),
+          clientKey,
+        );
+        const bundlerClient = createBundlerClient({
+          chain: arcTestnet,
+          transport,
+        });
+        const result = await bundlerClient.waitForUserOperationReceipt({
+          hash,
         });
         return result.receipt.transactionHash;
       },

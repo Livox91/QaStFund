@@ -257,6 +257,7 @@ export type ArcWalletWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"ArcWallet"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ArcWallet"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  transfers?: Prisma.ArcUsdcTransferListRelationFilter
 }
 
 export type ArcWalletOrderByWithRelationInput = {
@@ -271,6 +272,7 @@ export type ArcWalletOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  transfers?: Prisma.ArcUsdcTransferOrderByRelationAggregateInput
 }
 
 export type ArcWalletWhereUniqueInput = Prisma.AtLeast<{
@@ -289,6 +291,7 @@ export type ArcWalletWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"ArcWallet"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ArcWallet"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  transfers?: Prisma.ArcUsdcTransferListRelationFilter
 }, "id" | "address" | "userId_network">
 
 export type ArcWalletOrderByWithAggregationInput = {
@@ -336,6 +339,7 @@ export type ArcWalletCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutArcWalletsInput
+  transfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutWalletInput
 }
 
 export type ArcWalletUncheckedCreateInput = {
@@ -349,6 +353,7 @@ export type ArcWalletUncheckedCreateInput = {
   enrollmentState?: $Enums.ArcWalletEnrollmentState
   createdAt?: Date | string
   updatedAt?: Date | string
+  transfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutWalletInput
 }
 
 export type ArcWalletUpdateInput = {
@@ -362,6 +367,7 @@ export type ArcWalletUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutArcWalletsNestedInput
+  transfers?: Prisma.ArcUsdcTransferUpdateManyWithoutWalletNestedInput
 }
 
 export type ArcWalletUncheckedUpdateInput = {
@@ -375,6 +381,7 @@ export type ArcWalletUncheckedUpdateInput = {
   enrollmentState?: Prisma.EnumArcWalletEnrollmentStateFieldUpdateOperationsInput | $Enums.ArcWalletEnrollmentState
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  transfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutWalletNestedInput
 }
 
 export type ArcWalletCreateManyInput = {
@@ -477,6 +484,11 @@ export type ArcWalletSumOrderByAggregateInput = {
   chainId?: Prisma.SortOrder
 }
 
+export type ArcWalletScalarRelationFilter = {
+  is?: Prisma.ArcWalletWhereInput
+  isNot?: Prisma.ArcWalletWhereInput
+}
+
 export type ArcWalletCreateNestedManyWithoutUserInput = {
   create?: Prisma.XOR<Prisma.ArcWalletCreateWithoutUserInput, Prisma.ArcWalletUncheckedCreateWithoutUserInput> | Prisma.ArcWalletCreateWithoutUserInput[] | Prisma.ArcWalletUncheckedCreateWithoutUserInput[]
   connectOrCreate?: Prisma.ArcWalletCreateOrConnectWithoutUserInput | Prisma.ArcWalletCreateOrConnectWithoutUserInput[]
@@ -547,6 +559,20 @@ export type EnumArcWalletEnrollmentStateFieldUpdateOperationsInput = {
   set?: $Enums.ArcWalletEnrollmentState
 }
 
+export type ArcWalletCreateNestedOneWithoutTransfersInput = {
+  create?: Prisma.XOR<Prisma.ArcWalletCreateWithoutTransfersInput, Prisma.ArcWalletUncheckedCreateWithoutTransfersInput>
+  connectOrCreate?: Prisma.ArcWalletCreateOrConnectWithoutTransfersInput
+  connect?: Prisma.ArcWalletWhereUniqueInput
+}
+
+export type ArcWalletUpdateOneRequiredWithoutTransfersNestedInput = {
+  create?: Prisma.XOR<Prisma.ArcWalletCreateWithoutTransfersInput, Prisma.ArcWalletUncheckedCreateWithoutTransfersInput>
+  connectOrCreate?: Prisma.ArcWalletCreateOrConnectWithoutTransfersInput
+  upsert?: Prisma.ArcWalletUpsertWithoutTransfersInput
+  connect?: Prisma.ArcWalletWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ArcWalletUpdateToOneWithWhereWithoutTransfersInput, Prisma.ArcWalletUpdateWithoutTransfersInput>, Prisma.ArcWalletUncheckedUpdateWithoutTransfersInput>
+}
+
 export type ArcWalletCreateWithoutUserInput = {
   id?: string
   address?: string | null
@@ -557,6 +583,7 @@ export type ArcWalletCreateWithoutUserInput = {
   enrollmentState?: $Enums.ArcWalletEnrollmentState
   createdAt?: Date | string
   updatedAt?: Date | string
+  transfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutWalletInput
 }
 
 export type ArcWalletUncheckedCreateWithoutUserInput = {
@@ -569,6 +596,7 @@ export type ArcWalletUncheckedCreateWithoutUserInput = {
   enrollmentState?: $Enums.ArcWalletEnrollmentState
   createdAt?: Date | string
   updatedAt?: Date | string
+  transfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutWalletInput
 }
 
 export type ArcWalletCreateOrConnectWithoutUserInput = {
@@ -613,6 +641,74 @@ export type ArcWalletScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"ArcWallet"> | Date | string
 }
 
+export type ArcWalletCreateWithoutTransfersInput = {
+  id?: string
+  address?: string | null
+  network?: $Enums.ArcWalletNetwork
+  chainId?: number
+  walletType?: $Enums.ArcWalletType
+  status?: $Enums.ArcWalletStatus
+  enrollmentState?: $Enums.ArcWalletEnrollmentState
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutArcWalletsInput
+}
+
+export type ArcWalletUncheckedCreateWithoutTransfersInput = {
+  id?: string
+  userId: string
+  address?: string | null
+  network?: $Enums.ArcWalletNetwork
+  chainId?: number
+  walletType?: $Enums.ArcWalletType
+  status?: $Enums.ArcWalletStatus
+  enrollmentState?: $Enums.ArcWalletEnrollmentState
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ArcWalletCreateOrConnectWithoutTransfersInput = {
+  where: Prisma.ArcWalletWhereUniqueInput
+  create: Prisma.XOR<Prisma.ArcWalletCreateWithoutTransfersInput, Prisma.ArcWalletUncheckedCreateWithoutTransfersInput>
+}
+
+export type ArcWalletUpsertWithoutTransfersInput = {
+  update: Prisma.XOR<Prisma.ArcWalletUpdateWithoutTransfersInput, Prisma.ArcWalletUncheckedUpdateWithoutTransfersInput>
+  create: Prisma.XOR<Prisma.ArcWalletCreateWithoutTransfersInput, Prisma.ArcWalletUncheckedCreateWithoutTransfersInput>
+  where?: Prisma.ArcWalletWhereInput
+}
+
+export type ArcWalletUpdateToOneWithWhereWithoutTransfersInput = {
+  where?: Prisma.ArcWalletWhereInput
+  data: Prisma.XOR<Prisma.ArcWalletUpdateWithoutTransfersInput, Prisma.ArcWalletUncheckedUpdateWithoutTransfersInput>
+}
+
+export type ArcWalletUpdateWithoutTransfersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  network?: Prisma.EnumArcWalletNetworkFieldUpdateOperationsInput | $Enums.ArcWalletNetwork
+  chainId?: Prisma.IntFieldUpdateOperationsInput | number
+  walletType?: Prisma.EnumArcWalletTypeFieldUpdateOperationsInput | $Enums.ArcWalletType
+  status?: Prisma.EnumArcWalletStatusFieldUpdateOperationsInput | $Enums.ArcWalletStatus
+  enrollmentState?: Prisma.EnumArcWalletEnrollmentStateFieldUpdateOperationsInput | $Enums.ArcWalletEnrollmentState
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutArcWalletsNestedInput
+}
+
+export type ArcWalletUncheckedUpdateWithoutTransfersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  network?: Prisma.EnumArcWalletNetworkFieldUpdateOperationsInput | $Enums.ArcWalletNetwork
+  chainId?: Prisma.IntFieldUpdateOperationsInput | number
+  walletType?: Prisma.EnumArcWalletTypeFieldUpdateOperationsInput | $Enums.ArcWalletType
+  status?: Prisma.EnumArcWalletStatusFieldUpdateOperationsInput | $Enums.ArcWalletStatus
+  enrollmentState?: Prisma.EnumArcWalletEnrollmentStateFieldUpdateOperationsInput | $Enums.ArcWalletEnrollmentState
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type ArcWalletCreateManyUserInput = {
   id?: string
   address?: string | null
@@ -635,6 +731,7 @@ export type ArcWalletUpdateWithoutUserInput = {
   enrollmentState?: Prisma.EnumArcWalletEnrollmentStateFieldUpdateOperationsInput | $Enums.ArcWalletEnrollmentState
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  transfers?: Prisma.ArcUsdcTransferUpdateManyWithoutWalletNestedInput
 }
 
 export type ArcWalletUncheckedUpdateWithoutUserInput = {
@@ -647,6 +744,7 @@ export type ArcWalletUncheckedUpdateWithoutUserInput = {
   enrollmentState?: Prisma.EnumArcWalletEnrollmentStateFieldUpdateOperationsInput | $Enums.ArcWalletEnrollmentState
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  transfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutWalletNestedInput
 }
 
 export type ArcWalletUncheckedUpdateManyWithoutUserInput = {
@@ -662,6 +760,35 @@ export type ArcWalletUncheckedUpdateManyWithoutUserInput = {
 }
 
 
+/**
+ * Count Type ArcWalletCountOutputType
+ */
+
+export type ArcWalletCountOutputType = {
+  transfers: number
+}
+
+export type ArcWalletCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  transfers?: boolean | ArcWalletCountOutputTypeCountTransfersArgs
+}
+
+/**
+ * ArcWalletCountOutputType without action
+ */
+export type ArcWalletCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ArcWalletCountOutputType
+   */
+  select?: Prisma.ArcWalletCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ArcWalletCountOutputType without action
+ */
+export type ArcWalletCountOutputTypeCountTransfersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ArcUsdcTransferWhereInput
+}
+
 
 export type ArcWalletSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -675,6 +802,8 @@ export type ArcWalletSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  transfers?: boolean | Prisma.ArcWallet$transfersArgs<ExtArgs>
+  _count?: boolean | Prisma.ArcWalletCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["arcWallet"]>
 
 export type ArcWalletSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -721,6 +850,8 @@ export type ArcWalletSelectScalar = {
 export type ArcWalletOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "address" | "network" | "chainId" | "walletType" | "status" | "enrollmentState" | "createdAt" | "updatedAt", ExtArgs["result"]["arcWallet"]>
 export type ArcWalletInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  transfers?: boolean | Prisma.ArcWallet$transfersArgs<ExtArgs>
+  _count?: boolean | Prisma.ArcWalletCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ArcWalletIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -733,6 +864,7 @@ export type $ArcWalletPayload<ExtArgs extends runtime.Types.Extensions.InternalA
   name: "ArcWallet"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
+    transfers: Prisma.$ArcUsdcTransferPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1140,6 +1272,7 @@ readonly fields: ArcWalletFieldRefs;
 export interface Prisma__ArcWalletClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  transfers<T extends Prisma.ArcWallet$transfersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ArcWallet$transfersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ArcUsdcTransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1577,6 +1710,30 @@ export type ArcWalletDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Limit how many ArcWallets to delete.
    */
   limit?: number
+}
+
+/**
+ * ArcWallet.transfers
+ */
+export type ArcWallet$transfersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ArcUsdcTransfer
+   */
+  select?: Prisma.ArcUsdcTransferSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ArcUsdcTransfer
+   */
+  omit?: Prisma.ArcUsdcTransferOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ArcUsdcTransferInclude<ExtArgs> | null
+  where?: Prisma.ArcUsdcTransferWhereInput
+  orderBy?: Prisma.ArcUsdcTransferOrderByWithRelationInput | Prisma.ArcUsdcTransferOrderByWithRelationInput[]
+  cursor?: Prisma.ArcUsdcTransferWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ArcUsdcTransferScalarFieldEnum | Prisma.ArcUsdcTransferScalarFieldEnum[]
 }
 
 /**

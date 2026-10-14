@@ -147,6 +147,7 @@ are recorded in [controlled-pilot readiness](docs/CONTROLLED_PILOT_READINESS.md)
 - [Submission summary](docs/SUBMISSION_SUMMARY.md)
 - [Controlled-pilot readiness and evidence index](docs/CONTROLLED_PILOT_READINESS.md#submission-evidence-index)
 - [Arc Testnet pilot report](docs/ARC_TESTNET_PILOT_REPORT.md)
+- [Secure Send USDC on Arc Testnet](docs/SEND_USDC.md)
 - [End-to-end loan origination](docs/LOAN_ORIGINATION_V1.md)
 - [Database recovery](docs/DATABASE_BACKUP_AND_DISASTER_RECOVERY.md)
 

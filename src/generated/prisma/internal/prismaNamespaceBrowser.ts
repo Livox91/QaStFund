@@ -54,6 +54,7 @@ export const ModelName = {
   User: 'User',
   Organization: 'Organization',
   ArcWallet: 'ArcWallet',
+  ArcUsdcTransfer: 'ArcUsdcTransfer',
   ArcWalletChallenge: 'ArcWalletChallenge',
   OrganizationMembership: 'OrganizationMembership',
   EmployeeInvitation: 'EmployeeInvitation',
@@ -145,6 +146,33 @@ export const ArcWalletScalarFieldEnum = {
 } as const
 
 export type ArcWalletScalarFieldEnum = (typeof ArcWalletScalarFieldEnum)[keyof typeof ArcWalletScalarFieldEnum]
+
+
+export const ArcUsdcTransferScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  userId: 'userId',
+  walletId: 'walletId',
+  idempotencyKey: 'idempotencyKey',
+  senderAddress: 'senderAddress',
+  recipientAddress: 'recipientAddress',
+  amountBaseUnits: 'amountBaseUnits',
+  chainId: 'chainId',
+  tokenAddress: 'tokenAddress',
+  callDataHash: 'callDataHash',
+  status: 'status',
+  userOperationHash: 'userOperationHash',
+  transactionHash: 'transactionHash',
+  errorCode: 'errorCode',
+  expiresAt: 'expiresAt',
+  submittedAt: 'submittedAt',
+  confirmedAt: 'confirmedAt',
+  failedAt: 'failedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ArcUsdcTransferScalarFieldEnum = (typeof ArcUsdcTransferScalarFieldEnum)[keyof typeof ArcUsdcTransferScalarFieldEnum]
 
 
 export const ArcWalletChallengeScalarFieldEnum = {

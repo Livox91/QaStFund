@@ -435,3 +435,15 @@ export const ArcWalletEnrollmentState = {
 } as const
 
 export type ArcWalletEnrollmentState = (typeof ArcWalletEnrollmentState)[keyof typeof ArcWalletEnrollmentState]
+
+
+export const ArcUsdcTransferStatus = {
+  DRAFT: 'DRAFT',
+  AWAITING_CONFIRMATION: 'AWAITING_CONFIRMATION',
+  SUBMITTED: 'SUBMITTED',
+  CONFIRMED: 'CONFIRMED',
+  FAILED: 'FAILED',
+  UNKNOWN: 'UNKNOWN'
+} as const
+
+export type ArcUsdcTransferStatus = (typeof ArcUsdcTransferStatus)[keyof typeof ArcUsdcTransferStatus]

@@ -888,14 +888,6 @@ export type LendingOfferUncheckedUpdateManyWithoutLenderMembershipNestedInput = 
   deleteMany?: Prisma.LendingOfferScalarWhereInput | Prisma.LendingOfferScalarWhereInput[]
 }
 
-export type BigIntFieldUpdateOperationsInput = {
-  set?: bigint | number
-  increment?: bigint | number
-  decrement?: bigint | number
-  multiply?: bigint | number
-  divide?: bigint | number
-}
-
 export type EnumLendingOfferStatusFieldUpdateOperationsInput = {
   set?: $Enums.LendingOfferStatus
 }

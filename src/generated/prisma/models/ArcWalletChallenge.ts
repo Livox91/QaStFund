@@ -469,10 +469,6 @@ export type ArcWalletChallengeUncheckedUpdateManyWithoutOrganizationNestedInput 
   deleteMany?: Prisma.ArcWalletChallengeScalarWhereInput | Prisma.ArcWalletChallengeScalarWhereInput[]
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type ArcWalletChallengeCreateWithoutUserInput = {
   id?: string
   address: string

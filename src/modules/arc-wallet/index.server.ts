@@ -16,6 +16,16 @@ import {
 } from "@/modules/arc-wallet/infrastructure/circle-arc-client";
 import { prismaArcWalletRepository } from "@/modules/arc-wallet/infrastructure/prisma-arc-wallet-repository";
 
+export {
+  bindArcUsdcUserOperation,
+  confirmArcUsdcTransfer,
+  getArcUsdcTransfer,
+  listArcUsdcTransfers,
+  prepareArcUsdcTransfer,
+  revalidateArcUsdcTransfer,
+  recordArcUsdcTransferOutcome,
+} from "@/modules/arc-wallet/application/arc-usdc-transfers";
+
 export async function getArcWalletForActor(actor: AuthenticatedActor | null) {
   const employee = requireEmployee(actor);
   return prismaArcWalletRepository.findForEmployee({

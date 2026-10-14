@@ -46,7 +46,10 @@ async function main() {
   adminUrl.search = "";
   const testUrl = new URL(sourceUrl);
   testUrl.pathname = `/${databaseName}`;
-  const admin = new Client({ connectionString: adminUrl.toString() });
+  const admin = new Client({
+    connectionString: adminUrl.toString(),
+    connectionTimeoutMillis: 5_000,
+  });
   const testEnvironment = {
     ...process.env,
     DATABASE_URL: testUrl.toString(),
@@ -90,7 +93,7 @@ async function main() {
   process.exitCode = exitCode;
 }
 
-main().catch((error) => {
+await main().catch((error) => {
   console.error(
     error instanceof Error ? error.message : "Isolated tests failed.",
   );
