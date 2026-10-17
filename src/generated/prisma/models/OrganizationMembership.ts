@@ -278,6 +278,8 @@ export type OrganizationMembershipWhereInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseListRelationFilter
   arrangementsRequested?: Prisma.DelinquencyCaseListRelationFilter
   delinquencyNotifications?: Prisma.DelinquencyNotificationListRelationFilter
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateListRelationFilter
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunListRelationFilter
 }
 
 export type OrganizationMembershipOrderByWithRelationInput = {
@@ -319,6 +321,8 @@ export type OrganizationMembershipOrderByWithRelationInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseOrderByRelationAggregateInput
   arrangementsRequested?: Prisma.DelinquencyCaseOrderByRelationAggregateInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationOrderByRelationAggregateInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateOrderByRelationAggregateInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunOrderByRelationAggregateInput
 }
 
 export type OrganizationMembershipWhereUniqueInput = Prisma.AtLeast<{
@@ -365,6 +369,8 @@ export type OrganizationMembershipWhereUniqueInput = Prisma.AtLeast<{
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseListRelationFilter
   arrangementsRequested?: Prisma.DelinquencyCaseListRelationFilter
   delinquencyNotifications?: Prisma.DelinquencyNotificationListRelationFilter
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateListRelationFilter
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunListRelationFilter
 }, "id" | "organizationId_userId" | "organizationId_id">
 
 export type OrganizationMembershipOrderByWithAggregationInput = {
@@ -444,6 +450,8 @@ export type OrganizationMembershipCreateInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateInput = {
@@ -483,6 +491,8 @@ export type OrganizationMembershipUncheckedCreateInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipUpdateInput = {
@@ -522,6 +532,8 @@ export type OrganizationMembershipUpdateInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateInput = {
@@ -561,6 +573,8 @@ export type OrganizationMembershipUncheckedUpdateInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipCreateManyInput = {
@@ -1117,6 +1131,34 @@ export type OrganizationMembershipUpdateOneRequiredWithoutSessionsNestedInput = 
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationMembershipUpdateToOneWithWhereWithoutSessionsInput, Prisma.OrganizationMembershipUpdateWithoutSessionsInput>, Prisma.OrganizationMembershipUncheckedUpdateWithoutSessionsInput>
 }
 
+export type OrganizationMembershipCreateNestedOneWithoutRepaymentAgentMandatesInput = {
+  create?: Prisma.XOR<Prisma.OrganizationMembershipCreateWithoutRepaymentAgentMandatesInput, Prisma.OrganizationMembershipUncheckedCreateWithoutRepaymentAgentMandatesInput>
+  connectOrCreate?: Prisma.OrganizationMembershipCreateOrConnectWithoutRepaymentAgentMandatesInput
+  connect?: Prisma.OrganizationMembershipWhereUniqueInput
+}
+
+export type OrganizationMembershipUpdateOneRequiredWithoutRepaymentAgentMandatesNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationMembershipCreateWithoutRepaymentAgentMandatesInput, Prisma.OrganizationMembershipUncheckedCreateWithoutRepaymentAgentMandatesInput>
+  connectOrCreate?: Prisma.OrganizationMembershipCreateOrConnectWithoutRepaymentAgentMandatesInput
+  upsert?: Prisma.OrganizationMembershipUpsertWithoutRepaymentAgentMandatesInput
+  connect?: Prisma.OrganizationMembershipWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationMembershipUpdateToOneWithWhereWithoutRepaymentAgentMandatesInput, Prisma.OrganizationMembershipUpdateWithoutRepaymentAgentMandatesInput>, Prisma.OrganizationMembershipUncheckedUpdateWithoutRepaymentAgentMandatesInput>
+}
+
+export type OrganizationMembershipCreateNestedOneWithoutRepaymentAgentRunsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationMembershipCreateWithoutRepaymentAgentRunsInput, Prisma.OrganizationMembershipUncheckedCreateWithoutRepaymentAgentRunsInput>
+  connectOrCreate?: Prisma.OrganizationMembershipCreateOrConnectWithoutRepaymentAgentRunsInput
+  connect?: Prisma.OrganizationMembershipWhereUniqueInput
+}
+
+export type OrganizationMembershipUpdateOneRequiredWithoutRepaymentAgentRunsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationMembershipCreateWithoutRepaymentAgentRunsInput, Prisma.OrganizationMembershipUncheckedCreateWithoutRepaymentAgentRunsInput>
+  connectOrCreate?: Prisma.OrganizationMembershipCreateOrConnectWithoutRepaymentAgentRunsInput
+  upsert?: Prisma.OrganizationMembershipUpsertWithoutRepaymentAgentRunsInput
+  connect?: Prisma.OrganizationMembershipWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationMembershipUpdateToOneWithWhereWithoutRepaymentAgentRunsInput, Prisma.OrganizationMembershipUpdateWithoutRepaymentAgentRunsInput>, Prisma.OrganizationMembershipUncheckedUpdateWithoutRepaymentAgentRunsInput>
+}
+
 export type OrganizationMembershipCreateWithoutUserInput = {
   id?: string
   role: $Enums.MembershipRole
@@ -1153,6 +1195,8 @@ export type OrganizationMembershipCreateWithoutUserInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutUserInput = {
@@ -1191,6 +1235,8 @@ export type OrganizationMembershipUncheckedCreateWithoutUserInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutUserInput = {
@@ -1275,6 +1321,8 @@ export type OrganizationMembershipCreateWithoutOrganizationInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutOrganizationInput = {
@@ -1313,6 +1361,8 @@ export type OrganizationMembershipUncheckedCreateWithoutOrganizationInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutOrganizationInput = {
@@ -1377,6 +1427,8 @@ export type OrganizationMembershipCreateWithoutEmployeeInvitationsInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutEmployeeInvitationsInput = {
@@ -1415,6 +1467,8 @@ export type OrganizationMembershipUncheckedCreateWithoutEmployeeInvitationsInput
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutEmployeeInvitationsInput = {
@@ -1458,6 +1512,8 @@ export type OrganizationMembershipCreateWithoutInvitationsCreatedInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutInvitationsCreatedInput = {
@@ -1496,6 +1552,8 @@ export type OrganizationMembershipUncheckedCreateWithoutInvitationsCreatedInput 
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutInvitationsCreatedInput = {
@@ -1550,6 +1608,8 @@ export type OrganizationMembershipUpdateWithoutEmployeeInvitationsInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutEmployeeInvitationsInput = {
@@ -1588,6 +1648,8 @@ export type OrganizationMembershipUncheckedUpdateWithoutEmployeeInvitationsInput
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUpsertWithoutInvitationsCreatedInput = {
@@ -1637,6 +1699,8 @@ export type OrganizationMembershipUpdateWithoutInvitationsCreatedInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutInvitationsCreatedInput = {
@@ -1675,6 +1739,8 @@ export type OrganizationMembershipUncheckedUpdateWithoutInvitationsCreatedInput 
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipCreateWithoutPasswordResetTokensInput = {
@@ -1713,6 +1779,8 @@ export type OrganizationMembershipCreateWithoutPasswordResetTokensInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutPasswordResetTokensInput = {
@@ -1751,6 +1819,8 @@ export type OrganizationMembershipUncheckedCreateWithoutPasswordResetTokensInput
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutPasswordResetTokensInput = {
@@ -1805,6 +1875,8 @@ export type OrganizationMembershipUpdateWithoutPasswordResetTokensInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutPasswordResetTokensInput = {
@@ -1843,6 +1915,8 @@ export type OrganizationMembershipUncheckedUpdateWithoutPasswordResetTokensInput
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipCreateWithoutEmployeeDirectoryMappingsInput = {
@@ -1881,6 +1955,8 @@ export type OrganizationMembershipCreateWithoutEmployeeDirectoryMappingsInput = 
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutEmployeeDirectoryMappingsInput = {
@@ -1919,6 +1995,8 @@ export type OrganizationMembershipUncheckedCreateWithoutEmployeeDirectoryMapping
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutEmployeeDirectoryMappingsInput = {
@@ -1973,6 +2051,8 @@ export type OrganizationMembershipUpdateWithoutEmployeeDirectoryMappingsInput = 
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutEmployeeDirectoryMappingsInput = {
@@ -2011,6 +2091,8 @@ export type OrganizationMembershipUncheckedUpdateWithoutEmployeeDirectoryMapping
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipCreateWithoutEmployeeDirectorySyncRunsInput = {
@@ -2049,6 +2131,8 @@ export type OrganizationMembershipCreateWithoutEmployeeDirectorySyncRunsInput = 
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutEmployeeDirectorySyncRunsInput = {
@@ -2087,6 +2171,8 @@ export type OrganizationMembershipUncheckedCreateWithoutEmployeeDirectorySyncRun
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutEmployeeDirectorySyncRunsInput = {
@@ -2141,6 +2227,8 @@ export type OrganizationMembershipUpdateWithoutEmployeeDirectorySyncRunsInput = 
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutEmployeeDirectorySyncRunsInput = {
@@ -2179,6 +2267,8 @@ export type OrganizationMembershipUncheckedUpdateWithoutEmployeeDirectorySyncRun
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipCreateWithoutLendingOffersInput = {
@@ -2217,6 +2307,8 @@ export type OrganizationMembershipCreateWithoutLendingOffersInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutLendingOffersInput = {
@@ -2255,6 +2347,8 @@ export type OrganizationMembershipUncheckedCreateWithoutLendingOffersInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutLendingOffersInput = {
@@ -2309,6 +2403,8 @@ export type OrganizationMembershipUpdateWithoutLendingOffersInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutLendingOffersInput = {
@@ -2347,6 +2443,8 @@ export type OrganizationMembershipUncheckedUpdateWithoutLendingOffersInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipCreateWithoutBalanceInput = {
@@ -2385,6 +2483,8 @@ export type OrganizationMembershipCreateWithoutBalanceInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutBalanceInput = {
@@ -2423,6 +2523,8 @@ export type OrganizationMembershipUncheckedCreateWithoutBalanceInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutBalanceInput = {
@@ -2477,6 +2579,8 @@ export type OrganizationMembershipUpdateWithoutBalanceInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutBalanceInput = {
@@ -2515,6 +2619,8 @@ export type OrganizationMembershipUncheckedUpdateWithoutBalanceInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipCreateWithoutLoansAsLenderInput = {
@@ -2553,6 +2659,8 @@ export type OrganizationMembershipCreateWithoutLoansAsLenderInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutLoansAsLenderInput = {
@@ -2591,6 +2699,8 @@ export type OrganizationMembershipUncheckedCreateWithoutLoansAsLenderInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutLoansAsLenderInput = {
@@ -2634,6 +2744,8 @@ export type OrganizationMembershipCreateWithoutLoansAsBorrowerInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutLoansAsBorrowerInput = {
@@ -2672,6 +2784,8 @@ export type OrganizationMembershipUncheckedCreateWithoutLoansAsBorrowerInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutLoansAsBorrowerInput = {
@@ -2726,6 +2840,8 @@ export type OrganizationMembershipUpdateWithoutLoansAsLenderInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutLoansAsLenderInput = {
@@ -2764,6 +2880,8 @@ export type OrganizationMembershipUncheckedUpdateWithoutLoansAsLenderInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUpsertWithoutLoansAsBorrowerInput = {
@@ -2813,6 +2931,8 @@ export type OrganizationMembershipUpdateWithoutLoansAsBorrowerInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutLoansAsBorrowerInput = {
@@ -2851,6 +2971,8 @@ export type OrganizationMembershipUncheckedUpdateWithoutLoansAsBorrowerInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipCreateWithoutLoanDecisionReviewsInput = {
@@ -2889,6 +3011,8 @@ export type OrganizationMembershipCreateWithoutLoanDecisionReviewsInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutLoanDecisionReviewsInput = {
@@ -2927,6 +3051,8 @@ export type OrganizationMembershipUncheckedCreateWithoutLoanDecisionReviewsInput
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutLoanDecisionReviewsInput = {
@@ -2981,6 +3107,8 @@ export type OrganizationMembershipUpdateWithoutLoanDecisionReviewsInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutLoanDecisionReviewsInput = {
@@ -3019,6 +3147,8 @@ export type OrganizationMembershipUncheckedUpdateWithoutLoanDecisionReviewsInput
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipCreateWithoutOriginationDecisionsInput = {
@@ -3057,6 +3187,8 @@ export type OrganizationMembershipCreateWithoutOriginationDecisionsInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutOriginationDecisionsInput = {
@@ -3095,6 +3227,8 @@ export type OrganizationMembershipUncheckedCreateWithoutOriginationDecisionsInpu
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutOriginationDecisionsInput = {
@@ -3149,6 +3283,8 @@ export type OrganizationMembershipUpdateWithoutOriginationDecisionsInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutOriginationDecisionsInput = {
@@ -3187,6 +3323,8 @@ export type OrganizationMembershipUncheckedUpdateWithoutOriginationDecisionsInpu
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipCreateWithoutOriginationOverridesInput = {
@@ -3225,6 +3363,8 @@ export type OrganizationMembershipCreateWithoutOriginationOverridesInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutOriginationOverridesInput = {
@@ -3263,6 +3403,8 @@ export type OrganizationMembershipUncheckedCreateWithoutOriginationOverridesInpu
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutOriginationOverridesInput = {
@@ -3317,6 +3459,8 @@ export type OrganizationMembershipUpdateWithoutOriginationOverridesInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutOriginationOverridesInput = {
@@ -3355,6 +3499,8 @@ export type OrganizationMembershipUncheckedUpdateWithoutOriginationOverridesInpu
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipCreateWithoutEmployerActionAttemptsInput = {
@@ -3393,6 +3539,8 @@ export type OrganizationMembershipCreateWithoutEmployerActionAttemptsInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutEmployerActionAttemptsInput = {
@@ -3431,6 +3579,8 @@ export type OrganizationMembershipUncheckedCreateWithoutEmployerActionAttemptsIn
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutEmployerActionAttemptsInput = {
@@ -3485,6 +3635,8 @@ export type OrganizationMembershipUpdateWithoutEmployerActionAttemptsInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutEmployerActionAttemptsInput = {
@@ -3523,6 +3675,8 @@ export type OrganizationMembershipUncheckedUpdateWithoutEmployerActionAttemptsIn
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipCreateWithoutLedgerAccountsInput = {
@@ -3561,6 +3715,8 @@ export type OrganizationMembershipCreateWithoutLedgerAccountsInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutLedgerAccountsInput = {
@@ -3599,6 +3755,8 @@ export type OrganizationMembershipUncheckedCreateWithoutLedgerAccountsInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutLedgerAccountsInput = {
@@ -3653,6 +3811,8 @@ export type OrganizationMembershipUpdateWithoutLedgerAccountsInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutLedgerAccountsInput = {
@@ -3691,6 +3851,8 @@ export type OrganizationMembershipUncheckedUpdateWithoutLedgerAccountsInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipCreateWithoutRepaymentPlansApprovedInput = {
@@ -3729,6 +3891,8 @@ export type OrganizationMembershipCreateWithoutRepaymentPlansApprovedInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutRepaymentPlansApprovedInput = {
@@ -3767,6 +3931,8 @@ export type OrganizationMembershipUncheckedCreateWithoutRepaymentPlansApprovedIn
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutRepaymentPlansApprovedInput = {
@@ -3821,6 +3987,8 @@ export type OrganizationMembershipUpdateWithoutRepaymentPlansApprovedInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutRepaymentPlansApprovedInput = {
@@ -3859,6 +4027,8 @@ export type OrganizationMembershipUncheckedUpdateWithoutRepaymentPlansApprovedIn
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipCreateWithoutPayrollDeductionsReviewedInput = {
@@ -3897,6 +4067,8 @@ export type OrganizationMembershipCreateWithoutPayrollDeductionsReviewedInput = 
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutPayrollDeductionsReviewedInput = {
@@ -3935,6 +4107,8 @@ export type OrganizationMembershipUncheckedCreateWithoutPayrollDeductionsReviewe
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutPayrollDeductionsReviewedInput = {
@@ -3989,6 +4163,8 @@ export type OrganizationMembershipUpdateWithoutPayrollDeductionsReviewedInput = 
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutPayrollDeductionsReviewedInput = {
@@ -4027,6 +4203,8 @@ export type OrganizationMembershipUncheckedUpdateWithoutPayrollDeductionsReviewe
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipCreateWithoutDelinquencyCasesReviewedInput = {
@@ -4065,6 +4243,8 @@ export type OrganizationMembershipCreateWithoutDelinquencyCasesReviewedInput = {
   payrollDeductionsReviewed?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutDelinquencyCasesReviewedInput = {
@@ -4103,6 +4283,8 @@ export type OrganizationMembershipUncheckedCreateWithoutDelinquencyCasesReviewed
   payrollDeductionsReviewed?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutDelinquencyCasesReviewedInput = {
@@ -4146,6 +4328,8 @@ export type OrganizationMembershipCreateWithoutArrangementsRequestedInput = {
   payrollDeductionsReviewed?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutReviewedByMembershipInput
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseCreateNestedManyWithoutReviewedByMembershipInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutArrangementsRequestedInput = {
@@ -4184,6 +4368,8 @@ export type OrganizationMembershipUncheckedCreateWithoutArrangementsRequestedInp
   payrollDeductionsReviewed?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutArrangementsRequestedInput = {
@@ -4238,6 +4424,8 @@ export type OrganizationMembershipUpdateWithoutDelinquencyCasesReviewedInput = {
   payrollDeductionsReviewed?: Prisma.PayrollDeductionProposalUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutDelinquencyCasesReviewedInput = {
@@ -4276,6 +4464,8 @@ export type OrganizationMembershipUncheckedUpdateWithoutDelinquencyCasesReviewed
   payrollDeductionsReviewed?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUpsertWithoutArrangementsRequestedInput = {
@@ -4325,6 +4515,8 @@ export type OrganizationMembershipUpdateWithoutArrangementsRequestedInput = {
   payrollDeductionsReviewed?: Prisma.PayrollDeductionProposalUpdateManyWithoutReviewedByMembershipNestedInput
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUpdateManyWithoutReviewedByMembershipNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutArrangementsRequestedInput = {
@@ -4363,6 +4555,8 @@ export type OrganizationMembershipUncheckedUpdateWithoutArrangementsRequestedInp
   payrollDeductionsReviewed?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipCreateWithoutDelinquencyNotificationsInput = {
@@ -4401,6 +4595,8 @@ export type OrganizationMembershipCreateWithoutDelinquencyNotificationsInput = {
   payrollDeductionsReviewed?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutReviewedByMembershipInput
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseCreateNestedManyWithoutArrangementRequestedByInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutDelinquencyNotificationsInput = {
@@ -4439,6 +4635,8 @@ export type OrganizationMembershipUncheckedCreateWithoutDelinquencyNotifications
   payrollDeductionsReviewed?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutArrangementRequestedByInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutDelinquencyNotificationsInput = {
@@ -4493,6 +4691,8 @@ export type OrganizationMembershipUpdateWithoutDelinquencyNotificationsInput = {
   payrollDeductionsReviewed?: Prisma.PayrollDeductionProposalUpdateManyWithoutReviewedByMembershipNestedInput
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUpdateManyWithoutArrangementRequestedByNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutDelinquencyNotificationsInput = {
@@ -4531,6 +4731,8 @@ export type OrganizationMembershipUncheckedUpdateWithoutDelinquencyNotifications
   payrollDeductionsReviewed?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutArrangementRequestedByNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipCreateWithoutAuditEventsActedInput = {
@@ -4569,6 +4771,8 @@ export type OrganizationMembershipCreateWithoutAuditEventsActedInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutAuditEventsActedInput = {
@@ -4607,6 +4811,8 @@ export type OrganizationMembershipUncheckedCreateWithoutAuditEventsActedInput = 
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutAuditEventsActedInput = {
@@ -4650,6 +4856,8 @@ export type OrganizationMembershipCreateWithoutAuditEventsTargetedInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutAuditEventsTargetedInput = {
@@ -4688,6 +4896,8 @@ export type OrganizationMembershipUncheckedCreateWithoutAuditEventsTargetedInput
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutAuditEventsTargetedInput = {
@@ -4742,6 +4952,8 @@ export type OrganizationMembershipUpdateWithoutAuditEventsActedInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutAuditEventsActedInput = {
@@ -4780,6 +4992,8 @@ export type OrganizationMembershipUncheckedUpdateWithoutAuditEventsActedInput = 
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUpsertWithoutAuditEventsTargetedInput = {
@@ -4829,6 +5043,8 @@ export type OrganizationMembershipUpdateWithoutAuditEventsTargetedInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutAuditEventsTargetedInput = {
@@ -4867,6 +5083,8 @@ export type OrganizationMembershipUncheckedUpdateWithoutAuditEventsTargetedInput
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipCreateWithoutSessionsInput = {
@@ -4905,6 +5123,8 @@ export type OrganizationMembershipCreateWithoutSessionsInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipUncheckedCreateWithoutSessionsInput = {
@@ -4943,6 +5163,8 @@ export type OrganizationMembershipUncheckedCreateWithoutSessionsInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutReviewedByMembershipInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutArrangementRequestedByInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutBorrowerMembershipInput
 }
 
 export type OrganizationMembershipCreateOrConnectWithoutSessionsInput = {
@@ -4997,6 +5219,8 @@ export type OrganizationMembershipUpdateWithoutSessionsInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutSessionsInput = {
@@ -5035,6 +5259,360 @@ export type OrganizationMembershipUncheckedUpdateWithoutSessionsInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+}
+
+export type OrganizationMembershipCreateWithoutRepaymentAgentMandatesInput = {
+  id?: string
+  role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentStatusSource?: $Enums.EmploymentStatusSource | null
+  employmentStatusSyncedAt?: Date | string | null
+  removedAt?: Date | string | null
+  accountActivatedAt?: Date | string | null
+  isActive?: boolean
+  canBorrow?: boolean
+  canLend?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutMembershipsInput
+  user: Prisma.UserCreateNestedOneWithoutMembershipsInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutMembershipInput
+  lendingOffers?: Prisma.LendingOfferCreateNestedManyWithoutLenderMembershipInput
+  balance?: Prisma.EmployeeBalanceCreateNestedOneWithoutMembershipInput
+  loansAsLender?: Prisma.LoanCreateNestedManyWithoutLenderMembershipInput
+  loansAsBorrower?: Prisma.LoanCreateNestedManyWithoutBorrowerMembershipInput
+  ledgerAccounts?: Prisma.LedgerAccountCreateNestedManyWithoutMembershipInput
+  auditEventsActed?: Prisma.AuditEventCreateNestedManyWithoutActorMembershipInput
+  auditEventsTargeted?: Prisma.AuditEventCreateNestedManyWithoutTargetMembershipInput
+  loanDecisionReviews?: Prisma.LoanDecisionReviewCreateNestedManyWithoutReviewedByMembershipInput
+  originationDecisions?: Prisma.LoanOriginationDecisionCreateNestedManyWithoutBorrowerMembershipInput
+  originationOverrides?: Prisma.LoanOriginationOverrideCreateNestedManyWithoutReviewedByMembershipInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptCreateNestedManyWithoutRequestedByMembershipInput
+  employeeDirectoryMappings?: Prisma.EmployeeDirectoryMappingCreateNestedManyWithoutMatchedMembershipInput
+  employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunCreateNestedManyWithoutRequestedByMembershipInput
+  employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutEmployeeMembershipInput
+  invitationsCreated?: Prisma.EmployeeInvitationCreateNestedManyWithoutInvitedByMembershipInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutMembershipInput
+  repaymentPlansApproved?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutApprovedByMembershipInput
+  payrollDeductionsReviewed?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutReviewedByMembershipInput
+  delinquencyCasesReviewed?: Prisma.DelinquencyCaseCreateNestedManyWithoutReviewedByMembershipInput
+  arrangementsRequested?: Prisma.DelinquencyCaseCreateNestedManyWithoutArrangementRequestedByInput
+  delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutBorrowerMembershipInput
+}
+
+export type OrganizationMembershipUncheckedCreateWithoutRepaymentAgentMandatesInput = {
+  id?: string
+  organizationId: string
+  userId: string
+  role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentStatusSource?: $Enums.EmploymentStatusSource | null
+  employmentStatusSyncedAt?: Date | string | null
+  removedAt?: Date | string | null
+  accountActivatedAt?: Date | string | null
+  isActive?: boolean
+  canBorrow?: boolean
+  canLend?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMembershipInput
+  lendingOffers?: Prisma.LendingOfferUncheckedCreateNestedManyWithoutLenderMembershipInput
+  balance?: Prisma.EmployeeBalanceUncheckedCreateNestedOneWithoutMembershipInput
+  loansAsLender?: Prisma.LoanUncheckedCreateNestedManyWithoutLenderMembershipInput
+  loansAsBorrower?: Prisma.LoanUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  ledgerAccounts?: Prisma.LedgerAccountUncheckedCreateNestedManyWithoutMembershipInput
+  auditEventsActed?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorMembershipInput
+  auditEventsTargeted?: Prisma.AuditEventUncheckedCreateNestedManyWithoutTargetMembershipInput
+  loanDecisionReviews?: Prisma.LoanDecisionReviewUncheckedCreateNestedManyWithoutReviewedByMembershipInput
+  originationDecisions?: Prisma.LoanOriginationDecisionUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  originationOverrides?: Prisma.LoanOriginationOverrideUncheckedCreateNestedManyWithoutReviewedByMembershipInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedCreateNestedManyWithoutRequestedByMembershipInput
+  employeeDirectoryMappings?: Prisma.EmployeeDirectoryMappingUncheckedCreateNestedManyWithoutMatchedMembershipInput
+  employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunUncheckedCreateNestedManyWithoutRequestedByMembershipInput
+  employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutEmployeeMembershipInput
+  invitationsCreated?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutInvitedByMembershipInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutMembershipInput
+  repaymentPlansApproved?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutApprovedByMembershipInput
+  payrollDeductionsReviewed?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutReviewedByMembershipInput
+  delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutReviewedByMembershipInput
+  arrangementsRequested?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutArrangementRequestedByInput
+  delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+}
+
+export type OrganizationMembershipCreateOrConnectWithoutRepaymentAgentMandatesInput = {
+  where: Prisma.OrganizationMembershipWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationMembershipCreateWithoutRepaymentAgentMandatesInput, Prisma.OrganizationMembershipUncheckedCreateWithoutRepaymentAgentMandatesInput>
+}
+
+export type OrganizationMembershipUpsertWithoutRepaymentAgentMandatesInput = {
+  update: Prisma.XOR<Prisma.OrganizationMembershipUpdateWithoutRepaymentAgentMandatesInput, Prisma.OrganizationMembershipUncheckedUpdateWithoutRepaymentAgentMandatesInput>
+  create: Prisma.XOR<Prisma.OrganizationMembershipCreateWithoutRepaymentAgentMandatesInput, Prisma.OrganizationMembershipUncheckedCreateWithoutRepaymentAgentMandatesInput>
+  where?: Prisma.OrganizationMembershipWhereInput
+}
+
+export type OrganizationMembershipUpdateToOneWithWhereWithoutRepaymentAgentMandatesInput = {
+  where?: Prisma.OrganizationMembershipWhereInput
+  data: Prisma.XOR<Prisma.OrganizationMembershipUpdateWithoutRepaymentAgentMandatesInput, Prisma.OrganizationMembershipUncheckedUpdateWithoutRepaymentAgentMandatesInput>
+}
+
+export type OrganizationMembershipUpdateWithoutRepaymentAgentMandatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentStatusSource?: Prisma.NullableEnumEmploymentStatusSourceFieldUpdateOperationsInput | $Enums.EmploymentStatusSource | null
+  employmentStatusSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  removedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accountActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutMembershipsNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutMembershipNestedInput
+  lendingOffers?: Prisma.LendingOfferUpdateManyWithoutLenderMembershipNestedInput
+  balance?: Prisma.EmployeeBalanceUpdateOneWithoutMembershipNestedInput
+  loansAsLender?: Prisma.LoanUpdateManyWithoutLenderMembershipNestedInput
+  loansAsBorrower?: Prisma.LoanUpdateManyWithoutBorrowerMembershipNestedInput
+  ledgerAccounts?: Prisma.LedgerAccountUpdateManyWithoutMembershipNestedInput
+  auditEventsActed?: Prisma.AuditEventUpdateManyWithoutActorMembershipNestedInput
+  auditEventsTargeted?: Prisma.AuditEventUpdateManyWithoutTargetMembershipNestedInput
+  loanDecisionReviews?: Prisma.LoanDecisionReviewUpdateManyWithoutReviewedByMembershipNestedInput
+  originationDecisions?: Prisma.LoanOriginationDecisionUpdateManyWithoutBorrowerMembershipNestedInput
+  originationOverrides?: Prisma.LoanOriginationOverrideUpdateManyWithoutReviewedByMembershipNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUpdateManyWithoutRequestedByMembershipNestedInput
+  employeeDirectoryMappings?: Prisma.EmployeeDirectoryMappingUpdateManyWithoutMatchedMembershipNestedInput
+  employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunUpdateManyWithoutRequestedByMembershipNestedInput
+  employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutEmployeeMembershipNestedInput
+  invitationsCreated?: Prisma.EmployeeInvitationUpdateManyWithoutInvitedByMembershipNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutMembershipNestedInput
+  repaymentPlansApproved?: Prisma.LoanRepaymentPlanUpdateManyWithoutApprovedByMembershipNestedInput
+  payrollDeductionsReviewed?: Prisma.PayrollDeductionProposalUpdateManyWithoutReviewedByMembershipNestedInput
+  delinquencyCasesReviewed?: Prisma.DelinquencyCaseUpdateManyWithoutReviewedByMembershipNestedInput
+  arrangementsRequested?: Prisma.DelinquencyCaseUpdateManyWithoutArrangementRequestedByNestedInput
+  delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutBorrowerMembershipNestedInput
+}
+
+export type OrganizationMembershipUncheckedUpdateWithoutRepaymentAgentMandatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentStatusSource?: Prisma.NullableEnumEmploymentStatusSourceFieldUpdateOperationsInput | $Enums.EmploymentStatusSource | null
+  employmentStatusSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  removedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accountActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutMembershipNestedInput
+  lendingOffers?: Prisma.LendingOfferUncheckedUpdateManyWithoutLenderMembershipNestedInput
+  balance?: Prisma.EmployeeBalanceUncheckedUpdateOneWithoutMembershipNestedInput
+  loansAsLender?: Prisma.LoanUncheckedUpdateManyWithoutLenderMembershipNestedInput
+  loansAsBorrower?: Prisma.LoanUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  ledgerAccounts?: Prisma.LedgerAccountUncheckedUpdateManyWithoutMembershipNestedInput
+  auditEventsActed?: Prisma.AuditEventUncheckedUpdateManyWithoutActorMembershipNestedInput
+  auditEventsTargeted?: Prisma.AuditEventUncheckedUpdateManyWithoutTargetMembershipNestedInput
+  loanDecisionReviews?: Prisma.LoanDecisionReviewUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
+  originationDecisions?: Prisma.LoanOriginationDecisionUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  originationOverrides?: Prisma.LoanOriginationOverrideUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedUpdateManyWithoutRequestedByMembershipNestedInput
+  employeeDirectoryMappings?: Prisma.EmployeeDirectoryMappingUncheckedUpdateManyWithoutMatchedMembershipNestedInput
+  employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunUncheckedUpdateManyWithoutRequestedByMembershipNestedInput
+  employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutEmployeeMembershipNestedInput
+  invitationsCreated?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutInvitedByMembershipNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutMembershipNestedInput
+  repaymentPlansApproved?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutApprovedByMembershipNestedInput
+  payrollDeductionsReviewed?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
+  delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
+  arrangementsRequested?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutArrangementRequestedByNestedInput
+  delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+}
+
+export type OrganizationMembershipCreateWithoutRepaymentAgentRunsInput = {
+  id?: string
+  role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentStatusSource?: $Enums.EmploymentStatusSource | null
+  employmentStatusSyncedAt?: Date | string | null
+  removedAt?: Date | string | null
+  accountActivatedAt?: Date | string | null
+  isActive?: boolean
+  canBorrow?: boolean
+  canLend?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutMembershipsInput
+  user: Prisma.UserCreateNestedOneWithoutMembershipsInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutMembershipInput
+  lendingOffers?: Prisma.LendingOfferCreateNestedManyWithoutLenderMembershipInput
+  balance?: Prisma.EmployeeBalanceCreateNestedOneWithoutMembershipInput
+  loansAsLender?: Prisma.LoanCreateNestedManyWithoutLenderMembershipInput
+  loansAsBorrower?: Prisma.LoanCreateNestedManyWithoutBorrowerMembershipInput
+  ledgerAccounts?: Prisma.LedgerAccountCreateNestedManyWithoutMembershipInput
+  auditEventsActed?: Prisma.AuditEventCreateNestedManyWithoutActorMembershipInput
+  auditEventsTargeted?: Prisma.AuditEventCreateNestedManyWithoutTargetMembershipInput
+  loanDecisionReviews?: Prisma.LoanDecisionReviewCreateNestedManyWithoutReviewedByMembershipInput
+  originationDecisions?: Prisma.LoanOriginationDecisionCreateNestedManyWithoutBorrowerMembershipInput
+  originationOverrides?: Prisma.LoanOriginationOverrideCreateNestedManyWithoutReviewedByMembershipInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptCreateNestedManyWithoutRequestedByMembershipInput
+  employeeDirectoryMappings?: Prisma.EmployeeDirectoryMappingCreateNestedManyWithoutMatchedMembershipInput
+  employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunCreateNestedManyWithoutRequestedByMembershipInput
+  employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutEmployeeMembershipInput
+  invitationsCreated?: Prisma.EmployeeInvitationCreateNestedManyWithoutInvitedByMembershipInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutMembershipInput
+  repaymentPlansApproved?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutApprovedByMembershipInput
+  payrollDeductionsReviewed?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutReviewedByMembershipInput
+  delinquencyCasesReviewed?: Prisma.DelinquencyCaseCreateNestedManyWithoutReviewedByMembershipInput
+  arrangementsRequested?: Prisma.DelinquencyCaseCreateNestedManyWithoutArrangementRequestedByInput
+  delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutBorrowerMembershipInput
+}
+
+export type OrganizationMembershipUncheckedCreateWithoutRepaymentAgentRunsInput = {
+  id?: string
+  organizationId: string
+  userId: string
+  role: $Enums.MembershipRole
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentStatusSource?: $Enums.EmploymentStatusSource | null
+  employmentStatusSyncedAt?: Date | string | null
+  removedAt?: Date | string | null
+  accountActivatedAt?: Date | string | null
+  isActive?: boolean
+  canBorrow?: boolean
+  canLend?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutMembershipInput
+  lendingOffers?: Prisma.LendingOfferUncheckedCreateNestedManyWithoutLenderMembershipInput
+  balance?: Prisma.EmployeeBalanceUncheckedCreateNestedOneWithoutMembershipInput
+  loansAsLender?: Prisma.LoanUncheckedCreateNestedManyWithoutLenderMembershipInput
+  loansAsBorrower?: Prisma.LoanUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  ledgerAccounts?: Prisma.LedgerAccountUncheckedCreateNestedManyWithoutMembershipInput
+  auditEventsActed?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorMembershipInput
+  auditEventsTargeted?: Prisma.AuditEventUncheckedCreateNestedManyWithoutTargetMembershipInput
+  loanDecisionReviews?: Prisma.LoanDecisionReviewUncheckedCreateNestedManyWithoutReviewedByMembershipInput
+  originationDecisions?: Prisma.LoanOriginationDecisionUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+  originationOverrides?: Prisma.LoanOriginationOverrideUncheckedCreateNestedManyWithoutReviewedByMembershipInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedCreateNestedManyWithoutRequestedByMembershipInput
+  employeeDirectoryMappings?: Prisma.EmployeeDirectoryMappingUncheckedCreateNestedManyWithoutMatchedMembershipInput
+  employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunUncheckedCreateNestedManyWithoutRequestedByMembershipInput
+  employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutEmployeeMembershipInput
+  invitationsCreated?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutInvitedByMembershipInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutMembershipInput
+  repaymentPlansApproved?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutApprovedByMembershipInput
+  payrollDeductionsReviewed?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutReviewedByMembershipInput
+  delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutReviewedByMembershipInput
+  arrangementsRequested?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutArrangementRequestedByInput
+  delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutRecipientMembershipInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutBorrowerMembershipInput
+}
+
+export type OrganizationMembershipCreateOrConnectWithoutRepaymentAgentRunsInput = {
+  where: Prisma.OrganizationMembershipWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationMembershipCreateWithoutRepaymentAgentRunsInput, Prisma.OrganizationMembershipUncheckedCreateWithoutRepaymentAgentRunsInput>
+}
+
+export type OrganizationMembershipUpsertWithoutRepaymentAgentRunsInput = {
+  update: Prisma.XOR<Prisma.OrganizationMembershipUpdateWithoutRepaymentAgentRunsInput, Prisma.OrganizationMembershipUncheckedUpdateWithoutRepaymentAgentRunsInput>
+  create: Prisma.XOR<Prisma.OrganizationMembershipCreateWithoutRepaymentAgentRunsInput, Prisma.OrganizationMembershipUncheckedCreateWithoutRepaymentAgentRunsInput>
+  where?: Prisma.OrganizationMembershipWhereInput
+}
+
+export type OrganizationMembershipUpdateToOneWithWhereWithoutRepaymentAgentRunsInput = {
+  where?: Prisma.OrganizationMembershipWhereInput
+  data: Prisma.XOR<Prisma.OrganizationMembershipUpdateWithoutRepaymentAgentRunsInput, Prisma.OrganizationMembershipUncheckedUpdateWithoutRepaymentAgentRunsInput>
+}
+
+export type OrganizationMembershipUpdateWithoutRepaymentAgentRunsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentStatusSource?: Prisma.NullableEnumEmploymentStatusSourceFieldUpdateOperationsInput | $Enums.EmploymentStatusSource | null
+  employmentStatusSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  removedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accountActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutMembershipsNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutMembershipNestedInput
+  lendingOffers?: Prisma.LendingOfferUpdateManyWithoutLenderMembershipNestedInput
+  balance?: Prisma.EmployeeBalanceUpdateOneWithoutMembershipNestedInput
+  loansAsLender?: Prisma.LoanUpdateManyWithoutLenderMembershipNestedInput
+  loansAsBorrower?: Prisma.LoanUpdateManyWithoutBorrowerMembershipNestedInput
+  ledgerAccounts?: Prisma.LedgerAccountUpdateManyWithoutMembershipNestedInput
+  auditEventsActed?: Prisma.AuditEventUpdateManyWithoutActorMembershipNestedInput
+  auditEventsTargeted?: Prisma.AuditEventUpdateManyWithoutTargetMembershipNestedInput
+  loanDecisionReviews?: Prisma.LoanDecisionReviewUpdateManyWithoutReviewedByMembershipNestedInput
+  originationDecisions?: Prisma.LoanOriginationDecisionUpdateManyWithoutBorrowerMembershipNestedInput
+  originationOverrides?: Prisma.LoanOriginationOverrideUpdateManyWithoutReviewedByMembershipNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUpdateManyWithoutRequestedByMembershipNestedInput
+  employeeDirectoryMappings?: Prisma.EmployeeDirectoryMappingUpdateManyWithoutMatchedMembershipNestedInput
+  employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunUpdateManyWithoutRequestedByMembershipNestedInput
+  employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutEmployeeMembershipNestedInput
+  invitationsCreated?: Prisma.EmployeeInvitationUpdateManyWithoutInvitedByMembershipNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutMembershipNestedInput
+  repaymentPlansApproved?: Prisma.LoanRepaymentPlanUpdateManyWithoutApprovedByMembershipNestedInput
+  payrollDeductionsReviewed?: Prisma.PayrollDeductionProposalUpdateManyWithoutReviewedByMembershipNestedInput
+  delinquencyCasesReviewed?: Prisma.DelinquencyCaseUpdateManyWithoutReviewedByMembershipNestedInput
+  arrangementsRequested?: Prisma.DelinquencyCaseUpdateManyWithoutArrangementRequestedByNestedInput
+  delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutBorrowerMembershipNestedInput
+}
+
+export type OrganizationMembershipUncheckedUpdateWithoutRepaymentAgentRunsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentStatusSource?: Prisma.NullableEnumEmploymentStatusSourceFieldUpdateOperationsInput | $Enums.EmploymentStatusSource | null
+  employmentStatusSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  removedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accountActivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canBorrow?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canLend?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutMembershipNestedInput
+  lendingOffers?: Prisma.LendingOfferUncheckedUpdateManyWithoutLenderMembershipNestedInput
+  balance?: Prisma.EmployeeBalanceUncheckedUpdateOneWithoutMembershipNestedInput
+  loansAsLender?: Prisma.LoanUncheckedUpdateManyWithoutLenderMembershipNestedInput
+  loansAsBorrower?: Prisma.LoanUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  ledgerAccounts?: Prisma.LedgerAccountUncheckedUpdateManyWithoutMembershipNestedInput
+  auditEventsActed?: Prisma.AuditEventUncheckedUpdateManyWithoutActorMembershipNestedInput
+  auditEventsTargeted?: Prisma.AuditEventUncheckedUpdateManyWithoutTargetMembershipNestedInput
+  loanDecisionReviews?: Prisma.LoanDecisionReviewUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
+  originationDecisions?: Prisma.LoanOriginationDecisionUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  originationOverrides?: Prisma.LoanOriginationOverrideUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedUpdateManyWithoutRequestedByMembershipNestedInput
+  employeeDirectoryMappings?: Prisma.EmployeeDirectoryMappingUncheckedUpdateManyWithoutMatchedMembershipNestedInput
+  employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunUncheckedUpdateManyWithoutRequestedByMembershipNestedInput
+  employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutEmployeeMembershipNestedInput
+  invitationsCreated?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutInvitedByMembershipNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutMembershipNestedInput
+  repaymentPlansApproved?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutApprovedByMembershipNestedInput
+  payrollDeductionsReviewed?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
+  delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
+  arrangementsRequested?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutArrangementRequestedByNestedInput
+  delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipCreateManyUserInput = {
@@ -5089,6 +5667,8 @@ export type OrganizationMembershipUpdateWithoutUserInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutUserInput = {
@@ -5127,6 +5707,8 @@ export type OrganizationMembershipUncheckedUpdateWithoutUserInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateManyWithoutUserInput = {
@@ -5197,6 +5779,8 @@ export type OrganizationMembershipUpdateWithoutOrganizationInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateWithoutOrganizationInput = {
@@ -5235,6 +5819,8 @@ export type OrganizationMembershipUncheckedUpdateWithoutOrganizationInput = {
   delinquencyCasesReviewed?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutReviewedByMembershipNestedInput
   arrangementsRequested?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutArrangementRequestedByNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutRecipientMembershipNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutBorrowerMembershipNestedInput
 }
 
 export type OrganizationMembershipUncheckedUpdateManyWithoutOrganizationInput = {
@@ -5280,6 +5866,8 @@ export type OrganizationMembershipCountOutputType = {
   delinquencyCasesReviewed: number
   arrangementsRequested: number
   delinquencyNotifications: number
+  repaymentAgentMandates: number
+  repaymentAgentRuns: number
 }
 
 export type OrganizationMembershipCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -5304,6 +5892,8 @@ export type OrganizationMembershipCountOutputTypeSelect<ExtArgs extends runtime.
   delinquencyCasesReviewed?: boolean | OrganizationMembershipCountOutputTypeCountDelinquencyCasesReviewedArgs
   arrangementsRequested?: boolean | OrganizationMembershipCountOutputTypeCountArrangementsRequestedArgs
   delinquencyNotifications?: boolean | OrganizationMembershipCountOutputTypeCountDelinquencyNotificationsArgs
+  repaymentAgentMandates?: boolean | OrganizationMembershipCountOutputTypeCountRepaymentAgentMandatesArgs
+  repaymentAgentRuns?: boolean | OrganizationMembershipCountOutputTypeCountRepaymentAgentRunsArgs
 }
 
 /**
@@ -5463,6 +6053,20 @@ export type OrganizationMembershipCountOutputTypeCountDelinquencyNotificationsAr
   where?: Prisma.DelinquencyNotificationWhereInput
 }
 
+/**
+ * OrganizationMembershipCountOutputType without action
+ */
+export type OrganizationMembershipCountOutputTypeCountRepaymentAgentMandatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RepaymentAgentMandateWhereInput
+}
+
+/**
+ * OrganizationMembershipCountOutputType without action
+ */
+export type OrganizationMembershipCountOutputTypeCountRepaymentAgentRunsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RepaymentAgentRunWhereInput
+}
+
 
 export type OrganizationMembershipSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -5503,6 +6107,8 @@ export type OrganizationMembershipSelect<ExtArgs extends runtime.Types.Extension
   delinquencyCasesReviewed?: boolean | Prisma.OrganizationMembership$delinquencyCasesReviewedArgs<ExtArgs>
   arrangementsRequested?: boolean | Prisma.OrganizationMembership$arrangementsRequestedArgs<ExtArgs>
   delinquencyNotifications?: boolean | Prisma.OrganizationMembership$delinquencyNotificationsArgs<ExtArgs>
+  repaymentAgentMandates?: boolean | Prisma.OrganizationMembership$repaymentAgentMandatesArgs<ExtArgs>
+  repaymentAgentRuns?: boolean | Prisma.OrganizationMembership$repaymentAgentRunsArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationMembershipCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["organizationMembership"]>
 
@@ -5587,6 +6193,8 @@ export type OrganizationMembershipInclude<ExtArgs extends runtime.Types.Extensio
   delinquencyCasesReviewed?: boolean | Prisma.OrganizationMembership$delinquencyCasesReviewedArgs<ExtArgs>
   arrangementsRequested?: boolean | Prisma.OrganizationMembership$arrangementsRequestedArgs<ExtArgs>
   delinquencyNotifications?: boolean | Prisma.OrganizationMembership$delinquencyNotificationsArgs<ExtArgs>
+  repaymentAgentMandates?: boolean | Prisma.OrganizationMembership$repaymentAgentMandatesArgs<ExtArgs>
+  repaymentAgentRuns?: boolean | Prisma.OrganizationMembership$repaymentAgentRunsArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationMembershipCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type OrganizationMembershipIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -5625,6 +6233,8 @@ export type $OrganizationMembershipPayload<ExtArgs extends runtime.Types.Extensi
     delinquencyCasesReviewed: Prisma.$DelinquencyCasePayload<ExtArgs>[]
     arrangementsRequested: Prisma.$DelinquencyCasePayload<ExtArgs>[]
     delinquencyNotifications: Prisma.$DelinquencyNotificationPayload<ExtArgs>[]
+    repaymentAgentMandates: Prisma.$RepaymentAgentMandatePayload<ExtArgs>[]
+    repaymentAgentRuns: Prisma.$RepaymentAgentRunPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -6059,6 +6669,8 @@ export interface Prisma__OrganizationMembershipClient<T, Null = never, ExtArgs e
   delinquencyCasesReviewed<T extends Prisma.OrganizationMembership$delinquencyCasesReviewedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationMembership$delinquencyCasesReviewedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DelinquencyCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   arrangementsRequested<T extends Prisma.OrganizationMembership$arrangementsRequestedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationMembership$arrangementsRequestedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DelinquencyCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   delinquencyNotifications<T extends Prisma.OrganizationMembership$delinquencyNotificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationMembership$delinquencyNotificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DelinquencyNotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  repaymentAgentMandates<T extends Prisma.OrganizationMembership$repaymentAgentMandatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationMembership$repaymentAgentMandatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RepaymentAgentMandatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  repaymentAgentRuns<T extends Prisma.OrganizationMembership$repaymentAgentRunsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationMembership$repaymentAgentRunsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RepaymentAgentRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7023,6 +7635,54 @@ export type OrganizationMembership$delinquencyNotificationsArgs<ExtArgs extends 
   take?: number
   skip?: number
   distinct?: Prisma.DelinquencyNotificationScalarFieldEnum | Prisma.DelinquencyNotificationScalarFieldEnum[]
+}
+
+/**
+ * OrganizationMembership.repaymentAgentMandates
+ */
+export type OrganizationMembership$repaymentAgentMandatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RepaymentAgentMandate
+   */
+  select?: Prisma.RepaymentAgentMandateSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RepaymentAgentMandate
+   */
+  omit?: Prisma.RepaymentAgentMandateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RepaymentAgentMandateInclude<ExtArgs> | null
+  where?: Prisma.RepaymentAgentMandateWhereInput
+  orderBy?: Prisma.RepaymentAgentMandateOrderByWithRelationInput | Prisma.RepaymentAgentMandateOrderByWithRelationInput[]
+  cursor?: Prisma.RepaymentAgentMandateWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RepaymentAgentMandateScalarFieldEnum | Prisma.RepaymentAgentMandateScalarFieldEnum[]
+}
+
+/**
+ * OrganizationMembership.repaymentAgentRuns
+ */
+export type OrganizationMembership$repaymentAgentRunsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RepaymentAgentRun
+   */
+  select?: Prisma.RepaymentAgentRunSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RepaymentAgentRun
+   */
+  omit?: Prisma.RepaymentAgentRunOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RepaymentAgentRunInclude<ExtArgs> | null
+  where?: Prisma.RepaymentAgentRunWhereInput
+  orderBy?: Prisma.RepaymentAgentRunOrderByWithRelationInput | Prisma.RepaymentAgentRunOrderByWithRelationInput[]
+  cursor?: Prisma.RepaymentAgentRunWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RepaymentAgentRunScalarFieldEnum | Prisma.RepaymentAgentRunScalarFieldEnum[]
 }
 
 /**

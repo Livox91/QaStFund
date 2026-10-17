@@ -207,3 +207,25 @@ export type OperationalJobHeartbeat = Prisma.OperationalJobHeartbeatModel
  * 
  */
 export type RateLimitBucket = Prisma.RateLimitBucketModel
+/**
+ * Model RepaymentAgentMandate
+ * Borrower-granted on-chain repayment mandate (EmployeeLendingEscrowV3).
+ * The chain is authoritative; this row records who granted what and when.
+ */
+export type RepaymentAgentMandate = Prisma.RepaymentAgentMandateModel
+/**
+ * Model RepaymentAgentRun
+ * One observe → reason → validate → act → verify → adapt cycle.
+ */
+export type RepaymentAgentRun = Prisma.RepaymentAgentRunModel
+/**
+ * Model RepaymentAgentStep
+ * Append-only activity log: every observation, tool call, policy check,
+ * action, verification and adaptation, in order.
+ */
+export type RepaymentAgentStep = Prisma.RepaymentAgentStepModel
+/**
+ * Model RepaymentAgentAction
+ * 
+ */
+export type RepaymentAgentAction = Prisma.RepaymentAgentActionModel

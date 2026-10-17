@@ -109,6 +109,7 @@ for (const path of [
   "/api/internal/arc-reconciliation",
   "/api/internal/erpnext-sync",
   "/api/internal/repayment-operations",
+  "/api/internal/repayment-agent",
 ]) {
   const response = await request(
     `internal-denied-${path.split("/").at(-1)}`,

@@ -1,6 +1,28 @@
 const DEFAULT_ENDPOINT = "http://app:3000/api/internal/arc-reconciliation";
 const DEFAULT_ERPNEXT_ENDPOINT = "http://app:3000/api/internal/erpnext-sync";
 
+// Optional jobs, each enabled only when its bearer secret is configured.
+const PERIODIC_JOBS = [
+  {
+    name: "repayment_operations",
+    label: "Repayment operations",
+    secretKey: "REPAYMENT_OPERATIONS_CRON_SECRET",
+    intervalKey: "REPAYMENT_OPERATIONS_INTERVAL_MINUTES",
+    urlKey: "REPAYMENT_OPERATIONS_SCHEDULER_URL",
+    defaultUrl: "http://app:3000/api/internal/repayment-operations",
+    defaultMinutes: 60,
+  },
+  {
+    name: "repayment_agent",
+    label: "Repayment agent",
+    secretKey: "REPAYMENT_AGENT_CRON_SECRET",
+    intervalKey: "REPAYMENT_AGENT_INTERVAL_MINUTES",
+    urlKey: "REPAYMENT_AGENT_SCHEDULER_URL",
+    defaultUrl: "http://app:3000/api/internal/repayment-agent",
+    defaultMinutes: 60,
+  },
+];
+
 export function parseSchedulerConfig(environment = process.env) {
   const secret = environment.ARC_RECONCILIATION_CRON_SECRET;
   if (!secret || secret.length < 32) {
@@ -52,7 +74,27 @@ export function parseSchedulerConfig(environment = process.env) {
       "ERP_NEXT_SYNC_INTERVAL_MINUTES must be an integer from 5 to 10080",
     );
   }
+  const periodicJobs = [];
+  for (const job of PERIODIC_JOBS) {
+    const jobSecret = environment[job.secretKey];
+    if (!jobSecret) continue;
+    if (jobSecret.length < 32) {
+      throw new Error(`${job.secretKey} must contain at least 32 characters`);
+    }
+    const minutes = Number(environment[job.intervalKey] ?? job.defaultMinutes);
+    if (!Number.isInteger(minutes) || minutes < 5 || minutes > 1440) {
+      throw new Error(`${job.intervalKey} must be an integer from 5 to 1440`);
+    }
+    periodicJobs.push({
+      name: job.name,
+      label: job.label,
+      secret: jobSecret,
+      intervalMs: minutes * 60_000,
+      endpoint: environment[job.urlKey] ?? job.defaultUrl,
+    });
+  }
   return {
+    periodicJobs,
     secret,
     intervalMs: intervalSeconds * 1_000,
     failureThreshold,
@@ -78,7 +120,11 @@ async function deliverSchedulerAlert(
   alert = "arc_reconciliation_scheduler",
 ) {
   const subsystem =
-    alert === "erpnext_scheduler" ? "erpnext" : "reconciliation";
+    alert === "erpnext_scheduler"
+      ? "erpnext"
+      : alert.startsWith("repayment_")
+        ? "repayments"
+        : "reconciliation";
   const envelope = {
     alert,
     severity: "CRITICAL",
@@ -88,7 +134,9 @@ async function deliverSchedulerAlert(
     remediation:
       subsystem === "erpnext"
         ? "Inspect the scheduler and safe ERPNext sync result, then retry one controlled synchronization."
-        : "Inspect the scheduler and persisted reconciliation cursor, then resume bounded catch-up.",
+        : subsystem === "repayments"
+          ? "Inspect the scheduler and the job's safe result and operational heartbeat, then retry one run."
+          : "Inspect the scheduler and persisted reconciliation cursor, then resume bounded catch-up.",
     ...payload,
   };
   if (!config.webhookUrl) {
@@ -205,6 +253,73 @@ export async function runErpNextSchedulerIteration(
   }
 }
 
+export async function runPeriodicJobIteration(
+  config,
+  job,
+  state,
+  fetchImplementation = fetch,
+) {
+  try {
+    const response = await fetchImplementation(job.endpoint, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${job.secret}` },
+      signal: AbortSignal.timeout(300_000),
+    });
+    if (!response.ok) {
+      throw new Error(`${job.label} endpoint returned ${response.status}`);
+    }
+    console.info(
+      JSON.stringify({
+        message: `${job.label} scheduler run completed`,
+        result: await response.json().catch(() => null),
+      }),
+    );
+    if (state.alertActive) {
+      await deliverSchedulerAlert(
+        config,
+        {
+          event: "RECOVERED",
+          consecutiveFailures: 0,
+          detail: `${job.label} recovered.`,
+        },
+        fetchImplementation,
+        job.name,
+      );
+    }
+    state.consecutiveFailures = 0;
+    state.alertActive = false;
+  } catch (error) {
+    state.consecutiveFailures += 1;
+    console.error(
+      JSON.stringify({
+        message: `${job.label} scheduler run failed`,
+        consecutiveFailures: state.consecutiveFailures,
+        error: error instanceof Error ? error.message : "Unknown error",
+      }),
+    );
+    if (
+      !state.alertActive &&
+      state.consecutiveFailures >= config.failureThreshold
+    ) {
+      try {
+        await deliverSchedulerAlert(
+          config,
+          {
+            event: "ACTIVE",
+            consecutiveFailures: state.consecutiveFailures,
+            detail: `${job.label} is failing.`,
+          },
+          fetchImplementation,
+          job.name,
+        );
+        state.alertActive = true;
+      } catch {
+        // Alert delivery failure is logged by the next iteration's failure.
+      }
+    }
+  }
+}
+
 export async function runSchedulerIteration(
   config,
   state,
@@ -287,6 +402,12 @@ export async function runScheduler(environment = process.env) {
   const state = { consecutiveFailures: 0, alertActive: false };
   const erpNextState = { consecutiveFailures: 0, alertActive: false };
   let nextErpNextRunAt = 0;
+  const periodicStates = new Map(
+    config.periodicJobs.map((job) => [
+      job.name,
+      { consecutiveFailures: 0, alertActive: false, nextRunAt: 0 },
+    ]),
+  );
   let stopping = false;
   process.once("SIGTERM", () => {
     stopping = true;
@@ -299,6 +420,12 @@ export async function runScheduler(environment = process.env) {
     if (config.erpNext && Date.now() >= nextErpNextRunAt) {
       await runErpNextSchedulerIteration(config, erpNextState);
       nextErpNextRunAt = Date.now() + config.erpNext.intervalMs;
+    }
+    for (const job of config.periodicJobs) {
+      const jobState = periodicStates.get(job.name);
+      if (Date.now() < jobState.nextRunAt) continue;
+      await runPeriodicJobIteration(config, job, jobState);
+      jobState.nextRunAt = Date.now() + job.intervalMs;
     }
     if (stopping) break;
     await new Promise((resolve) => setTimeout(resolve, config.intervalMs));

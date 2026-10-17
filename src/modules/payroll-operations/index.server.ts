@@ -422,6 +422,16 @@ export async function reconcilePayrollDeduction(
         404,
       );
     if (proposal.repayment) return proposal;
+    // An Arc-backed loan is settled only by verified on-chain repayment. An
+    // off-chain payroll record here would mark the loan repaid while the
+    // escrow still holds it active and the lender received no USDC.
+    if (proposal.loan.chainLoanId !== null) {
+      throw new ApplicationError(
+        "ON_CHAIN_LOAN_REQUIRES_ON_CHAIN_REPAYMENT",
+        "This loan is held on Arc and can only be repaid on-chain.",
+        409,
+      );
+    }
     if (
       !proposal.reviewedAt ||
       proposal.authorizationStatus !== "AUTHORIZED" ||

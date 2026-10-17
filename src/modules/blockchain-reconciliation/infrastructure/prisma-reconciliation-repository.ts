@@ -495,14 +495,26 @@ async function applyLoanRepaid(
       now,
     );
   }
-  const repayment = await transaction.loanRepayment.findFirst({
-    where: {
-      organizationId: loan.organizationId,
-      loanId: loan.id,
-      status: loan.status === "REPAID" ? "COMPLETED" : "PENDING",
-    },
-    select: { id: true, submissionTransactionHash: true },
-  });
+  // A loan can have several repayments (partial agent payments), so prefer the
+  // one bound to this exact transaction before falling back to any open intent.
+  const repayment =
+    (await transaction.loanRepayment.findFirst({
+      where: {
+        organizationId: loan.organizationId,
+        loanId: loan.id,
+        submissionTransactionHash: event.transactionHash.toLowerCase(),
+        status: { in: ["PENDING", "COMPLETED"] },
+      },
+      select: { id: true, submissionTransactionHash: true },
+    })) ??
+    (await transaction.loanRepayment.findFirst({
+      where: {
+        organizationId: loan.organizationId,
+        loanId: loan.id,
+        status: loan.status === "REPAID" ? "COMPLETED" : "PENDING",
+      },
+      select: { id: true, submissionTransactionHash: true },
+    }));
   if (!repayment) {
     return resolveEvent(
       transaction,

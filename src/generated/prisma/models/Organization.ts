@@ -228,6 +228,8 @@ export type OrganizationWhereInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalListRelationFilter
   delinquencyCases?: Prisma.DelinquencyCaseListRelationFilter
   delinquencyNotifications?: Prisma.DelinquencyNotificationListRelationFilter
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateListRelationFilter
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunListRelationFilter
 }
 
 export type OrganizationOrderByWithRelationInput = {
@@ -268,6 +270,8 @@ export type OrganizationOrderByWithRelationInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalOrderByRelationAggregateInput
   delinquencyCases?: Prisma.DelinquencyCaseOrderByRelationAggregateInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationOrderByRelationAggregateInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateOrderByRelationAggregateInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunOrderByRelationAggregateInput
 }
 
 export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
@@ -311,6 +315,8 @@ export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalListRelationFilter
   delinquencyCases?: Prisma.DelinquencyCaseListRelationFilter
   delinquencyNotifications?: Prisma.DelinquencyNotificationListRelationFilter
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateListRelationFilter
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunListRelationFilter
 }, "id" | "slug">
 
 export type OrganizationOrderByWithAggregationInput = {
@@ -377,6 +383,8 @@ export type OrganizationCreateInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateInput = {
@@ -417,6 +425,8 @@ export type OrganizationUncheckedCreateInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUpdateInput = {
@@ -457,6 +467,8 @@ export type OrganizationUpdateInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateInput = {
@@ -497,6 +509,8 @@ export type OrganizationUncheckedUpdateInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateManyInput = {
@@ -995,6 +1009,34 @@ export type OrganizationUpdateOneWithoutOperationalIncidentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutOperationalIncidentsInput, Prisma.OrganizationUpdateWithoutOperationalIncidentsInput>, Prisma.OrganizationUncheckedUpdateWithoutOperationalIncidentsInput>
 }
 
+export type OrganizationCreateNestedOneWithoutRepaymentAgentMandatesInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutRepaymentAgentMandatesInput, Prisma.OrganizationUncheckedCreateWithoutRepaymentAgentMandatesInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutRepaymentAgentMandatesInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutRepaymentAgentMandatesNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutRepaymentAgentMandatesInput, Prisma.OrganizationUncheckedCreateWithoutRepaymentAgentMandatesInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutRepaymentAgentMandatesInput
+  upsert?: Prisma.OrganizationUpsertWithoutRepaymentAgentMandatesInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutRepaymentAgentMandatesInput, Prisma.OrganizationUpdateWithoutRepaymentAgentMandatesInput>, Prisma.OrganizationUncheckedUpdateWithoutRepaymentAgentMandatesInput>
+}
+
+export type OrganizationCreateNestedOneWithoutRepaymentAgentRunsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutRepaymentAgentRunsInput, Prisma.OrganizationUncheckedCreateWithoutRepaymentAgentRunsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutRepaymentAgentRunsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutRepaymentAgentRunsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutRepaymentAgentRunsInput, Prisma.OrganizationUncheckedCreateWithoutRepaymentAgentRunsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutRepaymentAgentRunsInput
+  upsert?: Prisma.OrganizationUpsertWithoutRepaymentAgentRunsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutRepaymentAgentRunsInput, Prisma.OrganizationUpdateWithoutRepaymentAgentRunsInput>, Prisma.OrganizationUncheckedUpdateWithoutRepaymentAgentRunsInput>
+}
+
 export type OrganizationCreateWithoutArcUsdcTransfersInput = {
   id?: string
   name: string
@@ -1032,6 +1074,8 @@ export type OrganizationCreateWithoutArcUsdcTransfersInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutArcUsdcTransfersInput = {
@@ -1071,6 +1115,8 @@ export type OrganizationUncheckedCreateWithoutArcUsdcTransfersInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutArcUsdcTransfersInput = {
@@ -1126,6 +1172,8 @@ export type OrganizationUpdateWithoutArcUsdcTransfersInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutArcUsdcTransfersInput = {
@@ -1165,6 +1213,8 @@ export type OrganizationUncheckedUpdateWithoutArcUsdcTransfersInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutArcWalletChallengesInput = {
@@ -1204,6 +1254,8 @@ export type OrganizationCreateWithoutArcWalletChallengesInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutArcWalletChallengesInput = {
@@ -1243,6 +1295,8 @@ export type OrganizationUncheckedCreateWithoutArcWalletChallengesInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutArcWalletChallengesInput = {
@@ -1298,6 +1352,8 @@ export type OrganizationUpdateWithoutArcWalletChallengesInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutArcWalletChallengesInput = {
@@ -1337,6 +1393,8 @@ export type OrganizationUncheckedUpdateWithoutArcWalletChallengesInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutMembershipsInput = {
@@ -1376,6 +1434,8 @@ export type OrganizationCreateWithoutMembershipsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutMembershipsInput = {
@@ -1415,6 +1475,8 @@ export type OrganizationUncheckedCreateWithoutMembershipsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutMembershipsInput = {
@@ -1470,6 +1532,8 @@ export type OrganizationUpdateWithoutMembershipsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutMembershipsInput = {
@@ -1509,6 +1573,8 @@ export type OrganizationUncheckedUpdateWithoutMembershipsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeeInvitationsInput = {
@@ -1548,6 +1614,8 @@ export type OrganizationCreateWithoutEmployeeInvitationsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeeInvitationsInput = {
@@ -1587,6 +1655,8 @@ export type OrganizationUncheckedCreateWithoutEmployeeInvitationsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeeInvitationsInput = {
@@ -1642,6 +1712,8 @@ export type OrganizationUpdateWithoutEmployeeInvitationsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeeInvitationsInput = {
@@ -1681,6 +1753,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeeInvitationsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutPasswordResetTokensInput = {
@@ -1720,6 +1794,8 @@ export type OrganizationCreateWithoutPasswordResetTokensInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutPasswordResetTokensInput = {
@@ -1759,6 +1835,8 @@ export type OrganizationUncheckedCreateWithoutPasswordResetTokensInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutPasswordResetTokensInput = {
@@ -1814,6 +1892,8 @@ export type OrganizationUpdateWithoutPasswordResetTokensInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutPasswordResetTokensInput = {
@@ -1853,6 +1933,8 @@ export type OrganizationUncheckedUpdateWithoutPasswordResetTokensInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeeDirectoryIntegrationInput = {
@@ -1892,6 +1974,8 @@ export type OrganizationCreateWithoutEmployeeDirectoryIntegrationInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeeDirectoryIntegrationInput = {
@@ -1931,6 +2015,8 @@ export type OrganizationUncheckedCreateWithoutEmployeeDirectoryIntegrationInput 
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeeDirectoryIntegrationInput = {
@@ -1986,6 +2072,8 @@ export type OrganizationUpdateWithoutEmployeeDirectoryIntegrationInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeeDirectoryIntegrationInput = {
@@ -2025,6 +2113,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeeDirectoryIntegrationInput 
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeeDirectorySecretsInput = {
@@ -2064,6 +2154,8 @@ export type OrganizationCreateWithoutEmployeeDirectorySecretsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeeDirectorySecretsInput = {
@@ -2103,6 +2195,8 @@ export type OrganizationUncheckedCreateWithoutEmployeeDirectorySecretsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeeDirectorySecretsInput = {
@@ -2158,6 +2252,8 @@ export type OrganizationUpdateWithoutEmployeeDirectorySecretsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeeDirectorySecretsInput = {
@@ -2197,6 +2293,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeeDirectorySecretsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeeDirectoryMappingsInput = {
@@ -2236,6 +2334,8 @@ export type OrganizationCreateWithoutEmployeeDirectoryMappingsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeeDirectoryMappingsInput = {
@@ -2275,6 +2375,8 @@ export type OrganizationUncheckedCreateWithoutEmployeeDirectoryMappingsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeeDirectoryMappingsInput = {
@@ -2330,6 +2432,8 @@ export type OrganizationUpdateWithoutEmployeeDirectoryMappingsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeeDirectoryMappingsInput = {
@@ -2369,6 +2473,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeeDirectoryMappingsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeeDirectorySyncRunsInput = {
@@ -2408,6 +2514,8 @@ export type OrganizationCreateWithoutEmployeeDirectorySyncRunsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeeDirectorySyncRunsInput = {
@@ -2447,6 +2555,8 @@ export type OrganizationUncheckedCreateWithoutEmployeeDirectorySyncRunsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeeDirectorySyncRunsInput = {
@@ -2502,6 +2612,8 @@ export type OrganizationUpdateWithoutEmployeeDirectorySyncRunsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeeDirectorySyncRunsInput = {
@@ -2541,6 +2653,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeeDirectorySyncRunsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutLendingOffersInput = {
@@ -2580,6 +2694,8 @@ export type OrganizationCreateWithoutLendingOffersInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutLendingOffersInput = {
@@ -2619,6 +2735,8 @@ export type OrganizationUncheckedCreateWithoutLendingOffersInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutLendingOffersInput = {
@@ -2674,6 +2792,8 @@ export type OrganizationUpdateWithoutLendingOffersInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutLendingOffersInput = {
@@ -2713,6 +2833,8 @@ export type OrganizationUncheckedUpdateWithoutLendingOffersInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutBalancesInput = {
@@ -2752,6 +2874,8 @@ export type OrganizationCreateWithoutBalancesInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutBalancesInput = {
@@ -2791,6 +2915,8 @@ export type OrganizationUncheckedCreateWithoutBalancesInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutBalancesInput = {
@@ -2846,6 +2972,8 @@ export type OrganizationUpdateWithoutBalancesInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutBalancesInput = {
@@ -2885,6 +3013,8 @@ export type OrganizationUncheckedUpdateWithoutBalancesInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutLoansInput = {
@@ -2924,6 +3054,8 @@ export type OrganizationCreateWithoutLoansInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutLoansInput = {
@@ -2963,6 +3095,8 @@ export type OrganizationUncheckedCreateWithoutLoansInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutLoansInput = {
@@ -3018,6 +3152,8 @@ export type OrganizationUpdateWithoutLoansInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutLoansInput = {
@@ -3057,6 +3193,8 @@ export type OrganizationUncheckedUpdateWithoutLoansInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutLoanDecisionEvaluationsInput = {
@@ -3096,6 +3234,8 @@ export type OrganizationCreateWithoutLoanDecisionEvaluationsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutLoanDecisionEvaluationsInput = {
@@ -3135,6 +3275,8 @@ export type OrganizationUncheckedCreateWithoutLoanDecisionEvaluationsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutLoanDecisionEvaluationsInput = {
@@ -3190,6 +3332,8 @@ export type OrganizationUpdateWithoutLoanDecisionEvaluationsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutLoanDecisionEvaluationsInput = {
@@ -3229,6 +3373,8 @@ export type OrganizationUncheckedUpdateWithoutLoanDecisionEvaluationsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutLoanDecisionReviewsInput = {
@@ -3268,6 +3414,8 @@ export type OrganizationCreateWithoutLoanDecisionReviewsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutLoanDecisionReviewsInput = {
@@ -3307,6 +3455,8 @@ export type OrganizationUncheckedCreateWithoutLoanDecisionReviewsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutLoanDecisionReviewsInput = {
@@ -3362,6 +3512,8 @@ export type OrganizationUpdateWithoutLoanDecisionReviewsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutLoanDecisionReviewsInput = {
@@ -3401,6 +3553,8 @@ export type OrganizationUncheckedUpdateWithoutLoanDecisionReviewsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutLoanOriginationDecisionsInput = {
@@ -3440,6 +3594,8 @@ export type OrganizationCreateWithoutLoanOriginationDecisionsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutLoanOriginationDecisionsInput = {
@@ -3479,6 +3635,8 @@ export type OrganizationUncheckedCreateWithoutLoanOriginationDecisionsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutLoanOriginationDecisionsInput = {
@@ -3534,6 +3692,8 @@ export type OrganizationUpdateWithoutLoanOriginationDecisionsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutLoanOriginationDecisionsInput = {
@@ -3573,6 +3733,8 @@ export type OrganizationUncheckedUpdateWithoutLoanOriginationDecisionsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutLoanOriginationOverridesInput = {
@@ -3612,6 +3774,8 @@ export type OrganizationCreateWithoutLoanOriginationOverridesInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutLoanOriginationOverridesInput = {
@@ -3651,6 +3815,8 @@ export type OrganizationUncheckedCreateWithoutLoanOriginationOverridesInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutLoanOriginationOverridesInput = {
@@ -3706,6 +3872,8 @@ export type OrganizationUpdateWithoutLoanOriginationOverridesInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutLoanOriginationOverridesInput = {
@@ -3745,6 +3913,8 @@ export type OrganizationUncheckedUpdateWithoutLoanOriginationOverridesInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployerActionAttemptsInput = {
@@ -3784,6 +3954,8 @@ export type OrganizationCreateWithoutEmployerActionAttemptsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployerActionAttemptsInput = {
@@ -3823,6 +3995,8 @@ export type OrganizationUncheckedCreateWithoutEmployerActionAttemptsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployerActionAttemptsInput = {
@@ -3878,6 +4052,8 @@ export type OrganizationUpdateWithoutEmployerActionAttemptsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployerActionAttemptsInput = {
@@ -3917,6 +4093,8 @@ export type OrganizationUncheckedUpdateWithoutEmployerActionAttemptsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutLedgerAccountsInput = {
@@ -3956,6 +4134,8 @@ export type OrganizationCreateWithoutLedgerAccountsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutLedgerAccountsInput = {
@@ -3995,6 +4175,8 @@ export type OrganizationUncheckedCreateWithoutLedgerAccountsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutLedgerAccountsInput = {
@@ -4050,6 +4232,8 @@ export type OrganizationUpdateWithoutLedgerAccountsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutLedgerAccountsInput = {
@@ -4089,6 +4273,8 @@ export type OrganizationUncheckedUpdateWithoutLedgerAccountsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutLedgerTransactionsInput = {
@@ -4128,6 +4314,8 @@ export type OrganizationCreateWithoutLedgerTransactionsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutLedgerTransactionsInput = {
@@ -4167,6 +4355,8 @@ export type OrganizationUncheckedCreateWithoutLedgerTransactionsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutLedgerTransactionsInput = {
@@ -4222,6 +4412,8 @@ export type OrganizationUpdateWithoutLedgerTransactionsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutLedgerTransactionsInput = {
@@ -4261,6 +4453,8 @@ export type OrganizationUncheckedUpdateWithoutLedgerTransactionsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutLedgerEntriesInput = {
@@ -4300,6 +4494,8 @@ export type OrganizationCreateWithoutLedgerEntriesInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutLedgerEntriesInput = {
@@ -4339,6 +4535,8 @@ export type OrganizationUncheckedCreateWithoutLedgerEntriesInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutLedgerEntriesInput = {
@@ -4394,6 +4592,8 @@ export type OrganizationUpdateWithoutLedgerEntriesInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutLedgerEntriesInput = {
@@ -4433,6 +4633,8 @@ export type OrganizationUncheckedUpdateWithoutLedgerEntriesInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutRepaymentsInput = {
@@ -4472,6 +4674,8 @@ export type OrganizationCreateWithoutRepaymentsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutRepaymentsInput = {
@@ -4511,6 +4715,8 @@ export type OrganizationUncheckedCreateWithoutRepaymentsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutRepaymentsInput = {
@@ -4566,6 +4772,8 @@ export type OrganizationUpdateWithoutRepaymentsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutRepaymentsInput = {
@@ -4605,6 +4813,8 @@ export type OrganizationUncheckedUpdateWithoutRepaymentsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutRepaymentPlansInput = {
@@ -4644,6 +4854,8 @@ export type OrganizationCreateWithoutRepaymentPlansInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutRepaymentPlansInput = {
@@ -4683,6 +4895,8 @@ export type OrganizationUncheckedCreateWithoutRepaymentPlansInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutRepaymentPlansInput = {
@@ -4738,6 +4952,8 @@ export type OrganizationUpdateWithoutRepaymentPlansInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutRepaymentPlansInput = {
@@ -4777,6 +4993,8 @@ export type OrganizationUncheckedUpdateWithoutRepaymentPlansInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutLoanInstallmentsInput = {
@@ -4816,6 +5034,8 @@ export type OrganizationCreateWithoutLoanInstallmentsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutLoanInstallmentsInput = {
@@ -4855,6 +5075,8 @@ export type OrganizationUncheckedCreateWithoutLoanInstallmentsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutLoanInstallmentsInput = {
@@ -4910,6 +5132,8 @@ export type OrganizationUpdateWithoutLoanInstallmentsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutLoanInstallmentsInput = {
@@ -4949,6 +5173,8 @@ export type OrganizationUncheckedUpdateWithoutLoanInstallmentsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutRepaymentAllocationsInput = {
@@ -4988,6 +5214,8 @@ export type OrganizationCreateWithoutRepaymentAllocationsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutRepaymentAllocationsInput = {
@@ -5027,6 +5255,8 @@ export type OrganizationUncheckedCreateWithoutRepaymentAllocationsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutRepaymentAllocationsInput = {
@@ -5082,6 +5312,8 @@ export type OrganizationUpdateWithoutRepaymentAllocationsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutRepaymentAllocationsInput = {
@@ -5121,6 +5353,8 @@ export type OrganizationUncheckedUpdateWithoutRepaymentAllocationsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutPayrollDeductionProposalsInput = {
@@ -5160,6 +5394,8 @@ export type OrganizationCreateWithoutPayrollDeductionProposalsInput = {
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutPayrollDeductionProposalsInput = {
@@ -5199,6 +5435,8 @@ export type OrganizationUncheckedCreateWithoutPayrollDeductionProposalsInput = {
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutPayrollDeductionProposalsInput = {
@@ -5254,6 +5492,8 @@ export type OrganizationUpdateWithoutPayrollDeductionProposalsInput = {
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutPayrollDeductionProposalsInput = {
@@ -5293,6 +5533,8 @@ export type OrganizationUncheckedUpdateWithoutPayrollDeductionProposalsInput = {
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutDelinquencyCasesInput = {
@@ -5332,6 +5574,8 @@ export type OrganizationCreateWithoutDelinquencyCasesInput = {
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutDelinquencyCasesInput = {
@@ -5371,6 +5615,8 @@ export type OrganizationUncheckedCreateWithoutDelinquencyCasesInput = {
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutDelinquencyCasesInput = {
@@ -5426,6 +5672,8 @@ export type OrganizationUpdateWithoutDelinquencyCasesInput = {
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutDelinquencyCasesInput = {
@@ -5465,6 +5713,8 @@ export type OrganizationUncheckedUpdateWithoutDelinquencyCasesInput = {
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutDelinquencyNotificationsInput = {
@@ -5504,6 +5754,8 @@ export type OrganizationCreateWithoutDelinquencyNotificationsInput = {
   repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutDelinquencyNotificationsInput = {
@@ -5543,6 +5795,8 @@ export type OrganizationUncheckedCreateWithoutDelinquencyNotificationsInput = {
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutDelinquencyNotificationsInput = {
@@ -5598,6 +5852,8 @@ export type OrganizationUpdateWithoutDelinquencyNotificationsInput = {
   repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutDelinquencyNotificationsInput = {
@@ -5637,6 +5893,8 @@ export type OrganizationUncheckedUpdateWithoutDelinquencyNotificationsInput = {
   repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutAuditEventsInput = {
@@ -5676,6 +5934,8 @@ export type OrganizationCreateWithoutAuditEventsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutAuditEventsInput = {
@@ -5715,6 +5975,8 @@ export type OrganizationUncheckedCreateWithoutAuditEventsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutAuditEventsInput = {
@@ -5770,6 +6032,8 @@ export type OrganizationUpdateWithoutAuditEventsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutAuditEventsInput = {
@@ -5809,6 +6073,8 @@ export type OrganizationUncheckedUpdateWithoutAuditEventsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutLendingPolicyInput = {
@@ -5848,6 +6114,8 @@ export type OrganizationCreateWithoutLendingPolicyInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutLendingPolicyInput = {
@@ -5887,6 +6155,8 @@ export type OrganizationUncheckedCreateWithoutLendingPolicyInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutLendingPolicyInput = {
@@ -5942,6 +6212,8 @@ export type OrganizationUpdateWithoutLendingPolicyInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutLendingPolicyInput = {
@@ -5981,6 +6253,8 @@ export type OrganizationUncheckedUpdateWithoutLendingPolicyInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutOperationalIncidentsInput = {
@@ -6020,6 +6294,8 @@ export type OrganizationCreateWithoutOperationalIncidentsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutOperationalIncidentsInput = {
@@ -6059,6 +6335,8 @@ export type OrganizationUncheckedCreateWithoutOperationalIncidentsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutOperationalIncidentsInput = {
@@ -6114,6 +6392,8 @@ export type OrganizationUpdateWithoutOperationalIncidentsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutOperationalIncidentsInput = {
@@ -6153,6 +6433,368 @@ export type OrganizationUncheckedUpdateWithoutOperationalIncidentsInput = {
   payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutRepaymentAgentMandatesInput = {
+  id?: string
+  name: string
+  slug: string
+  currency?: string
+  erpNextEnabled?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.OrganizationMembershipCreateNestedManyWithoutOrganizationInput
+  lendingOffers?: Prisma.LendingOfferCreateNestedManyWithoutOrganizationInput
+  loans?: Prisma.LoanCreateNestedManyWithoutOrganizationInput
+  repayments?: Prisma.LoanRepaymentCreateNestedManyWithoutOrganizationInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  balances?: Prisma.EmployeeBalanceCreateNestedManyWithoutOrganizationInput
+  ledgerAccounts?: Prisma.LedgerAccountCreateNestedManyWithoutOrganizationInput
+  ledgerTransactions?: Prisma.LedgerTransactionCreateNestedManyWithoutOrganizationInput
+  ledgerEntries?: Prisma.LedgerEntryCreateNestedManyWithoutOrganizationInput
+  lendingPolicy?: Prisma.OrganizationLendingPolicyCreateNestedOneWithoutOrganizationInput
+  arcWalletChallenges?: Prisma.ArcWalletChallengeCreateNestedManyWithoutOrganizationInput
+  loanDecisionEvaluations?: Prisma.LoanDecisionEvaluationCreateNestedManyWithoutOrganizationInput
+  loanDecisionReviews?: Prisma.LoanDecisionReviewCreateNestedManyWithoutOrganizationInput
+  loanOriginationDecisions?: Prisma.LoanOriginationDecisionCreateNestedManyWithoutOrganizationInput
+  loanOriginationOverrides?: Prisma.LoanOriginationOverrideCreateNestedManyWithoutOrganizationInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptCreateNestedManyWithoutOrganizationInput
+  employeeDirectoryIntegration?: Prisma.EmployeeDirectoryIntegrationCreateNestedOneWithoutOrganizationInput
+  employeeDirectorySecrets?: Prisma.EmployeeDirectoryCredentialSecretCreateNestedManyWithoutOrganizationInput
+  employeeDirectoryMappings?: Prisma.EmployeeDirectoryMappingCreateNestedManyWithoutOrganizationInput
+  employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunCreateNestedManyWithoutOrganizationInput
+  employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
+  operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
+  repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
+  loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
+  repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
+  payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
+  delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
+  delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutRepaymentAgentMandatesInput = {
+  id?: string
+  name: string
+  slug: string
+  currency?: string
+  erpNextEnabled?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput
+  lendingOffers?: Prisma.LendingOfferUncheckedCreateNestedManyWithoutOrganizationInput
+  loans?: Prisma.LoanUncheckedCreateNestedManyWithoutOrganizationInput
+  repayments?: Prisma.LoanRepaymentUncheckedCreateNestedManyWithoutOrganizationInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  balances?: Prisma.EmployeeBalanceUncheckedCreateNestedManyWithoutOrganizationInput
+  ledgerAccounts?: Prisma.LedgerAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  ledgerTransactions?: Prisma.LedgerTransactionUncheckedCreateNestedManyWithoutOrganizationInput
+  ledgerEntries?: Prisma.LedgerEntryUncheckedCreateNestedManyWithoutOrganizationInput
+  lendingPolicy?: Prisma.OrganizationLendingPolicyUncheckedCreateNestedOneWithoutOrganizationInput
+  arcWalletChallenges?: Prisma.ArcWalletChallengeUncheckedCreateNestedManyWithoutOrganizationInput
+  loanDecisionEvaluations?: Prisma.LoanDecisionEvaluationUncheckedCreateNestedManyWithoutOrganizationInput
+  loanDecisionReviews?: Prisma.LoanDecisionReviewUncheckedCreateNestedManyWithoutOrganizationInput
+  loanOriginationDecisions?: Prisma.LoanOriginationDecisionUncheckedCreateNestedManyWithoutOrganizationInput
+  loanOriginationOverrides?: Prisma.LoanOriginationOverrideUncheckedCreateNestedManyWithoutOrganizationInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeDirectoryIntegration?: Prisma.EmployeeDirectoryIntegrationUncheckedCreateNestedOneWithoutOrganizationInput
+  employeeDirectorySecrets?: Prisma.EmployeeDirectoryCredentialSecretUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeDirectoryMappings?: Prisma.EmployeeDirectoryMappingUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
+  operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
+  loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
+  payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
+  delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
+  delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutRepaymentAgentMandatesInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutRepaymentAgentMandatesInput, Prisma.OrganizationUncheckedCreateWithoutRepaymentAgentMandatesInput>
+}
+
+export type OrganizationUpsertWithoutRepaymentAgentMandatesInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutRepaymentAgentMandatesInput, Prisma.OrganizationUncheckedUpdateWithoutRepaymentAgentMandatesInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutRepaymentAgentMandatesInput, Prisma.OrganizationUncheckedCreateWithoutRepaymentAgentMandatesInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutRepaymentAgentMandatesInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutRepaymentAgentMandatesInput, Prisma.OrganizationUncheckedUpdateWithoutRepaymentAgentMandatesInput>
+}
+
+export type OrganizationUpdateWithoutRepaymentAgentMandatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  erpNextEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.OrganizationMembershipUpdateManyWithoutOrganizationNestedInput
+  lendingOffers?: Prisma.LendingOfferUpdateManyWithoutOrganizationNestedInput
+  loans?: Prisma.LoanUpdateManyWithoutOrganizationNestedInput
+  repayments?: Prisma.LoanRepaymentUpdateManyWithoutOrganizationNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  balances?: Prisma.EmployeeBalanceUpdateManyWithoutOrganizationNestedInput
+  ledgerAccounts?: Prisma.LedgerAccountUpdateManyWithoutOrganizationNestedInput
+  ledgerTransactions?: Prisma.LedgerTransactionUpdateManyWithoutOrganizationNestedInput
+  ledgerEntries?: Prisma.LedgerEntryUpdateManyWithoutOrganizationNestedInput
+  lendingPolicy?: Prisma.OrganizationLendingPolicyUpdateOneWithoutOrganizationNestedInput
+  arcWalletChallenges?: Prisma.ArcWalletChallengeUpdateManyWithoutOrganizationNestedInput
+  loanDecisionEvaluations?: Prisma.LoanDecisionEvaluationUpdateManyWithoutOrganizationNestedInput
+  loanDecisionReviews?: Prisma.LoanDecisionReviewUpdateManyWithoutOrganizationNestedInput
+  loanOriginationDecisions?: Prisma.LoanOriginationDecisionUpdateManyWithoutOrganizationNestedInput
+  loanOriginationOverrides?: Prisma.LoanOriginationOverrideUpdateManyWithoutOrganizationNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUpdateManyWithoutOrganizationNestedInput
+  employeeDirectoryIntegration?: Prisma.EmployeeDirectoryIntegrationUpdateOneWithoutOrganizationNestedInput
+  employeeDirectorySecrets?: Prisma.EmployeeDirectoryCredentialSecretUpdateManyWithoutOrganizationNestedInput
+  employeeDirectoryMappings?: Prisma.EmployeeDirectoryMappingUpdateManyWithoutOrganizationNestedInput
+  employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunUpdateManyWithoutOrganizationNestedInput
+  employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
+  operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
+  repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
+  loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
+  repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
+  payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
+  delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
+  delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutRepaymentAgentMandatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  erpNextEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput
+  lendingOffers?: Prisma.LendingOfferUncheckedUpdateManyWithoutOrganizationNestedInput
+  loans?: Prisma.LoanUncheckedUpdateManyWithoutOrganizationNestedInput
+  repayments?: Prisma.LoanRepaymentUncheckedUpdateManyWithoutOrganizationNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  balances?: Prisma.EmployeeBalanceUncheckedUpdateManyWithoutOrganizationNestedInput
+  ledgerAccounts?: Prisma.LedgerAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+  ledgerTransactions?: Prisma.LedgerTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
+  ledgerEntries?: Prisma.LedgerEntryUncheckedUpdateManyWithoutOrganizationNestedInput
+  lendingPolicy?: Prisma.OrganizationLendingPolicyUncheckedUpdateOneWithoutOrganizationNestedInput
+  arcWalletChallenges?: Prisma.ArcWalletChallengeUncheckedUpdateManyWithoutOrganizationNestedInput
+  loanDecisionEvaluations?: Prisma.LoanDecisionEvaluationUncheckedUpdateManyWithoutOrganizationNestedInput
+  loanDecisionReviews?: Prisma.LoanDecisionReviewUncheckedUpdateManyWithoutOrganizationNestedInput
+  loanOriginationDecisions?: Prisma.LoanOriginationDecisionUncheckedUpdateManyWithoutOrganizationNestedInput
+  loanOriginationOverrides?: Prisma.LoanOriginationOverrideUncheckedUpdateManyWithoutOrganizationNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeDirectoryIntegration?: Prisma.EmployeeDirectoryIntegrationUncheckedUpdateOneWithoutOrganizationNestedInput
+  employeeDirectorySecrets?: Prisma.EmployeeDirectoryCredentialSecretUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeDirectoryMappings?: Prisma.EmployeeDirectoryMappingUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
+  operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
+  loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
+  delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
+  delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentRuns?: Prisma.RepaymentAgentRunUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutRepaymentAgentRunsInput = {
+  id?: string
+  name: string
+  slug: string
+  currency?: string
+  erpNextEnabled?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.OrganizationMembershipCreateNestedManyWithoutOrganizationInput
+  lendingOffers?: Prisma.LendingOfferCreateNestedManyWithoutOrganizationInput
+  loans?: Prisma.LoanCreateNestedManyWithoutOrganizationInput
+  repayments?: Prisma.LoanRepaymentCreateNestedManyWithoutOrganizationInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  balances?: Prisma.EmployeeBalanceCreateNestedManyWithoutOrganizationInput
+  ledgerAccounts?: Prisma.LedgerAccountCreateNestedManyWithoutOrganizationInput
+  ledgerTransactions?: Prisma.LedgerTransactionCreateNestedManyWithoutOrganizationInput
+  ledgerEntries?: Prisma.LedgerEntryCreateNestedManyWithoutOrganizationInput
+  lendingPolicy?: Prisma.OrganizationLendingPolicyCreateNestedOneWithoutOrganizationInput
+  arcWalletChallenges?: Prisma.ArcWalletChallengeCreateNestedManyWithoutOrganizationInput
+  loanDecisionEvaluations?: Prisma.LoanDecisionEvaluationCreateNestedManyWithoutOrganizationInput
+  loanDecisionReviews?: Prisma.LoanDecisionReviewCreateNestedManyWithoutOrganizationInput
+  loanOriginationDecisions?: Prisma.LoanOriginationDecisionCreateNestedManyWithoutOrganizationInput
+  loanOriginationOverrides?: Prisma.LoanOriginationOverrideCreateNestedManyWithoutOrganizationInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptCreateNestedManyWithoutOrganizationInput
+  employeeDirectoryIntegration?: Prisma.EmployeeDirectoryIntegrationCreateNestedOneWithoutOrganizationInput
+  employeeDirectorySecrets?: Prisma.EmployeeDirectoryCredentialSecretCreateNestedManyWithoutOrganizationInput
+  employeeDirectoryMappings?: Prisma.EmployeeDirectoryMappingCreateNestedManyWithoutOrganizationInput
+  employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunCreateNestedManyWithoutOrganizationInput
+  employeeInvitations?: Prisma.EmployeeInvitationCreateNestedManyWithoutOrganizationInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutOrganizationInput
+  operationalIncidents?: Prisma.OperationalIncidentCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferCreateNestedManyWithoutOrganizationInput
+  repaymentPlans?: Prisma.LoanRepaymentPlanCreateNestedManyWithoutOrganizationInput
+  loanInstallments?: Prisma.LoanInstallmentCreateNestedManyWithoutOrganizationInput
+  repaymentAllocations?: Prisma.RepaymentAllocationCreateNestedManyWithoutOrganizationInput
+  payrollDeductionProposals?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutOrganizationInput
+  delinquencyCases?: Prisma.DelinquencyCaseCreateNestedManyWithoutOrganizationInput
+  delinquencyNotifications?: Prisma.DelinquencyNotificationCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutRepaymentAgentRunsInput = {
+  id?: string
+  name: string
+  slug: string
+  currency?: string
+  erpNextEnabled?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.OrganizationMembershipUncheckedCreateNestedManyWithoutOrganizationInput
+  lendingOffers?: Prisma.LendingOfferUncheckedCreateNestedManyWithoutOrganizationInput
+  loans?: Prisma.LoanUncheckedCreateNestedManyWithoutOrganizationInput
+  repayments?: Prisma.LoanRepaymentUncheckedCreateNestedManyWithoutOrganizationInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  balances?: Prisma.EmployeeBalanceUncheckedCreateNestedManyWithoutOrganizationInput
+  ledgerAccounts?: Prisma.LedgerAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  ledgerTransactions?: Prisma.LedgerTransactionUncheckedCreateNestedManyWithoutOrganizationInput
+  ledgerEntries?: Prisma.LedgerEntryUncheckedCreateNestedManyWithoutOrganizationInput
+  lendingPolicy?: Prisma.OrganizationLendingPolicyUncheckedCreateNestedOneWithoutOrganizationInput
+  arcWalletChallenges?: Prisma.ArcWalletChallengeUncheckedCreateNestedManyWithoutOrganizationInput
+  loanDecisionEvaluations?: Prisma.LoanDecisionEvaluationUncheckedCreateNestedManyWithoutOrganizationInput
+  loanDecisionReviews?: Prisma.LoanDecisionReviewUncheckedCreateNestedManyWithoutOrganizationInput
+  loanOriginationDecisions?: Prisma.LoanOriginationDecisionUncheckedCreateNestedManyWithoutOrganizationInput
+  loanOriginationOverrides?: Prisma.LoanOriginationOverrideUncheckedCreateNestedManyWithoutOrganizationInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeDirectoryIntegration?: Prisma.EmployeeDirectoryIntegrationUncheckedCreateNestedOneWithoutOrganizationInput
+  employeeDirectorySecrets?: Prisma.EmployeeDirectoryCredentialSecretUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeDirectoryMappings?: Prisma.EmployeeDirectoryMappingUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeInvitations?: Prisma.EmployeeInvitationUncheckedCreateNestedManyWithoutOrganizationInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutOrganizationInput
+  operationalIncidents?: Prisma.OperationalIncidentUncheckedCreateNestedManyWithoutOrganizationInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedCreateNestedManyWithoutOrganizationInput
+  loanInstallments?: Prisma.LoanInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAllocations?: Prisma.RepaymentAllocationUncheckedCreateNestedManyWithoutOrganizationInput
+  payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutOrganizationInput
+  delinquencyCases?: Prisma.DelinquencyCaseUncheckedCreateNestedManyWithoutOrganizationInput
+  delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedCreateNestedManyWithoutOrganizationInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutRepaymentAgentRunsInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutRepaymentAgentRunsInput, Prisma.OrganizationUncheckedCreateWithoutRepaymentAgentRunsInput>
+}
+
+export type OrganizationUpsertWithoutRepaymentAgentRunsInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutRepaymentAgentRunsInput, Prisma.OrganizationUncheckedUpdateWithoutRepaymentAgentRunsInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutRepaymentAgentRunsInput, Prisma.OrganizationUncheckedCreateWithoutRepaymentAgentRunsInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutRepaymentAgentRunsInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutRepaymentAgentRunsInput, Prisma.OrganizationUncheckedUpdateWithoutRepaymentAgentRunsInput>
+}
+
+export type OrganizationUpdateWithoutRepaymentAgentRunsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  erpNextEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.OrganizationMembershipUpdateManyWithoutOrganizationNestedInput
+  lendingOffers?: Prisma.LendingOfferUpdateManyWithoutOrganizationNestedInput
+  loans?: Prisma.LoanUpdateManyWithoutOrganizationNestedInput
+  repayments?: Prisma.LoanRepaymentUpdateManyWithoutOrganizationNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  balances?: Prisma.EmployeeBalanceUpdateManyWithoutOrganizationNestedInput
+  ledgerAccounts?: Prisma.LedgerAccountUpdateManyWithoutOrganizationNestedInput
+  ledgerTransactions?: Prisma.LedgerTransactionUpdateManyWithoutOrganizationNestedInput
+  ledgerEntries?: Prisma.LedgerEntryUpdateManyWithoutOrganizationNestedInput
+  lendingPolicy?: Prisma.OrganizationLendingPolicyUpdateOneWithoutOrganizationNestedInput
+  arcWalletChallenges?: Prisma.ArcWalletChallengeUpdateManyWithoutOrganizationNestedInput
+  loanDecisionEvaluations?: Prisma.LoanDecisionEvaluationUpdateManyWithoutOrganizationNestedInput
+  loanDecisionReviews?: Prisma.LoanDecisionReviewUpdateManyWithoutOrganizationNestedInput
+  loanOriginationDecisions?: Prisma.LoanOriginationDecisionUpdateManyWithoutOrganizationNestedInput
+  loanOriginationOverrides?: Prisma.LoanOriginationOverrideUpdateManyWithoutOrganizationNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUpdateManyWithoutOrganizationNestedInput
+  employeeDirectoryIntegration?: Prisma.EmployeeDirectoryIntegrationUpdateOneWithoutOrganizationNestedInput
+  employeeDirectorySecrets?: Prisma.EmployeeDirectoryCredentialSecretUpdateManyWithoutOrganizationNestedInput
+  employeeDirectoryMappings?: Prisma.EmployeeDirectoryMappingUpdateManyWithoutOrganizationNestedInput
+  employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunUpdateManyWithoutOrganizationNestedInput
+  employeeInvitations?: Prisma.EmployeeInvitationUpdateManyWithoutOrganizationNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutOrganizationNestedInput
+  operationalIncidents?: Prisma.OperationalIncidentUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUpdateManyWithoutOrganizationNestedInput
+  repaymentPlans?: Prisma.LoanRepaymentPlanUpdateManyWithoutOrganizationNestedInput
+  loanInstallments?: Prisma.LoanInstallmentUpdateManyWithoutOrganizationNestedInput
+  repaymentAllocations?: Prisma.RepaymentAllocationUpdateManyWithoutOrganizationNestedInput
+  payrollDeductionProposals?: Prisma.PayrollDeductionProposalUpdateManyWithoutOrganizationNestedInput
+  delinquencyCases?: Prisma.DelinquencyCaseUpdateManyWithoutOrganizationNestedInput
+  delinquencyNotifications?: Prisma.DelinquencyNotificationUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutRepaymentAgentRunsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  erpNextEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.OrganizationMembershipUncheckedUpdateManyWithoutOrganizationNestedInput
+  lendingOffers?: Prisma.LendingOfferUncheckedUpdateManyWithoutOrganizationNestedInput
+  loans?: Prisma.LoanUncheckedUpdateManyWithoutOrganizationNestedInput
+  repayments?: Prisma.LoanRepaymentUncheckedUpdateManyWithoutOrganizationNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  balances?: Prisma.EmployeeBalanceUncheckedUpdateManyWithoutOrganizationNestedInput
+  ledgerAccounts?: Prisma.LedgerAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+  ledgerTransactions?: Prisma.LedgerTransactionUncheckedUpdateManyWithoutOrganizationNestedInput
+  ledgerEntries?: Prisma.LedgerEntryUncheckedUpdateManyWithoutOrganizationNestedInput
+  lendingPolicy?: Prisma.OrganizationLendingPolicyUncheckedUpdateOneWithoutOrganizationNestedInput
+  arcWalletChallenges?: Prisma.ArcWalletChallengeUncheckedUpdateManyWithoutOrganizationNestedInput
+  loanDecisionEvaluations?: Prisma.LoanDecisionEvaluationUncheckedUpdateManyWithoutOrganizationNestedInput
+  loanDecisionReviews?: Prisma.LoanDecisionReviewUncheckedUpdateManyWithoutOrganizationNestedInput
+  loanOriginationDecisions?: Prisma.LoanOriginationDecisionUncheckedUpdateManyWithoutOrganizationNestedInput
+  loanOriginationOverrides?: Prisma.LoanOriginationOverrideUncheckedUpdateManyWithoutOrganizationNestedInput
+  employerActionAttempts?: Prisma.EmployerActionAttemptUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeDirectoryIntegration?: Prisma.EmployeeDirectoryIntegrationUncheckedUpdateOneWithoutOrganizationNestedInput
+  employeeDirectorySecrets?: Prisma.EmployeeDirectoryCredentialSecretUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeDirectoryMappings?: Prisma.EmployeeDirectoryMappingUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeDirectorySyncRuns?: Prisma.EmployeeDirectorySyncRunUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeInvitations?: Prisma.EmployeeInvitationUncheckedUpdateManyWithoutOrganizationNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutOrganizationNestedInput
+  operationalIncidents?: Prisma.OperationalIncidentUncheckedUpdateManyWithoutOrganizationNestedInput
+  arcUsdcTransfers?: Prisma.ArcUsdcTransferUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentPlans?: Prisma.LoanRepaymentPlanUncheckedUpdateManyWithoutOrganizationNestedInput
+  loanInstallments?: Prisma.LoanInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAllocations?: Prisma.RepaymentAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  payrollDeductionProposals?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutOrganizationNestedInput
+  delinquencyCases?: Prisma.DelinquencyCaseUncheckedUpdateManyWithoutOrganizationNestedInput
+  delinquencyNotifications?: Prisma.DelinquencyNotificationUncheckedUpdateManyWithoutOrganizationNestedInput
+  repaymentAgentMandates?: Prisma.RepaymentAgentMandateUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 
@@ -6189,6 +6831,8 @@ export type OrganizationCountOutputType = {
   payrollDeductionProposals: number
   delinquencyCases: number
   delinquencyNotifications: number
+  repaymentAgentMandates: number
+  repaymentAgentRuns: number
 }
 
 export type OrganizationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -6220,6 +6864,8 @@ export type OrganizationCountOutputTypeSelect<ExtArgs extends runtime.Types.Exte
   payrollDeductionProposals?: boolean | OrganizationCountOutputTypeCountPayrollDeductionProposalsArgs
   delinquencyCases?: boolean | OrganizationCountOutputTypeCountDelinquencyCasesArgs
   delinquencyNotifications?: boolean | OrganizationCountOutputTypeCountDelinquencyNotificationsArgs
+  repaymentAgentMandates?: boolean | OrganizationCountOutputTypeCountRepaymentAgentMandatesArgs
+  repaymentAgentRuns?: boolean | OrganizationCountOutputTypeCountRepaymentAgentRunsArgs
 }
 
 /**
@@ -6428,6 +7074,20 @@ export type OrganizationCountOutputTypeCountDelinquencyNotificationsArgs<ExtArgs
   where?: Prisma.DelinquencyNotificationWhereInput
 }
 
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountRepaymentAgentMandatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RepaymentAgentMandateWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountRepaymentAgentRunsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RepaymentAgentRunWhereInput
+}
+
 
 export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -6467,6 +7127,8 @@ export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   payrollDeductionProposals?: boolean | Prisma.Organization$payrollDeductionProposalsArgs<ExtArgs>
   delinquencyCases?: boolean | Prisma.Organization$delinquencyCasesArgs<ExtArgs>
   delinquencyNotifications?: boolean | Prisma.Organization$delinquencyNotificationsArgs<ExtArgs>
+  repaymentAgentMandates?: boolean | Prisma.Organization$repaymentAgentMandatesArgs<ExtArgs>
+  repaymentAgentRuns?: boolean | Prisma.Organization$repaymentAgentRunsArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["organization"]>
 
@@ -6532,6 +7194,8 @@ export type OrganizationInclude<ExtArgs extends runtime.Types.Extensions.Interna
   payrollDeductionProposals?: boolean | Prisma.Organization$payrollDeductionProposalsArgs<ExtArgs>
   delinquencyCases?: boolean | Prisma.Organization$delinquencyCasesArgs<ExtArgs>
   delinquencyNotifications?: boolean | Prisma.Organization$delinquencyNotificationsArgs<ExtArgs>
+  repaymentAgentMandates?: boolean | Prisma.Organization$repaymentAgentMandatesArgs<ExtArgs>
+  repaymentAgentRuns?: boolean | Prisma.Organization$repaymentAgentRunsArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -6570,6 +7234,8 @@ export type $OrganizationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     payrollDeductionProposals: Prisma.$PayrollDeductionProposalPayload<ExtArgs>[]
     delinquencyCases: Prisma.$DelinquencyCasePayload<ExtArgs>[]
     delinquencyNotifications: Prisma.$DelinquencyNotificationPayload<ExtArgs>[]
+    repaymentAgentMandates: Prisma.$RepaymentAgentMandatePayload<ExtArgs>[]
+    repaymentAgentRuns: Prisma.$RepaymentAgentRunPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -7003,6 +7669,8 @@ export interface Prisma__OrganizationClient<T, Null = never, ExtArgs extends run
   payrollDeductionProposals<T extends Prisma.Organization$payrollDeductionProposalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$payrollDeductionProposalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PayrollDeductionProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   delinquencyCases<T extends Prisma.Organization$delinquencyCasesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$delinquencyCasesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DelinquencyCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   delinquencyNotifications<T extends Prisma.Organization$delinquencyNotificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$delinquencyNotificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DelinquencyNotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  repaymentAgentMandates<T extends Prisma.Organization$repaymentAgentMandatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$repaymentAgentMandatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RepaymentAgentMandatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  repaymentAgentRuns<T extends Prisma.Organization$repaymentAgentRunsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$repaymentAgentRunsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RepaymentAgentRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8139,6 +8807,54 @@ export type Organization$delinquencyNotificationsArgs<ExtArgs extends runtime.Ty
   take?: number
   skip?: number
   distinct?: Prisma.DelinquencyNotificationScalarFieldEnum | Prisma.DelinquencyNotificationScalarFieldEnum[]
+}
+
+/**
+ * Organization.repaymentAgentMandates
+ */
+export type Organization$repaymentAgentMandatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RepaymentAgentMandate
+   */
+  select?: Prisma.RepaymentAgentMandateSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RepaymentAgentMandate
+   */
+  omit?: Prisma.RepaymentAgentMandateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RepaymentAgentMandateInclude<ExtArgs> | null
+  where?: Prisma.RepaymentAgentMandateWhereInput
+  orderBy?: Prisma.RepaymentAgentMandateOrderByWithRelationInput | Prisma.RepaymentAgentMandateOrderByWithRelationInput[]
+  cursor?: Prisma.RepaymentAgentMandateWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RepaymentAgentMandateScalarFieldEnum | Prisma.RepaymentAgentMandateScalarFieldEnum[]
+}
+
+/**
+ * Organization.repaymentAgentRuns
+ */
+export type Organization$repaymentAgentRunsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RepaymentAgentRun
+   */
+  select?: Prisma.RepaymentAgentRunSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RepaymentAgentRun
+   */
+  omit?: Prisma.RepaymentAgentRunOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RepaymentAgentRunInclude<ExtArgs> | null
+  where?: Prisma.RepaymentAgentRunWhereInput
+  orderBy?: Prisma.RepaymentAgentRunOrderByWithRelationInput | Prisma.RepaymentAgentRunOrderByWithRelationInput[]
+  cursor?: Prisma.RepaymentAgentRunWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RepaymentAgentRunScalarFieldEnum | Prisma.RepaymentAgentRunScalarFieldEnum[]
 }
 
 /**
