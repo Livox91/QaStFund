@@ -303,6 +303,7 @@ export class ScriptedPlanner implements RepaymentPlanner {
 }
 
 export const BORROWER_WALLET = "0x00000000000000000000000000000000000b0b00";
+const LEGACY_ESCROW_ADDRESS = "0x000000000000000000000000000000000000e5c1";
 export const LENDER_WALLETS = [
   "0x0000000000000000000000000000000000001e01",
   "0x0000000000000000000000000000000000001e02",
@@ -311,7 +312,12 @@ export const LENDER_WALLETS = [
 
 export type WorldInput = Readonly<{
   balanceUsdc: number;
-  obligations: ReadonlyArray<{ outstandingUsdc: number; dueInHours: number }>;
+  obligations: ReadonlyArray<{
+    outstandingUsdc: number;
+    dueInHours: number;
+    /** Held by an earlier escrow that has no mandate support. */
+    legacyContract?: boolean;
+  }>;
   mandate?: Partial<{
     maxPerRepaymentUsdc: number;
     maxPerPeriodUsdc: number;
@@ -363,7 +369,9 @@ export function createWorld(input: WorldInput) {
     repository.obligations.set(loanId, {
       loanId,
       chainLoanId,
-      contractAddress: chain.contractAddress,
+      contractAddress: obligation.legacyContract
+        ? LEGACY_ESCROW_ADDRESS
+        : chain.contractAddress,
       lenderWalletAddress: LENDER_WALLETS[index],
       dueAt,
       repaymentBaseUnits: amount,

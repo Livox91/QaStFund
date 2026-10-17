@@ -187,6 +187,23 @@ describe("OpenAI repayment planner", () => {
   });
 });
 
+describe("rule planner", () => {
+  it("explains that loans on an earlier escrow cannot be agent-repaid", async () => {
+    const world = createWorld({
+      balanceUsdc: 50,
+      obligations: [
+        { outstandingUsdc: 3.15, dueInHours: 24, legacyContract: true },
+      ],
+      planner: new RuleBasedRepaymentPlanner(),
+    });
+    const summary = await world.run();
+    expect(summary.decisions[0]?.action).toBe("STOP");
+    expect(summary.decisions[0]?.explanation).toContain("earlier escrow");
+    expect(summary.decisions[0]?.explanation).not.toContain("recently");
+    expect(world.chain.transfers).toEqual([]);
+  });
+});
+
 describe("explanation amount parsing", () => {
   it("reads amounts with separators and decimals", () => {
     expect(amountsMentioned("Pay 1,250.5 USDC, keep $40")).toEqual([
