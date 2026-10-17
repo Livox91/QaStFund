@@ -434,7 +434,11 @@ export const ModelName = {
   BlockchainEvent: 'BlockchainEvent',
   OperationalIncident: 'OperationalIncident',
   OperationalJobHeartbeat: 'OperationalJobHeartbeat',
-  RateLimitBucket: 'RateLimitBucket'
+  RateLimitBucket: 'RateLimitBucket',
+  RepaymentAgentMandate: 'RepaymentAgentMandate',
+  RepaymentAgentRun: 'RepaymentAgentRun',
+  RepaymentAgentStep: 'RepaymentAgentStep',
+  RepaymentAgentAction: 'RepaymentAgentAction'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -450,7 +454,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "organization" | "arcWallet" | "arcUsdcTransfer" | "arcWalletChallenge" | "organizationMembership" | "employeeInvitation" | "passwordResetToken" | "employeeDirectoryIntegration" | "employeeDirectoryCredentialSecret" | "employeeDirectoryMapping" | "employeeDirectorySyncRun" | "lendingOffer" | "employeeBalance" | "loan" | "loanDecisionEvaluation" | "loanDecisionReview" | "loanOriginationDecision" | "loanOriginationOverride" | "employerActionAttempt" | "ledgerAccount" | "ledgerTransaction" | "ledgerEntry" | "loanRepayment" | "loanRepaymentPlan" | "loanInstallment" | "repaymentAllocation" | "payrollDeductionProposal" | "delinquencyCase" | "delinquencyNotification" | "auditEvent" | "organizationLendingPolicy" | "session" | "blockchainReconciliationCursor" | "blockchainEvent" | "operationalIncident" | "operationalJobHeartbeat" | "rateLimitBucket"
+    modelProps: "user" | "organization" | "arcWallet" | "arcUsdcTransfer" | "arcWalletChallenge" | "organizationMembership" | "employeeInvitation" | "passwordResetToken" | "employeeDirectoryIntegration" | "employeeDirectoryCredentialSecret" | "employeeDirectoryMapping" | "employeeDirectorySyncRun" | "lendingOffer" | "employeeBalance" | "loan" | "loanDecisionEvaluation" | "loanDecisionReview" | "loanOriginationDecision" | "loanOriginationOverride" | "employerActionAttempt" | "ledgerAccount" | "ledgerTransaction" | "ledgerEntry" | "loanRepayment" | "loanRepaymentPlan" | "loanInstallment" | "repaymentAllocation" | "payrollDeductionProposal" | "delinquencyCase" | "delinquencyNotification" | "auditEvent" | "organizationLendingPolicy" | "session" | "blockchainReconciliationCursor" | "blockchainEvent" | "operationalIncident" | "operationalJobHeartbeat" | "rateLimitBucket" | "repaymentAgentMandate" | "repaymentAgentRun" | "repaymentAgentStep" | "repaymentAgentAction"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3266,6 +3270,302 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    RepaymentAgentMandate: {
+      payload: Prisma.$RepaymentAgentMandatePayload<ExtArgs>
+      fields: Prisma.RepaymentAgentMandateFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RepaymentAgentMandateFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentMandatePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RepaymentAgentMandateFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentMandatePayload>
+        }
+        findFirst: {
+          args: Prisma.RepaymentAgentMandateFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentMandatePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RepaymentAgentMandateFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentMandatePayload>
+        }
+        findMany: {
+          args: Prisma.RepaymentAgentMandateFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentMandatePayload>[]
+        }
+        create: {
+          args: Prisma.RepaymentAgentMandateCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentMandatePayload>
+        }
+        createMany: {
+          args: Prisma.RepaymentAgentMandateCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RepaymentAgentMandateCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentMandatePayload>[]
+        }
+        delete: {
+          args: Prisma.RepaymentAgentMandateDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentMandatePayload>
+        }
+        update: {
+          args: Prisma.RepaymentAgentMandateUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentMandatePayload>
+        }
+        deleteMany: {
+          args: Prisma.RepaymentAgentMandateDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RepaymentAgentMandateUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RepaymentAgentMandateUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentMandatePayload>[]
+        }
+        upsert: {
+          args: Prisma.RepaymentAgentMandateUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentMandatePayload>
+        }
+        aggregate: {
+          args: Prisma.RepaymentAgentMandateAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRepaymentAgentMandate>
+        }
+        groupBy: {
+          args: Prisma.RepaymentAgentMandateGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RepaymentAgentMandateGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RepaymentAgentMandateCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RepaymentAgentMandateCountAggregateOutputType> | number
+        }
+      }
+    }
+    RepaymentAgentRun: {
+      payload: Prisma.$RepaymentAgentRunPayload<ExtArgs>
+      fields: Prisma.RepaymentAgentRunFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RepaymentAgentRunFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentRunPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RepaymentAgentRunFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentRunPayload>
+        }
+        findFirst: {
+          args: Prisma.RepaymentAgentRunFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentRunPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RepaymentAgentRunFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentRunPayload>
+        }
+        findMany: {
+          args: Prisma.RepaymentAgentRunFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentRunPayload>[]
+        }
+        create: {
+          args: Prisma.RepaymentAgentRunCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentRunPayload>
+        }
+        createMany: {
+          args: Prisma.RepaymentAgentRunCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RepaymentAgentRunCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentRunPayload>[]
+        }
+        delete: {
+          args: Prisma.RepaymentAgentRunDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentRunPayload>
+        }
+        update: {
+          args: Prisma.RepaymentAgentRunUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentRunPayload>
+        }
+        deleteMany: {
+          args: Prisma.RepaymentAgentRunDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RepaymentAgentRunUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RepaymentAgentRunUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentRunPayload>[]
+        }
+        upsert: {
+          args: Prisma.RepaymentAgentRunUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentRunPayload>
+        }
+        aggregate: {
+          args: Prisma.RepaymentAgentRunAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRepaymentAgentRun>
+        }
+        groupBy: {
+          args: Prisma.RepaymentAgentRunGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RepaymentAgentRunGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RepaymentAgentRunCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RepaymentAgentRunCountAggregateOutputType> | number
+        }
+      }
+    }
+    RepaymentAgentStep: {
+      payload: Prisma.$RepaymentAgentStepPayload<ExtArgs>
+      fields: Prisma.RepaymentAgentStepFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RepaymentAgentStepFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentStepPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RepaymentAgentStepFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentStepPayload>
+        }
+        findFirst: {
+          args: Prisma.RepaymentAgentStepFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentStepPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RepaymentAgentStepFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentStepPayload>
+        }
+        findMany: {
+          args: Prisma.RepaymentAgentStepFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentStepPayload>[]
+        }
+        create: {
+          args: Prisma.RepaymentAgentStepCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentStepPayload>
+        }
+        createMany: {
+          args: Prisma.RepaymentAgentStepCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RepaymentAgentStepCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentStepPayload>[]
+        }
+        delete: {
+          args: Prisma.RepaymentAgentStepDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentStepPayload>
+        }
+        update: {
+          args: Prisma.RepaymentAgentStepUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentStepPayload>
+        }
+        deleteMany: {
+          args: Prisma.RepaymentAgentStepDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RepaymentAgentStepUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RepaymentAgentStepUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentStepPayload>[]
+        }
+        upsert: {
+          args: Prisma.RepaymentAgentStepUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentStepPayload>
+        }
+        aggregate: {
+          args: Prisma.RepaymentAgentStepAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRepaymentAgentStep>
+        }
+        groupBy: {
+          args: Prisma.RepaymentAgentStepGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RepaymentAgentStepGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RepaymentAgentStepCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RepaymentAgentStepCountAggregateOutputType> | number
+        }
+      }
+    }
+    RepaymentAgentAction: {
+      payload: Prisma.$RepaymentAgentActionPayload<ExtArgs>
+      fields: Prisma.RepaymentAgentActionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RepaymentAgentActionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentActionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RepaymentAgentActionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentActionPayload>
+        }
+        findFirst: {
+          args: Prisma.RepaymentAgentActionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentActionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RepaymentAgentActionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentActionPayload>
+        }
+        findMany: {
+          args: Prisma.RepaymentAgentActionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentActionPayload>[]
+        }
+        create: {
+          args: Prisma.RepaymentAgentActionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentActionPayload>
+        }
+        createMany: {
+          args: Prisma.RepaymentAgentActionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RepaymentAgentActionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentActionPayload>[]
+        }
+        delete: {
+          args: Prisma.RepaymentAgentActionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentActionPayload>
+        }
+        update: {
+          args: Prisma.RepaymentAgentActionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentActionPayload>
+        }
+        deleteMany: {
+          args: Prisma.RepaymentAgentActionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RepaymentAgentActionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RepaymentAgentActionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentActionPayload>[]
+        }
+        upsert: {
+          args: Prisma.RepaymentAgentActionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RepaymentAgentActionPayload>
+        }
+        aggregate: {
+          args: Prisma.RepaymentAgentActionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRepaymentAgentAction>
+        }
+        groupBy: {
+          args: Prisma.RepaymentAgentActionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RepaymentAgentActionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RepaymentAgentActionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RepaymentAgentActionCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -4056,6 +4356,100 @@ export const RateLimitBucketScalarFieldEnum = {
 export type RateLimitBucketScalarFieldEnum = (typeof RateLimitBucketScalarFieldEnum)[keyof typeof RateLimitBucketScalarFieldEnum]
 
 
+export const RepaymentAgentMandateScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  borrowerMembershipId: 'borrowerMembershipId',
+  requestId: 'requestId',
+  walletAddress: 'walletAddress',
+  contractAddress: 'contractAddress',
+  agentAddress: 'agentAddress',
+  chainNonce: 'chainNonce',
+  maxPerRepaymentBaseUnits: 'maxPerRepaymentBaseUnits',
+  maxPerPeriodBaseUnits: 'maxPerPeriodBaseUnits',
+  minimumReserveBaseUnits: 'minimumReserveBaseUnits',
+  periodSeconds: 'periodSeconds',
+  earliestBeforeDueSeconds: 'earliestBeforeDueSeconds',
+  expiresAt: 'expiresAt',
+  allowanceBaseUnits: 'allowanceBaseUnits',
+  status: 'status',
+  transactionHash: 'transactionHash',
+  activatedAt: 'activatedAt',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RepaymentAgentMandateScalarFieldEnum = (typeof RepaymentAgentMandateScalarFieldEnum)[keyof typeof RepaymentAgentMandateScalarFieldEnum]
+
+
+export const RepaymentAgentRunScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  borrowerMembershipId: 'borrowerMembershipId',
+  trigger: 'trigger',
+  status: 'status',
+  plannerKind: 'plannerKind',
+  plannerModel: 'plannerModel',
+  promptVersion: 'promptVersion',
+  policyVersion: 'policyVersion',
+  inputSnapshot: 'inputSnapshot',
+  decision: 'decision',
+  outcomeCode: 'outcomeCode',
+  outcomeSummary: 'outcomeSummary',
+  requiresHumanApproval: 'requiresHumanApproval',
+  parentRunId: 'parentRunId',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type RepaymentAgentRunScalarFieldEnum = (typeof RepaymentAgentRunScalarFieldEnum)[keyof typeof RepaymentAgentRunScalarFieldEnum]
+
+
+export const RepaymentAgentStepScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  runId: 'runId',
+  sequence: 'sequence',
+  phase: 'phase',
+  name: 'name',
+  summary: 'summary',
+  data: 'data',
+  createdAt: 'createdAt'
+} as const
+
+export type RepaymentAgentStepScalarFieldEnum = (typeof RepaymentAgentStepScalarFieldEnum)[keyof typeof RepaymentAgentStepScalarFieldEnum]
+
+
+export const RepaymentAgentActionScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  runId: 'runId',
+  borrowerMembershipId: 'borrowerMembershipId',
+  loanId: 'loanId',
+  action: 'action',
+  amountBaseUnits: 'amountBaseUnits',
+  status: 'status',
+  repaymentRequestId: 'repaymentRequestId',
+  chainRepaymentId: 'chainRepaymentId',
+  mandateNonce: 'mandateNonce',
+  decision: 'decision',
+  validation: 'validation',
+  transactionHash: 'transactionHash',
+  verification: 'verification',
+  failureCode: 'failureCode',
+  attempts: 'attempts',
+  expiresAt: 'expiresAt',
+  submittedAt: 'submittedAt',
+  confirmedAt: 'confirmedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RepaymentAgentActionScalarFieldEnum = (typeof RepaymentAgentActionScalarFieldEnum)[keyof typeof RepaymentAgentActionScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -4804,6 +5198,76 @@ export type ListEnumOperationalIncidentStatusFieldRefInput<$PrismaModel> = Field
 
 
 /**
+ * Reference to a field of type 'RepaymentAgentMandateStatus'
+ */
+export type EnumRepaymentAgentMandateStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RepaymentAgentMandateStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'RepaymentAgentMandateStatus[]'
+ */
+export type ListEnumRepaymentAgentMandateStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RepaymentAgentMandateStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'RepaymentAgentTrigger'
+ */
+export type EnumRepaymentAgentTriggerFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RepaymentAgentTrigger'>
+    
+
+
+/**
+ * Reference to a field of type 'RepaymentAgentTrigger[]'
+ */
+export type ListEnumRepaymentAgentTriggerFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RepaymentAgentTrigger[]'>
+    
+
+
+/**
+ * Reference to a field of type 'RepaymentAgentRunStatus'
+ */
+export type EnumRepaymentAgentRunStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RepaymentAgentRunStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'RepaymentAgentRunStatus[]'
+ */
+export type ListEnumRepaymentAgentRunStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RepaymentAgentRunStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'RepaymentAgentPlannerKind'
+ */
+export type EnumRepaymentAgentPlannerKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RepaymentAgentPlannerKind'>
+    
+
+
+/**
+ * Reference to a field of type 'RepaymentAgentPlannerKind[]'
+ */
+export type ListEnumRepaymentAgentPlannerKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RepaymentAgentPlannerKind[]'>
+    
+
+
+/**
+ * Reference to a field of type 'RepaymentAgentActionStatus'
+ */
+export type EnumRepaymentAgentActionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RepaymentAgentActionStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'RepaymentAgentActionStatus[]'
+ */
+export type ListEnumRepaymentAgentActionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RepaymentAgentActionStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -5005,6 +5469,10 @@ export type GlobalOmitConfig = {
   operationalIncident?: Prisma.OperationalIncidentOmit
   operationalJobHeartbeat?: Prisma.OperationalJobHeartbeatOmit
   rateLimitBucket?: Prisma.RateLimitBucketOmit
+  repaymentAgentMandate?: Prisma.RepaymentAgentMandateOmit
+  repaymentAgentRun?: Prisma.RepaymentAgentRunOmit
+  repaymentAgentStep?: Prisma.RepaymentAgentStepOmit
+  repaymentAgentAction?: Prisma.RepaymentAgentActionOmit
 }
 
 /* Types for Logging */

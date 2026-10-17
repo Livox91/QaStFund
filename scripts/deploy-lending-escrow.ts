@@ -9,6 +9,13 @@ import {
   ARC_USDC_ADDRESS,
 } from "../src/integrations/arc/arc-testnet.js";
 
+// EmployeeLendingEscrowV3 adds partial repayment and the repayment-agent
+// mandate while keeping the V1 offer/acceptance interface.
+const contractName =
+  process.env.ARC_ESCROW_CONTRACT === "EmployeeLendingEscrowV3"
+    ? "EmployeeLendingEscrowV3"
+    : "EmployeeLendingEscrow";
+
 const { networkName, viem } = await network.create();
 if (networkName !== "arcTestnet") {
   throw new Error(
@@ -57,7 +64,7 @@ if (!usdcCode || usdcCode === "0x") {
 }
 
 const { contract: escrow, deploymentTransaction } =
-  await viem.sendDeploymentTransaction("EmployeeLendingEscrow", [
+  await viem.sendDeploymentTransaction(contractName, [
     ARC_USDC_ADDRESS,
     authorizationSigner,
   ]);
@@ -82,7 +89,7 @@ if (
   throw new Error("Deployed escrow constructor configuration is invalid.");
 }
 
-console.log(`EmployeeLendingEscrow deployed to ${escrow.address}`);
+console.log(`${contractName} deployed to ${escrow.address}`);
 console.log(`Deployment transaction hash: ${deploymentTransaction.hash}`);
 console.log(`Deployment block number: ${receipt.blockNumber}`);
 console.log(`Chain ID: ${chainId}`);
@@ -92,4 +99,7 @@ console.log(`NEXT_PUBLIC_ARC_LENDING_CONTRACT_ADDRESS=${escrow.address}`);
 console.log(`ARC_RECONCILIATION_START_BLOCK=${receipt.blockNumber}`);
 console.log(
   `ARC_ESCROW_DEPLOYMENT_TRANSACTION_HASH=${deploymentTransaction.hash}`,
+);
+console.log(
+  `ARC_ESCROW_VERSION=${contractName === "EmployeeLendingEscrowV3" ? "3" : "1"}`,
 );

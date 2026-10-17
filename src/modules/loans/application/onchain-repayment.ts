@@ -28,6 +28,10 @@ import {
   erc20UsdcAbi,
   getConfiguredEscrowAddress,
 } from "@/integrations/arc/employee-lending-escrow";
+import {
+  escrowV3Abi,
+  getConfiguredEscrowVersion,
+} from "@/integrations/arc/escrow-v3";
 import type { AuthenticatedActor } from "@/modules/auth/domain/actor";
 import { ApplicationError } from "@/shared/errors/application-error";
 import { USDC_BASE_UNITS_PER_CENT } from "@/shared/money/usdc";
@@ -49,6 +53,43 @@ async function readChainLoan(
   });
 }
 
+/** On-chain amount already repaid; V1 escrows only support full repayment. */
+async function readRepaidBaseUnits(
+  contractAddress: `0x${string}`,
+  chainLoanId: bigint,
+) {
+  if (getConfiguredEscrowVersion() !== "3") return 0n;
+  return client.readContract({
+    address: contractAddress,
+    abi: escrowV3Abi,
+    functionName: "repaidAmounts",
+    args: [chainLoanId],
+  });
+}
+
+/** Agreed total minus completed repayments, in integer cents. */
+async function remainingRepaymentMinorUnits(
+  database: typeof prisma,
+  loanId: string,
+) {
+  const loan = await database.loan.findUniqueOrThrow({
+    where: { id: loanId },
+    select: {
+      principalAmountMinorUnits: true,
+      feeAmountMinorUnits: true,
+      repayments: {
+        where: { status: "COMPLETED" },
+        select: { amountMinorUnits: true },
+      },
+    },
+  });
+  const repaid = loan.repayments.reduce(
+    (sum, item) => sum + item.amountMinorUnits,
+    0n,
+  );
+  return loan.principalAmountMinorUnits + loan.feeAmountMinorUnits - repaid;
+}
+
 async function readUsdcBalance(walletAddress: `0x${string}`) {
   return client.readContract({
     address: ARC_USDC_ADDRESS,
@@ -64,6 +105,7 @@ type PrepareOnChainRepaymentDependencies = Readonly<{
   now?: () => Date;
   readBalance?: typeof readUsdcBalance;
   readLoan?: typeof readChainLoan;
+  readRepaid?: typeof readRepaidBaseUnits;
 }>;
 
 type ConfirmOnChainRepaymentDependencies = Readonly<{
@@ -141,6 +183,7 @@ export async function prepareOnChainRepayment(
       id: true,
       amountMinorUnits: true,
       status: true,
+      submissionTransactionHash: true,
       loan: {
         select: {
           id: true,
@@ -173,15 +216,29 @@ export async function prepareOnChainRepayment(
     ) {
       throw unavailableError();
     }
-    if (
-      existing.amountMinorUnits !==
-      baseUnitsToMinorUnitsRoundedUp(existing.loan.repaymentBaseUnits)
-    ) {
-      throw new ApplicationError(
-        "REPAYMENT_REQUEST_CONFLICT",
-        "This repayment request has already been used.",
-        409,
+    if (existing.status !== "COMPLETED") {
+      // V3 loans may have received partial repayments since this intent was
+      // created; an intent must always cover exactly the remaining balance.
+      const expectedMinor = await remainingRepaymentMinorUnits(
+        database,
+        existing.loan.id,
       );
+      if (existing.amountMinorUnits !== expectedMinor) {
+        if (
+          existing.status === "PENDING" &&
+          existing.submissionTransactionHash
+        ) {
+          throw new ApplicationError(
+            "REPAYMENT_REQUEST_CONFLICT",
+            "This repayment request has already been used.",
+            409,
+          );
+        }
+        await database.loanRepayment.updateMany({
+          where: { id: existing.id, submissionTransactionHash: null },
+          data: { amountMinorUnits: expectedMinor },
+        });
+      }
     }
     if (existing.status === "COMPLETED") {
       if (existing.loan.status !== "REPAID") throw unavailableError();
@@ -192,13 +249,19 @@ export async function prepareOnChainRepayment(
       };
     }
     if (existing.status === "PENDING") {
+      const repaid = await (dependencies.readRepaid ?? readRepaidBaseUnits)(
+        getAddress(existing.loan.contractAddress),
+        BigInt(existing.loan.chainLoanId),
+      );
       return {
         state: "PENDING" as const,
         repaymentId: existing.id,
         contractAddress: getAddress(existing.loan.contractAddress),
         chainLoanId: existing.loan.chainLoanId,
         usdcAddress: ARC_USDC_ADDRESS,
-        repaymentBaseUnits: existing.loan.repaymentBaseUnits.toString(),
+        repaymentBaseUnits: (
+          existing.loan.repaymentBaseUnits - repaid
+        ).toString(),
       };
     }
     if (existing.status !== "FAILED" && existing.status !== "CANCELLED") {
@@ -297,10 +360,15 @@ export async function prepareOnChainRepayment(
     throw unavailableError();
   }
 
+  const repaidBaseUnits = await (
+    dependencies.readRepaid ?? readRepaidBaseUnits
+  )(configuredContract, BigInt(context.chainLoanId));
+  const remainingBaseUnits = context.repaymentBaseUnits - repaidBaseUnits;
+  if (remainingBaseUnits <= 0n) throw unavailableError();
   const balanceBaseUnits = await (dependencies.readBalance ?? readUsdcBalance)(
     getAddress(wallet.address),
   );
-  if (balanceBaseUnits < context.repaymentBaseUnits) {
+  if (balanceBaseUnits < remainingBaseUnits) {
     throw new ApplicationError(
       "INSUFFICIENT_USDC_BALANCE",
       "Your USDC balance is too low to repay this loan in full.",
@@ -308,9 +376,10 @@ export async function prepareOnChainRepayment(
     );
   }
 
-  const amountMinorUnits = baseUnitsToMinorUnitsRoundedUp(
-    context.repaymentBaseUnits,
-  );
+  const amountMinorUnits =
+    repaidBaseUnits === 0n
+      ? baseUnitsToMinorUnitsRoundedUp(context.repaymentBaseUnits)
+      : await remainingRepaymentMinorUnits(database, context.id);
   const paidAt = dependencies.now?.() ?? new Date();
   let repayment: { id: string };
   try {
@@ -322,6 +391,7 @@ export async function prepareOnChainRepayment(
         },
         data: {
           status: "PENDING",
+          amountMinorUnits,
           paidAt,
           completedAt: null,
           submissionTransactionHash: null,
@@ -398,7 +468,7 @@ export async function prepareOnChainRepayment(
     contractAddress: configuredContract,
     chainLoanId: context.chainLoanId,
     usdcAddress: ARC_USDC_ADDRESS,
-    repaymentBaseUnits: context.repaymentBaseUnits.toString(),
+    repaymentBaseUnits: remainingBaseUnits.toString(),
     balanceBaseUnits: balanceBaseUnits.toString(),
   };
 }

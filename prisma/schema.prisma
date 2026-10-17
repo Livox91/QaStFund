@@ -367,6 +367,8 @@ model Organization {
   payrollDeductionProposals    PayrollDeductionProposal[]
   delinquencyCases             DelinquencyCase[]
   delinquencyNotifications     DelinquencyNotification[]
+  repaymentAgentMandates       RepaymentAgentMandate[]
+  repaymentAgentRuns           RepaymentAgentRun[]
 }
 
 model ArcWallet {
@@ -473,6 +475,8 @@ model OrganizationMembership {
   delinquencyCasesReviewed  DelinquencyCase[]          @relation("DelinquencyCaseReviewedBy")
   arrangementsRequested     DelinquencyCase[]          @relation("DelinquencyArrangementRequestedBy")
   delinquencyNotifications  DelinquencyNotification[]  @relation("DelinquencyNotificationRecipient")
+  repaymentAgentMandates    RepaymentAgentMandate[]
+  repaymentAgentRuns        RepaymentAgentRun[]
 
   @@unique([organizationId, userId])
   @@unique([organizationId, id])
@@ -736,6 +740,7 @@ model Loan {
   installments                   LoanInstallment[]
   payrollDeductionProposals      PayrollDeductionProposal[]
   delinquencyCases               DelinquencyCase[]
+  repaymentAgentActions          RepaymentAgentAction[]
 
   @@unique([organizationId, id])
   @@unique([contractAddress, chainLoanId])
@@ -1273,4 +1278,152 @@ model RateLimitBucket {
 
   @@unique([identityHash, action, windowStart])
   @@index([expiresAt])
+}
+
+enum RepaymentAgentMandateStatus {
+  PENDING
+  ACTIVE
+  REVOKED
+  SUPERSEDED
+  FAILED
+}
+
+enum RepaymentAgentRunStatus {
+  RUNNING
+  COMPLETED
+  WAITING
+  AWAITING_APPROVAL
+  ESCALATED
+  STOPPED
+  FAILED
+}
+
+enum RepaymentAgentTrigger {
+  SCHEDULED
+  MANUAL
+  APPROVAL_FOLLOW_UP
+}
+
+enum RepaymentAgentPlannerKind {
+  MODEL
+  RULES
+}
+
+enum RepaymentAgentActionStatus {
+  VALIDATED
+  SUBMITTED
+  CONFIRMED
+  FAILED
+  AWAITING_APPROVAL
+  APPROVED
+  EXPIRED
+  REJECTED
+}
+
+/// Borrower-granted on-chain repayment mandate (EmployeeLendingEscrowV3).
+/// The chain is authoritative; this row records who granted what and when.
+model RepaymentAgentMandate {
+  id                       String                      @id @default(uuid()) @db.Uuid
+  organizationId           String                      @db.Uuid
+  borrowerMembershipId     String                      @db.Uuid
+  requestId                String                      @unique @db.Uuid
+  walletAddress            String                      @db.VarChar(42)
+  contractAddress          String                      @db.VarChar(42)
+  agentAddress             String                      @db.VarChar(42)
+  chainNonce               String?                     @db.VarChar(78)
+  maxPerRepaymentBaseUnits BigInt
+  maxPerPeriodBaseUnits    BigInt
+  minimumReserveBaseUnits  BigInt
+  periodSeconds            Int
+  earliestBeforeDueSeconds Int
+  expiresAt                DateTime
+  allowanceBaseUnits       BigInt
+  status                   RepaymentAgentMandateStatus @default(PENDING)
+  transactionHash          String?                     @unique @db.VarChar(66)
+  activatedAt              DateTime?
+  revokedAt                DateTime?
+  createdAt                DateTime                    @default(now())
+  updatedAt                DateTime                    @updatedAt
+  organization             Organization                @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  borrowerMembership       OrganizationMembership      @relation(fields: [organizationId, borrowerMembershipId], references: [organizationId, id], onDelete: Restrict)
+
+  @@index([organizationId, borrowerMembershipId, status])
+  @@index([status])
+}
+
+/// One observe → reason → validate → act → verify → adapt cycle.
+model RepaymentAgentRun {
+  id                    String                    @id @default(uuid()) @db.Uuid
+  organizationId        String                    @db.Uuid
+  borrowerMembershipId  String                    @db.Uuid
+  trigger               RepaymentAgentTrigger
+  status                RepaymentAgentRunStatus   @default(RUNNING)
+  plannerKind           RepaymentAgentPlannerKind
+  plannerModel          String?                   @db.VarChar(64)
+  promptVersion         String                    @db.VarChar(64)
+  policyVersion         String                    @db.VarChar(64)
+  inputSnapshot         Json
+  decision              Json?
+  outcomeCode           String?                   @db.VarChar(64)
+  outcomeSummary        String?                   @db.VarChar(1000)
+  requiresHumanApproval Boolean                   @default(false)
+  parentRunId           String?                   @db.Uuid
+  startedAt             DateTime
+  completedAt           DateTime?
+  createdAt             DateTime                  @default(now())
+  organization          Organization              @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  borrowerMembership    OrganizationMembership    @relation(fields: [organizationId, borrowerMembershipId], references: [organizationId, id], onDelete: Restrict)
+  steps                 RepaymentAgentStep[]
+  actions               RepaymentAgentAction[]
+
+  @@unique([organizationId, id])
+  @@index([organizationId, borrowerMembershipId, startedAt])
+  @@index([status, startedAt])
+}
+
+/// Append-only activity log: every observation, tool call, policy check,
+/// action, verification and adaptation, in order.
+model RepaymentAgentStep {
+  id             String            @id @default(uuid()) @db.Uuid
+  organizationId String            @db.Uuid
+  runId          String            @db.Uuid
+  sequence       Int
+  phase          String            @db.VarChar(16)
+  name           String            @db.VarChar(64)
+  summary        String            @db.VarChar(1000)
+  data           Json
+  createdAt      DateTime          @default(now())
+  run            RepaymentAgentRun @relation(fields: [organizationId, runId], references: [organizationId, id], onDelete: Restrict)
+
+  @@unique([runId, sequence])
+}
+
+model RepaymentAgentAction {
+  id                   String                     @id @default(uuid()) @db.Uuid
+  organizationId       String                     @db.Uuid
+  runId                String                     @db.Uuid
+  borrowerMembershipId String                     @db.Uuid
+  loanId               String                     @db.Uuid
+  action               String                     @db.VarChar(32)
+  amountBaseUnits      BigInt?
+  status               RepaymentAgentActionStatus
+  repaymentRequestId   String                     @unique @db.Uuid
+  chainRepaymentId     String                     @unique @db.VarChar(66)
+  mandateNonce         String?                    @db.VarChar(78)
+  decision             Json
+  validation           Json
+  transactionHash      String?                    @unique @db.VarChar(66)
+  verification         Json?
+  failureCode          String?                    @db.VarChar(64)
+  attempts             Int                        @default(0)
+  expiresAt            DateTime?
+  submittedAt          DateTime?
+  confirmedAt          DateTime?
+  createdAt            DateTime                   @default(now())
+  updatedAt            DateTime                   @updatedAt
+  run                  RepaymentAgentRun          @relation(fields: [organizationId, runId], references: [organizationId, id], onDelete: Restrict)
+  loan                 Loan                       @relation(fields: [organizationId, loanId], references: [organizationId, id], onDelete: Restrict)
+
+  @@index([organizationId, borrowerMembershipId, status])
+  @@index([status, updatedAt])
 }

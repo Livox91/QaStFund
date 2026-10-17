@@ -447,3 +447,58 @@ export const ArcUsdcTransferStatus = {
 } as const
 
 export type ArcUsdcTransferStatus = (typeof ArcUsdcTransferStatus)[keyof typeof ArcUsdcTransferStatus]
+
+
+export const RepaymentAgentMandateStatus = {
+  PENDING: 'PENDING',
+  ACTIVE: 'ACTIVE',
+  REVOKED: 'REVOKED',
+  SUPERSEDED: 'SUPERSEDED',
+  FAILED: 'FAILED'
+} as const
+
+export type RepaymentAgentMandateStatus = (typeof RepaymentAgentMandateStatus)[keyof typeof RepaymentAgentMandateStatus]
+
+
+export const RepaymentAgentRunStatus = {
+  RUNNING: 'RUNNING',
+  COMPLETED: 'COMPLETED',
+  WAITING: 'WAITING',
+  AWAITING_APPROVAL: 'AWAITING_APPROVAL',
+  ESCALATED: 'ESCALATED',
+  STOPPED: 'STOPPED',
+  FAILED: 'FAILED'
+} as const
+
+export type RepaymentAgentRunStatus = (typeof RepaymentAgentRunStatus)[keyof typeof RepaymentAgentRunStatus]
+
+
+export const RepaymentAgentTrigger = {
+  SCHEDULED: 'SCHEDULED',
+  MANUAL: 'MANUAL',
+  APPROVAL_FOLLOW_UP: 'APPROVAL_FOLLOW_UP'
+} as const
+
+export type RepaymentAgentTrigger = (typeof RepaymentAgentTrigger)[keyof typeof RepaymentAgentTrigger]
+
+
+export const RepaymentAgentPlannerKind = {
+  MODEL: 'MODEL',
+  RULES: 'RULES'
+} as const
+
+export type RepaymentAgentPlannerKind = (typeof RepaymentAgentPlannerKind)[keyof typeof RepaymentAgentPlannerKind]
+
+
+export const RepaymentAgentActionStatus = {
+  VALIDATED: 'VALIDATED',
+  SUBMITTED: 'SUBMITTED',
+  CONFIRMED: 'CONFIRMED',
+  FAILED: 'FAILED',
+  AWAITING_APPROVAL: 'AWAITING_APPROVAL',
+  APPROVED: 'APPROVED',
+  EXPIRED: 'EXPIRED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type RepaymentAgentActionStatus = (typeof RepaymentAgentActionStatus)[keyof typeof RepaymentAgentActionStatus]

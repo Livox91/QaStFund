@@ -7,6 +7,8 @@ import { requireEmployerAdminPage } from "@/modules/auth/infrastructure/auth-gua
 import { listEmployerActionsForActor } from "@/modules/employer-actions/index.server";
 import { getLoanReviewForActor } from "@/modules/loan-decisions/index.server";
 import { LoanReview } from "@/modules/loan-decisions/ui/loan-review";
+import { listAgentActivityForLoan } from "@/modules/repayment-agent/index.server";
+import { EmployerAgentActions } from "@/modules/repayment-agent/ui/employer-agent-actions";
 
 export const metadata: Metadata = { title: "Loan review" };
 export const dynamic = "force-dynamic";
@@ -22,13 +24,19 @@ export default async function LoanReviewPage({
   const loan = await getLoanReviewForActor(actor, parsedLoanId.data);
   if (!loan) notFound();
   const actions = await listEmployerActionsForActor(actor, parsedLoanId.data);
+  const agentActions = await listAgentActivityForLoan(actor, parsedLoanId.data);
   const query = await searchParams;
   return (
-    <LoanReview
-      actionError={query.actionError === "1"}
-      actionRecorded={query.actionRecorded === "1"}
-      actions={actions}
-      loan={loan}
-    />
+    <>
+      <LoanReview
+        actionError={query.actionError === "1"}
+        actionRecorded={query.actionRecorded === "1"}
+        actions={actions}
+        loan={loan}
+      />
+      <div className="mx-auto max-w-5xl px-4 pb-10 sm:px-6 lg:px-8">
+        <EmployerAgentActions actions={agentActions} />
+      </div>
+    </>
   );
 }

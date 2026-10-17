@@ -88,7 +88,11 @@ export const ModelName = {
   BlockchainEvent: 'BlockchainEvent',
   OperationalIncident: 'OperationalIncident',
   OperationalJobHeartbeat: 'OperationalJobHeartbeat',
-  RateLimitBucket: 'RateLimitBucket'
+  RateLimitBucket: 'RateLimitBucket',
+  RepaymentAgentMandate: 'RepaymentAgentMandate',
+  RepaymentAgentRun: 'RepaymentAgentRun',
+  RepaymentAgentStep: 'RepaymentAgentStep',
+  RepaymentAgentAction: 'RepaymentAgentAction'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -856,6 +860,100 @@ export const RateLimitBucketScalarFieldEnum = {
 } as const
 
 export type RateLimitBucketScalarFieldEnum = (typeof RateLimitBucketScalarFieldEnum)[keyof typeof RateLimitBucketScalarFieldEnum]
+
+
+export const RepaymentAgentMandateScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  borrowerMembershipId: 'borrowerMembershipId',
+  requestId: 'requestId',
+  walletAddress: 'walletAddress',
+  contractAddress: 'contractAddress',
+  agentAddress: 'agentAddress',
+  chainNonce: 'chainNonce',
+  maxPerRepaymentBaseUnits: 'maxPerRepaymentBaseUnits',
+  maxPerPeriodBaseUnits: 'maxPerPeriodBaseUnits',
+  minimumReserveBaseUnits: 'minimumReserveBaseUnits',
+  periodSeconds: 'periodSeconds',
+  earliestBeforeDueSeconds: 'earliestBeforeDueSeconds',
+  expiresAt: 'expiresAt',
+  allowanceBaseUnits: 'allowanceBaseUnits',
+  status: 'status',
+  transactionHash: 'transactionHash',
+  activatedAt: 'activatedAt',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RepaymentAgentMandateScalarFieldEnum = (typeof RepaymentAgentMandateScalarFieldEnum)[keyof typeof RepaymentAgentMandateScalarFieldEnum]
+
+
+export const RepaymentAgentRunScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  borrowerMembershipId: 'borrowerMembershipId',
+  trigger: 'trigger',
+  status: 'status',
+  plannerKind: 'plannerKind',
+  plannerModel: 'plannerModel',
+  promptVersion: 'promptVersion',
+  policyVersion: 'policyVersion',
+  inputSnapshot: 'inputSnapshot',
+  decision: 'decision',
+  outcomeCode: 'outcomeCode',
+  outcomeSummary: 'outcomeSummary',
+  requiresHumanApproval: 'requiresHumanApproval',
+  parentRunId: 'parentRunId',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type RepaymentAgentRunScalarFieldEnum = (typeof RepaymentAgentRunScalarFieldEnum)[keyof typeof RepaymentAgentRunScalarFieldEnum]
+
+
+export const RepaymentAgentStepScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  runId: 'runId',
+  sequence: 'sequence',
+  phase: 'phase',
+  name: 'name',
+  summary: 'summary',
+  data: 'data',
+  createdAt: 'createdAt'
+} as const
+
+export type RepaymentAgentStepScalarFieldEnum = (typeof RepaymentAgentStepScalarFieldEnum)[keyof typeof RepaymentAgentStepScalarFieldEnum]
+
+
+export const RepaymentAgentActionScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  runId: 'runId',
+  borrowerMembershipId: 'borrowerMembershipId',
+  loanId: 'loanId',
+  action: 'action',
+  amountBaseUnits: 'amountBaseUnits',
+  status: 'status',
+  repaymentRequestId: 'repaymentRequestId',
+  chainRepaymentId: 'chainRepaymentId',
+  mandateNonce: 'mandateNonce',
+  decision: 'decision',
+  validation: 'validation',
+  transactionHash: 'transactionHash',
+  verification: 'verification',
+  failureCode: 'failureCode',
+  attempts: 'attempts',
+  expiresAt: 'expiresAt',
+  submittedAt: 'submittedAt',
+  confirmedAt: 'confirmedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RepaymentAgentActionScalarFieldEnum = (typeof RepaymentAgentActionScalarFieldEnum)[keyof typeof RepaymentAgentActionScalarFieldEnum]
 
 
 export const SortOrder = {

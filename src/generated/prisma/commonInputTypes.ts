@@ -1194,6 +1194,91 @@ export type EnumOperationalIncidentStatusWithAggregatesFilter<$PrismaModel = nev
   _max?: Prisma.NestedEnumOperationalIncidentStatusFilter<$PrismaModel>
 }
 
+export type EnumRepaymentAgentMandateStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.RepaymentAgentMandateStatus | Prisma.EnumRepaymentAgentMandateStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RepaymentAgentMandateStatus[] | Prisma.ListEnumRepaymentAgentMandateStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RepaymentAgentMandateStatus[] | Prisma.ListEnumRepaymentAgentMandateStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRepaymentAgentMandateStatusFilter<$PrismaModel> | $Enums.RepaymentAgentMandateStatus
+}
+
+export type EnumRepaymentAgentMandateStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RepaymentAgentMandateStatus | Prisma.EnumRepaymentAgentMandateStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RepaymentAgentMandateStatus[] | Prisma.ListEnumRepaymentAgentMandateStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RepaymentAgentMandateStatus[] | Prisma.ListEnumRepaymentAgentMandateStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRepaymentAgentMandateStatusWithAggregatesFilter<$PrismaModel> | $Enums.RepaymentAgentMandateStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRepaymentAgentMandateStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRepaymentAgentMandateStatusFilter<$PrismaModel>
+}
+
+export type EnumRepaymentAgentTriggerFilter<$PrismaModel = never> = {
+  equals?: $Enums.RepaymentAgentTrigger | Prisma.EnumRepaymentAgentTriggerFieldRefInput<$PrismaModel>
+  in?: $Enums.RepaymentAgentTrigger[] | Prisma.ListEnumRepaymentAgentTriggerFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RepaymentAgentTrigger[] | Prisma.ListEnumRepaymentAgentTriggerFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRepaymentAgentTriggerFilter<$PrismaModel> | $Enums.RepaymentAgentTrigger
+}
+
+export type EnumRepaymentAgentRunStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.RepaymentAgentRunStatus | Prisma.EnumRepaymentAgentRunStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RepaymentAgentRunStatus[] | Prisma.ListEnumRepaymentAgentRunStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RepaymentAgentRunStatus[] | Prisma.ListEnumRepaymentAgentRunStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRepaymentAgentRunStatusFilter<$PrismaModel> | $Enums.RepaymentAgentRunStatus
+}
+
+export type EnumRepaymentAgentPlannerKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.RepaymentAgentPlannerKind | Prisma.EnumRepaymentAgentPlannerKindFieldRefInput<$PrismaModel>
+  in?: $Enums.RepaymentAgentPlannerKind[] | Prisma.ListEnumRepaymentAgentPlannerKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RepaymentAgentPlannerKind[] | Prisma.ListEnumRepaymentAgentPlannerKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRepaymentAgentPlannerKindFilter<$PrismaModel> | $Enums.RepaymentAgentPlannerKind
+}
+
+export type EnumRepaymentAgentTriggerWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RepaymentAgentTrigger | Prisma.EnumRepaymentAgentTriggerFieldRefInput<$PrismaModel>
+  in?: $Enums.RepaymentAgentTrigger[] | Prisma.ListEnumRepaymentAgentTriggerFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RepaymentAgentTrigger[] | Prisma.ListEnumRepaymentAgentTriggerFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRepaymentAgentTriggerWithAggregatesFilter<$PrismaModel> | $Enums.RepaymentAgentTrigger
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRepaymentAgentTriggerFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRepaymentAgentTriggerFilter<$PrismaModel>
+}
+
+export type EnumRepaymentAgentRunStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RepaymentAgentRunStatus | Prisma.EnumRepaymentAgentRunStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RepaymentAgentRunStatus[] | Prisma.ListEnumRepaymentAgentRunStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RepaymentAgentRunStatus[] | Prisma.ListEnumRepaymentAgentRunStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRepaymentAgentRunStatusWithAggregatesFilter<$PrismaModel> | $Enums.RepaymentAgentRunStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRepaymentAgentRunStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRepaymentAgentRunStatusFilter<$PrismaModel>
+}
+
+export type EnumRepaymentAgentPlannerKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RepaymentAgentPlannerKind | Prisma.EnumRepaymentAgentPlannerKindFieldRefInput<$PrismaModel>
+  in?: $Enums.RepaymentAgentPlannerKind[] | Prisma.ListEnumRepaymentAgentPlannerKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RepaymentAgentPlannerKind[] | Prisma.ListEnumRepaymentAgentPlannerKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRepaymentAgentPlannerKindWithAggregatesFilter<$PrismaModel> | $Enums.RepaymentAgentPlannerKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRepaymentAgentPlannerKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRepaymentAgentPlannerKindFilter<$PrismaModel>
+}
+
+export type EnumRepaymentAgentActionStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.RepaymentAgentActionStatus | Prisma.EnumRepaymentAgentActionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RepaymentAgentActionStatus[] | Prisma.ListEnumRepaymentAgentActionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RepaymentAgentActionStatus[] | Prisma.ListEnumRepaymentAgentActionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRepaymentAgentActionStatusFilter<$PrismaModel> | $Enums.RepaymentAgentActionStatus
+}
+
+export type EnumRepaymentAgentActionStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RepaymentAgentActionStatus | Prisma.EnumRepaymentAgentActionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RepaymentAgentActionStatus[] | Prisma.ListEnumRepaymentAgentActionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RepaymentAgentActionStatus[] | Prisma.ListEnumRepaymentAgentActionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRepaymentAgentActionStatusWithAggregatesFilter<$PrismaModel> | $Enums.RepaymentAgentActionStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRepaymentAgentActionStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRepaymentAgentActionStatusFilter<$PrismaModel>
+}
+
 export type NestedUuidFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -2327,6 +2412,91 @@ export type NestedEnumOperationalIncidentStatusWithAggregatesFilter<$PrismaModel
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumOperationalIncidentStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumOperationalIncidentStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumRepaymentAgentMandateStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.RepaymentAgentMandateStatus | Prisma.EnumRepaymentAgentMandateStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RepaymentAgentMandateStatus[] | Prisma.ListEnumRepaymentAgentMandateStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RepaymentAgentMandateStatus[] | Prisma.ListEnumRepaymentAgentMandateStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRepaymentAgentMandateStatusFilter<$PrismaModel> | $Enums.RepaymentAgentMandateStatus
+}
+
+export type NestedEnumRepaymentAgentMandateStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RepaymentAgentMandateStatus | Prisma.EnumRepaymentAgentMandateStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RepaymentAgentMandateStatus[] | Prisma.ListEnumRepaymentAgentMandateStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RepaymentAgentMandateStatus[] | Prisma.ListEnumRepaymentAgentMandateStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRepaymentAgentMandateStatusWithAggregatesFilter<$PrismaModel> | $Enums.RepaymentAgentMandateStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRepaymentAgentMandateStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRepaymentAgentMandateStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumRepaymentAgentTriggerFilter<$PrismaModel = never> = {
+  equals?: $Enums.RepaymentAgentTrigger | Prisma.EnumRepaymentAgentTriggerFieldRefInput<$PrismaModel>
+  in?: $Enums.RepaymentAgentTrigger[] | Prisma.ListEnumRepaymentAgentTriggerFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RepaymentAgentTrigger[] | Prisma.ListEnumRepaymentAgentTriggerFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRepaymentAgentTriggerFilter<$PrismaModel> | $Enums.RepaymentAgentTrigger
+}
+
+export type NestedEnumRepaymentAgentRunStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.RepaymentAgentRunStatus | Prisma.EnumRepaymentAgentRunStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RepaymentAgentRunStatus[] | Prisma.ListEnumRepaymentAgentRunStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RepaymentAgentRunStatus[] | Prisma.ListEnumRepaymentAgentRunStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRepaymentAgentRunStatusFilter<$PrismaModel> | $Enums.RepaymentAgentRunStatus
+}
+
+export type NestedEnumRepaymentAgentPlannerKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.RepaymentAgentPlannerKind | Prisma.EnumRepaymentAgentPlannerKindFieldRefInput<$PrismaModel>
+  in?: $Enums.RepaymentAgentPlannerKind[] | Prisma.ListEnumRepaymentAgentPlannerKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RepaymentAgentPlannerKind[] | Prisma.ListEnumRepaymentAgentPlannerKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRepaymentAgentPlannerKindFilter<$PrismaModel> | $Enums.RepaymentAgentPlannerKind
+}
+
+export type NestedEnumRepaymentAgentTriggerWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RepaymentAgentTrigger | Prisma.EnumRepaymentAgentTriggerFieldRefInput<$PrismaModel>
+  in?: $Enums.RepaymentAgentTrigger[] | Prisma.ListEnumRepaymentAgentTriggerFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RepaymentAgentTrigger[] | Prisma.ListEnumRepaymentAgentTriggerFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRepaymentAgentTriggerWithAggregatesFilter<$PrismaModel> | $Enums.RepaymentAgentTrigger
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRepaymentAgentTriggerFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRepaymentAgentTriggerFilter<$PrismaModel>
+}
+
+export type NestedEnumRepaymentAgentRunStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RepaymentAgentRunStatus | Prisma.EnumRepaymentAgentRunStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RepaymentAgentRunStatus[] | Prisma.ListEnumRepaymentAgentRunStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RepaymentAgentRunStatus[] | Prisma.ListEnumRepaymentAgentRunStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRepaymentAgentRunStatusWithAggregatesFilter<$PrismaModel> | $Enums.RepaymentAgentRunStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRepaymentAgentRunStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRepaymentAgentRunStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumRepaymentAgentPlannerKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RepaymentAgentPlannerKind | Prisma.EnumRepaymentAgentPlannerKindFieldRefInput<$PrismaModel>
+  in?: $Enums.RepaymentAgentPlannerKind[] | Prisma.ListEnumRepaymentAgentPlannerKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RepaymentAgentPlannerKind[] | Prisma.ListEnumRepaymentAgentPlannerKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRepaymentAgentPlannerKindWithAggregatesFilter<$PrismaModel> | $Enums.RepaymentAgentPlannerKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRepaymentAgentPlannerKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRepaymentAgentPlannerKindFilter<$PrismaModel>
+}
+
+export type NestedEnumRepaymentAgentActionStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.RepaymentAgentActionStatus | Prisma.EnumRepaymentAgentActionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RepaymentAgentActionStatus[] | Prisma.ListEnumRepaymentAgentActionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RepaymentAgentActionStatus[] | Prisma.ListEnumRepaymentAgentActionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRepaymentAgentActionStatusFilter<$PrismaModel> | $Enums.RepaymentAgentActionStatus
+}
+
+export type NestedEnumRepaymentAgentActionStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RepaymentAgentActionStatus | Prisma.EnumRepaymentAgentActionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RepaymentAgentActionStatus[] | Prisma.ListEnumRepaymentAgentActionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RepaymentAgentActionStatus[] | Prisma.ListEnumRepaymentAgentActionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRepaymentAgentActionStatusWithAggregatesFilter<$PrismaModel> | $Enums.RepaymentAgentActionStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRepaymentAgentActionStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRepaymentAgentActionStatusFilter<$PrismaModel>
 }
 
 

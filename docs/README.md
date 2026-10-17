@@ -17,6 +17,8 @@ state machine is documented in [end-to-end loan origination v1](./LOAN_ORIGINATI
 
 Arc Testnet pilot evidence and current blockers are recorded in the [Arc Testnet pilot report](./ARC_TESTNET_PILOT_REPORT.md).
 
+Post-loan repayment is handled by a bounded [repayment agent](./REPAYMENT_AGENT.md) that pays inside an on-chain mandate the borrower signs.
+
 For submission and demonstration, begin with the repository-root
 [`README.md`](../README.md), the current [technical architecture](./ARCHITECTURE.md),
 the [demonstration runbook](./DEMONSTRATION_RUNBOOK.md), and the
