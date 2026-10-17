@@ -138,7 +138,10 @@ describe("OpenAI repayment planner", () => {
       if (requests === 1) {
         return new Response(
           JSON.stringify({
-            error: { code: "tool_use_failed", message: "Failed to call a function." },
+            error: {
+              code: "tool_use_failed",
+              message: "Failed to call a function.",
+            },
           }),
           { status: 400 },
         );

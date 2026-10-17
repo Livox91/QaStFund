@@ -225,10 +225,11 @@ export class OpenAiRepaymentPlanner implements RepaymentPlanner {
         .json()
         .then((errorBody: { error?: unknown } | null) => errorBody?.error)
         .catch(() => undefined)) as
-        | { code?: unknown; message?: unknown }
-        | undefined;
+        { code?: unknown; message?: unknown } | undefined;
       const code =
-        typeof providerError?.code === "string" ? providerError.code : undefined;
+        typeof providerError?.code === "string"
+          ? providerError.code
+          : undefined;
       console.warn("repayment-agent model request rejected", {
         status: response.status,
         model: this.model,
