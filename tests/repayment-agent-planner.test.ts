@@ -130,6 +130,58 @@ describe("OpenAI repayment planner", () => {
     );
     expect(steps.some((step) => step.name === "PLANNER_FALLBACK")).toBe(true);
   });
+
+  it("retries a malformed tool call instead of falling back", async () => {
+    let requests = 0;
+    const flaky = (async () => {
+      requests += 1;
+      if (requests === 1) {
+        return new Response(
+          JSON.stringify({
+            error: { code: "tool_use_failed", message: "Failed to call a function." },
+          }),
+          { status: 400 },
+        );
+      }
+      return new Response(
+        JSON.stringify({
+          choices: [
+            {
+              message: toolCall("1", "submit_decision", {
+                action: "WAIT",
+                loanRef: null,
+                amountBaseUnits: null,
+                reasonCodes: ["NOT_DUE_YET"],
+                explanation: "Nothing is due soon, so the agent waits.",
+                rejectedAlternatives: [
+                  { action: "PAY_FULL", reason: "Not due for weeks." },
+                ],
+                confidence: 0.8,
+                nextReviewInHours: 24,
+              }),
+            },
+          ],
+        }),
+        { status: 200 },
+      );
+    }) as unknown as typeof fetch;
+    const planner = new OpenAiRepaymentPlanner({
+      apiKey: "k",
+      model: "m",
+      fetchImplementation: flaky,
+    });
+    const world = createWorld({
+      balanceUsdc: 200,
+      obligations: [{ outstandingUsdc: 20, dueInHours: 24 * 30 }],
+      planner,
+    });
+    await world.run();
+    expect(requests).toBeGreaterThanOrEqual(2);
+    const steps = [...world.repository.runs.values()].flatMap(
+      (run) => run.steps,
+    );
+    expect(steps.some((step) => step.name === "PLANNER_FALLBACK")).toBe(false);
+  });
 });
 
 describe("explanation amount parsing", () => {

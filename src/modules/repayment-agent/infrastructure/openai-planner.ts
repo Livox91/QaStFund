@@ -89,6 +89,14 @@ const tools = [
   },
 ];
 
+const MAX_TOOL_CALL_ATTEMPTS = 3;
+const RETRYABLE_TOOL_CALL_CODES = new Set([
+  "tool_use_failed",
+  "json_validate_failed",
+]);
+
+class ModelToolCallFailedError extends PlannerUnavailableError {}
+
 export class OpenAiRepaymentPlanner implements RepaymentPlanner {
   readonly kind = "MODEL" as const;
   readonly model: string;
@@ -164,6 +172,25 @@ export class OpenAiRepaymentPlanner implements RepaymentPlanner {
   }
 
   private async complete(messages: ChatMessage[], forceDecision: boolean) {
+    // Some OpenAI-compatible hosts (Groq with gpt-oss) answer 400
+    // tool_use_failed / json_validate_failed when the model emits a malformed
+    // tool call. That is a sampling failure, not a bad request, so the same
+    // turn is retried before the planner falls back to rules.
+    for (let attempt = 1; ; attempt += 1) {
+      try {
+        return await this.completeOnce(messages, forceDecision);
+      } catch (error) {
+        if (
+          !(error instanceof ModelToolCallFailedError) ||
+          attempt >= MAX_TOOL_CALL_ATTEMPTS
+        ) {
+          throw error;
+        }
+      }
+    }
+  }
+
+  private async completeOnce(messages: ChatMessage[], forceDecision: boolean) {
     const fetchImplementation = this.config.fetchImplementation ?? fetch;
     let response: Response;
     try {
@@ -191,6 +218,29 @@ export class OpenAiRepaymentPlanner implements RepaymentPlanner {
       throw new PlannerUnavailableError("MODEL_UNREACHABLE");
     }
     if (!response.ok) {
+      // The provider's error message explains rejected requests (unsupported
+      // parameter, bad model name). It is logged server-side only; the
+      // activity log records just the status code.
+      const providerError = (await response
+        .json()
+        .then((errorBody: { error?: unknown } | null) => errorBody?.error)
+        .catch(() => undefined)) as
+        | { code?: unknown; message?: unknown }
+        | undefined;
+      const code =
+        typeof providerError?.code === "string" ? providerError.code : undefined;
+      console.warn("repayment-agent model request rejected", {
+        status: response.status,
+        model: this.model,
+        code,
+        message:
+          typeof providerError?.message === "string"
+            ? providerError.message.slice(0, 500)
+            : undefined,
+      });
+      if (code && RETRYABLE_TOOL_CALL_CODES.has(code)) {
+        throw new ModelToolCallFailedError(`MODEL_HTTP_${response.status}`);
+      }
       throw new PlannerUnavailableError(`MODEL_HTTP_${response.status}`);
     }
     const body = (await response
