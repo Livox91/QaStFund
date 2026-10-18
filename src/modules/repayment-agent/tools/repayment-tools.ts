@@ -54,7 +54,6 @@ export const repaymentToolDefinitions: ReadonlyArray<{
     parameters: {
       type: "object",
       properties: {},
-      required: [],
       additionalProperties: false,
     },
   },
@@ -65,7 +64,6 @@ export const repaymentToolDefinitions: ReadonlyArray<{
     parameters: {
       type: "object",
       properties: {},
-      required: [],
       additionalProperties: false,
     },
   },
@@ -76,7 +74,6 @@ export const repaymentToolDefinitions: ReadonlyArray<{
     parameters: {
       type: "object",
       properties: {},
-      required: [],
       additionalProperties: false,
     },
   },
@@ -87,7 +84,6 @@ export const repaymentToolDefinitions: ReadonlyArray<{
     parameters: {
       type: "object",
       properties: {},
-      required: [],
       additionalProperties: false,
     },
   },
@@ -98,7 +94,6 @@ export const repaymentToolDefinitions: ReadonlyArray<{
     parameters: {
       type: "object",
       properties: {},
-      required: [],
       additionalProperties: false,
     },
   },
