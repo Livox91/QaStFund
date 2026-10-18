@@ -34,7 +34,7 @@ export default async function EmployerEmployeeProfilePage({
   const mapping = employee.employeeDirectoryMappings[0];
   const former = !employee.isActive || employee.employmentStatus !== "ACTIVE";
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+    <main className="app-page">
       <PageHeader
         description="Employment identity and preserved financial history."
         eyebrow="Employee profile"

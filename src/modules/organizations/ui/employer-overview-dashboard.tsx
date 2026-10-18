@@ -4,6 +4,7 @@ import type {
   EmployerOverviewLoan,
 } from "@/modules/organizations/domain/employer-overview";
 import { Badge } from "@/shared/ui/badge";
+import { buttonStyles } from "@/shared/ui/button";
 import {
   Card,
   CardContent,
@@ -75,6 +76,26 @@ function MetricCard({
   );
 }
 
+function DirectoryStat({
+  helper,
+  label,
+  value,
+}: {
+  helper: string;
+  label: string;
+  value: React.ReactNode;
+}) {
+  return (
+    <div className="rounded-xl bg-slate-50 p-4">
+      <p className="text-sm font-medium text-slate-500">{label}</p>
+      <p className="mt-2 text-xl font-semibold tracking-tight text-slate-950">
+        {value}
+      </p>
+      <p className="mt-1 text-xs leading-5 text-slate-500">{helper}</p>
+    </div>
+  );
+}
+
 function RecentLoanTable({
   loans,
 }: {
@@ -106,8 +127,13 @@ function RecentLoanTable({
         <TableBody>
           {loans.map((loan) => (
             <TableRow key={loan.id}>
-              <TableCell className="font-semibold text-slate-950">
-                {loan.borrowerName}
+              <TableCell className="font-semibold">
+                <Link
+                  className="hover:text-brand text-slate-950 hover:underline"
+                  href={`/employer/loans/${loan.id}`}
+                >
+                  {loan.borrowerName}
+                </Link>
               </TableCell>
               <TableCell>{loan.lenderName}</TableCell>
               <TableCell>
@@ -161,6 +187,12 @@ function AttentionLoan({ loan }: { loan: EmployerOverviewAttentionLoan }) {
         </div>
         <StatusDisplay status={loan.status} />
       </div>
+      <Link
+        className="text-brand mt-3 inline-block text-sm font-semibold hover:underline"
+        href={`/employer/loans/${loan.id}`}
+      >
+        Review loan
+      </Link>
     </li>
   );
 }
@@ -185,7 +217,7 @@ export function EmployerOverviewDashboard({
   const { metrics } = overview;
 
   return (
-    <main className="mx-auto max-w-[1600px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+    <main className="app-page app-page-wide">
       <PageHeader
         actions={
           <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-500 shadow-sm">
@@ -208,37 +240,45 @@ export function EmployerOverviewDashboard({
                   ERPNext connection and employee onboarding status.
                 </CardDescription>
               </div>
-              <Badge
-                tone={
-                  directorySummary.lastSyncStatus === "success"
-                    ? "success"
-                    : directorySummary.lastSyncStatus === "partial"
-                      ? "warning"
-                      : "neutral"
-                }
-              >
-                {directorySummary.lastSyncStatus.replaceAll("_", " ")}
-              </Badge>
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge
+                  tone={
+                    directorySummary.lastSyncStatus === "success"
+                      ? "success"
+                      : directorySummary.lastSyncStatus === "partial"
+                        ? "warning"
+                        : "neutral"
+                  }
+                >
+                  {directorySummary.lastSyncStatus.replaceAll("_", " ")}
+                </Badge>
+                <Link
+                  className={buttonStyles({ size: "sm", variant: "outline" })}
+                  href="/employer/employees"
+                >
+                  Manage employees
+                </Link>
+              </div>
             </div>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <MetricCard
+              <DirectoryStat
                 helper="Accepted invitations with active access"
                 label="Active employees"
                 value={directorySummary.activeEmployees}
               />
-              <MetricCard
+              <DirectoryStat
                 helper="Waiting for employee acceptance"
                 label="Pending invitations"
                 value={directorySummary.pendingInvitations}
               />
-              <MetricCard
+              <DirectoryStat
                 helper="Access removed; history retained"
                 label="Former employees"
                 value={directorySummary.formerEmployees}
               />
-              <MetricCard
+              <DirectoryStat
                 helper={
                   directorySummary.lastSyncAt
                     ? `Last sync ${timestampFormatter.format(directorySummary.lastSyncAt)}`
@@ -258,12 +298,7 @@ export function EmployerOverviewDashboard({
       </section>
 
       <section aria-label="Organization metrics" className="mt-8">
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <MetricCard
-            helper="Active employee memberships"
-            label="Total employees"
-            value={metrics.totalEmployees.toLocaleString("en-US")}
-          />
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           <MetricCard
             helper="Active offers or outstanding loans"
             label="Currently lending"
@@ -359,3 +394,4 @@ export function EmployerOverviewDashboard({
     </main>
   );
 }
+import Link from "next/link";

@@ -41,7 +41,7 @@ export default async function EmployeeOnboardingPage() {
   ] as const;
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+    <main className="app-page app-page-narrow">
       <PageHeader
         description={`Review your account, wallet, and lending access for ${actor.organizationName}.`}
         eyebrow="Employee portal"

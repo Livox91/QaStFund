@@ -10,6 +10,7 @@ import {
   type IntegrationActionState,
 } from "@/app/(employer)/employer/integrations/actions";
 import { Button, buttonStyles } from "@/shared/ui/button";
+import { Field, Input, Select } from "@/shared/ui/input";
 
 const initialState: IntegrationActionState = { status: "idle", message: "" };
 
@@ -112,43 +113,41 @@ export function IntegrationConfigurationForm({
     if (apiSecretRef.current) apiSecretRef.current.value = "";
     if (accessTokenRef.current) accessTokenRef.current.value = "";
   }, [state.status]);
-  const fieldClass =
-    "mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm";
   return (
     <form action={action} className="grid gap-4 md:grid-cols-2">
-      <label className="text-sm font-medium text-slate-700 md:col-span-2">
-        ERPNext base URL
-        <input
-          className={fieldClass}
+      <Field
+        className="md:col-span-2"
+        htmlFor="erp-base-url"
+        label="ERPNext base URL"
+      >
+        <Input
           defaultValue={defaults?.baseUrl}
+          id="erp-base-url"
           name="baseUrl"
           placeholder="https://erp.example.com"
           required
         />
-      </label>
-      <label className="text-sm font-medium text-slate-700">
-        API path
-        <input
-          className={fieldClass}
+      </Field>
+      <Field htmlFor="erp-api-path" label="API path">
+        <Input
           defaultValue={defaults?.apiPath ?? "/api/resource"}
+          id="erp-api-path"
           name="apiPath"
           required
         />
-      </label>
-      <label className="text-sm font-medium text-slate-700">
-        API version
-        <input
-          className={fieldClass}
+      </Field>
+      <Field htmlFor="erp-api-version" label="API version">
+        <Input
           defaultValue={defaults?.apiVersion ?? "v1"}
+          id="erp-api-version"
           name="apiVersion"
           required
         />
-      </label>
-      <label className="text-sm font-medium text-slate-700">
-        Authentication
-        <select
-          className={fieldClass}
+      </Field>
+      <Field htmlFor="erp-auth-method" label="Authentication">
+        <Select
           defaultValue={defaults?.authMethod ?? "token"}
+          id="erp-auth-method"
           name="authMethod"
           onChange={(event) =>
             setAuthMethod(event.target.value as "token" | "oauth_bearer")
@@ -156,15 +155,14 @@ export function IntegrationConfigurationForm({
         >
           <option value="token">API token</option>
           <option value="oauth_bearer">OAuth bearer token</option>
-        </select>
-      </label>
+        </Select>
+      </Field>
       {authMethod === "token" ? (
         <>
-          <label className="text-sm font-medium text-slate-700">
-            ERPNext API key
-            <input
+          <Field htmlFor="erp-api-key" label="ERPNext API key">
+            <Input
               autoComplete="off"
-              className={fieldClass}
+              id="erp-api-key"
               name="apiKey"
               ref={apiKeyRef}
               required={
@@ -173,12 +171,11 @@ export function IntegrationConfigurationForm({
               }
               type="password"
             />
-          </label>
-          <label className="text-sm font-medium text-slate-700">
-            ERPNext API secret
-            <input
+          </Field>
+          <Field htmlFor="erp-api-secret" label="ERPNext API secret">
+            <Input
               autoComplete="new-password"
-              className={fieldClass}
+              id="erp-api-secret"
               name="apiSecret"
               ref={apiSecretRef}
               required={
@@ -187,14 +184,17 @@ export function IntegrationConfigurationForm({
               }
               type="password"
             />
-          </label>
+          </Field>
         </>
       ) : (
-        <label className="text-sm font-medium text-slate-700 md:col-span-2">
-          ERPNext OAuth access token
-          <input
+        <Field
+          className="md:col-span-2"
+          htmlFor="erp-access-token"
+          label="ERPNext OAuth access token"
+        >
+          <Input
             autoComplete="new-password"
-            className={fieldClass}
+            id="erp-access-token"
             name="accessToken"
             ref={accessTokenRef}
             required={
@@ -203,7 +203,7 @@ export function IntegrationConfigurationForm({
             }
             type="password"
           />
-        </label>
+        </Field>
       )}
       {defaults?.credentialConfigured ? (
         <p className="text-xs text-slate-500 md:col-span-2">
@@ -211,24 +211,25 @@ export function IntegrationConfigurationForm({
           keep them, or enter replacements to rotate them.
         </p>
       ) : null}
-      <label className="text-sm font-medium text-slate-700">
-        Timeout (milliseconds)
-        <input
-          className={fieldClass}
+      <Field htmlFor="erp-timeout" label="Timeout (milliseconds)">
+        <Input
           defaultValue={defaults?.timeoutMs ?? 5000}
+          id="erp-timeout"
           max={30000}
           min={500}
           name="timeoutMs"
           type="number"
           required
         />
-      </label>
+      </Field>
       {(["active", "inactive", "left", "suspended"] as const).map(
         (external) => (
-          <label className="text-sm font-medium text-slate-700" key={external}>
-            ERPNext “{external}” maps to
-            <select
-              className={fieldClass}
+          <Field
+            htmlFor={`erp-status-${external}`}
+            key={external}
+            label={`ERPNext “${external}” maps to`}
+          >
+            <Select
               defaultValue={
                 (defaults?.statusMapping[external] ?? external === "active")
                   ? "ACTIVE"
@@ -236,14 +237,15 @@ export function IntegrationConfigurationForm({
                     ? "TERMINATED"
                     : "SUSPENDED"
               }
+              id={`erp-status-${external}`}
               name={`${external}Status`}
             >
               <option value="IGNORE">Review only (no change)</option>
               <option value="ACTIVE">Active</option>
               <option value="SUSPENDED">Suspended</option>
               <option value="TERMINATED">Terminated</option>
-            </select>
-          </label>
+            </Select>
+          </Field>
         ),
       )}
       <div className="flex items-center gap-3 md:col-span-2">

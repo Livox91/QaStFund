@@ -49,10 +49,7 @@ export function ApplicationShell({
           </div>
         </div>
 
-        <div className="flex-1 px-4 py-6">
-          <p className="mb-2 px-3 text-[11px] font-semibold tracking-wider text-slate-400 uppercase">
-            Workspace
-          </p>
+        <div className="flex-1 overflow-y-auto px-4 py-6">
           <Navigation items={navigation} />
         </div>
 

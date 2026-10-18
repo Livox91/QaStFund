@@ -299,7 +299,7 @@ export type DelinquencyNotificationWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   idempotencyKey?: string
   organizationId_id?: Prisma.DelinquencyNotificationOrganizationIdIdCompoundUniqueInput
-  caseId_thresholdKey?: Prisma.DelinquencyNotificationCaseIdThresholdKeyCompoundUniqueInput
+  caseId_thresholdKey_recipientMembershipId?: Prisma.DelinquencyNotificationCaseIdThresholdKeyRecipientMembershipIdCompoundUniqueInput
   AND?: Prisma.DelinquencyNotificationWhereInput | Prisma.DelinquencyNotificationWhereInput[]
   OR?: Prisma.DelinquencyNotificationWhereInput[]
   NOT?: Prisma.DelinquencyNotificationWhereInput | Prisma.DelinquencyNotificationWhereInput[]
@@ -316,7 +316,7 @@ export type DelinquencyNotificationWhereUniqueInput = Prisma.AtLeast<{
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   case?: Prisma.XOR<Prisma.DelinquencyCaseScalarRelationFilter, Prisma.DelinquencyCaseWhereInput>
   recipientMembership?: Prisma.XOR<Prisma.OrganizationMembershipScalarRelationFilter, Prisma.OrganizationMembershipWhereInput>
-}, "id" | "idempotencyKey" | "organizationId_id" | "caseId_thresholdKey">
+}, "id" | "idempotencyKey" | "organizationId_id" | "caseId_thresholdKey_recipientMembershipId">
 
 export type DelinquencyNotificationOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -473,9 +473,10 @@ export type DelinquencyNotificationOrganizationIdIdCompoundUniqueInput = {
   id: string
 }
 
-export type DelinquencyNotificationCaseIdThresholdKeyCompoundUniqueInput = {
+export type DelinquencyNotificationCaseIdThresholdKeyRecipientMembershipIdCompoundUniqueInput = {
   caseId: string
   thresholdKey: string
+  recipientMembershipId: string
 }
 
 export type DelinquencyNotificationCountOrderByAggregateInput = {

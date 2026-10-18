@@ -53,10 +53,12 @@ export function EmployeeLoanDetails({
   decision,
   loan,
   repaymentRecorded,
+  supportsPartialRepayment = false,
 }: {
   decision?: LoanDecision | null;
   loan: EmployeeLoanDetailsView;
   repaymentRecorded: boolean;
+  supportsPartialRepayment?: boolean;
 }) {
   const isOverdue =
     loan.status !== "REPAID" &&
@@ -67,7 +69,7 @@ export function EmployeeLoanDetails({
     : 0;
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+    <main className="app-page">
       <Link
         className={buttonStyles({
           className: "mb-6 -ml-3",
@@ -96,7 +98,7 @@ export function EmployeeLoanDetails({
       {isOverdue ? (
         <p className="mt-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800">
           This payment is {daysOverdue} {daysOverdue === 1 ? "day" : "days"}
-          overdue. You can still repay the full amount normally.
+          overdue. You can still make a partial or final payment.
         </p>
       ) : null}
 
@@ -105,8 +107,9 @@ export function EmployeeLoanDetails({
           className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800"
           role="status"
         >
-          Repayment confirmed. The funds reached {loan.lenderName} and this loan
-          is now repaid.
+          {loan.status === "REPAID"
+            ? `Repayment confirmed. The funds reached ${loan.lenderName} and this loan is now repaid.`
+            : `Payment confirmed. The funds reached ${loan.lenderName} and your remaining balance has been updated.`}
         </p>
       ) : null}
 
@@ -318,7 +321,9 @@ export function EmployeeLoanDetails({
               {loan.canRepay
                 ? loan.repaymentBaseUnits === null
                   ? "Make a partial or final payment against the oldest installment."
-                  : "Repay the full agreed amount to your lender."
+                  : supportsPartialRepayment
+                    ? "Make a partial payment or pay the remaining balance in full."
+                    : "Repay the full agreed amount to your lender."
                 : "This loan does not accept additional repayments."}
             </CardDescription>
           </CardHeader>
@@ -335,13 +340,16 @@ export function EmployeeLoanDetails({
                   <RepaymentForm
                     lenderName={loan.lenderName}
                     loanId={loan.id}
-                    repaymentBaseUnits={loan.repaymentBaseUnits.toString()}
+                    remainingAmountMinorUnits={loan.remainingAmountMinorUnits.toString()}
+                    supportsPartialRepayment={supportsPartialRepayment}
                   />
                 )}
                 <p className="mt-5 border-t border-slate-100 pt-4 text-xs leading-5 text-slate-500">
                   {loan.repaymentBaseUnits === null
                     ? "Each successful payment is recorded separately and cannot exceed the remaining scheduled balance."
-                    : "You will authorize the exact amount due. The payment and loan completion happen together."}
+                    : supportsPartialRepayment
+                      ? "Each payment is sent directly to the lender and reduces the oldest outstanding installment first."
+                      : "You will authorize the exact amount due. The payment and loan completion happen together."}
                 </p>
               </>
             ) : (

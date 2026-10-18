@@ -7,7 +7,7 @@ export function Card({
   return (
     <section
       className={cn(
-        "bg-surface rounded-2xl border border-slate-200 shadow-sm",
+        "bg-surface rounded-2xl border border-slate-200 shadow-[0_1px_2px_rgba(15,23,42,0.04)]",
         className,
       )}
     >
@@ -20,7 +20,9 @@ export function CardHeader({
   children,
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("p-6 pb-0", className)}>{children}</div>;
+  return (
+    <div className={cn("p-5 pb-0 sm:p-6 sm:pb-0", className)}>{children}</div>
+  );
 }
 
 export function CardTitle({
@@ -54,7 +56,7 @@ export function CardContent({
   children,
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("p-6", className)}>{children}</div>;
+  return <div className={cn("p-5 sm:p-6", className)}>{children}</div>;
 }
 
 export function CardFooter({
@@ -64,7 +66,7 @@ export function CardFooter({
   return (
     <div
       className={cn(
-        "flex items-center gap-3 border-t border-slate-100 px-6 py-4",
+        "flex flex-wrap items-center gap-3 border-t border-slate-100 px-5 py-4 sm:px-6",
         className,
       )}
     >

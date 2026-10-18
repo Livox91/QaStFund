@@ -7,7 +7,10 @@ import {
   ORIGINATION_DECISION_MODEL_VERSION,
   type OriginationDecisionInput,
 } from "@/modules/loan-decisions/domain/origination-decision";
-import { isOriginationAuthorized } from "@/modules/loan-decisions/infrastructure/prisma-origination-decision-repository";
+import {
+  completedEmploymentMonths,
+  isOriginationAuthorized,
+} from "@/modules/loan-decisions/infrastructure/prisma-origination-decision-repository";
 
 function input(
   overrides: Partial<OriginationDecisionInput> = {},
@@ -55,6 +58,26 @@ function input(
 }
 
 describe("manual-review-first origination rules v1", () => {
+  it("derives only completed calendar months from verified employment dates", () => {
+    expect(
+      completedEmploymentMonths(
+        new Date("2024-01-31T00:00:00.000Z"),
+        new Date("2024-02-29T12:00:00.000Z"),
+      ),
+    ).toBe(0);
+    expect(
+      completedEmploymentMonths(
+        new Date("2024-01-15T00:00:00.000Z"),
+        new Date("2025-03-15T00:00:00.000Z"),
+      ),
+    ).toBe(14);
+    expect(
+      completedEmploymentMonths(
+        new Date("2027-01-01T00:00:00.000Z"),
+        new Date("2026-01-01T00:00:00.000Z"),
+      ),
+    ).toBeNull();
+  });
   it("is deterministic, versioned, and never emits a score", () => {
     const value = input();
     const result = evaluateOriginationDecision(value);

@@ -7,7 +7,10 @@ import {
   ensureUserWallet,
   getCompletedAccountBalance,
 } from "@/modules/ledger/infrastructure/ledger-posting";
-import { validateOfferAgainstPolicy } from "@/modules/policies/domain/lending-policy";
+import {
+  DEFAULT_LENDING_POLICY,
+  validateOfferAgainstPolicy,
+} from "@/modules/policies/domain/lending-policy";
 import { ensureOrganizationPolicy } from "@/modules/policies/infrastructure/policy-data";
 import {
   getLendingOfferDisplayStatus,
@@ -224,93 +227,93 @@ export const prismaLendingOfferRepository: LendingOfferRepository = {
   },
 
   async listMarketplace({ filters, now, organizationId, userId }) {
-    return prisma.$transaction(async (transaction) => {
-      const membership = await transaction.organizationMembership.findUnique({
-        where: { organizationId_userId: { organizationId, userId } },
-        select: {
-          id: true,
-          isActive: true,
-          employmentStatus: true,
-          role: true,
-          canBorrow: true,
-        },
-      });
-
-      if (
-        !membership?.isActive ||
-        membership.role !== MembershipRole.EMPLOYEE
-      ) {
-        return null;
-      }
-
-      const organization = await transaction.organization.findUniqueOrThrow({
-        where: { id: organizationId },
-        select: { currency: true },
-      });
-      const policy = await ensureOrganizationPolicy(
-        transaction,
-        organizationId,
-      );
-      if (
-        !policy.lendingEnabled ||
-        !policy.borrowingEnabled ||
-        membership.employmentStatus !== "ACTIVE" ||
-        !membership.canBorrow
-      ) {
-        return { currency: organization.currency, offers: [] };
-      }
-      const orderBy =
-        filters.sort === LendingMarketplaceSort.MOST_AVAILABLE
-          ? [{ availableAmountMinorUnits: "desc" as const }]
-          : filters.sort === LendingMarketplaceSort.SHORTEST_DURATION
-            ? [{ durationDays: "asc" as const }]
-            : filters.sort === LendingMarketplaceSort.EXPIRING_SOON
-              ? [{ expiresAt: "asc" as const }]
-              : [
-                  { feeRateBasisPoints: "asc" as const },
-                  { availableAmountMinorUnits: "desc" as const },
-                ];
-      const offers = await transaction.lendingOffer.findMany({
-        where: {
-          organizationId,
-          currency: organization.currency,
-          status: "ACTIVE",
-          fundingStatus: "FUNDED",
-          lenderMembershipId: { not: membership.id },
-          expiresAt: { gt: now },
-          availableAmountMinorUnits: { gt: 0n },
-          lenderMembership: {
-            isActive: true,
-            employmentStatus: "ACTIVE",
-            role: "EMPLOYEE",
-            canLend: true,
+    const membership = await prisma.organizationMembership.findUnique({
+      where: { organizationId_userId: { organizationId, userId } },
+      select: {
+        id: true,
+        isActive: true,
+        employmentStatus: true,
+        role: true,
+        canBorrow: true,
+        organization: {
+          select: {
+            currency: true,
+            lendingPolicy: {
+              select: {
+                lendingEnabled: true,
+                borrowingEnabled: true,
+              },
+            },
           },
-          ...(filters.amountMinorUnits
-            ? {
-                minimumLoanAmountMinorUnits: {
-                  lte: filters.amountMinorUnits,
-                },
-                maximumLoanAmountMinorUnits: {
-                  gte: filters.amountMinorUnits,
-                },
-                availableAmountMinorUnits: {
-                  gte: filters.amountMinorUnits,
-                },
-              }
-            : {}),
-          ...(filters.maximumDurationDays
-            ? { durationDays: { lte: filters.maximumDurationDays } }
-            : {}),
         },
-        orderBy,
-        select: offerSelection,
-      });
-
-      return {
-        currency: organization.currency,
-        offers: (offers as OfferRow[]).map((offer) => toOfferView(offer, now)),
-      };
+      },
     });
+
+    if (!membership?.isActive || membership.role !== MembershipRole.EMPLOYEE) {
+      return null;
+    }
+
+    const { currency, lendingPolicy } = membership.organization;
+    const policy = lendingPolicy ?? DEFAULT_LENDING_POLICY;
+    if (
+      !policy.lendingEnabled ||
+      !policy.borrowingEnabled ||
+      membership.employmentStatus !== "ACTIVE" ||
+      !membership.canBorrow
+    ) {
+      return { currency, offers: [] };
+    }
+    const orderBy =
+      filters.sort === LendingMarketplaceSort.MOST_AVAILABLE
+        ? [{ availableAmountMinorUnits: "desc" as const }]
+        : filters.sort === LendingMarketplaceSort.SHORTEST_DURATION
+          ? [{ durationDays: "asc" as const }]
+          : filters.sort === LendingMarketplaceSort.EXPIRING_SOON
+            ? [{ expiresAt: "asc" as const }]
+            : [
+                { feeRateBasisPoints: "asc" as const },
+                { availableAmountMinorUnits: "desc" as const },
+              ];
+    const offers = await prisma.lendingOffer.findMany({
+      where: {
+        organizationId,
+        currency,
+        status: "ACTIVE",
+        fundingStatus: "FUNDED",
+        lenderMembershipId: { not: membership.id },
+        expiresAt: { gt: now },
+        availableAmountMinorUnits: { gt: 0n },
+        lenderMembership: {
+          isActive: true,
+          employmentStatus: "ACTIVE",
+          role: "EMPLOYEE",
+          canLend: true,
+        },
+        ...(filters.amountMinorUnits
+          ? {
+              minimumLoanAmountMinorUnits: {
+                lte: filters.amountMinorUnits,
+              },
+              maximumLoanAmountMinorUnits: {
+                gte: filters.amountMinorUnits,
+              },
+              availableAmountMinorUnits: {
+                gte: filters.amountMinorUnits,
+              },
+            }
+          : {}),
+        ...(filters.maximumDurationDays
+          ? { durationDays: { lte: filters.maximumDurationDays } }
+          : {}),
+      },
+      orderBy,
+      select: offerSelection,
+    });
+
+    return {
+      currency,
+      offers: (offers as OfferRow[]).map((offer) => toOfferView(offer, now)),
+    };
   },
 
   async listActiveForOrganization({ now, organizationId, userId }) {

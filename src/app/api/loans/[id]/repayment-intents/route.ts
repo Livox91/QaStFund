@@ -40,6 +40,8 @@ export async function POST(
       actor,
       loanId,
       parsed.data.requestId,
+      undefined,
+      parsed.data.amount,
     );
     return apiSuccess({ intent }, 201);
   } catch (error) {

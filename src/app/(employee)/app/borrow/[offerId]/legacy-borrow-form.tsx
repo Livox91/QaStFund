@@ -8,7 +8,7 @@ import { generateRepaymentSchedule } from "@/modules/repayment-plans/domain/repa
 import { parseUsdcCents } from "@/shared/money/usdc";
 import { Button } from "@/shared/ui/button";
 import { CurrencyDisplay } from "@/shared/ui/currency-display";
-import { Field, Input } from "@/shared/ui/input";
+import { Field, Input, Select } from "@/shared/ui/input";
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
   day: "numeric",
@@ -137,8 +137,7 @@ export function LegacyBorrowForm(
         />
       </Field>
       <Field htmlFor="repayment-term" label="Repayment duration">
-        <select
-          className="h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm"
+        <Select
           id="repayment-term"
           onChange={(event) =>
             setTermMonths(Number(event.target.value) as 1 | 2 | 3)
@@ -150,7 +149,7 @@ export function LegacyBorrowForm(
               {term} month{term === 1 ? "" : "s"}
             </option>
           ))}
-        </select>
+        </Select>
       </Field>
       {preview ? (
         <div className="space-y-4 rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm">

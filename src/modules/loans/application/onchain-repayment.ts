@@ -29,10 +29,13 @@ import {
   getConfiguredEscrowAddress,
 } from "@/integrations/arc/employee-lending-escrow";
 import {
+  borrowerRepaymentIdToBytes32,
   escrowV3Abi,
   getConfiguredEscrowVersion,
 } from "@/integrations/arc/escrow-v3";
 import type { AuthenticatedActor } from "@/modules/auth/domain/actor";
+import { verifyRepaymentLogs } from "@/modules/repayment-agent/domain/receipt-verification";
+import { settleVerifiedRepayment } from "@/modules/repayment-agent/infrastructure/prisma-repayment-agent-repository";
 import { ApplicationError } from "@/shared/errors/application-error";
 import { USDC_BASE_UNITS_PER_CENT } from "@/shared/money/usdc";
 
@@ -112,6 +115,7 @@ type ConfirmOnChainRepaymentDependencies = Readonly<{
   contractAddress?: `0x${string}`;
   database?: typeof prisma;
   getTransactionReceipt?: typeof client.getTransactionReceipt;
+  getBlock?: typeof client.getBlock;
   readLoan?: typeof readChainLoan;
 }>;
 
@@ -171,16 +175,31 @@ export async function prepareOnChainRepayment(
   loanId: string,
   requestId: string,
   dependencies: PrepareOnChainRepaymentDependencies = {},
+  requestedBaseUnits?: bigint,
 ) {
   const database = dependencies.database ?? prisma;
   const configuredContract =
     dependencies.contractAddress ?? getConfiguredEscrowAddress();
   if (!configuredContract) throw configurationError();
+  const supportsPartialRepayment = getConfiguredEscrowVersion() === "3";
+  if (
+    requestedBaseUnits !== undefined &&
+    (!supportsPartialRepayment ||
+      requestedBaseUnits <= 0n ||
+      requestedBaseUnits % USDC_BASE_UNITS_PER_CENT !== 0n)
+  ) {
+    throw new ApplicationError(
+      "INVALID_REPAYMENT_AMOUNT",
+      "Enter an amount between $0.01 and the remaining balance.",
+      400,
+    );
+  }
 
   const existing = await database.loanRepayment.findUnique({
     where: { repaymentRequestId: requestId },
     select: {
       id: true,
+      repaymentRequestId: true,
       amountMinorUnits: true,
       status: true,
       submissionTransactionHash: true,
@@ -216,14 +235,30 @@ export async function prepareOnChainRepayment(
     ) {
       throw unavailableError();
     }
+    const requestedMinor =
+      requestedBaseUnits === undefined
+        ? null
+        : requestedBaseUnits / USDC_BASE_UNITS_PER_CENT;
+    if (
+      requestedMinor !== null &&
+      existing.amountMinorUnits !== requestedMinor
+    ) {
+      throw new ApplicationError(
+        "REPAYMENT_REQUEST_CONFLICT",
+        "This repayment request has already been used for another amount.",
+        409,
+      );
+    }
     if (existing.status !== "COMPLETED") {
-      // V3 loans may have received partial repayments since this intent was
-      // created; an intent must always cover exactly the remaining balance.
       const expectedMinor = await remainingRepaymentMinorUnits(
         database,
         existing.loan.id,
       );
-      if (existing.amountMinorUnits !== expectedMinor) {
+      // Full-balance intents track the current remainder until submission.
+      if (
+        requestedMinor === null &&
+        existing.amountMinorUnits !== expectedMinor
+      ) {
         if (
           existing.status === "PENDING" &&
           existing.submissionTransactionHash
@@ -241,11 +276,11 @@ export async function prepareOnChainRepayment(
       }
     }
     if (existing.status === "COMPLETED") {
-      if (existing.loan.status !== "REPAID") throw unavailableError();
       return {
         state: "CONFIRMED" as const,
         repaymentId: existing.id,
         loanId: existing.loan.id,
+        loanStatus: existing.loan.status,
       };
     }
     if (existing.status === "PENDING") {
@@ -253,15 +288,29 @@ export async function prepareOnChainRepayment(
         getAddress(existing.loan.contractAddress),
         BigInt(existing.loan.chainLoanId),
       );
+      const remainingBaseUnits = existing.loan.repaymentBaseUnits - repaid;
+      const amountBaseUnits =
+        requestedBaseUnits ??
+        (existing.amountMinorUnits <
+        baseUnitsToMinorUnitsRoundedUp(remainingBaseUnits)
+          ? existing.amountMinorUnits * USDC_BASE_UNITS_PER_CENT
+          : remainingBaseUnits);
+      if (amountBaseUnits <= 0n || amountBaseUnits > remainingBaseUnits) {
+        throw unavailableError();
+      }
       return {
         state: "PENDING" as const,
         repaymentId: existing.id,
         contractAddress: getAddress(existing.loan.contractAddress),
         chainLoanId: existing.loan.chainLoanId,
         usdcAddress: ARC_USDC_ADDRESS,
-        repaymentBaseUnits: (
-          existing.loan.repaymentBaseUnits - repaid
-        ).toString(),
+        repaymentBaseUnits: amountBaseUnits.toString(),
+        repaymentMode: supportsPartialRepayment
+          ? ("PARTIAL" as const)
+          : ("FULL" as const),
+        chainRepaymentId: supportsPartialRepayment
+          ? borrowerRepaymentIdToBytes32(requestId)
+          : null,
       };
     }
     if (existing.status !== "FAILED" && existing.status !== "CANCELLED") {
@@ -318,7 +367,6 @@ export async function prepareOnChainRepayment(
   ) {
     throw unavailableError();
   }
-
   const wallet = await database.arcWallet.findUnique({
     where: {
       userId_network: { userId: actor.userId, network: ARC_TESTNET_NETWORK },
@@ -365,21 +413,32 @@ export async function prepareOnChainRepayment(
   )(configuredContract, BigInt(context.chainLoanId));
   const remainingBaseUnits = context.repaymentBaseUnits - repaidBaseUnits;
   if (remainingBaseUnits <= 0n) throw unavailableError();
+  if (
+    requestedBaseUnits !== undefined &&
+    requestedBaseUnits > remainingBaseUnits
+  ) {
+    throw new ApplicationError(
+      "INVALID_REPAYMENT_AMOUNT",
+      "Enter an amount between $0.01 and the remaining balance.",
+      400,
+    );
+  }
+  const paymentBaseUnits = requestedBaseUnits ?? remainingBaseUnits;
   const balanceBaseUnits = await (dependencies.readBalance ?? readUsdcBalance)(
     getAddress(wallet.address),
   );
-  if (balanceBaseUnits < remainingBaseUnits) {
+  if (balanceBaseUnits < paymentBaseUnits) {
     throw new ApplicationError(
       "INSUFFICIENT_USDC_BALANCE",
-      "Your USDC balance is too low to repay this loan in full.",
+      "Your USDC balance is too low for this repayment.",
       409,
     );
   }
 
   const amountMinorUnits =
-    repaidBaseUnits === 0n
-      ? baseUnitsToMinorUnitsRoundedUp(context.repaymentBaseUnits)
-      : await remainingRepaymentMinorUnits(database, context.id);
+    paymentBaseUnits === remainingBaseUnits
+      ? await remainingRepaymentMinorUnits(database, context.id)
+      : paymentBaseUnits / USDC_BASE_UNITS_PER_CENT;
   const paidAt = dependencies.now?.() ?? new Date();
   let repayment: { id: string };
   try {
@@ -434,6 +493,7 @@ export async function prepareOnChainRepayment(
         loan: {
           select: {
             id: true,
+            status: true,
             organizationId: true,
             borrowerMembership: { select: { userId: true } },
           },
@@ -450,6 +510,7 @@ export async function prepareOnChainRepayment(
           state: "CONFIRMED" as const,
           repaymentId: sameRequest.id,
           loanId,
+          loanStatus: sameRequest.loan.status,
         };
       }
       if (sameRequest.status === "PENDING") {
@@ -468,8 +529,14 @@ export async function prepareOnChainRepayment(
     contractAddress: configuredContract,
     chainLoanId: context.chainLoanId,
     usdcAddress: ARC_USDC_ADDRESS,
-    repaymentBaseUnits: remainingBaseUnits.toString(),
+    repaymentBaseUnits: paymentBaseUnits.toString(),
     balanceBaseUnits: balanceBaseUnits.toString(),
+    repaymentMode: supportsPartialRepayment
+      ? ("PARTIAL" as const)
+      : ("FULL" as const),
+    chainRepaymentId: supportsPartialRepayment
+      ? borrowerRepaymentIdToBytes32(requestId)
+      : null,
   };
 }
 
@@ -501,6 +568,7 @@ export async function confirmOnChainRepayment(
     },
     select: {
       id: true,
+      repaymentRequestId: true,
       amountMinorUnits: true,
       status: true,
       paidAt: true,
@@ -530,11 +598,16 @@ export async function confirmOnChainRepayment(
   if (!pending) throw unavailableError();
   if (
     pending.status === "COMPLETED" &&
-    pending.loan.status === "REPAID" &&
-    pending.loan.repaymentTransactionHash?.toLowerCase() ===
+    pending.submissionTransactionHash?.toLowerCase() ===
       transactionHash.toLowerCase()
   ) {
-    return { loanId, status: "REPAID" as const };
+    return {
+      loanId,
+      status:
+        pending.loan.status === "REPAID"
+          ? ("REPAID" as const)
+          : ("ACTIVE" as const),
+    };
   }
   if (
     pending.status !== "PENDING" ||
@@ -548,6 +621,7 @@ export async function confirmOnChainRepayment(
   ) {
     throw unavailableError();
   }
+  const repaymentRequestId = pending.repaymentRequestId ?? repaymentId;
 
   const normalizedTransactionHash = transactionHash.toLowerCase();
   if (
@@ -635,6 +709,54 @@ export async function confirmOnChainRepayment(
       "The repayment did not complete. No loan state was changed.",
       409,
     );
+  }
+
+  if (getConfiguredEscrowVersion() === "3") {
+    const amountBaseUnits = pending.amountMinorUnits * USDC_BASE_UNITS_PER_CENT;
+    const verified = verifyRepaymentLogs(receipt.logs, {
+      contractAddress: configuredContract,
+      usdcAddress: ARC_USDC_ADDRESS,
+      chainLoanId: pending.loan.chainLoanId,
+      chainRepaymentId: borrowerRepaymentIdToBytes32(repaymentRequestId),
+      amountBaseUnits,
+      borrower: pending.loan.borrowerWalletAddress,
+      lender: pending.loan.lenderWalletAddress,
+      agent: null,
+    });
+    if (verified.verified) {
+      const block = await (dependencies.getBlock ?? client.getBlock)({
+        blockNumber: receipt.blockNumber,
+      });
+      const paidAt = new Date(Number(block.timestamp) * 1_000);
+      await database.$transaction((transaction) =>
+        settleVerifiedRepayment(transaction, {
+          organizationId: actor.organizationId,
+          loanId,
+          repaymentRequestId,
+          transactionHash,
+          amountBaseUnits,
+          remainingBaseUnits: verified.remainingBaseUnits,
+          paidAt,
+          actorMembershipId: pending.loan.borrowerMembershipId,
+          source: "BORROWER_APPROVAL",
+        }),
+      );
+      recordOperationalSuccess("transaction_confirmation");
+      logTransactionLifecycle("repayment_confirmed", {
+        operationId: repaymentId,
+        transactionHash,
+        chainId: ARC_TESTNET_CHAIN_ID,
+        contractAddress: configuredContract,
+        latencyMs: Date.now() - confirmationStartedAt,
+      });
+      return {
+        loanId,
+        status:
+          verified.remainingBaseUnits === 0n
+            ? ("REPAID" as const)
+            : ("ACTIVE" as const),
+      };
+    }
   }
 
   let event:

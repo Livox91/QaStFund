@@ -20,6 +20,7 @@ const EMPLOYEE_FIELDS = [
   "personal_email",
   "department",
   "designation",
+  "date_of_joining",
   "status",
   "modified",
 ] as const;
@@ -31,6 +32,16 @@ type ErpEmployee = Record<string, unknown>;
 
 function nonEmpty(value: unknown): string | undefined {
   return typeof value === "string" && value.trim() ? value.trim() : undefined;
+}
+
+function dateOnly(value: unknown): string | undefined {
+  const candidate = nonEmpty(value);
+  if (!candidate || !/^\d{4}-\d{2}-\d{2}$/.test(candidate)) return undefined;
+  const parsed = new Date(`${candidate}T00:00:00.000Z`);
+  return Number.isNaN(parsed.getTime()) ||
+    parsed.toISOString().slice(0, 10) !== candidate
+    ? undefined
+    : candidate;
 }
 
 export function normalizeErpNextEmployee(
@@ -45,6 +56,7 @@ export function normalizeErpNextEmployee(
   const employmentStatus = nonEmpty(record.status) ?? "Unknown";
   const department = nonEmpty(record.department);
   const designation = nonEmpty(record.designation);
+  const employmentStartedAt = dateOnly(record.date_of_joining);
   const modifiedAt = nonEmpty(record.modified);
   return {
     externalId,
@@ -53,6 +65,7 @@ export function normalizeErpNextEmployee(
     ...(email ? { email: email.toLowerCase() } : {}),
     ...(department ? { department } : {}),
     ...(designation ? { designation } : {}),
+    ...(employmentStartedAt ? { employmentStartedAt } : {}),
     employmentStatus,
     ...(modifiedAt ? { modifiedAt } : {}),
   };

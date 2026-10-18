@@ -307,6 +307,7 @@ describe("payroll deductions and delinquency operations", () => {
   });
 
   it("detects partial overdue balances, avoids duplicate alerts, and isolates tenants", async () => {
+    vi.mocked(fetch).mockClear();
     const now = new Date("2026-10-13T00:00:00.000Z");
     const first = await evaluateOverdueInstallments(now);
     const second = await evaluateOverdueInstallments(now);
@@ -319,17 +320,25 @@ describe("payroll deductions and delinquency operations", () => {
       amountPaidMinorUnits: 250n,
       outstandingMinorUnits: 750n,
     });
-    expect(cases[0].notifications).toHaveLength(1);
+    expect(cases[0].notifications).toHaveLength(2);
+    expect(
+      cases[0].notifications.map((item) => item.recipientMembershipId),
+    ).toEqual(expect.arrayContaining([borrowerMembershipId]));
     await expect(listDelinquencyCases(borrower)).rejects.toMatchObject({
       code: "FORBIDDEN",
     });
     expect(await listDelinquencyCases(otherAdmin)).toHaveLength(0);
-    expect(vi.mocked(fetch)).toHaveBeenCalledTimes(1);
+    expect(vi.mocked(fetch)).toHaveBeenCalledTimes(2);
     const emailBody = String(
       (vi.mocked(fetch).mock.calls[0][1] as RequestInit).body,
     );
     expect(emailBody).not.toContain("test-token");
     expect(emailBody).not.toContain("salary");
+    expect(
+      vi.mocked(fetch).mock.calls.some(([, init]) =>
+        String((init as RequestInit).body).includes(`/app/loans/${loanId}`),
+      ),
+    ).toBe(true);
   });
 
   it("follows configured notification timing and retries persisted failures", async () => {

@@ -81,6 +81,9 @@ export async function settleVerifiedRepayment(
       principalAmountMinorUnits: true,
       feeAmountMinorUnits: true,
       outstandingPrincipalMinorUnits: true,
+      activatedAt: true,
+      startedAt: true,
+      repaymentDueAt: true,
       borrowerMembershipId: true,
       lenderMembershipId: true,
       repayments: {
@@ -135,7 +138,7 @@ export async function settleVerifiedRepayment(
         select: { id: true },
       });
 
-  const installments = await transaction.loanInstallment.findMany({
+  let installments = await transaction.loanInstallment.findMany({
     where: {
       organizationId: input.organizationId,
       loanId: loan.id,
@@ -152,6 +155,34 @@ export async function settleVerifiedRepayment(
       },
     },
   });
+  if (installments.length === 0) {
+    const plan = await transaction.loanRepaymentPlan.create({
+      data: {
+        organizationId: input.organizationId,
+        loanId: loan.id,
+        version: 1,
+        status: "ACTIVE",
+        termMonths: 1,
+        installmentCount: 1,
+        totalRepaymentMinorUnits: totalMinor,
+        currency: loan.currency,
+        borrowerConsentedAt: loan.activatedAt ?? loan.startedAt,
+        effectiveAt: loan.activatedAt ?? loan.startedAt,
+      },
+    });
+    const installment = await transaction.loanInstallment.create({
+      data: {
+        organizationId: input.organizationId,
+        loanId: loan.id,
+        planId: plan.id,
+        sequence: 1,
+        amountMinorUnits: totalMinor,
+        dueAt: loan.repaymentDueAt,
+      },
+      select: { id: true, sequence: true, amountMinorUnits: true },
+    });
+    installments = [{ ...installment, allocations: [] }];
+  }
   const schedule = installments.map((installment) => ({
     id: installment.id,
     sequence: installment.sequence,

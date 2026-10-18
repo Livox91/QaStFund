@@ -154,6 +154,9 @@ export async function synchronizeOrganizationEmployees(
         ...(record.email ? { email: record.email } : {}),
         ...(record.department ? { department: record.department } : {}),
         ...(record.designation ? { designation: record.designation } : {}),
+        ...(record.employmentStartedAt
+          ? { employmentStartedAt: record.employmentStartedAt }
+          : {}),
         externalStatus: record.employmentStatus,
         ...(normalizedStatus ? { normalizedStatus } : {}),
       };
@@ -231,6 +234,9 @@ export async function synchronizeOrganizationEmployees(
             ...(decision.designation
               ? { designation: decision.designation }
               : {}),
+            ...(decision.employmentStartedAt
+              ? { employmentStartedAt: decision.employmentStartedAt }
+              : {}),
             externalStatus: decision.externalStatus,
             ...(decision.normalizedStatus
               ? { normalizedStatus: decision.normalizedStatus }
@@ -260,6 +266,13 @@ export async function synchronizeOrganizationEmployees(
           ...(mapping.email ? { email: mapping.email } : {}),
           ...(mapping.department ? { department: mapping.department } : {}),
           ...(mapping.designation ? { designation: mapping.designation } : {}),
+          ...(mapping.employmentStartedAt
+            ? {
+                employmentStartedAt: mapping.employmentStartedAt
+                  .toISOString()
+                  .slice(0, 10),
+              }
+            : {}),
           externalStatus: "Missing from ERPNext",
           normalizedStatus: EmploymentStatus.TERMINATED,
           matchStatus: "matched" as const,
@@ -317,6 +330,8 @@ export async function synchronizeOrganizationEmployees(
         previous.email !== (decision.email ?? null) ||
         previous.department !== (decision.department ?? null) ||
         previous.designation !== (decision.designation ?? null) ||
+        previous.employmentStartedAt?.toISOString().slice(0, 10) !==
+          (decision.employmentStartedAt ?? undefined) ||
         previous.externalStatus !== decision.externalStatus ||
         previous.normalizedStatus !== (decision.normalizedStatus ?? null) ||
         previous.matchStatus !== decision.matchStatus ||

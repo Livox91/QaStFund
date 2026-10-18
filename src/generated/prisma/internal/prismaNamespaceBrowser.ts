@@ -79,6 +79,7 @@ export const ModelName = {
   LoanInstallment: 'LoanInstallment',
   RepaymentAllocation: 'RepaymentAllocation',
   PayrollDeductionProposal: 'PayrollDeductionProposal',
+  SalaryEvidence: 'SalaryEvidence',
   DelinquencyCase: 'DelinquencyCase',
   DelinquencyNotification: 'DelinquencyNotification',
   AuditEvent: 'AuditEvent',
@@ -300,6 +301,7 @@ export const EmployeeDirectoryMappingScalarFieldEnum = {
   email: 'email',
   department: 'department',
   designation: 'designation',
+  employmentStartedAt: 'employmentStartedAt',
   externalStatus: 'externalStatus',
   normalizedStatus: 'normalizedStatus',
   matchStatus: 'matchStatus',
@@ -651,6 +653,27 @@ export const PayrollDeductionProposalScalarFieldEnum = {
 } as const
 
 export type PayrollDeductionProposalScalarFieldEnum = (typeof PayrollDeductionProposalScalarFieldEnum)[keyof typeof PayrollDeductionProposalScalarFieldEnum]
+
+
+export const SalaryEvidenceScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  employeeMappingId: 'employeeMappingId',
+  externalSalarySlipId: 'externalSalarySlipId',
+  payrollPeriodStart: 'payrollPeriodStart',
+  payrollPeriodEnd: 'payrollPeriodEnd',
+  grossPayMinorUnits: 'grossPayMinorUnits',
+  netPayMinorUnits: 'netPayMinorUnits',
+  currency: 'currency',
+  documentStatus: 'documentStatus',
+  sourceModifiedAt: 'sourceModifiedAt',
+  synchronizedAt: 'synchronizedAt',
+  lastSyncErrorCode: 'lastSyncErrorCode',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SalaryEvidenceScalarFieldEnum = (typeof SalaryEvidenceScalarFieldEnum)[keyof typeof SalaryEvidenceScalarFieldEnum]
 
 
 export const DelinquencyCaseScalarFieldEnum = {

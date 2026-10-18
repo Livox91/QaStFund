@@ -34,6 +34,7 @@ export type EmployeeDirectoryMappingMinAggregateOutputType = {
   email: string | null
   department: string | null
   designation: string | null
+  employmentStartedAt: Date | null
   externalStatus: string | null
   normalizedStatus: $Enums.EmploymentStatus | null
   matchStatus: $Enums.EmployeeDirectoryMatchStatus | null
@@ -54,6 +55,7 @@ export type EmployeeDirectoryMappingMaxAggregateOutputType = {
   email: string | null
   department: string | null
   designation: string | null
+  employmentStartedAt: Date | null
   externalStatus: string | null
   normalizedStatus: $Enums.EmploymentStatus | null
   matchStatus: $Enums.EmployeeDirectoryMatchStatus | null
@@ -74,6 +76,7 @@ export type EmployeeDirectoryMappingCountAggregateOutputType = {
   email: number
   department: number
   designation: number
+  employmentStartedAt: number
   externalStatus: number
   normalizedStatus: number
   matchStatus: number
@@ -96,6 +99,7 @@ export type EmployeeDirectoryMappingMinAggregateInputType = {
   email?: true
   department?: true
   designation?: true
+  employmentStartedAt?: true
   externalStatus?: true
   normalizedStatus?: true
   matchStatus?: true
@@ -116,6 +120,7 @@ export type EmployeeDirectoryMappingMaxAggregateInputType = {
   email?: true
   department?: true
   designation?: true
+  employmentStartedAt?: true
   externalStatus?: true
   normalizedStatus?: true
   matchStatus?: true
@@ -136,6 +141,7 @@ export type EmployeeDirectoryMappingCountAggregateInputType = {
   email?: true
   department?: true
   designation?: true
+  employmentStartedAt?: true
   externalStatus?: true
   normalizedStatus?: true
   matchStatus?: true
@@ -229,6 +235,7 @@ export type EmployeeDirectoryMappingGroupByOutputType = {
   email: string | null
   department: string | null
   designation: string | null
+  employmentStartedAt: Date | null
   externalStatus: string
   normalizedStatus: $Enums.EmploymentStatus | null
   matchStatus: $Enums.EmployeeDirectoryMatchStatus
@@ -270,6 +277,7 @@ export type EmployeeDirectoryMappingWhereInput = {
   email?: Prisma.StringNullableFilter<"EmployeeDirectoryMapping"> | string | null
   department?: Prisma.StringNullableFilter<"EmployeeDirectoryMapping"> | string | null
   designation?: Prisma.StringNullableFilter<"EmployeeDirectoryMapping"> | string | null
+  employmentStartedAt?: Prisma.DateTimeNullableFilter<"EmployeeDirectoryMapping"> | Date | string | null
   externalStatus?: Prisma.StringFilter<"EmployeeDirectoryMapping"> | string
   normalizedStatus?: Prisma.EnumEmploymentStatusNullableFilter<"EmployeeDirectoryMapping"> | $Enums.EmploymentStatus | null
   matchStatus?: Prisma.EnumEmployeeDirectoryMatchStatusFilter<"EmployeeDirectoryMapping"> | $Enums.EmployeeDirectoryMatchStatus
@@ -282,6 +290,7 @@ export type EmployeeDirectoryMappingWhereInput = {
   integration?: Prisma.XOR<Prisma.EmployeeDirectoryIntegrationScalarRelationFilter, Prisma.EmployeeDirectoryIntegrationWhereInput>
   matchedMembership?: Prisma.XOR<Prisma.OrganizationMembershipNullableScalarRelationFilter, Prisma.OrganizationMembershipWhereInput> | null
   payrollDeductions?: Prisma.PayrollDeductionProposalListRelationFilter
+  salaryEvidence?: Prisma.SalaryEvidenceListRelationFilter
 }
 
 export type EmployeeDirectoryMappingOrderByWithRelationInput = {
@@ -294,6 +303,7 @@ export type EmployeeDirectoryMappingOrderByWithRelationInput = {
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   department?: Prisma.SortOrderInput | Prisma.SortOrder
   designation?: Prisma.SortOrderInput | Prisma.SortOrder
+  employmentStartedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   externalStatus?: Prisma.SortOrder
   normalizedStatus?: Prisma.SortOrderInput | Prisma.SortOrder
   matchStatus?: Prisma.SortOrder
@@ -306,6 +316,7 @@ export type EmployeeDirectoryMappingOrderByWithRelationInput = {
   integration?: Prisma.EmployeeDirectoryIntegrationOrderByWithRelationInput
   matchedMembership?: Prisma.OrganizationMembershipOrderByWithRelationInput
   payrollDeductions?: Prisma.PayrollDeductionProposalOrderByRelationAggregateInput
+  salaryEvidence?: Prisma.SalaryEvidenceOrderByRelationAggregateInput
 }
 
 export type EmployeeDirectoryMappingWhereUniqueInput = Prisma.AtLeast<{
@@ -324,6 +335,7 @@ export type EmployeeDirectoryMappingWhereUniqueInput = Prisma.AtLeast<{
   email?: Prisma.StringNullableFilter<"EmployeeDirectoryMapping"> | string | null
   department?: Prisma.StringNullableFilter<"EmployeeDirectoryMapping"> | string | null
   designation?: Prisma.StringNullableFilter<"EmployeeDirectoryMapping"> | string | null
+  employmentStartedAt?: Prisma.DateTimeNullableFilter<"EmployeeDirectoryMapping"> | Date | string | null
   externalStatus?: Prisma.StringFilter<"EmployeeDirectoryMapping"> | string
   normalizedStatus?: Prisma.EnumEmploymentStatusNullableFilter<"EmployeeDirectoryMapping"> | $Enums.EmploymentStatus | null
   matchStatus?: Prisma.EnumEmployeeDirectoryMatchStatusFilter<"EmployeeDirectoryMapping"> | $Enums.EmployeeDirectoryMatchStatus
@@ -336,6 +348,7 @@ export type EmployeeDirectoryMappingWhereUniqueInput = Prisma.AtLeast<{
   integration?: Prisma.XOR<Prisma.EmployeeDirectoryIntegrationScalarRelationFilter, Prisma.EmployeeDirectoryIntegrationWhereInput>
   matchedMembership?: Prisma.XOR<Prisma.OrganizationMembershipNullableScalarRelationFilter, Prisma.OrganizationMembershipWhereInput> | null
   payrollDeductions?: Prisma.PayrollDeductionProposalListRelationFilter
+  salaryEvidence?: Prisma.SalaryEvidenceListRelationFilter
 }, "id" | "organizationId_integrationId_externalEmployeeId" | "organizationId_integrationId_matchedMembershipId" | "organizationId_id">
 
 export type EmployeeDirectoryMappingOrderByWithAggregationInput = {
@@ -348,6 +361,7 @@ export type EmployeeDirectoryMappingOrderByWithAggregationInput = {
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   department?: Prisma.SortOrderInput | Prisma.SortOrder
   designation?: Prisma.SortOrderInput | Prisma.SortOrder
+  employmentStartedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   externalStatus?: Prisma.SortOrder
   normalizedStatus?: Prisma.SortOrderInput | Prisma.SortOrder
   matchStatus?: Prisma.SortOrder
@@ -374,6 +388,7 @@ export type EmployeeDirectoryMappingScalarWhereWithAggregatesInput = {
   email?: Prisma.StringNullableWithAggregatesFilter<"EmployeeDirectoryMapping"> | string | null
   department?: Prisma.StringNullableWithAggregatesFilter<"EmployeeDirectoryMapping"> | string | null
   designation?: Prisma.StringNullableWithAggregatesFilter<"EmployeeDirectoryMapping"> | string | null
+  employmentStartedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"EmployeeDirectoryMapping"> | Date | string | null
   externalStatus?: Prisma.StringWithAggregatesFilter<"EmployeeDirectoryMapping"> | string
   normalizedStatus?: Prisma.EnumEmploymentStatusNullableWithAggregatesFilter<"EmployeeDirectoryMapping"> | $Enums.EmploymentStatus | null
   matchStatus?: Prisma.EnumEmployeeDirectoryMatchStatusWithAggregatesFilter<"EmployeeDirectoryMapping"> | $Enums.EmployeeDirectoryMatchStatus
@@ -392,6 +407,7 @@ export type EmployeeDirectoryMappingCreateInput = {
   email?: string | null
   department?: string | null
   designation?: string | null
+  employmentStartedAt?: Date | string | null
   externalStatus: string
   normalizedStatus?: $Enums.EmploymentStatus | null
   matchStatus: $Enums.EmployeeDirectoryMatchStatus
@@ -403,6 +419,7 @@ export type EmployeeDirectoryMappingCreateInput = {
   integration: Prisma.EmployeeDirectoryIntegrationCreateNestedOneWithoutMappingsInput
   matchedMembership?: Prisma.OrganizationMembershipCreateNestedOneWithoutEmployeeDirectoryMappingsInput
   payrollDeductions?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutEmployeeMappingInput
+  salaryEvidence?: Prisma.SalaryEvidenceCreateNestedManyWithoutEmployeeMappingInput
 }
 
 export type EmployeeDirectoryMappingUncheckedCreateInput = {
@@ -415,6 +432,7 @@ export type EmployeeDirectoryMappingUncheckedCreateInput = {
   email?: string | null
   department?: string | null
   designation?: string | null
+  employmentStartedAt?: Date | string | null
   externalStatus: string
   normalizedStatus?: $Enums.EmploymentStatus | null
   matchStatus: $Enums.EmployeeDirectoryMatchStatus
@@ -424,6 +442,7 @@ export type EmployeeDirectoryMappingUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   payrollDeductions?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutEmployeeMappingInput
+  salaryEvidence?: Prisma.SalaryEvidenceUncheckedCreateNestedManyWithoutEmployeeMappingInput
 }
 
 export type EmployeeDirectoryMappingUpdateInput = {
@@ -434,6 +453,7 @@ export type EmployeeDirectoryMappingUpdateInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employmentStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   externalStatus?: Prisma.StringFieldUpdateOperationsInput | string
   normalizedStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   matchStatus?: Prisma.EnumEmployeeDirectoryMatchStatusFieldUpdateOperationsInput | $Enums.EmployeeDirectoryMatchStatus
@@ -445,6 +465,7 @@ export type EmployeeDirectoryMappingUpdateInput = {
   integration?: Prisma.EmployeeDirectoryIntegrationUpdateOneRequiredWithoutMappingsNestedInput
   matchedMembership?: Prisma.OrganizationMembershipUpdateOneWithoutEmployeeDirectoryMappingsNestedInput
   payrollDeductions?: Prisma.PayrollDeductionProposalUpdateManyWithoutEmployeeMappingNestedInput
+  salaryEvidence?: Prisma.SalaryEvidenceUpdateManyWithoutEmployeeMappingNestedInput
 }
 
 export type EmployeeDirectoryMappingUncheckedUpdateInput = {
@@ -457,6 +478,7 @@ export type EmployeeDirectoryMappingUncheckedUpdateInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employmentStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   externalStatus?: Prisma.StringFieldUpdateOperationsInput | string
   normalizedStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   matchStatus?: Prisma.EnumEmployeeDirectoryMatchStatusFieldUpdateOperationsInput | $Enums.EmployeeDirectoryMatchStatus
@@ -466,6 +488,7 @@ export type EmployeeDirectoryMappingUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payrollDeductions?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutEmployeeMappingNestedInput
+  salaryEvidence?: Prisma.SalaryEvidenceUncheckedUpdateManyWithoutEmployeeMappingNestedInput
 }
 
 export type EmployeeDirectoryMappingCreateManyInput = {
@@ -478,6 +501,7 @@ export type EmployeeDirectoryMappingCreateManyInput = {
   email?: string | null
   department?: string | null
   designation?: string | null
+  employmentStartedAt?: Date | string | null
   externalStatus: string
   normalizedStatus?: $Enums.EmploymentStatus | null
   matchStatus: $Enums.EmployeeDirectoryMatchStatus
@@ -496,6 +520,7 @@ export type EmployeeDirectoryMappingUpdateManyMutationInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employmentStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   externalStatus?: Prisma.StringFieldUpdateOperationsInput | string
   normalizedStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   matchStatus?: Prisma.EnumEmployeeDirectoryMatchStatusFieldUpdateOperationsInput | $Enums.EmployeeDirectoryMatchStatus
@@ -515,6 +540,7 @@ export type EmployeeDirectoryMappingUncheckedUpdateManyInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employmentStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   externalStatus?: Prisma.StringFieldUpdateOperationsInput | string
   normalizedStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   matchStatus?: Prisma.EnumEmployeeDirectoryMatchStatusFieldUpdateOperationsInput | $Enums.EmployeeDirectoryMatchStatus
@@ -562,6 +588,7 @@ export type EmployeeDirectoryMappingCountOrderByAggregateInput = {
   email?: Prisma.SortOrder
   department?: Prisma.SortOrder
   designation?: Prisma.SortOrder
+  employmentStartedAt?: Prisma.SortOrder
   externalStatus?: Prisma.SortOrder
   normalizedStatus?: Prisma.SortOrder
   matchStatus?: Prisma.SortOrder
@@ -582,6 +609,7 @@ export type EmployeeDirectoryMappingMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder
   department?: Prisma.SortOrder
   designation?: Prisma.SortOrder
+  employmentStartedAt?: Prisma.SortOrder
   externalStatus?: Prisma.SortOrder
   normalizedStatus?: Prisma.SortOrder
   matchStatus?: Prisma.SortOrder
@@ -602,6 +630,7 @@ export type EmployeeDirectoryMappingMinOrderByAggregateInput = {
   email?: Prisma.SortOrder
   department?: Prisma.SortOrder
   designation?: Prisma.SortOrder
+  employmentStartedAt?: Prisma.SortOrder
   externalStatus?: Prisma.SortOrder
   normalizedStatus?: Prisma.SortOrder
   matchStatus?: Prisma.SortOrder
@@ -769,6 +798,20 @@ export type EmployeeDirectoryMappingUpdateOneRequiredWithoutPayrollDeductionsNes
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeDirectoryMappingUpdateToOneWithWhereWithoutPayrollDeductionsInput, Prisma.EmployeeDirectoryMappingUpdateWithoutPayrollDeductionsInput>, Prisma.EmployeeDirectoryMappingUncheckedUpdateWithoutPayrollDeductionsInput>
 }
 
+export type EmployeeDirectoryMappingCreateNestedOneWithoutSalaryEvidenceInput = {
+  create?: Prisma.XOR<Prisma.EmployeeDirectoryMappingCreateWithoutSalaryEvidenceInput, Prisma.EmployeeDirectoryMappingUncheckedCreateWithoutSalaryEvidenceInput>
+  connectOrCreate?: Prisma.EmployeeDirectoryMappingCreateOrConnectWithoutSalaryEvidenceInput
+  connect?: Prisma.EmployeeDirectoryMappingWhereUniqueInput
+}
+
+export type EmployeeDirectoryMappingUpdateOneRequiredWithoutSalaryEvidenceNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeDirectoryMappingCreateWithoutSalaryEvidenceInput, Prisma.EmployeeDirectoryMappingUncheckedCreateWithoutSalaryEvidenceInput>
+  connectOrCreate?: Prisma.EmployeeDirectoryMappingCreateOrConnectWithoutSalaryEvidenceInput
+  upsert?: Prisma.EmployeeDirectoryMappingUpsertWithoutSalaryEvidenceInput
+  connect?: Prisma.EmployeeDirectoryMappingWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeDirectoryMappingUpdateToOneWithWhereWithoutSalaryEvidenceInput, Prisma.EmployeeDirectoryMappingUpdateWithoutSalaryEvidenceInput>, Prisma.EmployeeDirectoryMappingUncheckedUpdateWithoutSalaryEvidenceInput>
+}
+
 export type EmployeeDirectoryMappingCreateWithoutOrganizationInput = {
   id?: string
   externalEmployeeId: string
@@ -777,6 +820,7 @@ export type EmployeeDirectoryMappingCreateWithoutOrganizationInput = {
   email?: string | null
   department?: string | null
   designation?: string | null
+  employmentStartedAt?: Date | string | null
   externalStatus: string
   normalizedStatus?: $Enums.EmploymentStatus | null
   matchStatus: $Enums.EmployeeDirectoryMatchStatus
@@ -787,6 +831,7 @@ export type EmployeeDirectoryMappingCreateWithoutOrganizationInput = {
   integration: Prisma.EmployeeDirectoryIntegrationCreateNestedOneWithoutMappingsInput
   matchedMembership?: Prisma.OrganizationMembershipCreateNestedOneWithoutEmployeeDirectoryMappingsInput
   payrollDeductions?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutEmployeeMappingInput
+  salaryEvidence?: Prisma.SalaryEvidenceCreateNestedManyWithoutEmployeeMappingInput
 }
 
 export type EmployeeDirectoryMappingUncheckedCreateWithoutOrganizationInput = {
@@ -798,6 +843,7 @@ export type EmployeeDirectoryMappingUncheckedCreateWithoutOrganizationInput = {
   email?: string | null
   department?: string | null
   designation?: string | null
+  employmentStartedAt?: Date | string | null
   externalStatus: string
   normalizedStatus?: $Enums.EmploymentStatus | null
   matchStatus: $Enums.EmployeeDirectoryMatchStatus
@@ -807,6 +853,7 @@ export type EmployeeDirectoryMappingUncheckedCreateWithoutOrganizationInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   payrollDeductions?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutEmployeeMappingInput
+  salaryEvidence?: Prisma.SalaryEvidenceUncheckedCreateNestedManyWithoutEmployeeMappingInput
 }
 
 export type EmployeeDirectoryMappingCreateOrConnectWithoutOrganizationInput = {
@@ -848,6 +895,7 @@ export type EmployeeDirectoryMappingScalarWhereInput = {
   email?: Prisma.StringNullableFilter<"EmployeeDirectoryMapping"> | string | null
   department?: Prisma.StringNullableFilter<"EmployeeDirectoryMapping"> | string | null
   designation?: Prisma.StringNullableFilter<"EmployeeDirectoryMapping"> | string | null
+  employmentStartedAt?: Prisma.DateTimeNullableFilter<"EmployeeDirectoryMapping"> | Date | string | null
   externalStatus?: Prisma.StringFilter<"EmployeeDirectoryMapping"> | string
   normalizedStatus?: Prisma.EnumEmploymentStatusNullableFilter<"EmployeeDirectoryMapping"> | $Enums.EmploymentStatus | null
   matchStatus?: Prisma.EnumEmployeeDirectoryMatchStatusFilter<"EmployeeDirectoryMapping"> | $Enums.EmployeeDirectoryMatchStatus
@@ -866,6 +914,7 @@ export type EmployeeDirectoryMappingCreateWithoutMatchedMembershipInput = {
   email?: string | null
   department?: string | null
   designation?: string | null
+  employmentStartedAt?: Date | string | null
   externalStatus: string
   normalizedStatus?: $Enums.EmploymentStatus | null
   matchStatus: $Enums.EmployeeDirectoryMatchStatus
@@ -876,6 +925,7 @@ export type EmployeeDirectoryMappingCreateWithoutMatchedMembershipInput = {
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeeDirectoryMappingsInput
   integration: Prisma.EmployeeDirectoryIntegrationCreateNestedOneWithoutMappingsInput
   payrollDeductions?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutEmployeeMappingInput
+  salaryEvidence?: Prisma.SalaryEvidenceCreateNestedManyWithoutEmployeeMappingInput
 }
 
 export type EmployeeDirectoryMappingUncheckedCreateWithoutMatchedMembershipInput = {
@@ -887,6 +937,7 @@ export type EmployeeDirectoryMappingUncheckedCreateWithoutMatchedMembershipInput
   email?: string | null
   department?: string | null
   designation?: string | null
+  employmentStartedAt?: Date | string | null
   externalStatus: string
   normalizedStatus?: $Enums.EmploymentStatus | null
   matchStatus: $Enums.EmployeeDirectoryMatchStatus
@@ -895,6 +946,7 @@ export type EmployeeDirectoryMappingUncheckedCreateWithoutMatchedMembershipInput
   createdAt?: Date | string
   updatedAt?: Date | string
   payrollDeductions?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutEmployeeMappingInput
+  salaryEvidence?: Prisma.SalaryEvidenceUncheckedCreateNestedManyWithoutEmployeeMappingInput
 }
 
 export type EmployeeDirectoryMappingCreateOrConnectWithoutMatchedMembershipInput = {
@@ -931,6 +983,7 @@ export type EmployeeDirectoryMappingCreateWithoutIntegrationInput = {
   email?: string | null
   department?: string | null
   designation?: string | null
+  employmentStartedAt?: Date | string | null
   externalStatus: string
   normalizedStatus?: $Enums.EmploymentStatus | null
   matchStatus: $Enums.EmployeeDirectoryMatchStatus
@@ -941,6 +994,7 @@ export type EmployeeDirectoryMappingCreateWithoutIntegrationInput = {
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeeDirectoryMappingsInput
   matchedMembership?: Prisma.OrganizationMembershipCreateNestedOneWithoutEmployeeDirectoryMappingsInput
   payrollDeductions?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutEmployeeMappingInput
+  salaryEvidence?: Prisma.SalaryEvidenceCreateNestedManyWithoutEmployeeMappingInput
 }
 
 export type EmployeeDirectoryMappingUncheckedCreateWithoutIntegrationInput = {
@@ -951,6 +1005,7 @@ export type EmployeeDirectoryMappingUncheckedCreateWithoutIntegrationInput = {
   email?: string | null
   department?: string | null
   designation?: string | null
+  employmentStartedAt?: Date | string | null
   externalStatus: string
   normalizedStatus?: $Enums.EmploymentStatus | null
   matchStatus: $Enums.EmployeeDirectoryMatchStatus
@@ -960,6 +1015,7 @@ export type EmployeeDirectoryMappingUncheckedCreateWithoutIntegrationInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   payrollDeductions?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutEmployeeMappingInput
+  salaryEvidence?: Prisma.SalaryEvidenceUncheckedCreateNestedManyWithoutEmployeeMappingInput
 }
 
 export type EmployeeDirectoryMappingCreateOrConnectWithoutIntegrationInput = {
@@ -996,6 +1052,7 @@ export type EmployeeDirectoryMappingCreateWithoutPayrollDeductionsInput = {
   email?: string | null
   department?: string | null
   designation?: string | null
+  employmentStartedAt?: Date | string | null
   externalStatus: string
   normalizedStatus?: $Enums.EmploymentStatus | null
   matchStatus: $Enums.EmployeeDirectoryMatchStatus
@@ -1006,6 +1063,7 @@ export type EmployeeDirectoryMappingCreateWithoutPayrollDeductionsInput = {
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeeDirectoryMappingsInput
   integration: Prisma.EmployeeDirectoryIntegrationCreateNestedOneWithoutMappingsInput
   matchedMembership?: Prisma.OrganizationMembershipCreateNestedOneWithoutEmployeeDirectoryMappingsInput
+  salaryEvidence?: Prisma.SalaryEvidenceCreateNestedManyWithoutEmployeeMappingInput
 }
 
 export type EmployeeDirectoryMappingUncheckedCreateWithoutPayrollDeductionsInput = {
@@ -1018,6 +1076,7 @@ export type EmployeeDirectoryMappingUncheckedCreateWithoutPayrollDeductionsInput
   email?: string | null
   department?: string | null
   designation?: string | null
+  employmentStartedAt?: Date | string | null
   externalStatus: string
   normalizedStatus?: $Enums.EmploymentStatus | null
   matchStatus: $Enums.EmployeeDirectoryMatchStatus
@@ -1026,6 +1085,7 @@ export type EmployeeDirectoryMappingUncheckedCreateWithoutPayrollDeductionsInput
   lastSynchronizedAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  salaryEvidence?: Prisma.SalaryEvidenceUncheckedCreateNestedManyWithoutEmployeeMappingInput
 }
 
 export type EmployeeDirectoryMappingCreateOrConnectWithoutPayrollDeductionsInput = {
@@ -1052,6 +1112,7 @@ export type EmployeeDirectoryMappingUpdateWithoutPayrollDeductionsInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employmentStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   externalStatus?: Prisma.StringFieldUpdateOperationsInput | string
   normalizedStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   matchStatus?: Prisma.EnumEmployeeDirectoryMatchStatusFieldUpdateOperationsInput | $Enums.EmployeeDirectoryMatchStatus
@@ -1062,6 +1123,7 @@ export type EmployeeDirectoryMappingUpdateWithoutPayrollDeductionsInput = {
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeeDirectoryMappingsNestedInput
   integration?: Prisma.EmployeeDirectoryIntegrationUpdateOneRequiredWithoutMappingsNestedInput
   matchedMembership?: Prisma.OrganizationMembershipUpdateOneWithoutEmployeeDirectoryMappingsNestedInput
+  salaryEvidence?: Prisma.SalaryEvidenceUpdateManyWithoutEmployeeMappingNestedInput
 }
 
 export type EmployeeDirectoryMappingUncheckedUpdateWithoutPayrollDeductionsInput = {
@@ -1074,6 +1136,7 @@ export type EmployeeDirectoryMappingUncheckedUpdateWithoutPayrollDeductionsInput
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employmentStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   externalStatus?: Prisma.StringFieldUpdateOperationsInput | string
   normalizedStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   matchStatus?: Prisma.EnumEmployeeDirectoryMatchStatusFieldUpdateOperationsInput | $Enums.EmployeeDirectoryMatchStatus
@@ -1082,6 +1145,111 @@ export type EmployeeDirectoryMappingUncheckedUpdateWithoutPayrollDeductionsInput
   lastSynchronizedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  salaryEvidence?: Prisma.SalaryEvidenceUncheckedUpdateManyWithoutEmployeeMappingNestedInput
+}
+
+export type EmployeeDirectoryMappingCreateWithoutSalaryEvidenceInput = {
+  id?: string
+  externalEmployeeId: string
+  employeeCode?: string | null
+  fullName: string
+  email?: string | null
+  department?: string | null
+  designation?: string | null
+  employmentStartedAt?: Date | string | null
+  externalStatus: string
+  normalizedStatus?: $Enums.EmploymentStatus | null
+  matchStatus: $Enums.EmployeeDirectoryMatchStatus
+  matchMethod?: $Enums.EmployeeDirectoryMatchMethod | null
+  lastSynchronizedAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutEmployeeDirectoryMappingsInput
+  integration: Prisma.EmployeeDirectoryIntegrationCreateNestedOneWithoutMappingsInput
+  matchedMembership?: Prisma.OrganizationMembershipCreateNestedOneWithoutEmployeeDirectoryMappingsInput
+  payrollDeductions?: Prisma.PayrollDeductionProposalCreateNestedManyWithoutEmployeeMappingInput
+}
+
+export type EmployeeDirectoryMappingUncheckedCreateWithoutSalaryEvidenceInput = {
+  id?: string
+  organizationId: string
+  integrationId: string
+  externalEmployeeId: string
+  employeeCode?: string | null
+  fullName: string
+  email?: string | null
+  department?: string | null
+  designation?: string | null
+  employmentStartedAt?: Date | string | null
+  externalStatus: string
+  normalizedStatus?: $Enums.EmploymentStatus | null
+  matchStatus: $Enums.EmployeeDirectoryMatchStatus
+  matchMethod?: $Enums.EmployeeDirectoryMatchMethod | null
+  matchedMembershipId?: string | null
+  lastSynchronizedAt: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  payrollDeductions?: Prisma.PayrollDeductionProposalUncheckedCreateNestedManyWithoutEmployeeMappingInput
+}
+
+export type EmployeeDirectoryMappingCreateOrConnectWithoutSalaryEvidenceInput = {
+  where: Prisma.EmployeeDirectoryMappingWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeDirectoryMappingCreateWithoutSalaryEvidenceInput, Prisma.EmployeeDirectoryMappingUncheckedCreateWithoutSalaryEvidenceInput>
+}
+
+export type EmployeeDirectoryMappingUpsertWithoutSalaryEvidenceInput = {
+  update: Prisma.XOR<Prisma.EmployeeDirectoryMappingUpdateWithoutSalaryEvidenceInput, Prisma.EmployeeDirectoryMappingUncheckedUpdateWithoutSalaryEvidenceInput>
+  create: Prisma.XOR<Prisma.EmployeeDirectoryMappingCreateWithoutSalaryEvidenceInput, Prisma.EmployeeDirectoryMappingUncheckedCreateWithoutSalaryEvidenceInput>
+  where?: Prisma.EmployeeDirectoryMappingWhereInput
+}
+
+export type EmployeeDirectoryMappingUpdateToOneWithWhereWithoutSalaryEvidenceInput = {
+  where?: Prisma.EmployeeDirectoryMappingWhereInput
+  data: Prisma.XOR<Prisma.EmployeeDirectoryMappingUpdateWithoutSalaryEvidenceInput, Prisma.EmployeeDirectoryMappingUncheckedUpdateWithoutSalaryEvidenceInput>
+}
+
+export type EmployeeDirectoryMappingUpdateWithoutSalaryEvidenceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  externalEmployeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employmentStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  externalStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
+  matchStatus?: Prisma.EnumEmployeeDirectoryMatchStatusFieldUpdateOperationsInput | $Enums.EmployeeDirectoryMatchStatus
+  matchMethod?: Prisma.NullableEnumEmployeeDirectoryMatchMethodFieldUpdateOperationsInput | $Enums.EmployeeDirectoryMatchMethod | null
+  lastSynchronizedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeeDirectoryMappingsNestedInput
+  integration?: Prisma.EmployeeDirectoryIntegrationUpdateOneRequiredWithoutMappingsNestedInput
+  matchedMembership?: Prisma.OrganizationMembershipUpdateOneWithoutEmployeeDirectoryMappingsNestedInput
+  payrollDeductions?: Prisma.PayrollDeductionProposalUpdateManyWithoutEmployeeMappingNestedInput
+}
+
+export type EmployeeDirectoryMappingUncheckedUpdateWithoutSalaryEvidenceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  integrationId?: Prisma.StringFieldUpdateOperationsInput | string
+  externalEmployeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employmentStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  externalStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
+  matchStatus?: Prisma.EnumEmployeeDirectoryMatchStatusFieldUpdateOperationsInput | $Enums.EmployeeDirectoryMatchStatus
+  matchMethod?: Prisma.NullableEnumEmployeeDirectoryMatchMethodFieldUpdateOperationsInput | $Enums.EmployeeDirectoryMatchMethod | null
+  matchedMembershipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSynchronizedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  payrollDeductions?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutEmployeeMappingNestedInput
 }
 
 export type EmployeeDirectoryMappingCreateManyOrganizationInput = {
@@ -1093,6 +1261,7 @@ export type EmployeeDirectoryMappingCreateManyOrganizationInput = {
   email?: string | null
   department?: string | null
   designation?: string | null
+  employmentStartedAt?: Date | string | null
   externalStatus: string
   normalizedStatus?: $Enums.EmploymentStatus | null
   matchStatus: $Enums.EmployeeDirectoryMatchStatus
@@ -1111,6 +1280,7 @@ export type EmployeeDirectoryMappingUpdateWithoutOrganizationInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employmentStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   externalStatus?: Prisma.StringFieldUpdateOperationsInput | string
   normalizedStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   matchStatus?: Prisma.EnumEmployeeDirectoryMatchStatusFieldUpdateOperationsInput | $Enums.EmployeeDirectoryMatchStatus
@@ -1121,6 +1291,7 @@ export type EmployeeDirectoryMappingUpdateWithoutOrganizationInput = {
   integration?: Prisma.EmployeeDirectoryIntegrationUpdateOneRequiredWithoutMappingsNestedInput
   matchedMembership?: Prisma.OrganizationMembershipUpdateOneWithoutEmployeeDirectoryMappingsNestedInput
   payrollDeductions?: Prisma.PayrollDeductionProposalUpdateManyWithoutEmployeeMappingNestedInput
+  salaryEvidence?: Prisma.SalaryEvidenceUpdateManyWithoutEmployeeMappingNestedInput
 }
 
 export type EmployeeDirectoryMappingUncheckedUpdateWithoutOrganizationInput = {
@@ -1132,6 +1303,7 @@ export type EmployeeDirectoryMappingUncheckedUpdateWithoutOrganizationInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employmentStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   externalStatus?: Prisma.StringFieldUpdateOperationsInput | string
   normalizedStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   matchStatus?: Prisma.EnumEmployeeDirectoryMatchStatusFieldUpdateOperationsInput | $Enums.EmployeeDirectoryMatchStatus
@@ -1141,6 +1313,7 @@ export type EmployeeDirectoryMappingUncheckedUpdateWithoutOrganizationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payrollDeductions?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutEmployeeMappingNestedInput
+  salaryEvidence?: Prisma.SalaryEvidenceUncheckedUpdateManyWithoutEmployeeMappingNestedInput
 }
 
 export type EmployeeDirectoryMappingUncheckedUpdateManyWithoutOrganizationInput = {
@@ -1152,6 +1325,7 @@ export type EmployeeDirectoryMappingUncheckedUpdateManyWithoutOrganizationInput 
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employmentStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   externalStatus?: Prisma.StringFieldUpdateOperationsInput | string
   normalizedStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   matchStatus?: Prisma.EnumEmployeeDirectoryMatchStatusFieldUpdateOperationsInput | $Enums.EmployeeDirectoryMatchStatus
@@ -1171,6 +1345,7 @@ export type EmployeeDirectoryMappingCreateManyMatchedMembershipInput = {
   email?: string | null
   department?: string | null
   designation?: string | null
+  employmentStartedAt?: Date | string | null
   externalStatus: string
   normalizedStatus?: $Enums.EmploymentStatus | null
   matchStatus: $Enums.EmployeeDirectoryMatchStatus
@@ -1188,6 +1363,7 @@ export type EmployeeDirectoryMappingUpdateWithoutMatchedMembershipInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employmentStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   externalStatus?: Prisma.StringFieldUpdateOperationsInput | string
   normalizedStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   matchStatus?: Prisma.EnumEmployeeDirectoryMatchStatusFieldUpdateOperationsInput | $Enums.EmployeeDirectoryMatchStatus
@@ -1198,6 +1374,7 @@ export type EmployeeDirectoryMappingUpdateWithoutMatchedMembershipInput = {
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeeDirectoryMappingsNestedInput
   integration?: Prisma.EmployeeDirectoryIntegrationUpdateOneRequiredWithoutMappingsNestedInput
   payrollDeductions?: Prisma.PayrollDeductionProposalUpdateManyWithoutEmployeeMappingNestedInput
+  salaryEvidence?: Prisma.SalaryEvidenceUpdateManyWithoutEmployeeMappingNestedInput
 }
 
 export type EmployeeDirectoryMappingUncheckedUpdateWithoutMatchedMembershipInput = {
@@ -1209,6 +1386,7 @@ export type EmployeeDirectoryMappingUncheckedUpdateWithoutMatchedMembershipInput
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employmentStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   externalStatus?: Prisma.StringFieldUpdateOperationsInput | string
   normalizedStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   matchStatus?: Prisma.EnumEmployeeDirectoryMatchStatusFieldUpdateOperationsInput | $Enums.EmployeeDirectoryMatchStatus
@@ -1217,6 +1395,7 @@ export type EmployeeDirectoryMappingUncheckedUpdateWithoutMatchedMembershipInput
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payrollDeductions?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutEmployeeMappingNestedInput
+  salaryEvidence?: Prisma.SalaryEvidenceUncheckedUpdateManyWithoutEmployeeMappingNestedInput
 }
 
 export type EmployeeDirectoryMappingUncheckedUpdateManyWithoutMatchedMembershipInput = {
@@ -1228,6 +1407,7 @@ export type EmployeeDirectoryMappingUncheckedUpdateManyWithoutMatchedMembershipI
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employmentStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   externalStatus?: Prisma.StringFieldUpdateOperationsInput | string
   normalizedStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   matchStatus?: Prisma.EnumEmployeeDirectoryMatchStatusFieldUpdateOperationsInput | $Enums.EmployeeDirectoryMatchStatus
@@ -1245,6 +1425,7 @@ export type EmployeeDirectoryMappingCreateManyIntegrationInput = {
   email?: string | null
   department?: string | null
   designation?: string | null
+  employmentStartedAt?: Date | string | null
   externalStatus: string
   normalizedStatus?: $Enums.EmploymentStatus | null
   matchStatus: $Enums.EmployeeDirectoryMatchStatus
@@ -1263,6 +1444,7 @@ export type EmployeeDirectoryMappingUpdateWithoutIntegrationInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employmentStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   externalStatus?: Prisma.StringFieldUpdateOperationsInput | string
   normalizedStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   matchStatus?: Prisma.EnumEmployeeDirectoryMatchStatusFieldUpdateOperationsInput | $Enums.EmployeeDirectoryMatchStatus
@@ -1273,6 +1455,7 @@ export type EmployeeDirectoryMappingUpdateWithoutIntegrationInput = {
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeeDirectoryMappingsNestedInput
   matchedMembership?: Prisma.OrganizationMembershipUpdateOneWithoutEmployeeDirectoryMappingsNestedInput
   payrollDeductions?: Prisma.PayrollDeductionProposalUpdateManyWithoutEmployeeMappingNestedInput
+  salaryEvidence?: Prisma.SalaryEvidenceUpdateManyWithoutEmployeeMappingNestedInput
 }
 
 export type EmployeeDirectoryMappingUncheckedUpdateWithoutIntegrationInput = {
@@ -1283,6 +1466,7 @@ export type EmployeeDirectoryMappingUncheckedUpdateWithoutIntegrationInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employmentStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   externalStatus?: Prisma.StringFieldUpdateOperationsInput | string
   normalizedStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   matchStatus?: Prisma.EnumEmployeeDirectoryMatchStatusFieldUpdateOperationsInput | $Enums.EmployeeDirectoryMatchStatus
@@ -1292,6 +1476,7 @@ export type EmployeeDirectoryMappingUncheckedUpdateWithoutIntegrationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payrollDeductions?: Prisma.PayrollDeductionProposalUncheckedUpdateManyWithoutEmployeeMappingNestedInput
+  salaryEvidence?: Prisma.SalaryEvidenceUncheckedUpdateManyWithoutEmployeeMappingNestedInput
 }
 
 export type EmployeeDirectoryMappingUncheckedUpdateManyWithoutIntegrationInput = {
@@ -1302,6 +1487,7 @@ export type EmployeeDirectoryMappingUncheckedUpdateManyWithoutIntegrationInput =
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employmentStartedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   externalStatus?: Prisma.StringFieldUpdateOperationsInput | string
   normalizedStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   matchStatus?: Prisma.EnumEmployeeDirectoryMatchStatusFieldUpdateOperationsInput | $Enums.EmployeeDirectoryMatchStatus
@@ -1319,10 +1505,12 @@ export type EmployeeDirectoryMappingUncheckedUpdateManyWithoutIntegrationInput =
 
 export type EmployeeDirectoryMappingCountOutputType = {
   payrollDeductions: number
+  salaryEvidence: number
 }
 
 export type EmployeeDirectoryMappingCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   payrollDeductions?: boolean | EmployeeDirectoryMappingCountOutputTypeCountPayrollDeductionsArgs
+  salaryEvidence?: boolean | EmployeeDirectoryMappingCountOutputTypeCountSalaryEvidenceArgs
 }
 
 /**
@@ -1342,6 +1530,13 @@ export type EmployeeDirectoryMappingCountOutputTypeCountPayrollDeductionsArgs<Ex
   where?: Prisma.PayrollDeductionProposalWhereInput
 }
 
+/**
+ * EmployeeDirectoryMappingCountOutputType without action
+ */
+export type EmployeeDirectoryMappingCountOutputTypeCountSalaryEvidenceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SalaryEvidenceWhereInput
+}
+
 
 export type EmployeeDirectoryMappingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1353,6 +1548,7 @@ export type EmployeeDirectoryMappingSelect<ExtArgs extends runtime.Types.Extensi
   email?: boolean
   department?: boolean
   designation?: boolean
+  employmentStartedAt?: boolean
   externalStatus?: boolean
   normalizedStatus?: boolean
   matchStatus?: boolean
@@ -1365,6 +1561,7 @@ export type EmployeeDirectoryMappingSelect<ExtArgs extends runtime.Types.Extensi
   integration?: boolean | Prisma.EmployeeDirectoryIntegrationDefaultArgs<ExtArgs>
   matchedMembership?: boolean | Prisma.EmployeeDirectoryMapping$matchedMembershipArgs<ExtArgs>
   payrollDeductions?: boolean | Prisma.EmployeeDirectoryMapping$payrollDeductionsArgs<ExtArgs>
+  salaryEvidence?: boolean | Prisma.EmployeeDirectoryMapping$salaryEvidenceArgs<ExtArgs>
   _count?: boolean | Prisma.EmployeeDirectoryMappingCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["employeeDirectoryMapping"]>
 
@@ -1378,6 +1575,7 @@ export type EmployeeDirectoryMappingSelectCreateManyAndReturn<ExtArgs extends ru
   email?: boolean
   department?: boolean
   designation?: boolean
+  employmentStartedAt?: boolean
   externalStatus?: boolean
   normalizedStatus?: boolean
   matchStatus?: boolean
@@ -1401,6 +1599,7 @@ export type EmployeeDirectoryMappingSelectUpdateManyAndReturn<ExtArgs extends ru
   email?: boolean
   department?: boolean
   designation?: boolean
+  employmentStartedAt?: boolean
   externalStatus?: boolean
   normalizedStatus?: boolean
   matchStatus?: boolean
@@ -1424,6 +1623,7 @@ export type EmployeeDirectoryMappingSelectScalar = {
   email?: boolean
   department?: boolean
   designation?: boolean
+  employmentStartedAt?: boolean
   externalStatus?: boolean
   normalizedStatus?: boolean
   matchStatus?: boolean
@@ -1434,12 +1634,13 @@ export type EmployeeDirectoryMappingSelectScalar = {
   updatedAt?: boolean
 }
 
-export type EmployeeDirectoryMappingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "integrationId" | "externalEmployeeId" | "employeeCode" | "fullName" | "email" | "department" | "designation" | "externalStatus" | "normalizedStatus" | "matchStatus" | "matchMethod" | "matchedMembershipId" | "lastSynchronizedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["employeeDirectoryMapping"]>
+export type EmployeeDirectoryMappingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "integrationId" | "externalEmployeeId" | "employeeCode" | "fullName" | "email" | "department" | "designation" | "employmentStartedAt" | "externalStatus" | "normalizedStatus" | "matchStatus" | "matchMethod" | "matchedMembershipId" | "lastSynchronizedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["employeeDirectoryMapping"]>
 export type EmployeeDirectoryMappingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   integration?: boolean | Prisma.EmployeeDirectoryIntegrationDefaultArgs<ExtArgs>
   matchedMembership?: boolean | Prisma.EmployeeDirectoryMapping$matchedMembershipArgs<ExtArgs>
   payrollDeductions?: boolean | Prisma.EmployeeDirectoryMapping$payrollDeductionsArgs<ExtArgs>
+  salaryEvidence?: boolean | Prisma.EmployeeDirectoryMapping$salaryEvidenceArgs<ExtArgs>
   _count?: boolean | Prisma.EmployeeDirectoryMappingCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type EmployeeDirectoryMappingIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1460,6 +1661,7 @@ export type $EmployeeDirectoryMappingPayload<ExtArgs extends runtime.Types.Exten
     integration: Prisma.$EmployeeDirectoryIntegrationPayload<ExtArgs>
     matchedMembership: Prisma.$OrganizationMembershipPayload<ExtArgs> | null
     payrollDeductions: Prisma.$PayrollDeductionProposalPayload<ExtArgs>[]
+    salaryEvidence: Prisma.$SalaryEvidencePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1471,6 +1673,7 @@ export type $EmployeeDirectoryMappingPayload<ExtArgs extends runtime.Types.Exten
     email: string | null
     department: string | null
     designation: string | null
+    employmentStartedAt: Date | null
     externalStatus: string
     normalizedStatus: $Enums.EmploymentStatus | null
     matchStatus: $Enums.EmployeeDirectoryMatchStatus
@@ -1877,6 +2080,7 @@ export interface Prisma__EmployeeDirectoryMappingClient<T, Null = never, ExtArgs
   integration<T extends Prisma.EmployeeDirectoryIntegrationDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeDirectoryIntegrationDefaultArgs<ExtArgs>>): Prisma.Prisma__EmployeeDirectoryIntegrationClient<runtime.Types.Result.GetResult<Prisma.$EmployeeDirectoryIntegrationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   matchedMembership<T extends Prisma.EmployeeDirectoryMapping$matchedMembershipArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeDirectoryMapping$matchedMembershipArgs<ExtArgs>>): Prisma.Prisma__OrganizationMembershipClient<runtime.Types.Result.GetResult<Prisma.$OrganizationMembershipPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   payrollDeductions<T extends Prisma.EmployeeDirectoryMapping$payrollDeductionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeDirectoryMapping$payrollDeductionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PayrollDeductionProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  salaryEvidence<T extends Prisma.EmployeeDirectoryMapping$salaryEvidenceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeDirectoryMapping$salaryEvidenceArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SalaryEvidencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1915,6 +2119,7 @@ export interface EmployeeDirectoryMappingFieldRefs {
   readonly email: Prisma.FieldRef<"EmployeeDirectoryMapping", 'String'>
   readonly department: Prisma.FieldRef<"EmployeeDirectoryMapping", 'String'>
   readonly designation: Prisma.FieldRef<"EmployeeDirectoryMapping", 'String'>
+  readonly employmentStartedAt: Prisma.FieldRef<"EmployeeDirectoryMapping", 'DateTime'>
   readonly externalStatus: Prisma.FieldRef<"EmployeeDirectoryMapping", 'String'>
   readonly normalizedStatus: Prisma.FieldRef<"EmployeeDirectoryMapping", 'EmploymentStatus'>
   readonly matchStatus: Prisma.FieldRef<"EmployeeDirectoryMapping", 'EmployeeDirectoryMatchStatus'>
@@ -2364,6 +2569,30 @@ export type EmployeeDirectoryMapping$payrollDeductionsArgs<ExtArgs extends runti
   take?: number
   skip?: number
   distinct?: Prisma.PayrollDeductionProposalScalarFieldEnum | Prisma.PayrollDeductionProposalScalarFieldEnum[]
+}
+
+/**
+ * EmployeeDirectoryMapping.salaryEvidence
+ */
+export type EmployeeDirectoryMapping$salaryEvidenceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SalaryEvidence
+   */
+  select?: Prisma.SalaryEvidenceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SalaryEvidence
+   */
+  omit?: Prisma.SalaryEvidenceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SalaryEvidenceInclude<ExtArgs> | null
+  where?: Prisma.SalaryEvidenceWhereInput
+  orderBy?: Prisma.SalaryEvidenceOrderByWithRelationInput | Prisma.SalaryEvidenceOrderByWithRelationInput[]
+  cursor?: Prisma.SalaryEvidenceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SalaryEvidenceScalarFieldEnum | Prisma.SalaryEvidenceScalarFieldEnum[]
 }
 
 /**

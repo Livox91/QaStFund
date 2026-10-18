@@ -216,3 +216,8 @@ export function getConfiguredEscrowVersion(): EscrowVersion {
 export function agentRepaymentIdToBytes32(repaymentRequestId: string) {
   return keccak256(stringToHex(`agent-repayment:${repaymentRequestId}`));
 }
+
+/** Deterministic id used by borrower-signed partial repayments. */
+export function borrowerRepaymentIdToBytes32(repaymentRequestId: string) {
+  return keccak256(stringToHex(`borrower-repayment:${repaymentRequestId}`));
+}

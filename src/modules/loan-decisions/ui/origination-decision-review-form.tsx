@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/shared/ui/button";
-import { Field } from "@/shared/ui/input";
+import { Field, Textarea } from "@/shared/ui/input";
 
 async function readApiError(response: Response): Promise<string> {
   const body = (await response.json().catch(() => null)) as {
@@ -68,9 +68,8 @@ export function OriginationDecisionReviewForm({
         htmlFor="decision-rationale"
         label="Review rationale"
       >
-        <textarea
+        <Textarea
           id="decision-rationale"
-          className="focus:border-accent focus:ring-brand-muted min-h-28 w-full rounded-lg border border-slate-300 bg-white px-3.5 py-3 text-sm text-slate-950 shadow-sm outline-none placeholder:text-slate-400 focus:ring-3"
           maxLength={1_000}
           onChange={(event) => setRationale(event.target.value)}
           placeholder="Describe the income, employment, or other supporting evidence reviewed…"

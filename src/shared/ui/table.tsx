@@ -7,7 +7,7 @@ export function TableContainer({
   return (
     <div
       className={cn(
-        "overflow-x-auto rounded-xl border border-slate-200 bg-white",
+        "bg-surface overflow-x-auto overscroll-x-contain rounded-xl border border-slate-200 shadow-[0_1px_2px_rgba(15,23,42,0.03)]",
         className,
       )}
     >
@@ -74,7 +74,7 @@ export function TableHead({
   return (
     <th
       className={cn(
-        "border-b border-slate-200 px-5 py-3 text-xs font-semibold tracking-wide text-slate-500 uppercase",
+        "border-b border-slate-200 px-4 py-3 text-xs font-semibold tracking-wide text-slate-500 uppercase sm:px-5",
         className,
       )}
       scope="col"
@@ -89,7 +89,7 @@ export function TableCell({
   className,
 }: React.TdHTMLAttributes<HTMLTableCellElement>) {
   return (
-    <td className={cn("px-5 py-4 text-sm text-slate-700", className)}>
+    <td className={cn("px-4 py-4 text-sm text-slate-700 sm:px-5", className)}>
       {children}
     </td>
   );

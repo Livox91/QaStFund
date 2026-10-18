@@ -3,7 +3,12 @@
 QastFund is an employer-enabled lending and peer-to-peer funding platform.
 Finance that moves with you.
 
-A production-oriented foundation for an employee peer-to-peer lending application. Local authentication, organization membership, employer reporting, employee dashboards, lending offers, marketplace discovery, Arc Testnet escrow funding and borrowing, full on-chain repayment, loan monitoring, and read-only ERPNext employee synchronization are implemented. Payroll writes and production settlement are intentionally not implemented.
+A production-oriented foundation for an employee peer-to-peer lending application. Local authentication, organization membership, employer reporting, employee dashboards, lending offers, marketplace discovery, Arc Testnet escrow funding and borrowing, V3 partial/final repayment, loan monitoring, and read-only ERPNext employee synchronization are implemented. Payroll submission and production settlement are intentionally not implemented.
+
+Project evaluators should begin with the single, self-contained
+[QastFund evaluator guide](./EVALUATOR_GUIDE.md). It covers architecture,
+roles, workflows, decisioning, the repayment agent, setup, demonstration,
+verification evidence, requirements traceability, and known limitations.
 
 Operations documentation: [database backup and disaster recovery](./DATABASE_BACKUP_AND_DISASTER_RECOVERY.md), [operational health](./OPERATIONAL_HEALTH.md), [operations and incident recovery](./OPERATIONS_AND_INCIDENT_RECOVERY.md), and the [employee onboarding and lending experience](./EMPLOYEE_ONBOARDING_AND_LENDING.md).
 

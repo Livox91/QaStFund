@@ -425,6 +425,7 @@ export const ModelName = {
   LoanInstallment: 'LoanInstallment',
   RepaymentAllocation: 'RepaymentAllocation',
   PayrollDeductionProposal: 'PayrollDeductionProposal',
+  SalaryEvidence: 'SalaryEvidence',
   DelinquencyCase: 'DelinquencyCase',
   DelinquencyNotification: 'DelinquencyNotification',
   AuditEvent: 'AuditEvent',
@@ -454,7 +455,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "organization" | "arcWallet" | "arcUsdcTransfer" | "arcWalletChallenge" | "organizationMembership" | "employeeInvitation" | "passwordResetToken" | "employeeDirectoryIntegration" | "employeeDirectoryCredentialSecret" | "employeeDirectoryMapping" | "employeeDirectorySyncRun" | "lendingOffer" | "employeeBalance" | "loan" | "loanDecisionEvaluation" | "loanDecisionReview" | "loanOriginationDecision" | "loanOriginationOverride" | "employerActionAttempt" | "ledgerAccount" | "ledgerTransaction" | "ledgerEntry" | "loanRepayment" | "loanRepaymentPlan" | "loanInstallment" | "repaymentAllocation" | "payrollDeductionProposal" | "delinquencyCase" | "delinquencyNotification" | "auditEvent" | "organizationLendingPolicy" | "session" | "blockchainReconciliationCursor" | "blockchainEvent" | "operationalIncident" | "operationalJobHeartbeat" | "rateLimitBucket" | "repaymentAgentMandate" | "repaymentAgentRun" | "repaymentAgentStep" | "repaymentAgentAction"
+    modelProps: "user" | "organization" | "arcWallet" | "arcUsdcTransfer" | "arcWalletChallenge" | "organizationMembership" | "employeeInvitation" | "passwordResetToken" | "employeeDirectoryIntegration" | "employeeDirectoryCredentialSecret" | "employeeDirectoryMapping" | "employeeDirectorySyncRun" | "lendingOffer" | "employeeBalance" | "loan" | "loanDecisionEvaluation" | "loanDecisionReview" | "loanOriginationDecision" | "loanOriginationOverride" | "employerActionAttempt" | "ledgerAccount" | "ledgerTransaction" | "ledgerEntry" | "loanRepayment" | "loanRepaymentPlan" | "loanInstallment" | "repaymentAllocation" | "payrollDeductionProposal" | "salaryEvidence" | "delinquencyCase" | "delinquencyNotification" | "auditEvent" | "organizationLendingPolicy" | "session" | "blockchainReconciliationCursor" | "blockchainEvent" | "operationalIncident" | "operationalJobHeartbeat" | "rateLimitBucket" | "repaymentAgentMandate" | "repaymentAgentRun" | "repaymentAgentStep" | "repaymentAgentAction"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2530,6 +2531,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    SalaryEvidence: {
+      payload: Prisma.$SalaryEvidencePayload<ExtArgs>
+      fields: Prisma.SalaryEvidenceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SalaryEvidenceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalaryEvidencePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SalaryEvidenceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalaryEvidencePayload>
+        }
+        findFirst: {
+          args: Prisma.SalaryEvidenceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalaryEvidencePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SalaryEvidenceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalaryEvidencePayload>
+        }
+        findMany: {
+          args: Prisma.SalaryEvidenceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalaryEvidencePayload>[]
+        }
+        create: {
+          args: Prisma.SalaryEvidenceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalaryEvidencePayload>
+        }
+        createMany: {
+          args: Prisma.SalaryEvidenceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SalaryEvidenceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalaryEvidencePayload>[]
+        }
+        delete: {
+          args: Prisma.SalaryEvidenceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalaryEvidencePayload>
+        }
+        update: {
+          args: Prisma.SalaryEvidenceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalaryEvidencePayload>
+        }
+        deleteMany: {
+          args: Prisma.SalaryEvidenceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SalaryEvidenceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SalaryEvidenceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalaryEvidencePayload>[]
+        }
+        upsert: {
+          args: Prisma.SalaryEvidenceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalaryEvidencePayload>
+        }
+        aggregate: {
+          args: Prisma.SalaryEvidenceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSalaryEvidence>
+        }
+        groupBy: {
+          args: Prisma.SalaryEvidenceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SalaryEvidenceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SalaryEvidenceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SalaryEvidenceCountAggregateOutputType> | number
+        }
+      }
+    }
     DelinquencyCase: {
       payload: Prisma.$DelinquencyCasePayload<ExtArgs>
       fields: Prisma.DelinquencyCaseFieldRefs
@@ -3794,6 +3869,7 @@ export const EmployeeDirectoryMappingScalarFieldEnum = {
   email: 'email',
   department: 'department',
   designation: 'designation',
+  employmentStartedAt: 'employmentStartedAt',
   externalStatus: 'externalStatus',
   normalizedStatus: 'normalizedStatus',
   matchStatus: 'matchStatus',
@@ -4145,6 +4221,27 @@ export const PayrollDeductionProposalScalarFieldEnum = {
 } as const
 
 export type PayrollDeductionProposalScalarFieldEnum = (typeof PayrollDeductionProposalScalarFieldEnum)[keyof typeof PayrollDeductionProposalScalarFieldEnum]
+
+
+export const SalaryEvidenceScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  employeeMappingId: 'employeeMappingId',
+  externalSalarySlipId: 'externalSalarySlipId',
+  payrollPeriodStart: 'payrollPeriodStart',
+  payrollPeriodEnd: 'payrollPeriodEnd',
+  grossPayMinorUnits: 'grossPayMinorUnits',
+  netPayMinorUnits: 'netPayMinorUnits',
+  currency: 'currency',
+  documentStatus: 'documentStatus',
+  sourceModifiedAt: 'sourceModifiedAt',
+  synchronizedAt: 'synchronizedAt',
+  lastSyncErrorCode: 'lastSyncErrorCode',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SalaryEvidenceScalarFieldEnum = (typeof SalaryEvidenceScalarFieldEnum)[keyof typeof SalaryEvidenceScalarFieldEnum]
 
 
 export const DelinquencyCaseScalarFieldEnum = {
@@ -5459,6 +5556,7 @@ export type GlobalOmitConfig = {
   loanInstallment?: Prisma.LoanInstallmentOmit
   repaymentAllocation?: Prisma.RepaymentAllocationOmit
   payrollDeductionProposal?: Prisma.PayrollDeductionProposalOmit
+  salaryEvidence?: Prisma.SalaryEvidenceOmit
   delinquencyCase?: Prisma.DelinquencyCaseOmit
   delinquencyNotification?: Prisma.DelinquencyNotificationOmit
   auditEvent?: Prisma.AuditEventOmit

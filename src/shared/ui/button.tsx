@@ -20,7 +20,7 @@ const variantStyles = {
 } as const;
 
 const sizeStyles = {
-  sm: "h-8 gap-1.5 rounded-lg px-3 text-xs",
+  sm: "h-9 gap-1.5 rounded-lg px-3 text-xs",
   md: "h-10 gap-2 rounded-lg px-4 text-sm",
   lg: "h-12 gap-2 rounded-xl px-5 text-sm",
   icon: "size-10 rounded-lg",

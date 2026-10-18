@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { requireEmployerAdminPage } from "@/modules/auth/infrastructure/auth-guard";
 import { listDelinquencyCases } from "@/modules/payroll-operations/index.server";
@@ -9,6 +10,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableHeader,
   TableRow,
@@ -21,13 +23,13 @@ export default async function DelinquencyPage() {
   const actor = await requireEmployerAdminPage();
   const cases = await listDelinquencyCases(actor);
   return (
-    <div className="space-y-6">
+    <main className="app-page app-page-wide space-y-6">
       <PageHeader
         eyebrow="Employer operations"
         title="Repayment exceptions"
         description="Confirmed outstanding installments after the configured reconciliation window. Recommendations require human review."
       />
-      <div className="overflow-x-auto rounded-xl border bg-white">
+      <TableContainer>
         <Table>
           <TableHeader>
             <TableRow>
@@ -46,12 +48,12 @@ export default async function DelinquencyPage() {
                 <TableCell>
                   {record.loan.borrowerMembership.user.name}
                   <br />
-                  <a
-                    className="text-brand underline"
+                  <Link
+                    className="text-brand font-medium underline-offset-4 hover:underline"
                     href={`/employer/loans/${record.loanId}`}
                   >
                     {record.loanId.slice(0, 8)}
-                  </a>
+                  </Link>
                 </TableCell>
                 <TableCell>
                   #{record.installment.sequence}
@@ -103,7 +105,7 @@ export default async function DelinquencyPage() {
             No repayment exceptions have been recorded.
           </p>
         ) : null}
-      </div>
-    </div>
+      </TableContainer>
+    </main>
   );
 }

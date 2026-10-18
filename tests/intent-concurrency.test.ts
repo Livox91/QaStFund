@@ -1,5 +1,7 @@
 import { randomUUID } from "node:crypto";
 
+import { encodeAbiParameters, encodeEventTopics, padHex, toHex } from "viem";
+
 import {
   afterAll,
   afterEach,
@@ -13,10 +15,19 @@ import {
 vi.mock("server-only", () => ({}));
 
 import { prisma } from "@/infrastructure/database/prisma";
+import { ARC_USDC_ADDRESS } from "@/integrations/arc/arc-testnet";
+import {
+  borrowerRepaymentIdToBytes32,
+  escrowV3Abi,
+} from "@/integrations/arc/escrow-v3";
+import { erc20UsdcAbi } from "@/integrations/arc/employee-lending-escrow";
 import { ApplicationRole } from "@/modules/auth/domain/application-role";
 import { overrideOriginationDecisionForActor } from "@/modules/loan-decisions/application/origination-decisions";
 import { prepareOnChainBorrow } from "@/modules/loans/application/onchain-borrow";
-import { prepareOnChainRepayment } from "@/modules/loans/application/onchain-repayment";
+import {
+  confirmOnChainRepayment,
+  prepareOnChainRepayment,
+} from "@/modules/loans/application/onchain-repayment";
 
 const organizationId = randomUUID();
 const lenderUserId = randomUUID();
@@ -158,6 +169,7 @@ function repaymentDependencies(input: {
         0n,
       ]),
     readBalance: vi.fn().mockResolvedValue(200_000_000n),
+    readRepaid: vi.fn().mockResolvedValue(0n),
   } as never;
 }
 
@@ -513,6 +525,116 @@ describe("on-chain intent concurrency", () => {
     ).resolves.toBe(1);
   });
 
+  it("prepares a borrower-selected partial repayment on a V3 escrow", async () => {
+    const loan = await createRepayableLoan();
+    const requestId = randomUUID();
+    const intent = await prepareOnChainRepayment(
+      actor as never,
+      loan.id,
+      requestId,
+      repaymentDependencies(loan),
+      25_000_000n,
+    );
+
+    expect(intent).toMatchObject({
+      state: "PENDING",
+      repaymentBaseUnits: "25000000",
+      repaymentMode: "PARTIAL",
+    });
+    expect(intent.chainRepaymentId).toMatch(/^0x[0-9a-f]{64}$/);
+    await expect(
+      prisma.loanRepayment.findUniqueOrThrow({
+        where: { repaymentRequestId: requestId },
+      }),
+    ).resolves.toMatchObject({ amountMinorUnits: 2_500n, status: "PENDING" });
+  });
+
+  it("confirms a partial V3 repayment without closing the loan", async () => {
+    const loan = await createRepayableLoan();
+    const requestId = randomUUID();
+    const amount = 25_000_000n;
+    const intent = await prepareOnChainRepayment(
+      actor as never,
+      loan.id,
+      requestId,
+      repaymentDependencies(loan),
+      amount,
+    );
+    if (intent.state !== "PENDING") throw new Error("Expected pending intent");
+
+    const chainRepaymentId = borrowerRepaymentIdToBytes32(requestId);
+    const repaymentTopics = encodeEventTopics({
+      abi: escrowV3Abi,
+      eventName: "LoanRepaymentReceived",
+      args: {
+        loanId: loan.chainLoanId,
+        repaymentId: chainRepaymentId,
+        borrower: borrowerAddress,
+      },
+    });
+    const transferTopics = encodeEventTopics({
+      abi: erc20UsdcAbi,
+      eventName: "Transfer",
+      args: { from: borrowerAddress, to: lenderAddress },
+    });
+    const transactionHash = `0x${"7".repeat(64)}` as const;
+    const result = await confirmOnChainRepayment(
+      actor as never,
+      loan.id,
+      intent.repaymentId,
+      transactionHash,
+      {
+        contractAddress,
+        database: prisma,
+        getTransactionReceipt: vi.fn().mockResolvedValue({
+          status: "success",
+          blockNumber: 123n,
+          logs: [
+            {
+              address: contractAddress,
+              topics: repaymentTopics,
+              data: encodeAbiParameters(
+                [
+                  { type: "address" },
+                  { type: "address" },
+                  { type: "uint256" },
+                  { type: "uint256" },
+                  { type: "uint256" },
+                ],
+                [lenderAddress, borrowerAddress, amount, amount, 80_000_000n],
+              ),
+            },
+            {
+              address: ARC_USDC_ADDRESS,
+              topics: transferTopics,
+              data: padHex(toHex(amount), { size: 32 }),
+            },
+          ],
+        }) as never,
+        getBlock: vi.fn().mockResolvedValue({
+          timestamp: BigInt(Math.floor(now.getTime() / 1_000)),
+        }) as never,
+      },
+    );
+
+    expect(result).toEqual({ loanId: loan.id, status: "ACTIVE" });
+    await expect(
+      prisma.loan.findUniqueOrThrow({ where: { id: loan.id } }),
+    ).resolves.toMatchObject({
+      status: "ACTIVE",
+      outstandingPrincipalMinorUnits: 8_000n,
+    });
+    await expect(
+      prisma.loanRepayment.findUniqueOrThrow({
+        where: { id: intent.repaymentId },
+      }),
+    ).resolves.toMatchObject({
+      status: "COMPLETED",
+      amountMinorUnits: 2_500n,
+      submissionTransactionHash: transactionHash,
+    });
+  });
+
   it("rejects competing repayment keys and safely revives a failed intent", async () => {
     const loan = await createRepayableLoan();
     const dependencies = repaymentDependencies(loan);
@@ -604,6 +726,7 @@ describe("on-chain intent concurrency", () => {
       state: "CONFIRMED",
       repaymentId: pending.repaymentId,
       loanId: loan.id,
+      loanStatus: "REPAID",
     });
   });
 });

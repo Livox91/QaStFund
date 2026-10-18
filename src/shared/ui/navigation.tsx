@@ -21,6 +21,7 @@ export type NavigationItem = Readonly<{
   icon: NavigationIcon;
   label: string;
   exact?: boolean;
+  group?: string;
 }>;
 
 function NavigationItemIcon({ icon }: { icon: NavigationIcon }) {
@@ -107,34 +108,76 @@ export function Navigation({
 }) {
   const pathname = usePathname();
 
-  return (
-    <nav
-      aria-label="Portal navigation"
-      className={cn(
-        variant === "sidebar" ? "space-y-1" : "flex gap-1 overflow-x-auto",
-      )}
-    >
-      {items.map((item) => {
-        const active = isActivePath(pathname, item);
+  const links = (entries: ReadonlyArray<NavigationItem>) =>
+    entries.map((item) => {
+      const active = isActivePath(pathname, item);
 
-        return (
-          <Link
-            key={item.href}
-            aria-current={active ? "page" : undefined}
-            className={cn(
-              "focus-visible:outline-accent flex items-center gap-3 rounded-lg text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-2 focus-visible:outline-offset-2",
-              variant === "sidebar" ? "px-3 py-2.5" : "px-3 py-2",
-              active
-                ? "bg-brand !text-white shadow-sm"
-                : "hover:bg-brand-soft hover:text-brand text-slate-600",
-            )}
-            href={item.href}
-          >
-            <NavigationItemIcon icon={item.icon} />
-            {item.label}
-          </Link>
-        );
-      })}
+      return (
+        <Link
+          key={item.href}
+          aria-current={active ? "page" : undefined}
+          className={cn(
+            "focus-visible:outline-accent flex min-h-10 items-center gap-3 rounded-lg text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-2 focus-visible:outline-offset-2",
+            variant === "sidebar" ? "px-3 py-2.5" : "px-3 py-2",
+            active
+              ? "bg-brand !text-white shadow-sm"
+              : "hover:bg-brand-soft hover:text-brand text-slate-600",
+          )}
+          href={item.href}
+          onClick={(event) => {
+            event.currentTarget.closest("details")?.removeAttribute("open");
+          }}
+        >
+          <NavigationItemIcon icon={item.icon} />
+          {item.label}
+        </Link>
+      );
+    });
+
+  if (variant === "mobile") {
+    const current = items.find((item) => isActivePath(pathname, item));
+    return (
+      <nav aria-label="Portal navigation">
+        <details className="group relative">
+          <summary className="focus-visible:outline-accent flex min-h-10 cursor-pointer list-none items-center justify-between gap-3 rounded-lg px-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 [&::-webkit-details-marker]:hidden">
+            <span className="flex min-w-0 items-center gap-2">
+              <span>Menu</span>
+              <span className="text-slate-300">/</span>
+              <span className="truncate text-slate-500">
+                {current?.label ?? "Navigate"}
+              </span>
+            </span>
+            <span
+              aria-hidden="true"
+              className="text-lg transition-transform group-open:rotate-180"
+            >
+              ⌄
+            </span>
+          </summary>
+          <div className="bg-surface absolute top-[calc(100%+0.5rem)] right-0 left-0 z-30 grid max-h-[min(70dvh,32rem)] gap-1 overflow-y-auto rounded-xl border border-slate-200 p-2 shadow-xl sm:grid-cols-2">
+            {links(items)}
+          </div>
+        </details>
+      </nav>
+    );
+  }
+
+  const groups = new Map<string, NavigationItem[]>();
+  for (const item of items) {
+    const group = item.group ?? "Workspace";
+    groups.set(group, [...(groups.get(group) ?? []), item]);
+  }
+
+  return (
+    <nav aria-label="Portal navigation" className="space-y-6">
+      {[...groups].map(([group, entries]) => (
+        <div key={group}>
+          <p className="mb-2 px-3 text-[11px] font-semibold tracking-wider text-slate-400 uppercase">
+            {group}
+          </p>
+          <div className="space-y-1">{links(entries)}</div>
+        </div>
+      ))}
     </nav>
   );
 }

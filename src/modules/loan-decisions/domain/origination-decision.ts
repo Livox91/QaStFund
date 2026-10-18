@@ -51,6 +51,10 @@ export type OriginationDecisionInput = Readonly<{
     verifiedNetIncomeMinorUnits: bigint | null;
     incomeVerifiedAt: string | null;
     incomeEvidenceFresh: boolean;
+    incomeSource?: "ERPNEXT_SALARY_SLIP" | null;
+    incomePeriodStart?: string | null;
+    incomePeriodEnd?: string | null;
+    incomeDocumentReference?: string | null;
     existingMonthlyObligationsMinorUnits: bigint;
   }>;
   exposure: Readonly<{

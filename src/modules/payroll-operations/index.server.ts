@@ -612,7 +612,11 @@ async function deliverNotification(notificationId: string) {
   });
   if (!notification || notification.deliveryStatus === "SENT") return;
   const item = notification.case;
-  const reviewUrl = `${process.env.APP_URL ?? ""}/employer/delinquency`;
+  const isBorrower =
+    notification.recipientMembershipId === item.loan.borrowerMembershipId;
+  const reviewUrl = isBorrower
+    ? `${process.env.APP_URL ?? ""}/app/loans/${item.loanId}`
+    : `${process.env.APP_URL ?? ""}/employer/delinquency`;
   const text = [
     `Loan reference: ${item.loanId}`,
     `Installment due: ${item.installment.dueAt.toISOString()}`,
@@ -620,19 +624,21 @@ async function deliverNotification(notificationId: string) {
     `Paid: ${money(item.amountPaidMinorUnits, item.loan.currency)}`,
     `Outstanding: ${money(item.outstandingMinorUnits, item.loan.currency)}`,
     `Days overdue: ${item.daysOverdue}`,
-    `Recommended action: ${item.recommendedAction}`,
+    ...(isBorrower ? [] : [`Recommended action: ${item.recommendedAction}`]),
     reviewUrl,
   ].join("\n");
   try {
     await emailSender.send({
       to: notification.recipientMembership.user.email,
-      subject: `QastFund repayment review: ${notification.thresholdKey}`,
+      subject: isBorrower
+        ? `QastFund repayment overdue: ${notification.thresholdKey}`
+        : `QastFund repayment review: ${notification.thresholdKey}`,
       text,
       html: transactionalEmailHtml({
         preheader: `Repayment review required for loan ${item.loanId}.`,
-        eyebrow: "Repayment operations",
-        title: "Repayment review required",
-        bodyHtml: `<p style="margin:0 0 20px;color:#64748B;">A repayment exception needs your attention. Review the account details and recommended next step below.</p>
+        eyebrow: isBorrower ? "Your repayment" : "Repayment operations",
+        title: isBorrower ? "Repayment overdue" : "Repayment review required",
+        bodyHtml: `<p style="margin:0 0 20px;color:#64748B;">${isBorrower ? "An installment has an outstanding overdue balance. Review your loan and make a payment or contact your employer if you need help." : "A repayment exception needs your attention. Review the account details and recommended next step below."}</p>
           <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
             ${[
               ["Loan reference", item.loanId],
@@ -647,7 +653,9 @@ async function deliverNotification(notificationId: string) {
                 money(item.outstandingMinorUnits, item.loan.currency),
               ],
               ["Days overdue", String(item.daysOverdue)],
-              ["Recommended action", item.recommendedAction],
+              ...(isBorrower
+                ? []
+                : [["Recommended action", item.recommendedAction]]),
             ]
               .map(
                 ([label, value]) =>
@@ -655,11 +663,16 @@ async function deliverNotification(notificationId: string) {
               )
               .join("")}
           </table>`,
-        action: { label: "Review repayment", url: reviewUrl },
+        action: {
+          label: isBorrower ? "View loan" : "Review repayment",
+          url: reviewUrl,
+        },
         notice: {
           title: "Operational notice",
           bodyHtml:
-            '<p style="margin:0;">Handle this case according to your organization\'s repayment review policy.</p>',
+            isBorrower
+              ? '<p style="margin:0;">This notice does not change your employment status. Contact your employer to discuss an arrangement if needed.</p>'
+              : '<p style="margin:0;">Handle this case according to your organization\'s repayment review policy. Do not take employment action automatically.</p>',
         },
       }),
       idempotencyKey: notification.idempotencyKey,
@@ -798,7 +811,7 @@ export async function evaluateOverdueInstallments(now = new Date()) {
     if (!existing) opened += 1;
     const threshold = thresholdForDays(derived.daysOverdue);
     if (!threshold) continue;
-    const recipient = await prisma.organizationMembership.findFirst({
+    const employerRecipient = await prisma.organizationMembership.findFirst({
       where: {
         organizationId: installment.organizationId,
         role: "EMPLOYER_ADMIN",
@@ -807,22 +820,33 @@ export async function evaluateOverdueInstallments(now = new Date()) {
       orderBy: { createdAt: "asc" },
       select: { id: true },
     });
-    if (!recipient) continue;
-    const notification = await prisma.delinquencyNotification.upsert({
-      where: {
-        caseId_thresholdKey: { caseId: caseRecord.id, thresholdKey: threshold },
-      },
-      update: {},
-      create: {
-        organizationId: installment.organizationId,
-        caseId: caseRecord.id,
-        recipientMembershipId: recipient.id,
-        idempotencyKey: `delinquency:${caseRecord.id}:${threshold}`,
-        thresholdKey: threshold,
-      },
-    });
-    if (notification.deliveryStatus !== "SENT")
-      notificationIds.push(notification.id);
+    const recipients = [
+      { id: installment.loan.borrowerMembershipId, audience: "borrower" },
+      ...(employerRecipient
+        ? [{ id: employerRecipient.id, audience: "employer" }]
+        : []),
+    ];
+    for (const recipient of recipients) {
+      const notification = await prisma.delinquencyNotification.upsert({
+        where: {
+          caseId_thresholdKey_recipientMembershipId: {
+            caseId: caseRecord.id,
+            thresholdKey: threshold,
+            recipientMembershipId: recipient.id,
+          },
+        },
+        update: {},
+        create: {
+          organizationId: installment.organizationId,
+          caseId: caseRecord.id,
+          recipientMembershipId: recipient.id,
+          idempotencyKey: `delinquency:${caseRecord.id}:${threshold}:${recipient.audience}`,
+          thresholdKey: threshold,
+        },
+      });
+      if (notification.deliveryStatus !== "SENT")
+        notificationIds.push(notification.id);
+    }
   }
   for (const id of notificationIds) await deliverNotification(id);
   return {

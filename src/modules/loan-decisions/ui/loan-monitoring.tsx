@@ -42,7 +42,7 @@ export function LoanMonitoring({
   );
 
   return (
-    <main className="mx-auto max-w-[1500px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+    <main className="app-page app-page-wide">
       <PageHeader
         description={`Time-based payment monitoring for ${organizationName}. Recommendations never move funds or change loan terms.`}
         eyebrow="Employer portal"

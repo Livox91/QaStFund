@@ -182,6 +182,11 @@ export type RepaymentAllocation = Prisma.RepaymentAllocationModel
  */
 export type PayrollDeductionProposal = Prisma.PayrollDeductionProposalModel
 /**
+ * Model SalaryEvidence
+ *
+ */
+export type SalaryEvidence = Prisma.SalaryEvidenceModel
+/**
  * Model DelinquencyCase
  * 
  */

@@ -61,7 +61,7 @@ export default async function BorrowOfferPage({
   );
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+    <main className="app-page app-page-narrow">
       <PageHeader
         actions={
           <Link

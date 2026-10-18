@@ -18,7 +18,7 @@ import {
 } from "@/shared/ui/card";
 import { CurrencyDisplay } from "@/shared/ui/currency-display";
 import { EmptyState } from "@/shared/ui/empty-state";
-import { Field, Input } from "@/shared/ui/input";
+import { Field, Input, Select } from "@/shared/ui/input";
 import { PageHeader } from "@/shared/ui/page-header";
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
@@ -43,7 +43,7 @@ export function LendingMarketplaceView({
   const { filters } = marketplace;
 
   return (
-    <main className="mx-auto max-w-[1500px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+    <main className="app-page app-page-wide">
       <PageHeader
         actions={
           <Link
@@ -106,12 +106,7 @@ export function LendingMarketplaceView({
               />
             </Field>
             <Field htmlFor="sort" label="Sort by">
-              <select
-                className="focus:border-accent focus:ring-brand-muted h-11 w-full rounded-lg border border-slate-300 bg-white px-3.5 text-sm text-slate-950 shadow-sm outline-none focus:ring-3"
-                defaultValue={filters.sort}
-                id="sort"
-                name="sort"
-              >
+              <Select defaultValue={filters.sort} id="sort" name="sort">
                 <option value={LendingMarketplaceSort.LOWEST_FEE}>
                   Lowest fee
                 </option>
@@ -124,7 +119,7 @@ export function LendingMarketplaceView({
                 <option value={LendingMarketplaceSort.EXPIRING_SOON}>
                   Expiring soon
                 </option>
-              </select>
+              </Select>
             </Field>
             <Button type="submit">Apply filters</Button>
             <Link

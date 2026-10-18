@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 
 import { network } from "hardhat";
-import { afterAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { prisma } from "@/infrastructure/database/prisma";
 import { beginArcWalletEnrollment } from "@/modules/arc-wallet/application/arc-wallet-identity";
@@ -36,9 +36,20 @@ import {
 const suffix = randomUUID();
 const organizationIds: string[] = [];
 const userIds: string[] = [];
+const originalEscrowVersion = process.env.ARC_ESCROW_VERSION;
 
 describe("local P2P lending lifecycle", () => {
+  beforeAll(() => {
+    // This scenario intentionally deploys and exercises the legacy escrow.
+    process.env.ARC_ESCROW_VERSION = "1";
+  });
+
   afterAll(async () => {
+    if (originalEscrowVersion === undefined) {
+      delete process.env.ARC_ESCROW_VERSION;
+    } else {
+      process.env.ARC_ESCROW_VERSION = originalEscrowVersion;
+    }
     await prisma.organization.deleteMany({
       where: { id: { in: organizationIds } },
     });

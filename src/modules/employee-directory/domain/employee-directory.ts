@@ -9,6 +9,7 @@ export type ExternalEmployee = {
   email?: string;
   department?: string;
   designation?: string;
+  employmentStartedAt?: string;
   employmentStatus: string;
   modifiedAt?: string;
 };

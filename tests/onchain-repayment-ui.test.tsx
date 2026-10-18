@@ -2,7 +2,15 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock("@/app/(employee)/app/loans/[loanId]/repayment-form", () => ({
-  RepaymentForm: () => <button type="button">Repay $105</button>,
+  RepaymentForm: ({
+    supportsPartialRepayment,
+  }: {
+    supportsPartialRepayment: boolean;
+  }) => (
+    <button type="button">
+      {supportsPartialRepayment ? "Make a payment" : "Repay $105"}
+    </button>
+  ),
 }));
 
 import type { EmployeeDashboardLoan } from "@/modules/employees/domain/employee-dashboard";
@@ -41,6 +49,21 @@ describe("on-chain repayment UI", () => {
     expect(markup).toContain("Active Loan");
     expect(markup).toContain("Repay $105");
     expect(markup).not.toContain("Repayment confirmed");
+  });
+
+  it("offers partial or full payment for a V3 on-chain loan", () => {
+    const markup = renderToStaticMarkup(
+      <EmployeeLoanDetails
+        loan={baseLoan}
+        repaymentRecorded={false}
+        supportsPartialRepayment
+      />,
+    );
+
+    expect(markup).toContain("Make a payment");
+    expect(markup).toContain(
+      "Make a partial payment or pay the remaining balance in full.",
+    );
   });
 
   it("removes Bob's repayment action after confirmation", () => {

@@ -17,7 +17,7 @@ export default async function SendUsdcPage({
     typeof query.transfer === "string" ? query.transfer : undefined;
 
   return (
-    <div className="space-y-8">
+    <main className="app-page app-page-narrow space-y-8">
       <PageHeader
         actions={
           <Link className={buttonStyles({ variant: "outline" })} href="/app">
@@ -29,6 +29,6 @@ export default async function SendUsdcPage({
         title="Send USDC"
       />
       <SendUsdcFlow initialTransferId={transferId} />
-    </div>
+    </main>
   );
 }

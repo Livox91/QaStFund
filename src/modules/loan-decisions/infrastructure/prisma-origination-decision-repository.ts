@@ -38,9 +38,15 @@ function snapshot(input: OriginationDecisionInput): Prisma.InputJsonObject {
         input.affordability.verifiedNetIncomeMinorUnits?.toString() ?? null,
       incomeVerifiedAt: input.affordability.incomeVerifiedAt,
       incomeEvidenceFresh: input.affordability.incomeEvidenceFresh,
+      incomeSource: input.affordability.incomeSource ?? null,
+      incomePeriodStart: input.affordability.incomePeriodStart ?? null,
+      incomePeriodEnd: input.affordability.incomePeriodEnd ?? null,
+      incomeDocumentReference:
+        input.affordability.incomeDocumentReference ?? null,
       existingMonthlyObligationsMinorUnits:
         input.affordability.existingMonthlyObligationsMinorUnits.toString(),
-      evidence: "UNAVAILABLE_NO_PAYROLL_PROVIDER",
+      evidence:
+        input.affordability.incomeSource ?? "UNAVAILABLE_NO_PAYROLL_EVIDENCE",
     },
     exposure: {
       outstandingPrincipalMinorUnits:
@@ -70,6 +76,19 @@ function affordabilitySnapshot(
     policyNote:
       "No affordability threshold or score is approved for the controlled pilot.",
   };
+}
+
+export function completedEmploymentMonths(
+  employmentStartedAt: Date | null,
+  evaluatedAt: Date,
+): number | null {
+  if (!employmentStartedAt || employmentStartedAt > evaluatedAt) return null;
+  let months =
+    (evaluatedAt.getUTCFullYear() - employmentStartedAt.getUTCFullYear()) * 12 +
+    evaluatedAt.getUTCMonth() -
+    employmentStartedAt.getUTCMonth();
+  if (evaluatedAt.getUTCDate() < employmentStartedAt.getUTCDate()) months -= 1;
+  return Math.max(0, months);
 }
 
 export async function evaluateAndPersistLoanOrigination(input: {
@@ -114,7 +133,15 @@ export async function evaluateAndPersistLoanOrigination(input: {
             role: true,
             employeeDirectoryMappings: {
               where: { matchStatus: "MATCHED" },
-              select: { id: true },
+              select: {
+                id: true,
+                employmentStartedAt: true,
+                salaryEvidence: {
+                  where: { documentStatus: 1 },
+                  orderBy: { payrollPeriodEnd: "desc" },
+                  take: 1,
+                },
+              },
               take: 1,
             },
           },
@@ -172,6 +199,18 @@ export async function evaluateAndPersistLoanOrigination(input: {
       now: input.evaluatedAt,
       maxAgeMs: maxDirectoryAgeMs,
     });
+    const salaryEvidence =
+      loan.borrowerMembership.employeeDirectoryMappings[0]?.salaryEvidence[0] ??
+      null;
+    const salaryEvidenceMaxAgeMs =
+      Number(process.env.ERP_NEXT_PAYROLL_MAX_AGE_DAYS ?? 45) * 86_400_000;
+    const salaryEvidenceFresh = Boolean(
+      salaryEvidence &&
+      input.evaluatedAt.getTime() >=
+        salaryEvidence.payrollPeriodEnd.getTime() &&
+      input.evaluatedAt.getTime() - salaryEvidence.payrollPeriodEnd.getTime() <=
+        salaryEvidenceMaxAgeMs,
+    );
     const existingMonthlyObligationsMinorUnits = priorLoans
       .filter((item) =>
         ["ACTIVE", "OVERDUE", "DEFAULTED"].includes(item.status),
@@ -213,9 +252,11 @@ export async function evaluateAndPersistLoanOrigination(input: {
         identityIntegrityResolved:
           !loan.organization.erpNextEnabled ||
           loan.borrowerMembership.employeeDirectoryMappings.length === 1,
-        // ERPNext Employee does not currently supply a verified employment
-        // start date, so v1 must not manufacture tenure evidence.
-        tenureMonths: null,
+        tenureMonths: completedEmploymentMonths(
+          loan.borrowerMembership.employeeDirectoryMappings[0]
+            ?.employmentStartedAt ?? null,
+          input.evaluatedAt,
+        ),
         statusVerifiedAt:
           loan.borrowerMembership.employmentStatusSyncedAt?.toISOString() ??
           null,
@@ -233,10 +274,19 @@ export async function evaluateAndPersistLoanOrigination(input: {
           loan.lendingOffer.maximumLoanAmountMinorUnits,
       },
       affordability: {
-        // Payroll is an explicit future integration. No verified income exists.
-        verifiedNetIncomeMinorUnits: null,
-        incomeVerifiedAt: null,
-        incomeEvidenceFresh: false,
+        verifiedNetIncomeMinorUnits:
+          salaryEvidence?.currency === loan.currency
+            ? salaryEvidence.netPayMinorUnits
+            : null,
+        incomeVerifiedAt:
+          salaryEvidence?.sourceModifiedAt.toISOString() ?? null,
+        incomeEvidenceFresh:
+          salaryEvidence?.currency === loan.currency && salaryEvidenceFresh,
+        incomeSource: salaryEvidence ? "ERPNEXT_SALARY_SLIP" : null,
+        incomePeriodStart:
+          salaryEvidence?.payrollPeriodStart.toISOString() ?? null,
+        incomePeriodEnd: salaryEvidence?.payrollPeriodEnd.toISOString() ?? null,
+        incomeDocumentReference: salaryEvidence?.externalSalarySlipId ?? null,
         existingMonthlyObligationsMinorUnits,
       },
       exposure: {

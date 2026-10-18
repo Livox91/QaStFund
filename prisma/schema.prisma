@@ -365,6 +365,7 @@ model Organization {
   loanInstallments             LoanInstallment[]
   repaymentAllocations         RepaymentAllocation[]
   payrollDeductionProposals    PayrollDeductionProposal[]
+  salaryEvidence               SalaryEvidence[]
   delinquencyCases             DelinquencyCase[]
   delinquencyNotifications     DelinquencyNotification[]
   repaymentAgentMandates       RepaymentAgentMandate[]
@@ -581,6 +582,7 @@ model EmployeeDirectoryMapping {
   email               String?                       @db.VarChar(320)
   department          String?                       @db.VarChar(280)
   designation         String?                       @db.VarChar(280)
+  employmentStartedAt DateTime?
   externalStatus      String                        @db.VarChar(128)
   normalizedStatus    EmploymentStatus?
   matchStatus         EmployeeDirectoryMatchStatus
@@ -593,6 +595,7 @@ model EmployeeDirectoryMapping {
   integration         EmployeeDirectoryIntegration  @relation(fields: [organizationId, integrationId], references: [organizationId, id], onDelete: Cascade)
   matchedMembership   OrganizationMembership?       @relation("EmployeeDirectoryMatchedMembership", fields: [organizationId, matchedMembershipId], references: [organizationId, id], onDelete: Restrict)
   payrollDeductions   PayrollDeductionProposal[]
+  salaryEvidence      SalaryEvidence[]
 
   @@unique([organizationId, integrationId, externalEmployeeId])
   @@unique([organizationId, integrationId, matchedMembershipId])
@@ -1048,6 +1051,30 @@ model PayrollDeductionProposal {
   @@index([organizationId, employeeMappingId, payrollPeriodStart])
 }
 
+model SalaryEvidence {
+  id                   String                   @id @default(uuid()) @db.Uuid
+  organizationId       String                   @db.Uuid
+  employeeMappingId    String                   @db.Uuid
+  externalSalarySlipId String                   @db.VarChar(140)
+  payrollPeriodStart   DateTime
+  payrollPeriodEnd     DateTime
+  grossPayMinorUnits   BigInt
+  netPayMinorUnits     BigInt
+  currency             String                   @db.VarChar(3)
+  documentStatus       Int
+  sourceModifiedAt     DateTime
+  synchronizedAt       DateTime
+  lastSyncErrorCode    String?                  @db.VarChar(64)
+  createdAt            DateTime                 @default(now())
+  updatedAt            DateTime                 @updatedAt
+  organization         Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  employeeMapping      EmployeeDirectoryMapping @relation(fields: [organizationId, employeeMappingId], references: [organizationId, id], onDelete: Restrict)
+
+  @@unique([organizationId, externalSalarySlipId])
+  @@unique([employeeMappingId, payrollPeriodStart, payrollPeriodEnd])
+  @@index([organizationId, employeeMappingId, payrollPeriodEnd])
+}
+
 model DelinquencyCase {
   id                                 String                    @id @default(uuid()) @db.Uuid
   organizationId                     String                    @db.Uuid
@@ -1103,7 +1130,7 @@ model DelinquencyNotification {
   recipientMembership   OrganizationMembership @relation("DelinquencyNotificationRecipient", fields: [organizationId, recipientMembershipId], references: [organizationId, id], onDelete: Restrict)
 
   @@unique([organizationId, id])
-  @@unique([caseId, thresholdKey])
+  @@unique([caseId, thresholdKey, recipientMembershipId])
   @@index([organizationId, deliveryStatus, createdAt])
 }
 

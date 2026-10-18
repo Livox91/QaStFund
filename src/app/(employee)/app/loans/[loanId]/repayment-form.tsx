@@ -8,10 +8,17 @@ import {
   employeeLendingEscrowAbi,
   erc20UsdcAbi,
 } from "@/integrations/arc/employee-lending-escrow";
+import { escrowV3Abi } from "@/integrations/arc/escrow-v3";
 import { useCircleWallet } from "@/modules/arc-wallet/ui/circle-wallet-provider";
-import { formatUsdc, parseUsdc } from "@/shared/money/usdc";
+import {
+  formatUsdc,
+  parseUsdc,
+  parseUsdcCents,
+  USDC_BASE_UNITS_PER_CENT,
+} from "@/shared/money/usdc";
 import { Button } from "@/shared/ui/button";
 import { Dialog } from "@/shared/ui/dialog";
+import { Field, Input } from "@/shared/ui/input";
 import {
   clearPendingOperation,
   readPendingOperation,
@@ -59,11 +66,13 @@ function UsdcAmount({ amount }: { amount: bigint | null }) {
 export function RepaymentForm({
   lenderName,
   loanId,
-  repaymentBaseUnits,
+  remainingAmountMinorUnits,
+  supportsPartialRepayment,
 }: {
   lenderName: string;
   loanId: string;
-  repaymentBaseUnits: string;
+  remainingAmountMinorUnits: string;
+  supportsPartialRepayment: boolean;
 }) {
   const wallet = useCircleWallet();
   const router = useRouter();
@@ -71,9 +80,19 @@ export function RepaymentForm({
   const [open, setOpen] = useState(false);
   const [phase, setPhase] = useState<Phase>("idle");
   const [message, setMessage] = useState<string | null>(null);
+  const [amount, setAmount] = useState("");
   const [storedOperation, setStoredOperation] =
     useState<BrowserPendingOperation | null>(null);
-  const amountDue = BigInt(repaymentBaseUnits);
+  const remainingBalance =
+    BigInt(remainingAmountMinorUnits) * USDC_BASE_UNITS_PER_CENT;
+  const enteredAmount = useMemo(() => {
+    if (!supportsPartialRepayment) return remainingBalance;
+    try {
+      return parseUsdcCents(amount).baseUnits;
+    } catch {
+      return null;
+    }
+  }, [amount, remainingBalance, supportsPartialRepayment]);
   const balance = useMemo(() => {
     try {
       return wallet.onChainBalance === null
@@ -83,7 +102,8 @@ export function RepaymentForm({
       return null;
     }
   }, [wallet.onChainBalance]);
-  const balanceAfter = balance === null ? null : balance - amountDue;
+  const balanceAfter =
+    balance === null || enteredAmount === null ? null : balance - enteredAmount;
   const busy =
     phase === "preparing" || phase === "authorizing" || phase === "processing";
 
@@ -98,6 +118,9 @@ export function RepaymentForm({
       if (!cancelled && stored) {
         requestId.current = stored.requestId;
         setStoredOperation(stored);
+        if (stored.amountBaseUnits) {
+          setAmount(formatUsdc(BigInt(stored.amountBaseUnits)));
+        }
         setMessage(
           stored.transactionHash
             ? "A submitted repayment is waiting for confirmation. Resume without submitting it again."
@@ -123,11 +146,18 @@ export function RepaymentForm({
       },
     );
     if (!confirmation.ok) throw new Error(await readApiError(confirmation));
+    const result = (await confirmation.json()) as {
+      loan?: { status?: "ACTIVE" | "REPAID" };
+    };
     clearPendingOperation(window.localStorage, "repayment", loanId);
     setStoredOperation(null);
     requestId.current = null;
     setPhase("confirmed");
-    setMessage("Confirmed. Your loan is repaid.");
+    setMessage(
+      result.loan?.status === "REPAID"
+        ? "Confirmed. Your loan is repaid."
+        : "Confirmed. Your partial payment was recorded.",
+    );
     await wallet.refreshWallet();
     router.push(`/app/loans/${loanId}?repaid=1`);
     router.refresh();
@@ -139,18 +169,30 @@ export function RepaymentForm({
       setMessage("Reconnect your wallet before repaying.");
       return;
     }
-    if (balance !== null && balance < amountDue) {
+    const recoverable = readPendingOperation(
+      window.localStorage,
+      "repayment",
+      loanId,
+    );
+    const paymentAmount = recoverable?.amountBaseUnits
+      ? BigInt(recoverable.amountBaseUnits)
+      : enteredAmount;
+    if (
+      paymentAmount === null ||
+      paymentAmount <= 0n ||
+      paymentAmount > remainingBalance
+    ) {
+      setPhase("failed");
+      setMessage("Enter an amount between $0.01 and the remaining balance.");
+      return;
+    }
+    if (balance !== null && balance < paymentAmount) {
       setPhase("failed");
       setMessage("You don't have enough USDC to repay this loan.");
       return;
     }
 
     try {
-      const recoverable = readPendingOperation(
-        window.localStorage,
-        "repayment",
-        loanId,
-      );
       if (recoverable?.operationId && recoverable.transactionHash) {
         await confirm(recoverable.operationId, recoverable.transactionHash);
         return;
@@ -160,6 +202,7 @@ export function RepaymentForm({
         kind: "repayment",
         referenceId: loanId,
         requestId: requestId.current,
+        amountBaseUnits: paymentAmount.toString(),
       });
       setPhase("preparing");
       setMessage("Preparing repayment…");
@@ -169,14 +212,24 @@ export function RepaymentForm({
           method: "POST",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ requestId: requestId.current }),
+          body: JSON.stringify({
+            requestId: requestId.current,
+            ...(supportsPartialRepayment
+              ? { amount: formatUsdc(paymentAmount) }
+              : {}),
+          }),
         },
       );
       if (!intentResponse.ok)
         throw new Error(await readApiError(intentResponse));
       const { intent } = (await intentResponse.json()) as {
         intent:
-          | { state: "CONFIRMED"; repaymentId: string; loanId: string }
+          | {
+              state: "CONFIRMED";
+              repaymentId: string;
+              loanId: string;
+              loanStatus: "ACTIVE" | "OVERDUE" | "REPAID";
+            }
           | {
               state: "PENDING";
               repaymentId: string;
@@ -184,6 +237,8 @@ export function RepaymentForm({
               chainLoanId: string;
               usdcAddress: Address;
               repaymentBaseUnits: string;
+              repaymentMode: "FULL" | "PARTIAL";
+              chainRepaymentId: `0x${string}` | null;
             };
       };
       if (intent.state === "CONFIRMED") {
@@ -191,7 +246,11 @@ export function RepaymentForm({
         setStoredOperation(null);
         requestId.current = null;
         setPhase("confirmed");
-        setMessage("Confirmed. Your loan is repaid.");
+        setMessage(
+          intent.loanStatus === "REPAID"
+            ? "Confirmed. Your loan is repaid."
+            : "Confirmed. Your partial payment was recorded.",
+        );
         await wallet.refreshWallet();
         router.push(`/app/loans/${loanId}?repaid=1`);
         router.refresh();
@@ -204,6 +263,7 @@ export function RepaymentForm({
           referenceId: loanId,
           requestId: requestId.current,
           operationId: intent.repaymentId,
+          amountBaseUnits: paymentAmount.toString(),
         }),
       );
 
@@ -220,14 +280,27 @@ export function RepaymentForm({
               args: [intent.contractAddress, BigInt(intent.repaymentBaseUnits)],
             }),
           },
-          {
-            to: intent.contractAddress,
-            data: encodeFunctionData({
-              abi: employeeLendingEscrowAbi,
-              functionName: "repayLoan",
-              args: [BigInt(intent.chainLoanId)],
-            }),
-          },
+          intent.repaymentMode === "PARTIAL" && intent.chainRepaymentId
+            ? {
+                to: intent.contractAddress,
+                data: encodeFunctionData({
+                  abi: escrowV3Abi,
+                  functionName: "repayLoanPartial",
+                  args: [
+                    BigInt(intent.chainLoanId),
+                    BigInt(intent.repaymentBaseUnits),
+                    intent.chainRepaymentId,
+                  ],
+                }),
+              }
+            : {
+                to: intent.contractAddress,
+                data: encodeFunctionData({
+                  abi: employeeLendingEscrowAbi,
+                  functionName: "repayLoan",
+                  args: [BigInt(intent.chainLoanId)],
+                }),
+              },
         ]);
       } catch (error) {
         throw new Error(friendlyWalletError(error));
@@ -240,6 +313,7 @@ export function RepaymentForm({
           requestId: requestId.current,
           operationId: intent.repaymentId,
           transactionHash,
+          amountBaseUnits: paymentAmount.toString(),
         }),
       );
       await confirm(intent.repaymentId, transactionHash);
@@ -255,10 +329,19 @@ export function RepaymentForm({
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} size="lg" type="button">
+      <Button
+        onClick={() => {
+          if (!amount) setAmount(formatUsdc(remainingBalance));
+          setOpen(true);
+        }}
+        size="lg"
+        type="button"
+      >
         {storedOperation
           ? "Resume repayment"
-          : `Repay $${formatUsdc(amountDue)}`}
+          : supportsPartialRepayment
+            ? "Make a payment"
+            : `Repay $${formatUsdc(remainingBalance)}`}
       </Button>
       <Dialog
         description="Review the payment before confirming with your passkey."
@@ -305,9 +388,9 @@ export function RepaymentForm({
       >
         <dl className="grid gap-5 sm:grid-cols-2">
           <div>
-            <dt className="text-xs text-slate-500">Amount due</dt>
+            <dt className="text-xs text-slate-500">Remaining balance</dt>
             <dd className="mt-1 font-semibold text-slate-950">
-              <UsdcAmount amount={amountDue} />
+              <UsdcAmount amount={remainingBalance} />
             </dd>
           </div>
           <div>
@@ -333,6 +416,28 @@ export function RepaymentForm({
             <dd className="mt-1 font-semibold text-slate-950">{lenderName}</dd>
           </div>
         </dl>
+        {supportsPartialRepayment ? (
+          <div className="mt-5">
+            <Field
+              htmlFor="onchain-repayment-amount"
+              label="Payment amount"
+              hint="Pay any amount from $0.01 up to the remaining balance."
+            >
+              <Input
+                disabled={busy || Boolean(storedOperation)}
+                id="onchain-repayment-amount"
+                inputMode="decimal"
+                max={formatUsdc(remainingBalance)}
+                min="0.01"
+                onChange={(event) => setAmount(event.target.value)}
+                required
+                step="0.01"
+                type="number"
+                value={amount}
+              />
+            </Field>
+          </div>
+        ) : null}
         {message ? (
           <p
             aria-live="polite"

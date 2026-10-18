@@ -8,6 +8,9 @@ The current release is approved only for a **two-user, test-fund-only Arc
 Testnet validation pilot**. External/public lending, real-money activity, and
 production financial operations are not approved.
 
+For an evaluator-focused explanation and reproducible demonstration path, start
+with the [QastFund evaluator guide](docs/EVALUATOR_GUIDE.md).
+
 ## Problem and target users
 
 Employees can struggle to demonstrate stable employment and access transparent
@@ -33,8 +36,9 @@ employer administrator for a permanent, rationale-backed review.
   approval; approval and rejection are immutable employer-admin actions.
 - Circle Modular Wallet enrollment and passkey-controlled Arc Testnet user
   operations.
-- An Arc Testnet escrow for offer funding, authorized borrowing, full repayment,
-  receipt confirmation, and finalized-event reconciliation.
+- An Arc Testnet escrow for offer funding, authorized borrowing, V3
+  partial/final repayment, receipt confirmation, and finalized-event
+  reconciliation.
 - Idempotent transaction intents, duplicate protection, audit events, operational
   health checks, and PostgreSQL backup/restore tooling.
 

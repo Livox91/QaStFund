@@ -8,6 +8,7 @@ import { evaluateBorrowerLoanForActor } from "@/modules/loan-decisions/index.ser
 import { getEmployeeLoanDetailsForActor } from "@/modules/loans/index.server";
 import { employeeLoanIdSchema } from "@/modules/loans/schemas/repay-loan.schema";
 import { EmployeeLoanDetails } from "@/modules/loans/ui/employee-loan-details";
+import { getConfiguredEscrowVersion } from "@/integrations/arc/escrow-v3";
 
 export const metadata: Metadata = { title: "Loan details" };
 
@@ -37,6 +38,7 @@ export default async function EmployeeLoanDetailsPage({
       decision={decision}
       loan={loan}
       repaymentRecorded={query.repaid === "1"}
+      supportsPartialRepayment={getConfiguredEscrowVersion() === "3"}
     />
   );
 }

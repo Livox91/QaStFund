@@ -23,6 +23,7 @@ export type DirectorySyncDecision = {
   email?: string;
   department?: string;
   designation?: string;
+  employmentStartedAt?: string;
   externalStatus: string;
   normalizedStatus?: EmploymentStatus;
   matchStatus: "matched" | "unmatched" | "ambiguous" | "duplicate_external_id";
@@ -79,6 +80,7 @@ export interface EmployeeDirectoryRepository {
       email: string | null;
       department: string | null;
       designation: string | null;
+      employmentStartedAt: Date | null;
       externalStatus: string;
       normalizedStatus: EmploymentStatus | null;
       matchStatus:

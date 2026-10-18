@@ -39,7 +39,7 @@ export const DEFAULT_AGENT_POLICY: AgentPolicyConfig = Object.freeze({
   dueSoonMs: 72 * HOUR_MS,
   approvalTtlMs: 48 * HOUR_MS,
   receiptTimeoutMs: 60_000,
-  paymentSpacingMs: 20 * HOUR_MS,
+  paymentSpacingMs: 1 * HOUR_MS,
   droppedAfterMs: 10 * 60_000,
 });
 

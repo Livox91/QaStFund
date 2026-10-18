@@ -15,6 +15,7 @@ import {
   CardTitle,
 } from "@/shared/ui/card";
 import { StatusDisplay } from "@/shared/ui/status-display";
+import { cn } from "@/shared/utils/class-names";
 
 function formatUsdcBalance(balance: string | null): string {
   if (balance === null) return "—";
@@ -44,7 +45,13 @@ function persistedWalletStatus(
   return "NOT_CONFIGURED";
 }
 
-export function ArcWalletPanel({ employee }: { employee: Employee }) {
+export function ArcWalletPanel({
+  className,
+  employee,
+}: {
+  className?: string;
+  employee: Employee;
+}) {
   const wallet = useCircleWallet();
   const [actionError, setActionError] = useState<string | null>(null);
   const [addressCopied, setAddressCopied] = useState(false);
@@ -91,7 +98,7 @@ export function ArcWalletPanel({ employee }: { employee: Employee }) {
   };
 
   return (
-    <Card className="mt-8" aria-label="Your account">
+    <Card className={cn("h-full", className)} aria-label="Your account">
       <CardHeader className="flex-row items-start justify-between gap-4">
         <div>
           <CardTitle>Your Account</CardTitle>

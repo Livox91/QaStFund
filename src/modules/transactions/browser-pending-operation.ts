@@ -4,6 +4,7 @@ export type BrowserPendingOperation = {
   requestId: string;
   operationId?: string;
   transactionHash?: `0x${string}`;
+  amountBaseUnits?: string;
   savedAt: string;
 };
 

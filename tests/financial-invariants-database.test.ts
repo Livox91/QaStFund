@@ -73,7 +73,7 @@ describe("database financial invariants", () => {
           'RepaymentAllocation_installmentId_repaymentId_key',
           'PayrollDeductionProposal_organizationId_idempotencyKey_key',
           'PayrollDeduction_externalReference_key',
-          'DelinquencyNotification_caseId_thresholdKey_key'
+          'DelinquencyNotification_caseId_thresholdKey_recipientMembership'
         )
     `;
 
@@ -85,7 +85,7 @@ describe("database financial invariants", () => {
         "RepaymentAllocation_installmentId_repaymentId_key",
         "PayrollDeductionProposal_organizationId_idempotencyKey_key",
         "PayrollDeduction_externalReference_key",
-        "DelinquencyNotification_caseId_thresholdKey_key",
+        "DelinquencyNotification_caseId_thresholdKey_recipientMembership",
       ]),
     );
   });

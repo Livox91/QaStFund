@@ -266,6 +266,7 @@ export const prismaEmployeeDirectoryRepository: EmployeeDirectoryRepository = {
           email: true,
           department: true,
           designation: true,
+          employmentStartedAt: true,
           externalStatus: true,
           normalizedStatus: true,
           matchStatus: true,
@@ -429,6 +430,9 @@ export const prismaEmployeeDirectoryRepository: EmployeeDirectoryRepository = {
             email: decision.email ?? null,
             department: decision.department ?? null,
             designation: decision.designation ?? null,
+            employmentStartedAt: decision.employmentStartedAt
+              ? new Date(`${decision.employmentStartedAt}T00:00:00.000Z`)
+              : null,
             externalStatus: decision.externalStatus,
             normalizedStatus: decision.normalizedStatus ?? null,
             matchStatus: persistedMatchStatus,
@@ -443,6 +447,9 @@ export const prismaEmployeeDirectoryRepository: EmployeeDirectoryRepository = {
             email: decision.email ?? null,
             department: decision.department ?? null,
             designation: decision.designation ?? null,
+            employmentStartedAt: decision.employmentStartedAt
+              ? new Date(`${decision.employmentStartedAt}T00:00:00.000Z`)
+              : null,
             externalStatus: decision.externalStatus,
             normalizedStatus: decision.normalizedStatus ?? null,
             matchStatus: persistedMatchStatus,

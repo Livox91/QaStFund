@@ -11,7 +11,7 @@ import {
   type OnboardingActionState,
 } from "@/app/(employer)/employer/onboarding/actions";
 import { Button } from "@/shared/ui/button";
-import { Input } from "@/shared/ui/input";
+import { Checkbox, Input } from "@/shared/ui/input";
 
 const initialState: OnboardingActionState = { status: "idle", message: "" };
 
@@ -74,11 +74,10 @@ export function ErpNextEnableForm({ enabled }: { enabled: boolean }) {
   return (
     <form action={action} className="space-y-4">
       <label className="flex items-start gap-3 text-sm text-slate-700">
-        <input
+        <Checkbox
           className="mt-1"
           defaultChecked={enabled}
           name="erpNextEnabled"
-          type="checkbox"
         />
         <span>
           <strong className="block text-slate-950">
@@ -199,7 +198,7 @@ function Toggle({
 }) {
   return (
     <label className="flex items-center gap-3 text-sm font-medium text-slate-700">
-      <input defaultChecked={defaultChecked} name={name} type="checkbox" />
+      <Checkbox defaultChecked={defaultChecked} name={name} />
       {label}
     </label>
   );

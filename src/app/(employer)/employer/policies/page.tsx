@@ -6,7 +6,7 @@ import { formatMinorUnits } from "@/modules/ledger/api/wallet-response";
 import { getEmployerPolicyForActor } from "@/modules/policies/index.server";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
-import { Input } from "@/shared/ui/input";
+import { Checkbox, Field, Input } from "@/shared/ui/input";
 import { PageHeader } from "@/shared/ui/page-header";
 
 export const metadata: Metadata = { title: "Policies" };
@@ -15,7 +15,7 @@ export default async function EmployerPoliciesPage() {
   const actor = await requireEmployerAdminPage();
   const policy = await getEmployerPolicyForActor(actor);
   return (
-    <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+    <main className="app-page app-page-narrow">
       <PageHeader
         description="Configure the rules that govern your organization's lending program."
         eyebrow="Employer portal"
@@ -30,19 +30,17 @@ export default async function EmployerPoliciesPage() {
             action={updateLendingPolicyAction}
             className="grid gap-5 sm:grid-cols-2"
           >
-            <label className="flex items-center gap-3">
-              <input
+            <label className="flex min-h-11 items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3.5 text-sm font-medium text-slate-700">
+              <Checkbox
                 defaultChecked={policy.lendingEnabled}
                 name="lendingEnabled"
-                type="checkbox"
               />{" "}
               Lending enabled
             </label>
-            <label className="flex items-center gap-3">
-              <input
+            <label className="flex min-h-11 items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3.5 text-sm font-medium text-slate-700">
+              <Checkbox
                 defaultChecked={policy.borrowingEnabled}
                 name="borrowingEnabled"
-                type="checkbox"
               />{" "}
               Borrowing enabled
             </label>
@@ -112,16 +110,16 @@ function PolicyInput({
   type?: string;
 }) {
   return (
-    <label className="space-y-2 text-sm font-medium text-slate-700">
-      <span>{label}</span>
+    <Field htmlFor={`policy-${name}`} label={label}>
       <Input
         defaultValue={defaultValue}
+        id={`policy-${name}`}
         min={type === "number" ? 1 : undefined}
         name={name}
         required
         step={type === "number" ? 1 : "0.01"}
         type={type}
       />
-    </label>
+    </Field>
   );
 }

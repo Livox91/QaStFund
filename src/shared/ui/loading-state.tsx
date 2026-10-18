@@ -43,7 +43,7 @@ export function LoadingState({
   return (
     <div
       className={cn(
-        "flex min-h-48 items-center justify-center rounded-2xl border border-slate-200 bg-white",
+        "bg-surface flex min-h-48 items-center justify-center rounded-2xl border border-slate-200",
         className,
       )}
     >

@@ -18,7 +18,7 @@ export default async function RepaymentAgentPage() {
     { active?: boolean } | null | undefined;
 
   return (
-    <div className="space-y-8">
+    <main className="app-page space-y-8">
       <PageHeader
         description="An agent that decides when and how much to repay, pays inside the limits you sign, verifies every payment on Arc, and explains each decision."
         eyebrow="Repayments · Arc Testnet"
@@ -38,6 +38,6 @@ export default async function RepaymentAgentPage() {
         }
       />
       <AgentActivity runs={overview.runs} />
-    </div>
+    </main>
   );
 }

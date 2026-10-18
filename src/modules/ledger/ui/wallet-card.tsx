@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from "@/shared/ui/card";
 import { CurrencyDisplay } from "@/shared/ui/currency-display";
+import { cn } from "@/shared/utils/class-names";
 
 const labels = {
   DEPOSIT: "Simulated Deposit",
@@ -22,12 +23,18 @@ const dateFormatter = new Intl.DateTimeFormat("en-US", {
   timeStyle: "short",
 });
 
-export function WalletCard({ wallet }: { wallet: Wallet }) {
+export function WalletCard({
+  className,
+  wallet,
+}: {
+  className?: string;
+  wallet: Wallet;
+}) {
   return (
-    <Card className="mt-8 overflow-hidden">
+    <Card className={cn("h-full overflow-hidden", className)}>
       <CardHeader className="flex-row items-start justify-between gap-4">
         <div>
-          <CardTitle>Wallet</CardTitle>
+          <CardTitle>Internal balance</CardTitle>
           <CardDescription>
             Your internal simulated USDC balance.
           </CardDescription>

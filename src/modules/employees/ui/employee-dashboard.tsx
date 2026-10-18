@@ -55,13 +55,10 @@ export function EmployeeDashboard({
   const { metrics } = dashboard;
 
   return (
-    <main className="mx-auto max-w-[1500px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+    <main className="app-page app-page-wide">
       <PageHeader
         actions={
-          <div
-            aria-describedby="actions-help"
-            className="flex flex-wrap items-center gap-3"
-          >
+          <div className="flex flex-wrap items-center gap-3">
             <Link
               className={buttonStyles({ size: "lg" })}
               href={onboarding.readyToUse ? "/app/borrow" : "/app/onboarding"}
@@ -103,25 +100,8 @@ export function EmployeeDashboard({
           but wallet or eligibility setup is required for new transactions.
         </p>
       ) : null}
-      <p
-        id="actions-help"
-        className="mt-3 text-xs text-slate-400 sm:text-right"
-      >
-        Browse offers or create one of your own.
-      </p>
-
       <section aria-label="Financial summary" className="mt-8">
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-          <EmployeeDashboardMetricCard
-            helper="Unallocated across active offers"
-            label="Available Balance"
-            value={
-              <CurrencyDisplay
-                amountMinorUnits={metrics.availableBalanceMinorUnits}
-                currency="USDC"
-              />
-            }
-          />
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <EmployeeDashboardMetricCard
             helper="Outstanding principal lent"
             label="Amount Lent"
@@ -224,9 +204,13 @@ export function EmployeeDashboard({
         </CardContent>
       </Card>
 
-      <ArcWalletPanel employee={employee} />
-
-      <WalletCard wallet={wallet} />
+      <section
+        aria-label="Accounts and balances"
+        className="mt-8 grid items-start gap-6 xl:grid-cols-2"
+      >
+        <ArcWalletPanel employee={employee} />
+        <WalletCard wallet={wallet} />
+      </section>
 
       <Card className="mt-6">
         <CardHeader>

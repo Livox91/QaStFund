@@ -165,6 +165,24 @@ describe("ERPNext read-only adapter", () => {
     ).toBeNull();
   });
 
+  it("normalizes a valid ERPNext joining date and rejects invalid dates", () => {
+    expect(
+      normalizeErpNextEmployee({
+        name: "EMP-1",
+        employee_name: "Employee",
+        status: "Active",
+        date_of_joining: "2024-02-29",
+      }),
+    ).toMatchObject({ employmentStartedAt: "2024-02-29" });
+    expect(
+      normalizeErpNextEmployee({
+        name: "EMP-2",
+        status: "Active",
+        date_of_joining: "2024-02-30",
+      }),
+    ).not.toHaveProperty("employmentStartedAt");
+  });
+
   it("retries transient failures only within the configured bound", async () => {
     const fetchMock = vi
       .fn()
@@ -262,6 +280,9 @@ function createRepository() {
               email: item.email ?? null,
               department: item.department ?? null,
               designation: item.designation ?? null,
+              employmentStartedAt: item.employmentStartedAt
+                ? new Date(`${item.employmentStartedAt}T00:00:00.000Z`)
+                : null,
               externalStatus: item.externalStatus,
               normalizedStatus: item.normalizedStatus ?? null,
               matchStatus: item.matchStatus,
