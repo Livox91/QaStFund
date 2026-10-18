@@ -78,6 +78,31 @@ describe("environment validation", () => {
     ).toThrow(expected);
   });
 
+  it("rejects production secrets reused across purposes", () => {
+    const reusedSecret = "test-only-reused-secret-at-least-32-characters";
+    expect(() =>
+      parseEnvironment({
+        ...startupEnvironment,
+        DEPLOYMENT_ENV: "production",
+        APP_URL: "https://lend.example.com",
+        RATE_LIMIT_ENABLED: "true",
+        RATE_LIMIT_HASH_SECRET:
+          "test-only-rate-limit-secret-at-least-32-characters",
+        RATE_LIMIT_TRUST_PROXY: "true",
+        OPERATIONAL_HEALTH_SECRET:
+          "test-only-operational-health-secret-at-least-32-characters",
+        ERP_NEXT_ALLOW_LOCAL_HTTP: "false",
+        ARC_RECONCILIATION_ENABLED: "true",
+        ARC_RECONCILIATION_CRON_SECRET: reusedSecret,
+        ERP_NEXT_SYNC_ENABLED: "true",
+        ERP_NEXT_SYNC_CRON_SECRET: reusedSecret,
+        ERP_NEXT_CREDENTIAL_ENCRYPTION_KEY: Buffer.alloc(32, 7).toString(
+          "base64",
+        ),
+      }),
+    ).toThrow(/must not reuse the ARC_RECONCILIATION_CRON_SECRET value/);
+  });
+
   it("identifies configuration required at application startup", () => {
     expect(() =>
       parseEnvironment({

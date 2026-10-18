@@ -311,6 +311,34 @@ const environmentSchema = z
           message: "local HTTP ERPNext endpoints are forbidden in production",
         });
       }
+
+      const purposeBoundSecrets = [
+        ["RATE_LIMIT_HASH_SECRET", environment.RATE_LIMIT_HASH_SECRET],
+        [
+          "ARC_RECONCILIATION_CRON_SECRET",
+          environment.ARC_RECONCILIATION_CRON_SECRET,
+        ],
+        ["ERP_NEXT_SYNC_CRON_SECRET", environment.ERP_NEXT_SYNC_CRON_SECRET],
+        ["OPERATIONAL_HEALTH_SECRET", environment.OPERATIONAL_HEALTH_SECRET],
+        [
+          "OPERATIONAL_ALERT_WEBHOOK_BEARER_TOKEN",
+          environment.OPERATIONAL_ALERT_WEBHOOK_BEARER_TOKEN,
+        ],
+      ] as const;
+      for (let index = 0; index < purposeBoundSecrets.length; index += 1) {
+        const [name, secret] = purposeBoundSecrets[index];
+        if (!secret) continue;
+        const duplicate = purposeBoundSecrets
+          .slice(0, index)
+          .find(([, candidate]) => candidate === secret);
+        if (duplicate) {
+          context.addIssue({
+            code: "custom",
+            path: [name],
+            message: `must not reuse the ${duplicate[0]} value in production`,
+          });
+        }
+      }
     }
     if (
       environment.ERP_NEXT_SYNC_ENABLED &&

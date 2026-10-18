@@ -6,6 +6,12 @@
 	@internal_api path /api/internal /api/internal/*
 	respond @internal_api 404
 
+	# Development routes are compiled for local workflows but are never part of
+	# the public production surface. The application also returns 404 in
+	# NODE_ENV=production; this edge rule provides defense in depth.
+	@development_api path /api/dev /api/dev/*
+	respond @development_api 404
+
 	reverse_proxy app:3000
 
 	header {

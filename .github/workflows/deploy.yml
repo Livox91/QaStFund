@@ -1,5 +1,12 @@
 name: Deploy Production to EC2
 
+permissions:
+  contents: read
+
+concurrency:
+  group: production-deployment
+  cancel-in-progress: false
+
 on:
   workflow_run:
     workflows:
@@ -15,12 +22,14 @@ jobs:
       ${{ github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.event == 'push' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: Deploy to EC2 via SSH
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@029f5b4aeeeb58fdfe1410a5d17f967dacf36262 # v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
@@ -34,6 +43,10 @@ jobs:
             git checkout master
             git merge --ff-only ${{ github.event.workflow_run.head_sha }}
 
+            # Fail before changing a running service when mandatory Compose
+            # inputs are absent or interpolation is invalid.
+            docker compose -f compose.production.yaml --env-file deploy/.env.production config --quiet
+
             # Authentication for dependency diagnostics is mandatory. Validate
             # it before mutating any running service, without printing its value.
             health_secret="$(sed -n 's/^OPERATIONAL_HEALTH_SECRET=//p' deploy/.env.production | tail -n 1 | tr -d '\r')"
@@ -43,8 +56,7 @@ jobs:
             fi
             unset health_secret
 
-            # 2. Preserve the currently deployed application images for rollback,
-            # then reclaim build cache without deleting the rollback artifacts.
+            # 2. Preserve the currently deployed application images for rollback.
             if docker image inspect qastfund-app:current >/dev/null 2>&1; then
               docker tag qastfund-app:current qastfund-app:rollback
             elif docker image inspect p2p-lending-app:latest >/dev/null 2>&1; then
@@ -55,7 +67,6 @@ jobs:
             elif docker image inspect p2p-lending-reconciliation-scheduler:latest >/dev/null 2>&1; then
               docker tag p2p-lending-reconciliation-scheduler:latest qastfund-reconciliation-scheduler:rollback
             fi
-            docker builder prune --all --force
 
             # 3. Start the database first so it is ready for migrations
             docker compose -f compose.production.yaml --env-file deploy/.env.production up -d database
@@ -74,6 +85,3 @@ jobs:
 
             # Run external HTTPS probes without printing credentials or bodies.
             docker compose -f compose.production.yaml --env-file deploy/.env.production exec -T app node --input-type=module - < scripts/testing/verify-edge-security.mjs
-
-            # 6. Clean up dangling images created during the deployment
-            docker image prune -f
