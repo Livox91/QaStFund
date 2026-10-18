@@ -7,8 +7,6 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "demo:start": "tsx scripts/demo/start-demo.ts",
-    "demo:data": "tsx --conditions=react-server scripts/demo/prepare-demo-data.ts",
     "typecheck": "hardhat compile && next typegen && tsc --noEmit",
     "lint": "eslint .",
     "format": "prettier --write .",
