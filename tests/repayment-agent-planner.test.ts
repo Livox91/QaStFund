@@ -5,6 +5,7 @@ import { amountsMentioned } from "@/modules/repayment-agent/application/validate
 import { createWorld } from "@/modules/repayment-agent/evals/sim-world";
 import { OpenAiRepaymentPlanner } from "@/modules/repayment-agent/infrastructure/openai-planner";
 import { RuleBasedRepaymentPlanner } from "@/modules/repayment-agent/infrastructure/rule-based-planner";
+import { repaymentToolDefinitions } from "@/modules/repayment-agent/tools/repayment-tools";
 
 type Call = {
   url: string;
@@ -201,6 +202,23 @@ describe("rule planner", () => {
     expect(summary.decisions[0]?.explanation).toContain("earlier escrow");
     expect(summary.decisions[0]?.explanation).not.toContain("recently");
     expect(world.chain.transfers).toEqual([]);
+  });
+});
+
+describe("tool schemas", () => {
+  it("omit 'required' when a tool takes no arguments", () => {
+    // Groq rejects `required` next to an empty `properties` object.
+    for (const tool of repaymentToolDefinitions) {
+      const { properties, required } = tool.parameters as {
+        properties: Record<string, unknown>;
+        required?: string[];
+      };
+      if (Object.keys(properties).length === 0) {
+        expect(required, tool.name).toBeUndefined();
+      } else {
+        expect(required, tool.name).toEqual(Object.keys(properties));
+      }
+    }
   });
 });
 
