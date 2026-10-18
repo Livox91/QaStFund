@@ -65,6 +65,7 @@ export type OpenAiPlannerConfig = Readonly<{
   maxTurns?: number;
   requestTimeoutMs?: number;
   fetchImplementation?: typeof fetch;
+  sleep?: (ms: number) => Promise<void>;
 }>;
 
 const tools = [
@@ -95,7 +96,33 @@ const RETRYABLE_TOOL_CALL_CODES = new Set([
   "json_validate_failed",
 ]);
 
+// Free tiers (e.g. Groq) cap tokens per minute and say how long to wait. A
+// short wait is retried once; a longer one falls back to rules immediately.
+const MAX_RATE_LIMIT_WAIT_MS = 20_000;
+
 class ModelToolCallFailedError extends PlannerUnavailableError {}
+
+class ModelRateLimitedError extends PlannerUnavailableError {
+  constructor(
+    code: string,
+    readonly retryAfterMs: number,
+  ) {
+    super(code);
+  }
+}
+
+function retryAfterMs(response: Response, message: unknown) {
+  const header = Number(response.headers.get("retry-after"));
+  if (Number.isFinite(header) && header > 0) return header * 1000;
+  const match =
+    typeof message === "string"
+      ? /try again in ([\d.]+)s/i.exec(message)
+      : null;
+  return match ? Math.ceil(Number(match[1]) * 1000) : null;
+}
+
+const defaultSleep = (ms: number) =>
+  new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 export class OpenAiRepaymentPlanner implements RepaymentPlanner {
   readonly kind = "MODEL" as const;
@@ -176,10 +203,16 @@ export class OpenAiRepaymentPlanner implements RepaymentPlanner {
     // tool_use_failed / json_validate_failed when the model emits a malformed
     // tool call. That is a sampling failure, not a bad request, so the same
     // turn is retried before the planner falls back to rules.
+    let rateLimitRetried = false;
     for (let attempt = 1; ; attempt += 1) {
       try {
         return await this.completeOnce(messages, forceDecision);
       } catch (error) {
+        if (error instanceof ModelRateLimitedError && !rateLimitRetried) {
+          rateLimitRetried = true;
+          await (this.config.sleep ?? defaultSleep)(error.retryAfterMs);
+          continue;
+        }
         if (
           !(error instanceof ModelToolCallFailedError) ||
           attempt >= MAX_TOOL_CALL_ATTEMPTS
@@ -239,6 +272,12 @@ export class OpenAiRepaymentPlanner implements RepaymentPlanner {
             ? providerError.message.slice(0, 500)
             : undefined,
       });
+      if (response.status === 429) {
+        const waitMs = retryAfterMs(response, providerError?.message);
+        if (waitMs !== null && waitMs <= MAX_RATE_LIMIT_WAIT_MS) {
+          throw new ModelRateLimitedError("MODEL_HTTP_429", waitMs);
+        }
+      }
       if (code && RETRYABLE_TOOL_CALL_CODES.has(code)) {
         throw new ModelToolCallFailedError(`MODEL_HTTP_${response.status}`);
       }

@@ -188,6 +188,90 @@ describe("OpenAI repayment planner", () => {
   });
 });
 
+describe("OpenAI planner rate limits", () => {
+  const waitDecision = {
+    choices: [
+      {
+        message: toolCall("1", "submit_decision", {
+          action: "WAIT",
+          loanRef: null,
+          amountBaseUnits: null,
+          reasonCodes: ["NOT_YET_IN_REPAYMENT_WINDOW"],
+          explanation: "Nothing is due soon, so the agent waits.",
+          rejectedAlternatives: [
+            { action: "PAY_FULL", reason: "Not due for weeks." },
+          ],
+          confidence: 0.8,
+          nextReviewInHours: 24,
+        }),
+      },
+    ],
+  };
+  const rateLimited = (message: string) =>
+    new Response(
+      JSON.stringify({ error: { code: "rate_limit_exceeded", message } }),
+      { status: 429 },
+    );
+
+  it("waits the requested time once, then uses the model", async () => {
+    const waits: number[] = [];
+    let requests = 0;
+    const planner = new OpenAiRepaymentPlanner({
+      apiKey: "k",
+      model: "m",
+      sleep: async (ms) => {
+        waits.push(ms);
+      },
+      fetchImplementation: (async () => {
+        requests += 1;
+        return requests === 1
+          ? rateLimited("Rate limit reached. Please try again in 11.4825s.")
+          : new Response(JSON.stringify(waitDecision), { status: 200 });
+      }) as unknown as typeof fetch,
+    });
+    const world = createWorld({
+      balanceUsdc: 200,
+      obligations: [{ outstandingUsdc: 20, dueInHours: 24 * 30 }],
+      planner,
+    });
+    await world.run();
+    expect(waits).toEqual([11_483]);
+    const steps = [...world.repository.runs.values()].flatMap(
+      (run) => run.steps,
+    );
+    expect(steps.some((step) => step.name === "PLANNER_FALLBACK")).toBe(false);
+  });
+
+  it("falls back without waiting when the limit resets too late", async () => {
+    const waits: number[] = [];
+    const planner = new FallbackPlanner(
+      new OpenAiRepaymentPlanner({
+        apiKey: "k",
+        model: "m",
+        sleep: async (ms) => {
+          waits.push(ms);
+        },
+        fetchImplementation: (async () =>
+          rateLimited(
+            "Rate limit reached. Please try again in 3m2s.",
+          )) as unknown as typeof fetch,
+      }),
+      new RuleBasedRepaymentPlanner(),
+    );
+    const world = createWorld({
+      balanceUsdc: 200,
+      obligations: [{ outstandingUsdc: 20, dueInHours: 24 }],
+      planner,
+    });
+    await world.run();
+    expect(waits).toEqual([]);
+    const steps = [...world.repository.runs.values()].flatMap(
+      (run) => run.steps,
+    );
+    expect(steps.some((step) => step.name === "PLANNER_FALLBACK")).toBe(true);
+  });
+});
+
 describe("rule planner", () => {
   it("explains that loans on an earlier escrow cannot be agent-repaid", async () => {
     const world = createWorld({
