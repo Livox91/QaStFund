@@ -335,9 +335,11 @@ describe("payroll deductions and delinquency operations", () => {
     expect(emailBody).not.toContain("test-token");
     expect(emailBody).not.toContain("salary");
     expect(
-      vi.mocked(fetch).mock.calls.some(([, init]) =>
-        String((init as RequestInit).body).includes(`/app/loans/${loanId}`),
-      ),
+      vi
+        .mocked(fetch)
+        .mock.calls.some(([, init]) =>
+          String((init as RequestInit).body).includes(`/app/loans/${loanId}`),
+        ),
     ).toBe(true);
   });
 

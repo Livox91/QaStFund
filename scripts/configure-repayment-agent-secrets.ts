@@ -58,8 +58,6 @@ setValue(
 
 await writeFile(environmentPath, contents, { encoding: "utf8", mode: 0o600 });
 
-console.log(
-  "Repayment agent secrets are configured in the ignored .env file.",
-);
+console.log("Repayment agent secrets are configured in the ignored .env file.");
 console.log(`Repayment agent address: ${agent.address}`);
 console.log("No private key or secret value was printed.");

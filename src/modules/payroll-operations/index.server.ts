@@ -669,10 +669,9 @@ async function deliverNotification(notificationId: string) {
         },
         notice: {
           title: "Operational notice",
-          bodyHtml:
-            isBorrower
-              ? '<p style="margin:0;">This notice does not change your employment status. Contact your employer to discuss an arrangement if needed.</p>'
-              : '<p style="margin:0;">Handle this case according to your organization\'s repayment review policy. Do not take employment action automatically.</p>',
+          bodyHtml: isBorrower
+            ? '<p style="margin:0;">This notice does not change your employment status. Contact your employer to discuss an arrangement if needed.</p>'
+            : '<p style="margin:0;">Handle this case according to your organization\'s repayment review policy. Do not take employment action automatically.</p>',
         },
       }),
       idempotencyKey: notification.idempotencyKey,
