@@ -15,6 +15,7 @@ export function validateEnvironment(): Environment {
   if (cachedEnvironment) return cachedEnvironment;
 
   cachedEnvironment = parseEnvironment({
+    DEPLOYMENT_ENV: process.env.DEPLOYMENT_ENV,
     DATABASE_URL: process.env.DATABASE_URL,
     APP_URL: process.env.APP_URL,
     RATE_LIMIT_ENABLED: process.env.RATE_LIMIT_ENABLED,

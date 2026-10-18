@@ -35,6 +35,49 @@ describe("environment validation", () => {
     });
   });
 
+  it("accepts a hardened production startup configuration", () => {
+    expect(() =>
+      parseEnvironment({
+        ...startupEnvironment,
+        DEPLOYMENT_ENV: "production",
+        APP_URL: "https://lend.example.com",
+        RATE_LIMIT_ENABLED: "true",
+        RATE_LIMIT_HASH_SECRET:
+          "test-only-rate-limit-secret-at-least-32-characters",
+        RATE_LIMIT_TRUST_PROXY: "true",
+        OPERATIONAL_HEALTH_SECRET:
+          "test-only-operational-health-secret-at-least-32-characters",
+        ERP_NEXT_ALLOW_LOCAL_HTTP: "false",
+      }),
+    ).not.toThrow();
+  });
+
+  it.each([
+    [{ APP_URL: "http://lend.example.com" }, /public HTTPS origin/],
+    [{ APP_URL: "https://lend.example.com/app" }, /public HTTPS origin/],
+    [{ RATE_LIMIT_ENABLED: "false" }, /rate limiting must be enabled/],
+    [{ RATE_LIMIT_HASH_SECRET: "" }, /RATE_LIMIT_HASH_SECRET/],
+    [{ RATE_LIMIT_TRUST_PROXY: "false" }, /trusted proxy address handling/],
+    [{ OPERATIONAL_HEALTH_SECRET: "" }, /dependency-health bearer secret/],
+    [{ ERP_NEXT_ALLOW_LOCAL_HTTP: "true" }, /local HTTP ERPNext endpoints/],
+  ])("rejects unsafe production overrides: %o", (override, expected) => {
+    expect(() =>
+      parseEnvironment({
+        ...startupEnvironment,
+        DEPLOYMENT_ENV: "production",
+        APP_URL: "https://lend.example.com",
+        RATE_LIMIT_ENABLED: "true",
+        RATE_LIMIT_HASH_SECRET:
+          "test-only-rate-limit-secret-at-least-32-characters",
+        RATE_LIMIT_TRUST_PROXY: "true",
+        OPERATIONAL_HEALTH_SECRET:
+          "test-only-operational-health-secret-at-least-32-characters",
+        ERP_NEXT_ALLOW_LOCAL_HTTP: "false",
+        ...override,
+      }),
+    ).toThrow(expected);
+  });
+
   it("identifies configuration required at application startup", () => {
     expect(() =>
       parseEnvironment({

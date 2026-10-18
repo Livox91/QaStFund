@@ -5,9 +5,9 @@ services:
     image: postgres:17-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is required}
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -27,7 +27,7 @@ services:
     env_file:
       - ${APP_ENV_FILE:-deploy/.env.production}
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}?schema=public
+      DATABASE_URL: postgresql://${POSTGRES_USER:?POSTGRES_USER is required}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@database:5432/${POSTGRES_DB:?POSTGRES_DB is required}?schema=public
     depends_on:
       database:
         condition: service_healthy
@@ -47,7 +47,8 @@ services:
     env_file:
       - ${APP_ENV_FILE:-deploy/.env.production}
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}?schema=public
+      DEPLOYMENT_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER:?POSTGRES_USER is required}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@database:5432/${POSTGRES_DB:?POSTGRES_DB is required}?schema=public
       HOSTNAME: 0.0.0.0
       PORT: 3000
     depends_on:
@@ -65,7 +66,7 @@ services:
       target: reconciliation-scheduler
     restart: unless-stopped
     environment:
-      ARC_RECONCILIATION_CRON_SECRET: ${ARC_RECONCILIATION_CRON_SECRET}
+      ARC_RECONCILIATION_CRON_SECRET: ${ARC_RECONCILIATION_CRON_SECRET:?ARC_RECONCILIATION_CRON_SECRET is required}
       ARC_RECONCILIATION_INTERVAL_SECONDS: ${ARC_RECONCILIATION_INTERVAL_SECONDS:-60}
       ARC_RECONCILIATION_SCHEDULER_URL: http://app:3000/api/internal/arc-reconciliation
       ERP_NEXT_SYNC_ENABLED: ${ERP_NEXT_SYNC_ENABLED:-false}
@@ -90,7 +91,7 @@ services:
     image: caddy:2-alpine
     restart: unless-stopped
     environment:
-      SITE_ADDRESS: ${SITE_ADDRESS}
+      SITE_ADDRESS: ${SITE_ADDRESS:?SITE_ADDRESS is required}
     ports:
       - "80:80"
       - "443:443"

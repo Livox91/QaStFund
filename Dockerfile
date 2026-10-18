@@ -52,6 +52,7 @@ CMD ["node", "scripts/run-arc-reconciliation-scheduler.mjs"]
 FROM node:24-bookworm-slim AS runner
 
 ENV NODE_ENV=production \
+    DEPLOYMENT_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
     HOSTNAME=0.0.0.0 \
     PORT=3000

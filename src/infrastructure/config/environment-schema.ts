@@ -52,6 +52,9 @@ function hasValidErpNextCredentials(raw: string | undefined): boolean {
 
 const environmentSchema = z
   .object({
+    DEPLOYMENT_ENV: z
+      .enum(["development", "test", "production"])
+      .default("development"),
     DATABASE_URL: z
       .string()
       .min(1, "DATABASE_URL is required")
@@ -247,6 +250,68 @@ const environmentSchema = z
     ERP_NEXT_CREDENTIAL_ENCRYPTION_KEY: erpNextEncryptionKeySchema,
   })
   .superRefine((environment, context) => {
+    if (environment.DEPLOYMENT_ENV === "production") {
+      const appUrl = new URL(environment.APP_URL);
+      const isLoopback =
+        appUrl.hostname === "localhost" ||
+        appUrl.hostname === "127.0.0.1" ||
+        appUrl.hostname === "[::1]";
+
+      if (
+        appUrl.protocol !== "https:" ||
+        isLoopback ||
+        appUrl.username ||
+        appUrl.password ||
+        appUrl.pathname !== "/" ||
+        appUrl.search ||
+        appUrl.hash
+      ) {
+        context.addIssue({
+          code: "custom",
+          path: ["APP_URL"],
+          message:
+            "APP_URL must be a public HTTPS origin without credentials, path, query, or fragment in production",
+        });
+      }
+      if (!environment.RATE_LIMIT_ENABLED) {
+        context.addIssue({
+          code: "custom",
+          path: ["RATE_LIMIT_ENABLED"],
+          message: "rate limiting must be enabled in production",
+        });
+      }
+      if (!environment.RATE_LIMIT_HASH_SECRET) {
+        context.addIssue({
+          code: "custom",
+          path: ["RATE_LIMIT_HASH_SECRET"],
+          message:
+            "a dedicated rate-limit hash secret is required in production",
+        });
+      }
+      if (!environment.RATE_LIMIT_TRUST_PROXY) {
+        context.addIssue({
+          code: "custom",
+          path: ["RATE_LIMIT_TRUST_PROXY"],
+          message:
+            "the production Caddy topology requires trusted proxy address handling",
+        });
+      }
+      if (!environment.OPERATIONAL_HEALTH_SECRET) {
+        context.addIssue({
+          code: "custom",
+          path: ["OPERATIONAL_HEALTH_SECRET"],
+          message:
+            "a dedicated dependency-health bearer secret is required in production",
+        });
+      }
+      if (environment.ERP_NEXT_ALLOW_LOCAL_HTTP) {
+        context.addIssue({
+          code: "custom",
+          path: ["ERP_NEXT_ALLOW_LOCAL_HTTP"],
+          message: "local HTTP ERPNext endpoints are forbidden in production",
+        });
+      }
+    }
     if (
       environment.ERP_NEXT_SYNC_ENABLED &&
       !environment.ERP_NEXT_SYNC_CRON_SECRET
@@ -395,6 +460,7 @@ export type BlockchainEnvironment = z.infer<typeof blockchainEnvironmentSchema>;
 
 export function parseEnvironment(
   environment: Pick<NodeJS.ProcessEnv, "DATABASE_URL" | "APP_URL"> & {
+    DEPLOYMENT_ENV?: NodeJS.ProcessEnv[string];
     RATE_LIMIT_ENABLED?: NodeJS.ProcessEnv[string];
     RATE_LIMIT_HASH_SECRET?: NodeJS.ProcessEnv[string];
     RATE_LIMIT_TRUST_PROXY?: NodeJS.ProcessEnv[string];
