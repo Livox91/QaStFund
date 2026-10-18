@@ -5,6 +5,7 @@ import { amountsMentioned } from "@/modules/repayment-agent/application/validate
 import { createWorld } from "@/modules/repayment-agent/evals/sim-world";
 import { OpenAiRepaymentPlanner } from "@/modules/repayment-agent/infrastructure/openai-planner";
 import { RuleBasedRepaymentPlanner } from "@/modules/repayment-agent/infrastructure/rule-based-planner";
+import { repaymentToolDefinitions } from "@/modules/repayment-agent/tools/repayment-tools";
 
 type Call = {
   url: string;
@@ -184,6 +185,40 @@ describe("OpenAI repayment planner", () => {
       (run) => run.steps,
     );
     expect(steps.some((step) => step.name === "PLANNER_FALLBACK")).toBe(false);
+  });
+});
+
+describe("rule planner", () => {
+  it("explains that loans on an earlier escrow cannot be agent-repaid", async () => {
+    const world = createWorld({
+      balanceUsdc: 50,
+      obligations: [
+        { outstandingUsdc: 3.15, dueInHours: 24, legacyContract: true },
+      ],
+      planner: new RuleBasedRepaymentPlanner(),
+    });
+    const summary = await world.run();
+    expect(summary.decisions[0]?.action).toBe("STOP");
+    expect(summary.decisions[0]?.explanation).toContain("earlier escrow");
+    expect(summary.decisions[0]?.explanation).not.toContain("recently");
+    expect(world.chain.transfers).toEqual([]);
+  });
+});
+
+describe("tool schemas", () => {
+  it("omit 'required' when a tool takes no arguments", () => {
+    // Groq rejects `required` next to an empty `properties` object.
+    for (const tool of repaymentToolDefinitions) {
+      const { properties, required } = tool.parameters as {
+        properties: Record<string, unknown>;
+        required?: string[];
+      };
+      if (Object.keys(properties).length === 0) {
+        expect(required, tool.name).toBeUndefined();
+      } else {
+        expect(required, tool.name).toEqual(Object.keys(properties));
+      }
+    }
   });
 });
 

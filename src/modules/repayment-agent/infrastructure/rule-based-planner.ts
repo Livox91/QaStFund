@@ -153,6 +153,26 @@ export class RuleBasedRepaymentPlanner implements RepaymentPlanner {
       );
     }
 
+    // Loans on an earlier escrow (no mandate support) are visible but never
+    // payable by the agent; say so instead of implying they were paid.
+    if (!outstanding.some((item) => item.agentEligible)) {
+      return result(
+        decision({
+          action: "STOP",
+          reasons: ["NO_OUTSTANDING_OBLIGATIONS"],
+          explanation:
+            "Nothing the agent can repay: your outstanding loans are on an earlier escrow contract without mandate support, so repay them from the Loans page.",
+          rejected: [
+            {
+              action: "WAIT",
+              reason:
+                "Waiting would not make these loans payable by the agent.",
+            },
+          ],
+        }),
+      );
+    }
+
     const awaiting = new Set(
       observation.pendingApprovals.map((approval) => approval.loanId),
     );
