@@ -8,6 +8,10 @@ export type BrowserPendingOperation = {
   savedAt: string;
 };
 
+export type PreparedBrowserPendingOperation = BrowserPendingOperation & {
+  operationId: string;
+};
+
 type StorageLike = Pick<Storage, "getItem" | "setItem" | "removeItem">;
 
 const KEY_PREFIX = "employee-p2p:pending-operation:v1";
@@ -40,6 +44,12 @@ export function readPendingOperation(
   } catch {
     return null;
   }
+}
+
+export function isPreparedPendingOperation(
+  operation: BrowserPendingOperation | null,
+): operation is PreparedBrowserPendingOperation {
+  return Boolean(operation?.operationId);
 }
 
 export function writePendingOperation(

@@ -111,10 +111,17 @@ function borrowDependencies(chainOfferId: bigint) {
   } as never;
 }
 
-async function createRepayableLoan() {
+async function createRepayableLoan(
+  options: {
+    feeAmountMinorUnits?: bigint;
+    repaymentBaseUnits?: bigint;
+  } = {},
+) {
   const id = randomUUID();
   const chainLoanId = nextChainLoanId++;
   const chainOfferId = nextChainOfferId++;
+  const feeAmountMinorUnits = options.feeAmountMinorUnits ?? 500n;
+  const repaymentBaseUnits = options.repaymentBaseUnits ?? 105_000_000n;
   await prisma.loan.create({
     data: {
       id,
@@ -127,9 +134,9 @@ async function createRepayableLoan() {
       lenderWalletAddress: lenderAddress,
       borrowerWalletAddress: borrowerAddress,
       principalBaseUnits: 100_000_000n,
-      repaymentBaseUnits: 105_000_000n,
+      repaymentBaseUnits,
       principalAmountMinorUnits: 10_000n,
-      feeAmountMinorUnits: 500n,
+      feeAmountMinorUnits,
       outstandingPrincipalMinorUnits: 10_000n,
       currency: "USD",
       durationDays: 30,
@@ -142,12 +149,13 @@ async function createRepayableLoan() {
       repaymentDueAt: new Date("2026-11-03T12:00:00.000Z"),
     },
   });
-  return { id, chainLoanId, chainOfferId };
+  return { id, chainLoanId, chainOfferId, repaymentBaseUnits };
 }
 
 function repaymentDependencies(input: {
   chainLoanId: bigint;
   chainOfferId: bigint;
+  repaymentBaseUnits: bigint;
 }) {
   return {
     contractAddress,
@@ -162,7 +170,7 @@ function repaymentDependencies(input: {
         borrowerAddress,
         100_000_000n,
         500n,
-        105_000_000n,
+        input.repaymentBaseUnits,
         0n,
         0n,
         0,
@@ -535,12 +543,12 @@ describe("on-chain intent concurrency", () => {
       loan.id,
       requestId,
       repaymentDependencies(loan),
-      25_000_000n,
+      26_000_000n,
     );
 
     expect(intent).toMatchObject({
       state: "PENDING",
-      repaymentBaseUnits: "25000000",
+      repaymentBaseUnits: "26000000",
       repaymentMode: "PARTIAL",
     });
     expect(intent.chainRepaymentId).toMatch(/^0x[0-9a-f]{64}$/);
@@ -548,7 +556,52 @@ describe("on-chain intent concurrency", () => {
       prisma.loanRepayment.findUniqueOrThrow({
         where: { repaymentRequestId: requestId },
       }),
-    ).resolves.toMatchObject({ amountMinorUnits: 2_500n, status: "PENDING" });
+    ).resolves.toMatchObject({ amountMinorUnits: 2_600n, status: "PENDING" });
+  });
+
+  it("distinguishes unsupported partial repayment from an invalid amount", async () => {
+    vi.stubEnv("ARC_ESCROW_VERSION", "1");
+    const loan = await createRepayableLoan();
+
+    await expect(
+      prepareOnChainRepayment(
+        actor as never,
+        loan.id,
+        randomUUID(),
+        repaymentDependencies(loan),
+        26_000_000n,
+      ),
+    ).rejects.toMatchObject({
+      code: "PARTIAL_REPAYMENT_UNAVAILABLE",
+      statusCode: 409,
+    });
+  });
+
+  it("clamps a cent-rounded final payment to the exact on-chain remainder", async () => {
+    vi.stubEnv("ARC_ESCROW_VERSION", "3");
+    const loan = await createRepayableLoan({
+      feeAmountMinorUnits: 501n,
+      repaymentBaseUnits: 105_005_000n,
+    });
+    const requestId = randomUUID();
+
+    const intent = await prepareOnChainRepayment(
+      actor as never,
+      loan.id,
+      requestId,
+      repaymentDependencies(loan),
+      105_010_000n,
+    );
+
+    expect(intent).toMatchObject({
+      state: "PENDING",
+      repaymentBaseUnits: "105005000",
+    });
+    await expect(
+      prisma.loanRepayment.findUniqueOrThrow({
+        where: { repaymentRequestId: requestId },
+      }),
+    ).resolves.toMatchObject({ amountMinorUnits: 10_501n });
   });
 
   it("confirms a partial V3 repayment without closing the loan", async () => {

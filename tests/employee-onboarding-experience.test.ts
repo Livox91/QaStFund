@@ -6,6 +6,7 @@ import type { Employee } from "@/modules/employees/domain/employee";
 import type { BorrowingCapacity } from "@/modules/policies/domain/lending-policy";
 import {
   clearPendingOperation,
+  isPreparedPendingOperation,
   readPendingOperation,
   writePendingOperation,
 } from "@/modules/transactions/browser-pending-operation";
@@ -102,6 +103,26 @@ describe("employee first-use status", () => {
 });
 
 describe("browser transaction recovery", () => {
+  it("does not treat a preflight request token as a prepared operation", () => {
+    const values = new Map<string, string>();
+    const storage = {
+      getItem: (key: string) => values.get(key) ?? null,
+      setItem: (key: string, value: string) => values.set(key, value),
+      removeItem: (key: string) => values.delete(key),
+    };
+    const draft = writePendingOperation(storage, {
+      kind: "repayment",
+      referenceId: "loan-a",
+      requestId: "request-a",
+      amountBaseUnits: "26130000",
+    });
+
+    expect(isPreparedPendingOperation(draft)).toBe(false);
+    expect(
+      isPreparedPendingOperation({ ...draft, operationId: "repayment-a" }),
+    ).toBe(true);
+  });
+
   it("persists a submitted transaction for confirmation after interruption", () => {
     const values = new Map<string, string>();
     const storage = {

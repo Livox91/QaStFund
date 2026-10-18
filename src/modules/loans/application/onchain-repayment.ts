@@ -182,10 +182,16 @@ export async function prepareOnChainRepayment(
     dependencies.contractAddress ?? getConfiguredEscrowAddress();
   if (!configuredContract) throw configurationError();
   const supportsPartialRepayment = getConfiguredEscrowVersion() === "3";
+  if (requestedBaseUnits !== undefined && !supportsPartialRepayment) {
+    throw new ApplicationError(
+      "PARTIAL_REPAYMENT_UNAVAILABLE",
+      "Partial repayments are not available for this loan.",
+      409,
+    );
+  }
   if (
     requestedBaseUnits !== undefined &&
-    (!supportsPartialRepayment ||
-      requestedBaseUnits <= 0n ||
+    (requestedBaseUnits <= 0n ||
       requestedBaseUnits % USDC_BASE_UNITS_PER_CENT !== 0n)
   ) {
     throw new ApplicationError(
@@ -289,12 +295,18 @@ export async function prepareOnChainRepayment(
         BigInt(existing.loan.chainLoanId),
       );
       const remainingBaseUnits = existing.loan.repaymentBaseUnits - repaid;
+      const isRoundedFullRepayment =
+        requestedBaseUnits !== undefined &&
+        requestedBaseUnits ===
+          baseUnitsToMinorUnitsRoundedUp(remainingBaseUnits) *
+            USDC_BASE_UNITS_PER_CENT;
       const amountBaseUnits =
-        requestedBaseUnits ??
-        (existing.amountMinorUnits <
-        baseUnitsToMinorUnitsRoundedUp(remainingBaseUnits)
-          ? existing.amountMinorUnits * USDC_BASE_UNITS_PER_CENT
-          : remainingBaseUnits);
+        requestedBaseUnits === undefined || isRoundedFullRepayment
+          ? existing.amountMinorUnits <
+            baseUnitsToMinorUnitsRoundedUp(remainingBaseUnits)
+            ? existing.amountMinorUnits * USDC_BASE_UNITS_PER_CENT
+            : remainingBaseUnits
+          : requestedBaseUnits;
       if (amountBaseUnits <= 0n || amountBaseUnits > remainingBaseUnits) {
         throw unavailableError();
       }
@@ -413,9 +425,15 @@ export async function prepareOnChainRepayment(
   )(configuredContract, BigInt(context.chainLoanId));
   const remainingBaseUnits = context.repaymentBaseUnits - repaidBaseUnits;
   if (remainingBaseUnits <= 0n) throw unavailableError();
+  const isRoundedFullRepayment =
+    requestedBaseUnits !== undefined &&
+    requestedBaseUnits ===
+      baseUnitsToMinorUnitsRoundedUp(remainingBaseUnits) *
+        USDC_BASE_UNITS_PER_CENT;
   if (
     requestedBaseUnits !== undefined &&
-    requestedBaseUnits > remainingBaseUnits
+    requestedBaseUnits > remainingBaseUnits &&
+    !isRoundedFullRepayment
   ) {
     throw new ApplicationError(
       "INVALID_REPAYMENT_AMOUNT",
@@ -423,7 +441,10 @@ export async function prepareOnChainRepayment(
       400,
     );
   }
-  const paymentBaseUnits = requestedBaseUnits ?? remainingBaseUnits;
+  const paymentBaseUnits =
+    requestedBaseUnits === undefined || isRoundedFullRepayment
+      ? remainingBaseUnits
+      : requestedBaseUnits;
   const balanceBaseUnits = await (dependencies.readBalance ?? readUsdcBalance)(
     getAddress(wallet.address),
   );

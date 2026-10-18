@@ -340,7 +340,7 @@ export function EmployeeLoanDetails({
                   <RepaymentForm
                     lenderName={loan.lenderName}
                     loanId={loan.id}
-                    remainingAmountMinorUnits={loan.remainingAmountMinorUnits.toString()}
+                    remainingBaseUnits={loan.remainingRepaymentBaseUnits!.toString()}
                     supportsPartialRepayment={supportsPartialRepayment}
                   />
                 )}

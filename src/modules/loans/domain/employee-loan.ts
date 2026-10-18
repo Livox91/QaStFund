@@ -60,6 +60,7 @@ export type EmployeeBorrowedLoanDetails = EmployeeBorrowedLoanRecord &
     totalAgreedAmountMinorUnits: bigint;
     repaidAmountMinorUnits: bigint;
     remainingAmountMinorUnits: bigint;
+    remainingRepaymentBaseUnits: bigint | null;
     progressBasisPoints: number;
     canRepay: boolean;
   }>;
@@ -90,10 +91,21 @@ export function toEmployeeBorrowedLoanDetails(
       (repayment) => repayment.amountMinorUnits,
     ),
   });
+  const repaidBaseUnits = loan.repayments.reduce(
+    (total, repayment) => total + repayment.amountMinorUnits * 10_000n,
+    0n,
+  );
+  const remainingRepaymentBaseUnits =
+    loan.repaymentBaseUnits === null
+      ? null
+      : loan.repaymentBaseUnits > repaidBaseUnits
+        ? loan.repaymentBaseUnits - repaidBaseUnits
+        : 0n;
 
   return {
     ...loan,
     ...progress,
+    remainingRepaymentBaseUnits,
     canRepay:
       (loan.status === "ACTIVE" || loan.status === "OVERDUE") &&
       progress.remainingAmountMinorUnits > 0n,

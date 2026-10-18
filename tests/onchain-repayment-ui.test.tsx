@@ -36,6 +36,7 @@ const baseLoan: EmployeeBorrowedLoanDetails = {
   totalAgreedAmountMinorUnits: 10_500n,
   repaidAmountMinorUnits: 0n,
   remainingAmountMinorUnits: 10_500n,
+  remainingRepaymentBaseUnits: 105_000_000n,
   progressBasisPoints: 0,
   canRepay: true,
 };
@@ -84,6 +85,7 @@ describe("on-chain repayment UI", () => {
       ],
       repaidAmountMinorUnits: 10_500n,
       remainingAmountMinorUnits: 0n,
+      remainingRepaymentBaseUnits: 0n,
       progressBasisPoints: 10_000,
       canRepay: false,
     };

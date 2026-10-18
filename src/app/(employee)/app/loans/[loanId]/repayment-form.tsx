@@ -21,6 +21,7 @@ import { Dialog } from "@/shared/ui/dialog";
 import { Field, Input } from "@/shared/ui/input";
 import {
   clearPendingOperation,
+  isPreparedPendingOperation,
   readPendingOperation,
   writePendingOperation,
   type BrowserPendingOperation,
@@ -38,6 +39,9 @@ async function readApiError(response: Response): Promise<string> {
   }
   if (body?.error?.code === "LOAN_NOT_REPAYABLE") {
     return "This loan has already been repaid or is no longer repayable.";
+  }
+  if (body?.error?.code === "PARTIAL_REPAYMENT_UNAVAILABLE") {
+    return "Partial repayments are not available for this loan. Refresh the page to use the supported repayment option.";
   }
   return (
     body?.error?.message ?? `Request failed with status ${response.status}`
@@ -66,12 +70,12 @@ function UsdcAmount({ amount }: { amount: bigint | null }) {
 export function RepaymentForm({
   lenderName,
   loanId,
-  remainingAmountMinorUnits,
+  remainingBaseUnits,
   supportsPartialRepayment,
 }: {
   lenderName: string;
   loanId: string;
-  remainingAmountMinorUnits: string;
+  remainingBaseUnits: string;
   supportsPartialRepayment: boolean;
 }) {
   const wallet = useCircleWallet();
@@ -83,12 +87,17 @@ export function RepaymentForm({
   const [amount, setAmount] = useState("");
   const [storedOperation, setStoredOperation] =
     useState<BrowserPendingOperation | null>(null);
-  const remainingBalance =
-    BigInt(remainingAmountMinorUnits) * USDC_BASE_UNITS_PER_CENT;
+  const remainingBalance = BigInt(remainingBaseUnits);
   const enteredAmount = useMemo(() => {
     if (!supportsPartialRepayment) return remainingBalance;
+    if (amount.trim() === formatUsdc(remainingBalance)) return remainingBalance;
     try {
-      return parseUsdcCents(amount).baseUnits;
+      const parsed = parseUsdcCents(amount).baseUnits;
+      const roundedFullBalance =
+        ((remainingBalance + USDC_BASE_UNITS_PER_CENT - 1n) /
+          USDC_BASE_UNITS_PER_CENT) *
+        USDC_BASE_UNITS_PER_CENT;
+      return parsed === roundedFullBalance ? remainingBalance : parsed;
     } catch {
       return null;
     }
@@ -117,15 +126,22 @@ export function RepaymentForm({
       );
       if (!cancelled && stored) {
         requestId.current = stored.requestId;
-        setStoredOperation(stored);
         if (stored.amountBaseUnits) {
           setAmount(formatUsdc(BigInt(stored.amountBaseUnits)));
         }
-        setMessage(
-          stored.transactionHash
-            ? "A submitted repayment is waiting for confirmation. Resume without submitting it again."
-            : "An interrupted repayment can be continued.",
-        );
+        // A request id saved before the prepare call is a retry token, not a
+        // prepared operation. Keep it for idempotency without locking the form.
+        if (isPreparedPendingOperation(stored)) {
+          setStoredOperation(stored);
+          setMessage(
+            stored.transactionHash
+              ? "A submitted repayment is waiting for confirmation. Resume without submitting it again."
+              : "An interrupted repayment can be continued.",
+          );
+        } else {
+          setStoredOperation(null);
+          setMessage(null);
+        }
       }
     });
     return () => {
@@ -169,11 +185,14 @@ export function RepaymentForm({
       setMessage("Reconnect your wallet before repaying.");
       return;
     }
-    const recoverable = readPendingOperation(
+    const persisted = readPendingOperation(
       window.localStorage,
       "repayment",
       loanId,
     );
+    const recoverable = isPreparedPendingOperation(persisted)
+      ? persisted
+      : null;
     const paymentAmount = recoverable?.amountBaseUnits
       ? BigInt(recoverable.amountBaseUnits)
       : enteredAmount;
@@ -197,7 +216,7 @@ export function RepaymentForm({
         await confirm(recoverable.operationId, recoverable.transactionHash);
         return;
       }
-      requestId.current ??= crypto.randomUUID();
+      requestId.current ??= persisted?.requestId ?? crypto.randomUUID();
       writePendingOperation(window.localStorage, {
         kind: "repayment",
         referenceId: loanId,
@@ -214,14 +233,19 @@ export function RepaymentForm({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             requestId: requestId.current,
-            ...(supportsPartialRepayment
+            ...(supportsPartialRepayment && paymentAmount !== remainingBalance
               ? { amount: formatUsdc(paymentAmount) }
               : {}),
           }),
         },
       );
-      if (!intentResponse.ok)
-        throw new Error(await readApiError(intentResponse));
+      if (!intentResponse.ok) {
+        const errorMessage = await readApiError(intentResponse);
+        clearPendingOperation(window.localStorage, "repayment", loanId);
+        setStoredOperation(null);
+        requestId.current = null;
+        throw new Error(errorMessage);
+      }
       const { intent } = (await intentResponse.json()) as {
         intent:
           | {
@@ -421,7 +445,7 @@ export function RepaymentForm({
             <Field
               htmlFor="onchain-repayment-amount"
               label="Payment amount"
-              hint="Pay any amount from $0.01 up to the remaining balance."
+              hint="Pay in one-cent increments, or enter the exact remaining balance."
             >
               <Input
                 disabled={busy || Boolean(storedOperation)}
@@ -429,7 +453,13 @@ export function RepaymentForm({
                 inputMode="decimal"
                 max={formatUsdc(remainingBalance)}
                 min="0.01"
-                onChange={(event) => setAmount(event.target.value)}
+                onChange={(event) => {
+                  setAmount(event.target.value);
+                  if (phase === "failed") {
+                    setPhase("idle");
+                    setMessage(null);
+                  }
+                }}
                 required
                 step="0.01"
                 type="number"
