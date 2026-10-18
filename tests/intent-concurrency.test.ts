@@ -244,6 +244,7 @@ describe("on-chain intent concurrency", () => {
   });
 
   afterEach(async () => {
+    vi.unstubAllEnvs();
     await prisma.loan.updateMany({
       where: { organizationId, status: { in: ["REQUESTED", "APPROVED"] } },
       data: { status: "CANCELLED", closedAt: now },
@@ -526,6 +527,7 @@ describe("on-chain intent concurrency", () => {
   });
 
   it("prepares a borrower-selected partial repayment on a V3 escrow", async () => {
+    vi.stubEnv("ARC_ESCROW_VERSION", "3");
     const loan = await createRepayableLoan();
     const requestId = randomUUID();
     const intent = await prepareOnChainRepayment(
@@ -550,6 +552,7 @@ describe("on-chain intent concurrency", () => {
   });
 
   it("confirms a partial V3 repayment without closing the loan", async () => {
+    vi.stubEnv("ARC_ESCROW_VERSION", "3");
     const loan = await createRepayableLoan();
     const requestId = randomUUID();
     const amount = 25_000_000n;
